@@ -7,19 +7,18 @@ h2. 1. Components
 h3. 1.1. Necessary Components
 
 The following components should be part of the OpenTox client:
-<ul>
-<li>Compound/Conformer (Maybe Compound is abstract and conformer impl? or conformer extends compound?)</li>
-<li>Feature</li>
-<li>Dataset (?) Feature Value?</li>
-<li>Algorithm</li>
-<li>Parameter</li>
-<li>Model</li>
-<li>Task</li>
-<li>Token</li>
-<li>Policy</li>
-<li>Person/Group (for policies)</li>
-<li>Error Report</li>
-</ul>
+* Compound/Conformer (Maybe Compound is abstract and conformer impl? or conformer extends compound?)
+* Feature
+* Dataset (?) Feature Value?
+* Algorithm
+* Parameter
+* Model
+* Task
+* Token
+* Policy
+* Person/Group (for policies)
+* Error Report
+
 
 Ontologies:
 i.   OpenTox ontology
