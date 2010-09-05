@@ -9,7 +9,7 @@ h3. 1.1. Necessary Components
 The following components should be part of the OpenTox client:
 * Compound/Conformer (Maybe Compound is abstract and conformer impl? or conformer extends compound?)
 * Feature
-* Dataset (?) Feature Value?
+* Dataset, FeatureValue, DataEntry
 * Algorithm
 * Parameter
 * Model
@@ -18,7 +18,8 @@ The following components should be part of the OpenTox client:
 * Policy
 * Person/Group (for policies)
 * Error Report
-
+* BibTeX
+Note: The API of ToxOtis will follow the structure described by the OpenTox ontology, so for each OpenTox entity (Dataset, Model, etc), as described in the OT ontology, there is a counterpart Java class in ToxOtis. This will facilitate the parsing of RDF documents coming from OpenTox services and will also lead to maximum cooperation, flexibility and extensibility in case of potent OT API amendments.
 
 Ontologies:
 * OpenTox ontology
@@ -47,13 +48,17 @@ h3. 1.2. Attributes for each component
 
 Every component is uniquely identified by its URI. Consider using java.net.URI for that purpose
 
-h4. 1.2.1. Compound:
+h4. 1.2.1. Compound/Conformer:
 
 * Chemical Identifiers: CasRN, Smiles
 
-h4. 
+h4. 1.2.2. Feature
 
+* Units of the feature
+* Reference to BibTeX
 
+h4. Dataset
+A dataset object holds as a private field the ontological model that describes it and has methods for iterating over its dataentries, compounds and values.
 
 h2. 2. Supported Functionalities
 
