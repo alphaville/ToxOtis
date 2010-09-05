@@ -21,23 +21,24 @@ The following components should be part of the OpenTox client:
 
 
 Ontologies:
-i.   OpenTox ontology
-ii.  Endpoint ontology
-iii. Feature Ontology
-iv.  Algorithm ontology
-v.   External Ontologies (e.g. BibTex)
+* OpenTox ontology
+* Endpoint ontology
+* Feature Ontology
+* Algorithm ontology
+* External Ontologies (e.g. BibTex)
 
 Ontology-related properties:
-i.   DC Meta data (Dublin Core)
-ii.  OpenTox meta data (hasSource etc)
+* DC Meta data (Dublin Core)
+* OpenTox meta data (hasSource etc)
 
 Clients:
-i.   Get Client (Accept)
-ii.  Post (Configurable Headers, Parameter to be posted, Binary Data)
-iii. Put
-iv.  Delete
-v.   Options
+* Get Client (Accept)
+* Post (Configurable Headers, Parameter to be posted, Binary Data)
+* Put
+* Delete
+* Options
 
+Notes:
 URL query parameters will be widely used in clients (should be seperate classes)
 All operations will be combined with auth/auth API of OpenTox
 
@@ -48,7 +49,9 @@ Every component is uniquely identified by its URI. Consider using java.net.URI f
 
 h4. 1.2.1. Compound:
 
- - Chemical Identifiers: CasRN, Smiles
+* Chemical Identifiers: CasRN, Smiles
+
+h4. 
 
 
 
@@ -56,25 +59,26 @@ h2. 2. Supported Functionalities
 
 h3. 2.1. Related to compounds:
 
-  - Download a specific compound (given its URI)
-  - Search for compounds given their smiles etc (Use some search factory)
-  - Create new compound and get its URI (POSTing a compound to a dataset service)
-  - Update/Delete
-  - Get a representation of a compound and store it in a file
-  - Image? Get the depiction or the image from the URI
-  - Create a dataset with all available/some features for a compound
-  - Create/update feature for compound
-  - Delete a feature from the compound
-  - Get all conformers (list of Conformer objects)
-  - Remove/Update/Create conformer
+* Download a specific compound (given its URI)
+* Search for compounds given their smiles etc (Use some search factory)
+* Create new compound and get its URI (POSTing a compound to a dataset service)
+* Update/Delete
+* Get a representation of a compound and store it in a file
+* Image? Get the depiction or the image from the URI
+* Create a dataset with all available/some features for a compound
+* Create/update feature for compound
+* Delete a feature from the compound
+* Get all conformers (list of Conformer objects)
+* Remove/Update/Create conformer
+
 Note: Make compound an ABSTRACT class, and Conformer its implementation
 
 
 h3. 2.2. Related to features:
 
-  - Download feature info from a given URI (Parsing)
-  - Create new feature providing information about it/ Update feature/ Delete from remote URI
-  - Search for features given some search criterion (same as... etc)
+* Download feature info from a given URI (Parsing)
+* Create new feature providing information about it/ Update feature/ Delete from remote URI
+* Search for features given some search criterion (same as... etc)
 
 h3. 2.3. Dataset
   
@@ -82,24 +86,25 @@ h3. 2.3. Dataset
 
 h3. 2.4. Algorithm
 
-  - An enumeration of some available algorithms is needed (URIs)
-  - Create an Algorithm object providing the URI of an algorithm
-  - Apply an algorithm (might return a task or directly a model, dataset etc...)
-       Note: Tasks should be running on the background returning a Task object (see related section below).
+* An enumeration of some available algorithms is needed (URIs)
+* Create an Algorithm object providing the URI of an algorithm
+* Apply an algorithm (might return a task or directly a model, dataset etc...)
+
+Note: Tasks should be running on the background returning a Task object (see related section below).
 
 h3. 2.5. Parameter
 
-  - Will be used as an auxiliary object (insie algorithms and models)
+* Will be used as an auxiliary object (insie algorithms and models)
 
 h3. 2.6. Model
 
-  - Apply a model on a dataset for prediction
-  - Apply a model on a certain compound for prediction
-  - Search for certain models (e.g. providing the dataset uri or the algorithm) on a Model Server
-  - Search for models using the ontology service
+* Apply a model on a dataset for prediction
+* Apply a model on a certain compound for prediction
+* Search for certain models (e.g. providing the dataset uri or the algorithm) on a Model Server
+* Search for models using the ontology service
 
 h3. 2.7. Task
 
-  - Given a URI of a task, download and parse it, check the status of the task
-  - Get a list of all tasks on a server 
+* Given a URI of a task, download and parse it, check the status of the task
+* Get a list of all tasks on a server 
 
