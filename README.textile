@@ -2,12 +2,14 @@ h1. ToxOtis
 
 Version: 0.0, planning
 
+ToxOtis is the Greek word for Sagittarius, that actually means 'archer'. ToxOtis is more than a web client and parser; it is a versatile tool for using the OpenTox predictive toxicology web services from inside your Java application providing a flexible API. 
+
 h2. 1. Components
 
 h3. 1.1. Necessary Components
 
 The following components should be part of the OpenTox client:
-* Compound/Conformer (Maybe Compound is abstract and conformer impl? or conformer extends compound?)
+* Compound/Conformer (Compound is abstract and Conformer its Implementation)
 * Feature
 * Dataset, FeatureValue, DataEntry
 * Algorithm
@@ -19,6 +21,7 @@ The following components should be part of the OpenTox client:
 * Person/Group (for policies)
 * Error Report
 * BibTeX
+
 Note: The API of ToxOtis will follow the structure described by the OpenTox ontology, so for each OpenTox entity (Dataset, Model, etc), as described in the OT ontology, there is a counterpart Java class in ToxOtis. This will facilitate the parsing of RDF documents coming from OpenTox services and will also lead to maximum cooperation, flexibility and extensibility in case of potent OT API amendments.
 
 Ontologies:
@@ -46,19 +49,57 @@ All operations will be combined with auth/auth API of OpenTox
 
 h3. 1.2. Attributes for each component
 
-Every component is uniquely identified by its URI. Consider using java.net.URI for that purpose
+Every component is uniquely identified by its URI (Consider using java.net.URI for that purpose). Also every component must have a set of meta-information describing it (DC and OT). Where necessary there should be a link to a BibTeX resource.
+Each component needs a method to be transformed into an Ontological Model (OntModel) and of course a method for the inverse process (Parsing a given Ontological Model into a component). These methods can be bundled in an Interface called RDFable: <tt>OntModel createOntModel()</tt> and <tt>void createFromRDF(OntModel)</tt>.
 
 h4. 1.2.1. Compound/Conformer:
 
 * Chemical Identifiers: CasRN, Smiles
+
 
 h4. 1.2.2. Feature
 
 * Units of the feature
 * Reference to BibTeX
 
-h4. Dataset
-A dataset object holds as a private field the ontological model that describes it and has methods for iterating over its dataentries, compounds and values.
+
+h4. 1.2.3. Dataset
+
+* A list of DataEntry objects
+
+A dataset object holds as a private field the ontological model that describes it and has methods for iterating over its dataentries, compounds and values. 
+
+
+h4. 1.2.4. DataEntry
+
+* Compound
+* Feature Values (Instances of FeatureValue) for the above compound
+
+
+h4. 1.2.5. Algorithm
+
+* Set of parameters (see Parameter)
+
+
+h4. 1.2.6. Parameter
+
+* Type of the Parameter (XSDDatatype)
+* Value of the parameter (either used as its value or its default value)
+* Scope (Optional/Mandatory)
+
+h4. 1.2.7. Model
+
+* Set of model parameters
+* Predicted Feature
+* Dependent Feature
+* Set of independent features
+* Training Dataset
+* Algorithm used to produce the model
+* BibTeX reference
+
+h4. 1.2.8. Task
+
+* 
 
 h2. 2. Supported Functionalities
 
@@ -86,8 +127,10 @@ h3. 2.2. Related to features:
 * Search for features given some search criterion (same as... etc)
 
 h3. 2.3. Dataset
-  
-  
+* Download and parse a dataset into a Dataset object
+* Create a new dataset from scratch and either POST it or PUT in on a dataset server
+* Create a dataset using alternative file formats like ARFF
+* Create a dataset using online resources (compounds and features)  
 
 h3. 2.4. Algorithm
 
