@@ -10,6 +10,10 @@ public class ToxOtisException extends Exception {
     private ErrorCause cause = null;
     private String explanation = "Unknown Cause of Exception";
 
+    public ToxOtisException(String string, Exception ex) {
+        super(string, ex);
+    }
+
     public ErrorCause getCode() {
         return cause;
     }
@@ -45,6 +49,15 @@ public class ToxOtisException extends Exception {
         this.cause = cause;
         this.explanation = explanation;
     }
+
+    public ToxOtisException(Throwable cause) {
+        super(cause);
+    }
+
+    public ToxOtisException(String message) {
+        super(message);
+    }
+    
 
     @Override
     public String toString() {
