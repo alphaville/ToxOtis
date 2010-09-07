@@ -1,6 +1,7 @@
 package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import org.opentox.toxotis.ontology.MetaInfo;
 
 /**
  *
@@ -17,12 +18,25 @@ public class Parameter<T> {
     private XSDDatatype type;
     private T value;
     private ParameterScope scope;
+    private MetaInfo meta;
+
+    public Parameter() {
+    }
 
     public Parameter(XSDDatatype type, T value, ParameterScope scope) {
         this.type = type;
         this.value = value;
         this.scope = scope;
     }
+
+    public MetaInfo getMeta() {
+        return meta;
+    }
+
+    public void setMeta(MetaInfo meta) {
+        this.meta = meta;
+    }
+    
 
     public ParameterScope getScope() {
         return scope;

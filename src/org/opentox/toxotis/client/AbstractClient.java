@@ -108,4 +108,34 @@ public abstract class AbstractClient {
         return con.getResponseCode();
     }
 
+    /**
+     * Specify the mediatype to be used in the <tt>Accept</tt> header.
+     * @param mediaType Accepted mediatype
+     */
+    public AbstractClient setMediaType(String mediaType) {
+        this.acceptMediaType = mediaType;
+        return this;
+    }
+
+
+    /**
+     * Set the URI on which the GET method is applied.
+     * @param vri
+     */
+    public AbstractClient setUri(VRI vri) {
+        this.vri = vri;
+        return this;
+    }
+
+    /**
+     * Provide the target URI as a String
+     * @param uri The target URI as a String.
+     * @throws java.net.URISyntaxException In case the provided URI is syntactically
+     * incorrect.
+     */
+    public AbstractClient setUri(String uri) throws java.net.URISyntaxException {
+        this.vri = new VRI(uri);
+        return this;
+    }
+
 }

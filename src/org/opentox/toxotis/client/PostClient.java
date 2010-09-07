@@ -6,8 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -16,12 +14,12 @@ import org.opentox.toxotis.ToxOtisException;
  * @author Charalampos Chomenides
  */
 public class PostClient extends AbstractClient {
-    
+
     /** Type of the posted content*/
-    private String contentType = null;    
+    private String contentType = null;
     /** Parameters to be posted as application/x-www-form-urlencoded (if any) */
     private Map<String, String> postParameters = new HashMap<String, String>();
-    
+    private Map<String, String> headerValues = new HashMap<String, String>();
 
     public PostClient() {
         super();
@@ -30,11 +28,6 @@ public class PostClient extends AbstractClient {
     public PostClient(VRI vri) {
         super();
         this.vri = vri;
-    }    
-
-    public PostClient setMediaType(String mediaType) {
-        this.acceptMediaType = mediaType;
-        return this;
     }
 
     public String getContentType() {
@@ -61,13 +54,40 @@ public class PostClient extends AbstractClient {
         try {
             postParameters.put(URLEncoder.encode(paramName, URL_ENCODING), paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "");
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(PostClient.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
         }
         return this;
-    }    
+    }
 
-    public PostClient setUri(VRI uri) {
-        this.vri = uri;
+    /**
+     * Note: if the parameter name (paramName) is either 'Accept' or 'Content-type', this
+     * method will override {@link PostClient#setMediaType(java.lang.String) setMediaType} and
+     * {@link PostClient#setContentType(java.lang.String) setContentType} respectively. In general
+     * it is not advisable that you choose this method for setting values to these headers. Once the
+     * parameter name and its value are submitted to the client, they are encoded using the
+     * standard UTF-8 encoding.
+     * @param paramName Name of the parameter which will be posted in the header
+     * @param paramValue Parameter value
+     * @return This object
+     * @throws NullPointerException
+     *          If any of the arguments is null
+     */
+    public PostClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
+        if (paramName == null) {
+            throw new NullPointerException("ParamName is null");
+        }
+        if (paramValue == null) {
+            throw new NullPointerException("ParamValue is null");
+        }
+        if ("Accept".equalsIgnoreCase(paramName)) {
+            setMediaType(paramValue);
+            return this;
+        }
+        if ("Content-type".equalsIgnoreCase(paramName)) {
+            setContentType(paramValue);
+            return this;
+        }
+        headerValues.put(paramName, paramValue);
         return this;
     }
 
@@ -107,8 +127,13 @@ public class PostClient extends AbstractClient {
             if (contentType != null) {
                 con.setRequestProperty("Content-type", contentType);
             }
-            if (acceptMediaType!=null){
+            if (acceptMediaType != null) {
                 con.setRequestProperty("Accept", acceptMediaType);
+            }
+            if (!headerValues.isEmpty()) {
+                for (Map.Entry<String, String> e : headerValues.entrySet()) {
+                    con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
+                }
             }
             /* If there are some parameters to be posted, then the POST will
              * declare the posted data as application/x-form-urlencoded.
@@ -137,6 +162,4 @@ public class PostClient extends AbstractClient {
             throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
         }
     }
-
-         
 }

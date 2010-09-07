@@ -15,37 +15,7 @@ public class GetClient extends AbstractClient {
     /** Create a new instance of GetClient */
     public GetClient() {
     }
-    
-
-    /**
-     * Specify the mediatype to be used in the <tt>Accept</tt> header.
-     * @param mediaType Accepted mediatype
-     */
-    public GetClient setMediaType(String mediaType) {
-        this.acceptMediaType = mediaType;
-        return this;
-    }
-    
-
-    /**
-     * Set the URI on which the GET method is applied.
-     * @param vri
-     */
-    public GetClient setUri(VRI vri) {
-        this.vri = vri;
-        return this;
-    }
-
-    /**
-     * Provide the target URI as a String
-     * @param uri The target URI as a String.
-     * @throws java.net.URISyntaxException In case the provided URI is syntactically
-     * incorrect.
-     */
-    public GetClient setUri(String uri) throws java.net.URISyntaxException {
-        this.vri = new VRI(uri);
-        return this;
-    }
+        
 
     /** Initialize a connection to the target URI */
     protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {

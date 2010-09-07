@@ -9,16 +9,30 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * VRI is an alternative to URI. Being <code>final</code>, the class <code>java.net.URI</code>
+ * cannot be subclassed. VRI offers greater flexibility in this context as it stores in a
+ * highly structured way the parameters of the URL and applies URL encoding where necessary.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public class VRI { // Well tested!
 
+    /** The URI as a string */
     private String uri;
+    /** The mapping from parameter names to parameter values */
     private Map<String, String> urlParams = new LinkedHashMap<String, String>();
+    /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
 
+    /**
+     * Construct a new VRI providing its String representation. Parameters are parsed
+     * and stored separately in a map.
+     * @param uri
+     *      The URI as a string.
+     * @throws URISyntaxException
+     *      In case the provided URI is syntactically incorrect.
+     */
     public VRI(String uri) throws URISyntaxException {
         new URI(uri);
         this.uri = uri;
