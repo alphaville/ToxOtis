@@ -12,11 +12,17 @@ import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
  */
 public class GetClient {
 
+    /** Accepted mediatype  */
     private String mediaType;
+    /** URI at which the request is performed (GET) */
     private VRI vri;
-    private java.net.HttpURLConnection con;
+    /** Connection to the above URI */
+    protected java.net.HttpURLConnection con;
+    /** Size of a buffer used to download the data from the remote server */
     private static int bufferSize = 4194304;
 
+
+    /** Create a new instance of GetClient */
     public GetClient() {
     }
 
@@ -24,23 +30,44 @@ public class GetClient {
         return mediaType;
     }
 
-    public void setMediaType(String mediaType) {
+    /**
+     * Specify the mediatype to be used in the <tt>Accept</tt> header.
+     * @param mediaType Accepted mediatype
+     */
+    public GetClient setMediaType(String mediaType) {
         this.mediaType = mediaType;
+        return this;
     }
 
+    /**
+     * Get the targetted URI
+     * @return The target URI
+     */
     public java.net.URI getUri() {
         return vri.toURI();
     }
 
-    public void setUri(VRI vri) {
+    /**
+     * Set the URI on which the GET method is applied.
+     * @param vri
+     */
+    public GetClient setUri(VRI vri) {
         this.vri = vri;
+        return this;
     }
-    
 
-    public void setUri(String uri) throws java.net.URISyntaxException {
+    /**
+     * Provide the target URI as a String
+     * @param uri The target URI as a String.
+     * @throws java.net.URISyntaxException In case the provided URI is syntactically
+     * incorrect.
+     */
+    public GetClient setUri(String uri) throws java.net.URISyntaxException {
         this.vri = new VRI(uri);
+        return this;
     }
 
+    /** Initialize a connection to the target URI */
     private java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
@@ -58,6 +85,7 @@ public class GetClient {
         }
     }
 
+    /** Get the normal stream of the response (body) */
     public java.io.InputStream getRemoteStream() throws ToxOtisException, java.io.IOException {
         if (con == null) {
             con = initializeConnection(vri.toURI());
@@ -72,6 +100,7 @@ public class GetClient {
         }
     }
 
+    /** Get the response status */
     public int getResponseCode() throws ToxOtisException, java.io.IOException {
         if (con == null) {
             con = initializeConnection(vri.toURI());
@@ -79,7 +108,9 @@ public class GetClient {
         return con.getResponseCode();
     }
 
-    public java.util.List<String> getUriList() throws ToxOtisException, IOException {
+    /** Get the result as a URI list */
+    public java.util.List<String> getResponseUriList() throws ToxOtisException, IOException {
+        setMediaType("text/uri-list");// Set the mediatype to text/uri-list
         java.util.List<String> list = new java.util.ArrayList<String>();
         java.io.InputStreamReader isr = null;
         java.io.InputStream is = null;
@@ -114,7 +145,7 @@ public class GetClient {
         return list;
     }
 
-    public String getRemoteMessage() throws ToxOtisException, java.io.IOException {
+    public String getResponseText() throws ToxOtisException, java.io.IOException {
         if (con == null) {
             con = initializeConnection(vri.toURI());
         }
@@ -148,7 +179,7 @@ public class GetClient {
         }
     }
 
-    public com.hp.hpl.jena.ontology.OntModel getOntModel() throws ToxOtisException {
+    public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ToxOtisException {
         try {
             OntModel om = new SimpleOntModelImpl();
             om.read(vri.toString(), null);
