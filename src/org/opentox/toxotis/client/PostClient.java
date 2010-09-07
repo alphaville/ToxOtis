@@ -1,10 +1,7 @@
 package org.opentox.toxotis.client;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -12,45 +9,32 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class PostClient {
-
-    /** Accepted mediatype  */
-    private String mediaType = null;
+public class PostClient extends AbstractClient {
+    
     /** Type of the posted content*/
-    private String contentType = null;
-    /** Target URI */
-    private VRI vri = null;
-    /** Connection to the above URI */
-    private java.net.HttpURLConnection con = null;
+    private String contentType = null;    
     /** Parameters to be posted as application/x-www-form-urlencoded (if any) */
     private Map<String, String> postParameters = new HashMap<String, String>();
-    private static final String MEDIATYPE_FORM_URL_ENCODED = "application/x-www-form-urlencoded";
-    /** Standard UTF-8 Encoding */
-    private static final String URL_ENCODING = "UTF-8";
-    /** Size of a buffer used to download the data from the remote server */
-    private static final int bufferSize = 4194304;
+    
 
     public PostClient() {
+        super();
     }
 
     public PostClient(VRI vri) {
-        this();
+        super();
         this.vri = vri;
-    }
+    }    
 
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
+    public PostClient setMediaType(String mediaType) {
+        this.acceptMediaType = mediaType;
+        return this;
     }
 
     public String getContentType() {
@@ -80,11 +64,7 @@ public class PostClient {
             Logger.getLogger(PostClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return this;
-    }
-
-    public VRI getUri() {
-        return vri;
-    }
+    }    
 
     public PostClient setUri(VRI uri) {
         this.vri = uri;
@@ -115,7 +95,7 @@ public class PostClient {
     }
 
     /** Initialize a connection to the target URI */
-    private java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
+    protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
             java.net.URL dataset_url = uri.toURL();
@@ -126,6 +106,9 @@ public class PostClient {
             con.setUseCaches(false);
             if (contentType != null) {
                 con.setRequestProperty("Content-type", contentType);
+            }
+            if (acceptMediaType!=null){
+                con.setRequestProperty("Accept", acceptMediaType);
             }
             /* If there are some parameters to be posted, then the POST will
              * declare the posted data as application/x-form-urlencoded.
@@ -155,63 +138,5 @@ public class PostClient {
         }
     }
 
-    /** Get the normal stream of the response (body) */
-    public java.io.InputStream getRemoteStream() throws ToxOtisException, java.io.IOException {
-        if (con == null) {
-            con = initializeConnection(vri.toURI());
-        }
-        if (con == null) {
-            throw new ToxOtisException("Comminucation Error with the remote");
-        }
-        if (con.getResponseCode() == 200 || con.getResponseCode() == 202) {
-            return new java.io.BufferedInputStream(con.getInputStream(), bufferSize);
-        } else {
-            return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);
-        }
-    }
-
-    public String getResponseText() throws ToxOtisException {
-        if (con == null) {
-            con = initializeConnection(vri.toURI());
-        }
-        InputStream is = null;
-        BufferedReader reader = null;
-        try {
-            is = getRemoteStream();
-            reader = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuilder sb = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            return new String(sb);
-        } catch (IOException io) {
-            throw new ToxOtisException(io);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
-                }
-            }
-        }
-    }
-
-      public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ToxOtisException {
-        try {
-            com.hp.hpl.jena.ontology.OntModel om = new SimpleOntModelImpl();
-            om.read(getRemoteStream(), null);
-            return om;
-        } catch (final Exception ex) {
-            throw new ToxOtisException("Cannot read OntModel from " + vri.toString(), ex);
-        }
-    }
+         
 }
