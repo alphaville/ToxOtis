@@ -1,5 +1,6 @@
 package org.opentox.toxotis.util.spiders;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
@@ -39,15 +40,15 @@ public abstract class Tarantula<Result> implements Closeable {
 
     public abstract Result parse() throws ToxOtisException;
 
-    protected String retrieveProp(Property prop) {
+    protected TypedValue retrieveProp(Property prop) {
             StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
             if (it.hasNext()) {
                 try {
                     RDFNode node = it.nextStatement().getObject();
                     if(node.isLiteral()){
-                        return (node.as(Literal.class).getString());
+                        return (new TypedValue(node.as(Literal.class).getString(),(XSDDatatype)node.as(Literal.class).getDatatype()));
                     }else if(node.isResource()){
-                        return (node.as(Resource.class).getURI());
+                        return (new TypedValue(node.as(Resource.class).getURI()));
                     }
                 } finally {
                     it.close();
@@ -133,6 +134,10 @@ public abstract class Tarantula<Result> implements Closeable {
         if (model != null) {
             model.close();
         }
+    }
+
+    public OntModel getOntModel(){
+        return model;
     }
 
  

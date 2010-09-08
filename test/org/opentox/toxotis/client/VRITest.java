@@ -4,6 +4,7 @@
  */
 package org.opentox.toxotis.client;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,7 +59,7 @@ public class VRITest {
         assertEquals("a", e.getKey());
         assertEquals("7", e.getValue());
         assertEquals(443, v.getPort());
-        assertEquals("https",v.getProtocol());
+        assertEquals("https", v.getProtocol());
     }
 
     @Test
@@ -90,10 +91,11 @@ public class VRITest {
     }
 
     @Test
-    public void testGetQueryAsString() throws URISyntaxException {
+    public void testGetQueryAsString() throws URISyntaxException, MalformedURLException {
         System.out.println("--. Testing VRI#getQueryAsString()");
-        VRI v = new VRI("http://something.abc:8181/", "a", "100", "b", "100","c");
+        VRI v = new VRI("http://something.abc:8181/", "a", "100", "b", "100", "c");
         assertEquals("a=100&b=100&c=", v.getQueryAsString());
         assertEquals(8181, v.getPort());
+        assertEquals(v.toString(), v.toURI().toURL().toString());
     }
 }

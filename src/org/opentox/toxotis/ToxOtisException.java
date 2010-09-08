@@ -7,20 +7,15 @@ package org.opentox.toxotis;
  */
 public class ToxOtisException extends Exception {
 
-    private ErrorCause cause = null;
-    private String explanation = "Unknown Cause of Exception";
+    private ErrorCause cause = null;    
 
     public ToxOtisException(String string, Exception ex) {
         super(string, ex);
     }
-
+    
     public ErrorCause getCode() {
         return cause;
-    }
-
-    public String getExplanation() {
-        return explanation;
-    }
+    }    
 
     /**
      * Creates a new instance of <code>ToxOtisException</code> without detail message.
@@ -36,7 +31,6 @@ public class ToxOtisException extends Exception {
     public ToxOtisException(ErrorCause cause, String exaplanation) {
         super(cause + " - " + exaplanation);
         this.cause = cause;
-        this.explanation = exaplanation;
     }
 
     public ToxOtisException(ErrorCause cause, Throwable throwable) {
@@ -47,7 +41,6 @@ public class ToxOtisException extends Exception {
     public ToxOtisException(ErrorCause cause, String explanation, Throwable throwable) {
         super(cause + " - " + explanation, throwable);
         this.cause = cause;
-        this.explanation = explanation;
     }
 
     public ToxOtisException(Throwable cause) {
@@ -61,6 +54,6 @@ public class ToxOtisException extends Exception {
 
     @Override
     public String toString() {
-        return "(" + getCode() + ") - " + getExplanation();
+        return "[" + getCause() + "] - " + getMessage();
     }
 }

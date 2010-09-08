@@ -2,6 +2,7 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.util.Iterator;
 import java.util.Set;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -17,7 +18,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Feature extends OTComponent<Feature>{
+public class Feature extends OTComponent<Feature> {
 
     private Set<OntologicalClass> ontologies;
     private String units;
@@ -45,8 +46,6 @@ public class Feature extends OTComponent<Feature>{
     public void setUnits(String units) {
         this.units = units;
     }
-    
-    
 
     @Override
     public Feature createFrom(OntModel model) {
@@ -57,6 +56,32 @@ public class Feature extends OTComponent<Feature>{
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        if (uri != null) {
+            builder.append("URI...\n");
+            builder.append(uri);
+            builder.append("\n\n");
+        }
+        if (meta != null) {
+            builder.append("Meta information....\n");
+            builder.append(meta);
+            builder.append("\n");
+        }
+        if (!ontologies.isEmpty()) {
+            builder.append("Ontological Classes....\n");
+            Iterator<OntologicalClass> i = getOntologies().iterator();
+            while (i.hasNext()) {
+                builder.append(i.next().getUri());
+                builder.append("\n");
+            }
+        }
+        if (units != null && !units.isEmpty()) {
+            builder.append("Units : " + units);
+        }
+
+        return new String(builder);
+    }
 }

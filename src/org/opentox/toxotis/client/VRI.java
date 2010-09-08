@@ -98,7 +98,7 @@ public class VRI { // Well tested!
 
     public java.net.URI toURI() {
         try {
-            return new URI(uri);
+            return new URI(toString());
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
@@ -107,7 +107,11 @@ public class VRI { // Well tested!
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder(uri);
-        string.append(getQueryAsString());
+        String query = getQueryAsString();
+        if (query != null && !query.isEmpty()) {
+            string.append("?");
+            string.append(getQueryAsString());
+        }
         return new String(string);
     }
 
@@ -150,5 +154,14 @@ public class VRI { // Well tested!
             }
         }
         return new String(string);
+    }
+
+    /**
+     * Returns the URI without the query part.
+     * @return
+     *      URI without the query part
+     */
+    public String getStringNoQuery() {
+        return uri;
     }
 }

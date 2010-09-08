@@ -28,17 +28,28 @@ public class MetaInfoSpider extends Tarantula {
     @Override
     public MetaInfo parse() {
         MetaInfo dcmeta = new MetaInfoImpl();
-        dcmeta.setTitle(retrieveProp(DC.title));
-        dcmeta.setCreator(retrieveProp(DC.creator));
-        dcmeta.setDescription(retrieveProp(DC.description));
-        dcmeta.setPublisher(retrieveProp(DC.publisher));
-        dcmeta.setComment(retrieveProp(RDFS.comment));
-        dcmeta.setVersionInfo(retrieveProp(OWL.versionInfo));
-        dcmeta.setHasSource(retrieveProp(org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(model)));
+        TypedValue temp = null;
+        temp = retrieveProp(DC.title);
+        dcmeta.setTitle(temp!=null?temp.getValue():null);
+        temp =retrieveProp(DC.creator);
+        dcmeta.setCreator(temp!=null?temp.getValue():null);
+        temp = retrieveProp(DC.description);
+        dcmeta.setDescription(temp!=null?temp.getValue():null);
+        temp = retrieveProp(DC.publisher);
+        dcmeta.setPublisher(temp!=null?temp.getValue():null);
+        temp = retrieveProp(RDFS.comment);
+        dcmeta.setComment(temp!=null?temp.getValue():null);
+        temp = retrieveProp(OWL.versionInfo);
+        dcmeta.setVersionInfo(temp!=null?temp.getValue():null);
+        temp = retrieveProp(org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(model));
+        dcmeta.setHasSource(temp!=null?temp.getValue():null);
         dcmeta.getContributors().addAll(retrieveProps(DC.contributor));
-        dcmeta.setSameAs(retrieveProp(OWL.sameAs));
-        dcmeta.setSeeAlso(retrieveProp(RDFS.seeAlso));
-        dcmeta.setIdentifier(retrieveProp(DC.identifier));
+        temp = retrieveProp(OWL.sameAs);
+        dcmeta.setSameAs(temp!=null?temp.getValue():null);
+        temp =retrieveProp(RDFS.seeAlso);
+        dcmeta.setSeeAlso(temp!=null?temp.getValue():null);
+        temp = retrieveProp(DC.identifier);
+        dcmeta.setIdentifier(temp!=null?temp.getValue():null);
         //TODO: audiences
         return dcmeta;
     }

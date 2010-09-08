@@ -1,5 +1,7 @@
 package org.opentox.toxotis.ontology;
 
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.Collection;
 
 /**
@@ -60,4 +62,22 @@ public interface MetaInfo extends java.io.Serializable {
     void addContributor(String contributor);
 
     void addAudience(String audience);
+
+    /**
+     * Attaches the meta data to a given resource in an ontological model
+     * returning the updated resource. The provided ontological model is also updated
+     * with the meta data assigned to the given resource.
+     * 
+     * @param resource
+     *      A resource from an ontological model to which meta data are to
+     *      be assigned. The resource provided as input to this method is updated
+     *      according to the metadata and various statements are assigned to it
+     *      concerning the non-null fields of the metadata object to which the method
+     *      is applied.<br/>
+     * @param model
+     *      The ontological model holding the individual provided in this method.
+     * @return
+     *      The updated resource with the metadata.
+     */
+    Resource attachTo(Resource resource, OntModel model);
 }

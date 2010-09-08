@@ -1,6 +1,5 @@
 package org.opentox.toxotis.util.spiders;
 
-import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -58,13 +57,10 @@ public class FeatureSpider extends Tarantula<Feature> {
         feature.setMeta(new MetaInfoSpider(resource, model).parse()); // Parse meta-info
         feature.setUri(uri);
         feature.setOntologies(getFeatureTypes(resource));
-        Statement unitsStatement = resource.getProperty(
-                OTDatatypeProperties.units().asDatatypeProperty(model));
+        Statement unitsStatement = resource.getProperty(OTDatatypeProperties.units().asDatatypeProperty(model));
         if (unitsStatement != null) {
-            feature.setUnits(unitsStatement.getString());
-            
+            feature.setUnits(unitsStatement.getString());            
         }
-
         return feature;
     }
    
