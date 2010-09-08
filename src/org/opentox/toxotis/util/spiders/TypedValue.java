@@ -1,22 +1,24 @@
 package org.opentox.toxotis.util.spiders;
 
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 
 /**
- * A simple wrapper for a value (String) and its datatype according to the XSD
+ * A simple wrapper for a value (usually String) and its datatype according to the XSD
  * specidcation (find online documentation at <a href="http://infohost.nmt.edu/tcc/help/pubs/rnc/xsd.html">RNC</a>
  * and the complete specification at the <a href="http://www.w3.org/TR/xmlschema11-2/">
  * W3C web page</a>.
  *
+ * @param <T> Generic for the (Java) datatype of the value
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class TypedValue {
+public class TypedValue<T> {
 
     /** The value */
-    private final String value;
+    private final T value;
     /** XSD datatype for the value */
-    private final XSDDatatype type;
+    private XSDDatatype type;
 
     /**
      * Create a new typed value
@@ -25,20 +27,20 @@ public class TypedValue {
      * @param type
      *      Datatype for the value
      */
-    public TypedValue(final String value, final XSDDatatype type) {
+    public TypedValue(final T value, final XSDDatatype type) {
         this.value = value;
         this.type = type;
     }
 
     /**
      * Create a Typed value with no explicit type declaration. The type will be
-     * set to {@link XSDDatatype#XSDstring xsd:string}.
+     * specified by the type mapper according to the Java generic <code>T</code>.
      * @param value
      *      The value
      */
-    public TypedValue(final String value) {
+    public TypedValue(final T value) {
         this.value = value;
-        this.type = XSDDatatype.XSDstring;
+        this.type = (XSDDatatype)TypeMapper.getInstance().getTypeByClass(value.getClass());
     }
 
     /**
@@ -55,11 +57,12 @@ public class TypedValue {
      * @return
      *      The value itself
      */
-    public String getValue() {
+    public T getValue() {
         return value;
     }
 
-    
-
-
+    @Override
+    public String toString() {
+        return getValue() + "^^" + getType().getURI();
+    }
 }

@@ -1,5 +1,6 @@
 package org.opentox.toxotis.util.spiders;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.opentox.toxotis.core.Parameter;
@@ -25,8 +26,7 @@ public class ParameterSpider extends Tarantula<Parameter> {
         parameter.setScope(
                 Parameter.ParameterScope.valueOf(scope));
         TypedValue paramTypedValue =retrieveProp(OTDatatypeProperties.paramValue().asDatatypeProperty(model));
-        parameter.setValue(paramTypedValue.getValue());
-        parameter.setType(paramTypedValue.getType());
+        parameter.setTypedValue(paramTypedValue);
 
         MetaInfoSpider metaSpider = new MetaInfoSpider(resource, model);
         MetaInfo mi = metaSpider.parse();

@@ -7,7 +7,8 @@ package org.opentox.toxotis;
  */
 public enum ErrorCause implements java.io.Serializable{
 
-    AlgorithmNotFoundInCache,
+    //TODO: Update this list, maybe remove some...
+    AlgorithmNotFoundInCache,   
     AuthenticationFailed,
     AuthorNotProvided,    
     BibTexNotFoundInDatabase,

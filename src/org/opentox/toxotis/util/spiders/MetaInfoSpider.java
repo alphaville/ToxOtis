@@ -28,7 +28,7 @@ public class MetaInfoSpider extends Tarantula {
     @Override
     public MetaInfo parse() {
         MetaInfo dcmeta = new MetaInfoImpl();
-        TypedValue temp = null;
+        TypedValue<String> temp = null;
         temp = retrieveProp(DC.title);
         dcmeta.setTitle(temp!=null?temp.getValue():null);
         temp =retrieveProp(DC.creator);

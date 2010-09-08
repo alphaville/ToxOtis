@@ -7,33 +7,30 @@ import com.hp.hpl.jena.vocabulary.DC;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.util.spiders.TypedValue;
 
 /**
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Parameter<T> extends OTComponent<Parameter<T>>{
+public class Parameter<T> extends OTComponent<Parameter<T>> {
 
     public enum ParameterScope {
 
         OPTIONAL,
         MANDATORY;
     };
-
     /** The name of the parameter*/
     private String name;
-    /** The type of the parameter according to the XSD specification */
-    private XSDDatatype type;
-    /** The parameter's value cast as the generic datatype <code>T</code>.*/
-    private T value;
+    /** Typed value for the parameter */
+    private TypedValue<T> typedValue;
     /** The scope of the parameter (mandatory/optional)*/
     private ParameterScope scope;
 
-
     public Parameter() {
         super();
-    }    
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ParameterScope getScope() {
@@ -45,19 +42,19 @@ public class Parameter<T> extends OTComponent<Parameter<T>>{
     }
 
     public XSDDatatype getType() {
-        return type;
-    }
-
-    public void setType(XSDDatatype type) {
-        this.type = type;
+        return this.typedValue.getType();
     }
 
     public T getValue() {
-        return value;
+        return typedValue.getValue();
     }
 
-    public void setValue(T value) {
-        this.value = value;
+    public void setTypedValue(TypedValue<T> value) {
+        this.typedValue = value;
+    }
+
+    public TypedValue<T> getTypedValue() {
+        return typedValue;
     }
 
     public String getName() {
@@ -67,7 +64,6 @@ public class Parameter<T> extends OTComponent<Parameter<T>>{
     public void setName(String name) {
         this.name = name;
     }// </editor-fold>
-
 
     @Override
     public Parameter<T> createFrom(OntModel model) {
@@ -127,15 +123,13 @@ public class Parameter<T> extends OTComponent<Parameter<T>>{
         builder.append(name);
         builder.append("\n");
         builder.append("Value : ");
-        builder.append(value);
+        builder.append(typedValue.getValue());
         builder.append("\n");
         builder.append("Scope : ");
         builder.append(scope);
         builder.append("\n");
         builder.append("Type  : ");
-        builder.append(type);
+        builder.append(typedValue.getType());
         return new String(builder);
     }
-
-    
 }

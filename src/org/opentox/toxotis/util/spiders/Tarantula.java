@@ -40,15 +40,15 @@ public abstract class Tarantula<Result> implements Closeable {
 
     public abstract Result parse() throws ToxOtisException;
 
-    protected TypedValue retrieveProp(Property prop) {
+    protected TypedValue<String> retrieveProp(Property prop) {
             StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
             if (it.hasNext()) {
                 try {
                     RDFNode node = it.nextStatement().getObject();
                     if(node.isLiteral()){
-                        return (new TypedValue(node.as(Literal.class).getString(),(XSDDatatype)node.as(Literal.class).getDatatype()));
+                        return (new TypedValue<String>(node.as(Literal.class).getString(),(XSDDatatype)node.as(Literal.class).getDatatype()));
                     }else if(node.isResource()){
-                        return (new TypedValue(node.as(Resource.class).getURI()));
+                        return (new TypedValue<String>(node.as(Resource.class).getURI()));
                     }
                 } finally {
                     it.close();
