@@ -50,7 +50,7 @@ All operations will be combined with auth/auth API of OpenTox
 h3. 1.2. Attributes for each component
 
 Every component is uniquely identified by its URI (Consider using java.net.URI for that purpose). Also every component must have a set of meta-information describing it (DC and OT). Where necessary there should be a link to a BibTeX resource.
-Each component needs a method to be transformed into an Ontological Model (OntModel) and of course a method for the inverse process (Parsing a given Ontological Model into a component). These methods can be bundled in an Interface called RDFable: <tt>OntModel createOntModel()</tt> and <tt>void createFromRDF(OntModel)</tt>.
+Each component needs a method to be transformed into an Ontological Model (OntModel) and of course a method for the inverse process (Parsing a given Ontological Model into a component). These methods can be bundled in an Interface called RDFable: <tt>OntModel createOntModel()</tt> and <tt>void createFromRDF(OntModel)</tt>. The use of parsing utilities will facilitate the construction of components from remote resources or files. Where necessary, there should be a list of formal data types for an OpenTox component, refering to an ontological class for which the component into consideration is an instance. For example, a feature can be an instance of ot:NumericFeature etc.
 
 h4. 1.2.1. Compound/Conformer:
 

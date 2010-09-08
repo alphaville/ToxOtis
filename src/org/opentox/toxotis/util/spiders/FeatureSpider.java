@@ -30,7 +30,6 @@ public class FeatureSpider extends Tarantula<Feature> {
         client.setUri(uri);
         model = client.getResponseOntModel();
         resource = model.getResource(uri.toString());
-        model.write(System.out);
     }
 
     public FeatureSpider(Resource resource, OntModel model) {
@@ -56,27 +55,17 @@ public class FeatureSpider extends Tarantula<Feature> {
     @Override
     public Feature parse() {
         Feature feature = new Feature();
-        feature.setMeta(new MetaInfoSpider(resource, model).parse());
+        feature.setMeta(new MetaInfoSpider(resource, model).parse()); // Parse meta-info
         feature.setUri(uri);
-
-        //feature.setOntologies(getFeatureTypes(resource));
-
+        feature.setOntologies(getFeatureTypes(resource));
         Statement unitsStatement = resource.getProperty(
                 OTDatatypeProperties.units().asDatatypeProperty(model));
         if (unitsStatement != null) {
-            //feature.setUnits(unitsStatement.getString());
-            System.out.println(unitsStatement.getString());
+            feature.setUnits(unitsStatement.getString());
+            
         }
 
         return feature;
     }
-
-    public static void main(String... args) throws Exception {
-
-        FeatureSpider fSpider = new FeatureSpider(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/22202"));
-        Feature f = fSpider.parse();
-        fSpider.model.write(System.out);
-        System.out.println(f.getMeta().getTitle());
-
-    }
+   
 }

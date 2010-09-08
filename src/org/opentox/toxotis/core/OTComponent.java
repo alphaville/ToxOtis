@@ -6,6 +6,8 @@ import java.net.URISyntaxException;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**
@@ -16,6 +18,7 @@ import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 public abstract class OTComponent<T extends OTComponent> {
 
     protected VRI uri;
+    protected MetaInfo meta = new MetaInfoImpl();
 
     /**
      * Constructor for an empty OpenTox Component
@@ -26,6 +29,25 @@ public abstract class OTComponent<T extends OTComponent> {
     public OTComponent(VRI uri) {
         this.uri = uri;
     }
+
+    /**
+     * Obtain meta information about the underlying OpenTox resource/component.
+     * These meta information include various fields of the Dublin Core ontology
+     * (title, identifier), properties from the OpenTox ontology (see
+     * http://opentox.org/data/documents/development/RDF%20Files/OpenToxOntology)
+     * and some elements from other ontologies like rdfs:comment
+     * @return
+     *      Meta information about the resource
+     */
+    public MetaInfo getMeta() {
+        return meta;
+    }
+
+    public T setMeta(MetaInfo meta){
+        this.meta = meta;
+        return (T) this;
+    }
+
 
     /**
      * Parses a given ontological model and returns an instance of the underlying

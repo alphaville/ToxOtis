@@ -2,27 +2,51 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import org.opentox.toxotis.ontology.MetaInfo;
+import java.util.Set;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.OntologicalClass;
 
 /**
+ * A Feature is an object,representing any kind of property, assigned to a
+ * Compound. The feature types are determined via their links to ontologies
+ * (Feature ontologies, Decsriptor ontologies, Endpoints ontologies). OpenTox
+ * has established an ontology for biological/toxicological and chemical features
+ * that is <a href="http://opentox.org/dev/apis/api-1.1/feature_ontology">
+ * available online</a>.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public class Feature extends OTComponent<Feature>{
 
-    private MetaInfo meta;
+    private Set<OntologicalClass> ontologies;
+    private String units;
 
     public Feature() {
+        super();
     }
 
-    public MetaInfo getMeta() {
-        return meta;
+    public Feature(VRI uri) {
+        super(uri);
     }
 
-    public void setMeta(MetaInfo meta) {
-        this.meta = meta;
+    public Set<OntologicalClass> getOntologies() {
+        return ontologies;
     }
+
+    public void setOntologies(Set<OntologicalClass> ontologies) {
+        this.ontologies = ontologies;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
+    
+    
 
     @Override
     public Feature createFrom(OntModel model) {

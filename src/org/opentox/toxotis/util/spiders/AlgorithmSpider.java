@@ -13,7 +13,6 @@ import org.opentox.toxotis.core.AuthenticationToken;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
-
 /**
  *
  * @author Charalampos Chomenides
@@ -26,13 +25,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
 
     public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
         super();
-        this.token = token;
-        this.uri = uri;
-        GetClient client = new GetClient();
-        client.setMediaType("application/rdf+xml");
-        client.setUri(uri);
-        model = client.getResponseOntModel();
-        resource = model.getResource(uri.toString());
+        //TODO: Implement this one!
     }
 
     public AlgorithmSpider(VRI uri) throws ToxOtisException {
@@ -49,20 +42,16 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
     public Algorithm parse() {
         Algorithm algorithm = new Algorithm(uri);
         algorithm.setOntologies(getOTATypes(resource));
-
         MetaInfoSpider metaSpider = new MetaInfoSpider(model, uri.toString());
         algorithm.setMeta(metaSpider.parse());
-
         StmtIterator itParam = model.listStatements(
                 new SimpleSelector(resource,
                 OTObjectProperties.parameters().asObjectProperty(model),
                 (RDFNode) null));
-
         while (itParam.hasNext()) {
             ParameterSpider paramSpider = new ParameterSpider(model, itParam.nextStatement().getObject().as(Resource.class));
             algorithm.getParameters().add(paramSpider.parse());
         }
-
         return algorithm;
 
     }
@@ -71,12 +60,10 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
         AlgorithmSpider spider = null;
         spider = new AlgorithmSpider(new VRI("http://opentox.ntua.gr:3000/algorithm/filter"));
         Algorithm a = spider.parse();
-        System.out.println(a.getMeta().getTitle());        
+        System.out.println(a.getMeta().getTitle());
         for (OntologicalClass oc : a.getOntologies()) {
             System.out.println(oc.getName());
         }
 
     }
-
-    
 }
