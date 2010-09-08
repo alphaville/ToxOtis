@@ -4,9 +4,12 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.DC;
+import java.net.URISyntaxException;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.util.spiders.TypedValue;
 
 /**
@@ -63,6 +66,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
 
     public void setName(String name) {
         this.name = name;
+        this.meta.setComment(name);
     }// </editor-fold>
 
     @Override
@@ -72,31 +76,11 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
 
     @Override
     public Individual asIndividual(OntModel model) {
+
         Individual indiv = model.createIndividual(getUri().toString(), OTClasses.Parameter().inModel(model));
         MetaInfo metaInfo = getMeta();
-        if (metaInfo != null) {
-            // rdfs:comment
-            String comment = metaInfo.getComment();
-            if (comment != null) {
-                indiv.addComment(model.createTypedLiteral(comment, XSDDatatype.XSDstring));
-            }
-
-            // dc:description
-            String description = metaInfo.getDescription();
-            if (description != null) {
-                indiv.addProperty(model.createAnnotationProperty(DC.description.getURI()),
-                        model.createTypedLiteral(description, XSDDatatype.XSDstring));
-            }
-
-            // dc:title
-            String title = metaInfo.getDescription();
-            if (title != null) {
-                indiv.addProperty(model.createAnnotationProperty(DC.title.getURI()),
-                        model.createTypedLiteral(title, XSDDatatype.XSDstring));
-            }
-
-        }
-
+        metaInfo.attachTo(indiv, model);
+        
         // scope
         if (getScope() != null) {
             indiv.addLiteral(OTDatatypeProperties.paramScope().asDatatypeProperty(model),
@@ -132,4 +116,5 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         builder.append(typedValue.getType());
         return new String(builder);
     }
+    
 }

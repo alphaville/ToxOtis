@@ -1,6 +1,5 @@
 package org.opentox.toxotis.util.spiders;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.opentox.toxotis.core.Parameter;

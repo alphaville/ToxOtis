@@ -26,6 +26,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
 
     public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
         super();
+        this.token = token;
         //TODO: Implement this one!
     }
 
@@ -44,6 +45,12 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
             if (status == 403) {
                 throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + uri+"'");
             }
+            if (status == 401) {
+                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + uri+"'");
+            }
+            if (status == 404) {
+                throw new ToxOtisException(ErrorCause.AlgorithmNotFound, "The following algorithm was not found : '" + uri+"'");
+            }
             if (status != 200) {
                 throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + uri+"'");
             }
@@ -55,12 +62,15 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
     }
 
     @Override
-    public Algorithm parse() {
+    public Algorithm parse() throws ToxOtisException {
         Algorithm algorithm = null;
         try {
             algorithm = new Algorithm(uri.getStringNoQuery());
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
+        }
+        if (algorithm == null){
+            throw new ToxOtisException("Make sure that the URI you provided holds a valid representation of an OpenTox algorithm.");
         }
         algorithm.setOntologies(getOTATypes(resource));
         MetaInfoSpider metaSpider = new MetaInfoSpider(model, uri.getStringNoQuery());

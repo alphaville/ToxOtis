@@ -10,7 +10,7 @@ import org.opentox.toxotis.ToxOtisException;
  */
 public class GetClient extends AbstractClient {
 
-            
+    public static final String METHOD = "GET";
 
     /** Create a new instance of GetClient */
     public GetClient() {
@@ -26,8 +26,9 @@ public class GetClient extends AbstractClient {
             con.setDoInput(true);
             con.setDoOutput(true);
             con.setUseCaches(false);
+            con.setRequestMethod(METHOD);
             if (acceptMediaType != null) {
-                con.setRequestProperty("Accept", acceptMediaType);
+                con.setRequestProperty(ACCEPT_HEADER, acceptMediaType);
             }
             return con;
         } catch (final Exception ex) {

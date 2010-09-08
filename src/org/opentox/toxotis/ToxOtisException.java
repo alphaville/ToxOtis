@@ -54,6 +54,13 @@ public class ToxOtisException extends Exception {
 
     @Override
     public String toString() {
-        return "[" + getCause() + "] - " + getMessage();
+        StringBuilder builder = new StringBuilder();
+        if (getCause()!=null){
+            builder.append("[");
+            builder.append(getCause());
+            builder.append("] - ");
+        }
+        builder.append(getMessage());
+        return new String(builder);
     }
 }

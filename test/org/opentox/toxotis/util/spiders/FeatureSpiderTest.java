@@ -39,7 +39,7 @@ public class FeatureSpiderTest {
     }
 
     @Test
-    public void testSomeMethod() throws URISyntaxException, ToxOtisException {
+    public void testParseFeature() throws URISyntaxException, ToxOtisException {
         final String featureUri = "http://apps.ideaconsult.net:8080/ambit2/feature/22204";
         System.out.println("Feature : " + featureUri);
         FeatureSpider fSpider = new FeatureSpider(new VRI(featureUri));
