@@ -13,6 +13,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.core.Dataset;
 import static org.junit.Assert.*;
 
 /**
@@ -97,5 +98,13 @@ public class VRITest {
         assertEquals("a=100&b=100&c=", v.getQueryAsString());
         assertEquals(8181, v.getPort());
         assertEquals(v.toString(), v.toURI().toURL().toString());
+    }
+
+    @Test
+    public void testVriClass() throws URISyntaxException {
+        System.out.println("--. Testing VRI#getOpenToxType()");
+        String uri = "http://opentox.ntua.gr:3000/query/compound/Phenol/all";
+        VRI vri = new VRI(uri);
+        assertEquals(Dataset.class, vri.getOpenToxType());
     }
 }
