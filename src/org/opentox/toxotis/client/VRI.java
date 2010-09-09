@@ -4,9 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
+import org.opentox.toxotis.core.*;
 
 /**
  * VRI is an alternative to URI. Being <code>final</code>, the class <code>java.net.URI</code>
@@ -24,6 +28,46 @@ public class VRI { // Well tested!
     private Map<String, String> urlParams = new LinkedHashMap<String, String>();
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
+    private static final String END_SLASH_orNothing = "([^/]+/$|[^/]+)$";
+
+    private enum OpenToxRegEx {
+
+        COMPOUND(Compound.class, ".+/(?i)compound(s||)/" + END_SLASH_orNothing),
+        CONFORMER(Conformer.class, ".+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_orNothing),
+        FEATURE(Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_orNothing),
+        DATASET(Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_orNothing,
+        ".+/(?i)query/(?i)compound/.+/" + END_SLASH_orNothing),
+        ALGORITHM(Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_orNothing),
+        BIBTEX(BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_orNothing),
+        MODEL(Model.class, ".+/(?i)model(s||)/" + END_SLASH_orNothing),
+        TASK(Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing);
+        
+        private Set<String> regexp = new HashSet<String>();
+        private Class<?> clazz;
+
+        private OpenToxRegEx(Class<?> claz, String... regexp) {
+            Collections.addAll(this.regexp, regexp);
+            this.clazz = claz;
+        }
+
+        public Set<String> getRegexp() {
+            return regexp;
+        }
+
+        public Class<?> getClazz() {
+            return clazz;
+        }
+    }
+
+    private static boolean match(VRI vri, OpenToxRegEx otreg) {
+        String noQuery = vri.getStringNoQuery();
+        for (String re : otreg.getRegexp()) {
+            if (noQuery.matches(re)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Construct a new VRI providing its String representation. Parameters are parsed
@@ -156,6 +200,26 @@ public class VRI { // Well tested!
         return new String(string);
     }
 
+    public Class<?> getOpenToxType() {
+        OpenToxRegEx[] reg = OpenToxRegEx.values();
+        for (OpenToxRegEx r : reg) {
+            if (match(this, r)) {
+                if (r.equals(OpenToxRegEx.COMPOUND)) {
+                    if (getUrlParams().isEmpty()) {
+                        return r.getClazz();
+                    }
+                } else {
+                    return r.getClazz();
+                }
+            }
+        }
+        return null;
+    }
+
+    public VRI getServiceBaseUri() {
+        return null;
+    }
+
     /**
      * Returns the URI without the query part.
      * @return
@@ -163,5 +227,14 @@ public class VRI { // Well tested!
      */
     public String getStringNoQuery() {
         return uri;
+    }
+
+    public static void main(String... art) throws URISyntaxException {
+        String uri = "http://opentox.ntua.gr:3000/query/compound/Phenol/all";
+        VRI vri = new VRI(uri);
+        System.out.println(match(vri, OpenToxRegEx.CONFORMER));
+        System.out.println(vri.getOpenToxType());
+
+
     }
 }
