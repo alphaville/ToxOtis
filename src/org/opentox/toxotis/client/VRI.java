@@ -28,6 +28,27 @@ public class VRI { // Well tested!
     private Map<String, String> urlParams = new LinkedHashMap<String, String>();
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
+
+    private enum UriKeywords {
+
+        Dataset("dataset"),
+        Compound("compound"),
+        Feature("feature"),
+        Algorithm("algorithm"),
+        Task("task"),
+        BibTex("bibtex"),
+        Model("model"),
+        Query("query");
+        private final String keyword;
+
+        private UriKeywords(final String keyword) {
+            this.keyword = keyword;
+        }
+
+        public String getKeyword() {
+            return keyword;
+        }
+    }
     private static final String END_SLASH_orNothing = "([^/]+/$|[^/]+)$";
 
     /**
@@ -36,8 +57,8 @@ public class VRI { // Well tested!
      */
     private enum OpenToxRegEx {
 
-        COMPOUND(Compound.class, ".+/(?i)compound(s||)/" + END_SLASH_orNothing),
-        CONFORMER(Conformer.class, ".+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_orNothing),
+        COMPOUND(Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_orNothing),
+        CONFORMER(Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_orNothing),
         FEATURE(Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_orNothing),
         DATASET(Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_orNothing,
         ".+/(?i)query/(?i)compound/.+/" + END_SLASH_orNothing),
@@ -45,18 +66,17 @@ public class VRI { // Well tested!
         BIBTEX(BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_orNothing),
         MODEL(Model.class, ".+/(?i)model(s||)/" + END_SLASH_orNothing),
         TASK(Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing);
-
         /**
          * Set of regular expressions that identify a
          * certain resource.
          */
-        private Set<String> regexp = new HashSet<String>();
+        private final Set<String> regexp = new HashSet<String>();
         /**
          * The Java class that corresponds to the OpenTox resource
          */
-        private Class<?> clazz;
+        private final Class<?> clazz;
 
-        private OpenToxRegEx(Class<?> claz, String... regexp) {
+        private OpenToxRegEx(final Class<?> claz, final String... regexp) {
             Collections.addAll(this.regexp, regexp);
             this.clazz = claz;
         }
@@ -176,11 +196,25 @@ public class VRI { // Well tested!
         return urlParams;
     }
 
+    /**
+     * Add a URL parameter
+     * @param paramName
+     *      The name of the parameter
+     * @param paramValue
+     *      The value for the parameter
+     * @return
+     *      The updated VRI on which the method is applied.
+     */
     public VRI addUrlParameter(String paramName, String paramValue) {
         urlParams.put(paramName, paramValue);
         return this;
     }
 
+    /**
+     * Converts the VRI object into the corresponding <code>java.net.URI</code>
+     * @return
+     *      Corresponding URI
+     */
     public java.net.URI toURI() {
         try {
             return new URI(toString());
@@ -200,6 +234,11 @@ public class VRI { // Well tested!
         return new String(string);
     }
 
+    /**
+     * Returns the protocol of the URI (HTTP, HTTPS, etc)
+     * @return
+     *      Protocol as a string
+     */
     public String getProtocol() {
         if (uri.contains("://")) {
             return uri.split(Pattern.quote("://"))[0];
@@ -247,6 +286,21 @@ public class VRI { // Well tested!
     }
 
     /**
+     * Returns the regular expression pattern that matches this URI.
+     * @return
+     *      Instance of {@link OpenToxRegEx } or <code>null</code> if it doess not
+     *      match any reg. exp.
+     */
+    private OpenToxRegEx getMatchingRegEx() {
+        for (OpenToxRegEx x : OpenToxRegEx.values()) {
+            if (match(this, x)) {
+                return x;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns a Java class that best fits the pattern matched by this URI. For
      * example the URI <code>http://someserver.com:9876/OpenTox/query/compound/phenol/smiles</code>
      * will return the class <code>org.opentox.toxotis.core.Dataset</code>
@@ -256,17 +310,16 @@ public class VRI { // Well tested!
      * @see Dataset
      */
     public Class<?> getOpenToxType() {
-        OpenToxRegEx[] reg = OpenToxRegEx.values();
-        for (OpenToxRegEx r : reg) {
-            if (match(this, r)) {
-                if (r.equals(OpenToxRegEx.COMPOUND)) {
-                    if (getUrlParams().isEmpty()) {
-                        return r.getClazz();
-                    }
-                } else {
-                    return r.getClazz();
-                }
+        OpenToxRegEx rex = getMatchingRegEx();
+        if (rex == null) {
+            return null;
+        }
+        if (rex == OpenToxRegEx.COMPOUND || rex == OpenToxRegEx.CONFORMER) {
+            if (getQueryAsString() == null || (getQueryAsString() != null && getQueryAsString().isEmpty())) {
+                return rex.getClazz();
             }
+        } else {
+            return rex.getClazz();
         }
         return null;
     }
@@ -276,7 +329,24 @@ public class VRI { // Well tested!
      * @return
      */
     public VRI getServiceBaseUri() {
-        throw new UnsupportedOperationException();
+        String noQuery = getStringNoQuery();
+        String fragment;
+        for (UriKeywords key : UriKeywords.values()) {
+            fragment = key.getKeyword();
+            if (noQuery.contains(fragment)) {
+                try {
+                    if (fragment.equals(UriKeywords.Compound.getKeyword())) {
+                        if (noQuery.contains("/query/compound")) {
+                            return new VRI(noQuery.split("/query/compound")[0]);
+                        }
+                    }
+                    return new VRI(noQuery.split("/" + fragment)[0]);
+                } catch (URISyntaxException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -287,5 +357,4 @@ public class VRI { // Well tested!
     public String getStringNoQuery() {
         return uri;
     }
-
 }
