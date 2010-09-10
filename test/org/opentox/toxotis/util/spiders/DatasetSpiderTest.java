@@ -38,6 +38,7 @@ public class DatasetSpiderTest {
 
     @Test
     public void testDataset() throws URISyntaxException, ToxOtisException {
+        
         DatasetSpider spider = new DatasetSpider(
                 new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/6"));
              //   new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/999/conformer/999"));
