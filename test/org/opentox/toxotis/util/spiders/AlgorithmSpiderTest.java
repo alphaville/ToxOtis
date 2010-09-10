@@ -47,7 +47,6 @@ public class AlgorithmSpiderTest {
                     "username", "Sopasakis", "password", "secret")); // << This is not my password of course!
             Algorithm a = spider.parse();
             System.out.println(a.getMeta());
-
             Iterator<Parameter> param = a.getParameters().iterator();
             while (param.hasNext()) {
                 System.out.println(param.next());

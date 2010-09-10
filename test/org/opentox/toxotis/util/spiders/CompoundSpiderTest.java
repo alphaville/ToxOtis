@@ -44,5 +44,4 @@ public class CompoundSpiderTest {
         System.out.println(c.getUri());
 
     }
-
 }

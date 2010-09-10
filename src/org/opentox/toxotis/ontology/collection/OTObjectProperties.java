@@ -12,6 +12,7 @@ public class OTObjectProperties {
     private OTObjectProperties() {
     }
     private static OTObjectProperty ms_compound;
+    private static OTObjectProperty ms_conformer;
     private static OTObjectProperty ms_dataEntry;
     private static OTObjectProperty ms_feature;
     private static OTObjectProperty ms_model;
@@ -68,6 +69,16 @@ public class OTObjectProperties {
             ms_compound = property;
         }
         return ms_compound;
+    }
+
+    public static OTObjectProperty conformer() {
+        if (ms_conformer == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("conformer");
+            property.getDomain().add(OTClasses.Compound());
+            property.getRange().add(OTClasses.Conformer());
+            ms_conformer = property;
+        }
+        return ms_conformer;
     }
 
     public static OTObjectProperty dataEntry() {
