@@ -77,8 +77,11 @@ public class CompoundSpider extends Tarantula<Compound>{
         model = getConformers.getResponseOntModel();
         resource = model.getResource(conformersUri);
 
+        
+
         ArrayList<Conformer> conformers = new ArrayList<Conformer>();
         Dataset conformersDS = new DatasetSpider(resource, model).parse();
+        System.out.println(conformersDS.getDataEntries());
         for(DataEntry dataEntry : conformersDS.getDataEntries()){
             conformers.add(dataEntry.getConformer());
         }

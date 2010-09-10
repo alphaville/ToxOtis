@@ -71,6 +71,7 @@ public class DatasetSpider extends Tarantula<Dataset>{
             DataEntrySpider dataEntrySpider = new DataEntrySpider(entryResource, model);
             dataEntries.add(dataEntrySpider.parse());
         }
+        dataset.setDataEntries(dataEntries);
         return dataset;
     }
 
