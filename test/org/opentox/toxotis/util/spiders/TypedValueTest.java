@@ -1,6 +1,7 @@
 package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import java.util.Date;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,15 +37,16 @@ public class TypedValueTest {
     @Test
     public void testTypeCasting() {
         TypedValue<Integer> f = new TypedValue<Integer>(new Integer(1));
-        assertEquals(XSDDatatype.XSDint,f.getType());
+        assertEquals(XSDDatatype.XSDint, f.getType());
         f = new TypedValue(new Integer(1));
-        assertEquals(XSDDatatype.XSDint,f.getType());
+        assertEquals(XSDDatatype.XSDint, f.getType());
         f = new TypedValue(1.4353);
-        assertEquals(XSDDatatype.XSDdouble,f.getType());
+        assertEquals(XSDDatatype.XSDdouble, f.getType());
         f = new TypedValue(1.4353f);
-        assertEquals(XSDDatatype.XSDfloat,f.getType());
+        assertEquals(XSDDatatype.XSDfloat, f.getType());
         f = new TypedValue("haha");
-        assertEquals(XSDDatatype.XSDstring,f.getType());
+        assertEquals(XSDDatatype.XSDstring, f.getType());
+        f = new TypedValue(new Date(System.currentTimeMillis()));
+        assertEquals(XSDDatatype.XSDdateTime, f.getType());
     }
-
 }

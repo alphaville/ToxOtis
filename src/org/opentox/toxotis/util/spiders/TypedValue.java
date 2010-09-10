@@ -40,7 +40,11 @@ public class TypedValue<T> {
      */
     public TypedValue(final T value) {
         this.value = value;
-        this.type = (XSDDatatype)TypeMapper.getInstance().getTypeByClass(value.getClass());
+        if (value.getClass().equals(java.util.Date.class)) {
+            this.type = XSDDatatype.XSDdateTime; // << According to the OpenTox API dc:date should be xsd:datetime
+        } else {
+            this.type = (XSDDatatype) TypeMapper.getInstance().getTypeByClass(value.getClass());
+        }
     }
 
     /**
