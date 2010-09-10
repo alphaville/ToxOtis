@@ -99,6 +99,7 @@ public class VRITest {
 
     @Test
     public void testVriClass() throws URISyntaxException {
+        //TODO:  More testing needed
         System.out.println("--. Testing VRI#getOpenToxType()");
         String uri = "http://opentox.ntua.gr:3000/query/compound/Phenol/all";
         VRI vri = new VRI(uri);
@@ -110,7 +111,7 @@ public class VRITest {
         System.out.println("--. Testing VRI#getServiceBaseUri()");
         String baseUri = "http://ambit.uni-plovdiv.bg:8080/ambit2%s";
 
-        String uri = String.format(baseUri, "/query/compound/50-00-0/all", "tokenid", "LGL5EJETIJFLKJ2095TOEGD");
+        String uri = String.format(baseUri, "/query/compound/50-00-0/all", "tokenid", "LGL5EJETIJFLKJ2095TOEGD"); // << Dataset
         VRI vri = new VRI(uri);
         assertEquals(String.format(baseUri, ""), vri.getServiceBaseUri().getStringNoQuery());
         assertEquals(Dataset.class, vri.getOpenToxType());
@@ -120,19 +121,19 @@ public class VRITest {
         assertEquals(String.format(baseUri, ""), vri.getServiceBaseUri().getStringNoQuery());
         assertNull(vri.getOpenToxType());
 
-        uri = String.format(baseUri, "/compound/4234", "tokenid", "LGL5EJETIJFLKJ2095TOEGD");
+        uri = String.format(baseUri, "/compound/4234", "tokenid", "LGL5EJETIJFLKJ2095TOEGD"); // << Compound
         vri = new VRI(uri);
         assertEquals(String.format(baseUri, ""), vri.getServiceBaseUri().getStringNoQuery());
         assertEquals(Compound.class, vri.getOpenToxType());
 
-        uri = String.format(baseUri, "/compound/4234/whatever", "tokenid", "LGL5EJETIJFLKJ2095TOEGD");
+        uri = String.format(baseUri, "/compound/4234/whatever", "tokenid", "LGL5EJETIJFLKJ2095TOEGD"); // << Not in a category
         vri = new VRI(uri);
         assertEquals(String.format(baseUri, ""), vri.getServiceBaseUri().getStringNoQuery());
         assertNull(vri.getOpenToxType());
         assertNull(new VRI("http://www.whatever.jk:9090/server").getOpenToxType());
 
-        uri = String.format(baseUri, "/compound/234/feature/1", "tokenid", "LGL5EJETIJFLKJ2095TOEGD");
+        uri = String.format(baseUri, "/whatever/feature/1", "tokenid", "LGL5EJETIJFLKJ2095TOEGD"); // << Feature
         vri = new VRI(uri);
-        System.out.println(vri.getOpenToxType());
+        assertEquals(String.format(baseUri, "/whatever"),vri.getServiceBaseUri().getStringNoQuery());
     }
 }
