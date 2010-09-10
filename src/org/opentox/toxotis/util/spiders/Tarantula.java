@@ -12,9 +12,15 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.Closeable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTAlgorithmTypes;
@@ -40,20 +46,32 @@ public abstract class Tarantula<Result> implements Closeable {
 
     public abstract Result parse() throws ToxOtisException;
 
-    protected TypedValue<String> retrieveProp(Property prop) {
-            StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
-            if (it.hasNext()) {
-                try {
-                    RDFNode node = it.nextStatement().getObject();
-                    if(node.isLiteral()){
-                        return (new TypedValue<String>(node.as(Literal.class).getString(),(XSDDatatype)node.as(Literal.class).getDatatype()));
-                    }else if(node.isResource()){
-                        return (new TypedValue<String>(node.as(Resource.class).getURI()));
+    protected TypedValue retrieveProp(Property prop) {
+        StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
+        if (it.hasNext()) {
+            try {
+                RDFNode node = it.nextStatement().getObject();
+                if (node.isLiteral()) {
+                    XSDDatatype datatype = (XSDDatatype) node.as(Literal.class).getDatatype();
+                    String stringVal = node.as(Literal.class).getString();
+                    if (datatype.equals(XSDDatatype.XSDdateTime)) {
+                        DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+                        try {
+                            Date date = (Date) formatter.parse(stringVal);
+                            return (new TypedValue<Date>(date, datatype));
+                        } catch (ParseException ex) {
+                            Logger.getLogger(Tarantula.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        return (new TypedValue(stringVal, datatype));
                     }
-                } finally {
-                    it.close();
+                } else if (node.isResource()) {
+                    return (new TypedValue(node.as(Resource.class).getURI()));
                 }
+            } finally {
+                it.close();
             }
+        }
         return null;
     }
 
@@ -136,9 +154,7 @@ public abstract class Tarantula<Result> implements Closeable {
         }
     }
 
-    public OntModel getOntModel(){
+    public OntModel getOntModel() {
         return model;
     }
-
- 
 }

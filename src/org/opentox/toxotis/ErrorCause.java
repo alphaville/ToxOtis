@@ -42,6 +42,7 @@ public enum ErrorCause implements java.io.Serializable{
     RegistrationFailed,
     StreamCouldNotClose,
     TrainingError,
+    TaskNotFoundError,
     UnauthorizedUser,
     UnknownCauseOfException,
     UpdateFailed,

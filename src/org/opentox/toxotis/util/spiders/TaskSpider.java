@@ -42,7 +42,7 @@ public class TaskSpider extends Tarantula<Task> {
                 throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + vri + "'");
             }
             if (status == 404) {
-                throw new ToxOtisException("The following task was not found : '" + vri + "'");
+                throw new ToxOtisException(ErrorCause.TaskNotFoundError,"The following task was not found : '" + vri + "'");
             }
             if (status != 200) {
                 throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + vri + "'");
