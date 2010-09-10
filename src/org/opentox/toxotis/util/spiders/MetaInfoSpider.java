@@ -5,6 +5,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import java.util.Date;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
@@ -30,26 +31,28 @@ public class MetaInfoSpider extends Tarantula {
         MetaInfo dcmeta = new MetaInfoImpl();
         TypedValue<String> temp = null;
         temp = retrieveProp(DC.title);
-        dcmeta.setTitle(temp!=null?temp.getValue():null);
-        temp =retrieveProp(DC.creator);
-        dcmeta.setCreator(temp!=null?temp.getValue():null);
+        dcmeta.setTitle(temp != null ? temp.getValue() : null);
+        temp = retrieveProp(DC.creator);
+        dcmeta.setCreator(temp != null ? temp.getValue() : null);
         temp = retrieveProp(DC.description);
-        dcmeta.setDescription(temp!=null?temp.getValue():null);
+        dcmeta.setDescription(temp != null ? temp.getValue() : null);
         temp = retrieveProp(DC.publisher);
-        dcmeta.setPublisher(temp!=null?temp.getValue():null);
+        dcmeta.setPublisher(temp != null ? temp.getValue() : null);
         temp = retrieveProp(RDFS.comment);
-        dcmeta.setComment(temp!=null?temp.getValue():null);
+        dcmeta.setComment(temp != null ? temp.getValue() : null);
         temp = retrieveProp(OWL.versionInfo);
-        dcmeta.setVersionInfo(temp!=null?temp.getValue():null);
+        dcmeta.setVersionInfo(temp != null ? temp.getValue() : null);
         temp = retrieveProp(org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(model));
-        dcmeta.setHasSource(temp!=null?temp.getValue():null);
+        dcmeta.setHasSource(temp != null ? temp.getValue() : null);
         dcmeta.getContributors().addAll(retrieveProps(DC.contributor));
         temp = retrieveProp(OWL.sameAs);
-        dcmeta.setSameAs(temp!=null?temp.getValue():null);
-        temp =retrieveProp(RDFS.seeAlso);
-        dcmeta.setSeeAlso(temp!=null?temp.getValue():null);
+        dcmeta.setSameAs(temp != null ? temp.getValue() : null);
+        temp = retrieveProp(RDFS.seeAlso);
+        dcmeta.setSeeAlso(temp != null ? temp.getValue() : null);
         temp = retrieveProp(DC.identifier);
-        dcmeta.setIdentifier(temp!=null?temp.getValue():null);
+        dcmeta.setIdentifier(temp != null ? temp.getValue() : null);
+        TypedValue<Date> date = (TypedValue<Date>) retrieveProp(DC.date);
+        dcmeta.setDate(date != null ? date.getValue() : null);
         //TODO: audiences
         return dcmeta;
     }

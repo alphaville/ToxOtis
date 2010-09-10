@@ -13,12 +13,13 @@ public enum OpenToxAlgorithms {
     NTUA_MLR(String.format(Services.NTUA_SERVICES, "algorithm/mlr")),
     NTUA_LEVERAGES(String.format(Services.NTUA_SERVICES, "algorithm/leverages")),
     NTUA_SVM(String.format(Services.NTUA_SERVICES, "algorithm/svm")),
-    NTUA_FILTER(String.format(Services.NTUA_SERVICES, "algorithm/filter"));
+    NTUA_FILTER(String.format(Services.NTUA_SERVICES, "algorithm/filter")),
+    AMBIT_LR(String.format(Services.AMBIT_PLOVDIV, "algorithm/LR"));
     private static final Date LAST_UPDATE;
 
     static {
         Calendar cal = Calendar.getInstance();
-        cal.set(2010, Calendar.SEPTEMBER, 5, 18, 10);
+        cal.set(2010, Calendar.SEPTEMBER, 10, 18, 00);
         LAST_UPDATE = cal.getTime();
     }
     private String serviceURI;

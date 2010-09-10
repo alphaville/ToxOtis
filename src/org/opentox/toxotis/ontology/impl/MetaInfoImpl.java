@@ -110,7 +110,7 @@ public class MetaInfoImpl implements MetaInfo {
         Property contributorProperty = model.createProperty(DC.contributor.getURI());
         if (contributors != null && !contributors.isEmpty()) {
             for (TypedValue<String> contr : contributors) {
-                resource.addLiteral(contributorProperty, model.createTypedLiteral(contr.getValue()));
+                resource.addLiteral(contributorProperty, model.createTypedLiteral(contr != null ? contr.getValue() : null));
             }
         }
         return resource;

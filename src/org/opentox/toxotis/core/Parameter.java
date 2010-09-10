@@ -49,7 +49,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
     }
 
     public T getValue() {
-        return typedValue.getValue();
+        return typedValue != null ? typedValue.getValue() : null;
     }
 
     public void setTypedValue(TypedValue<T> value) {
@@ -80,7 +80,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         Individual indiv = model.createIndividual(getUri().toString(), OTClasses.Parameter().inModel(model));
         MetaInfo metaInfo = getMeta();
         metaInfo.attachTo(indiv, model);
-        
+
         // scope
         if (getScope() != null) {
             indiv.addLiteral(OTDatatypeProperties.paramScope().asDatatypeProperty(model),
@@ -116,5 +116,4 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         builder.append(typedValue.getType());
         return new String(builder);
     }
-    
 }

@@ -20,11 +20,12 @@ public class ParameterSpider extends Tarantula<Parameter> {
     @Override
     public Parameter parse() {
         Parameter parameter = new Parameter();
-        String scope = retrieveProp(OTDatatypeProperties.paramScope().
-                asDatatypeProperty(model)).getValue().toUpperCase();
+        TypedValue<String> typedScope = retrieveProp(OTDatatypeProperties.paramScope().
+                asDatatypeProperty(model));
+        String scope = typedScope != null ? typedScope.getValue().toUpperCase() : null;
         parameter.setScope(
                 Parameter.ParameterScope.valueOf(scope));
-        TypedValue paramTypedValue =retrieveProp(OTDatatypeProperties.paramValue().asDatatypeProperty(model));
+        TypedValue paramTypedValue = retrieveProp(OTDatatypeProperties.paramValue().asDatatypeProperty(model));
         parameter.setTypedValue(paramTypedValue);
 
         MetaInfoSpider metaSpider = new MetaInfoSpider(resource, model);
