@@ -25,16 +25,7 @@ public class TaskSpider extends Tarantula<Task> {
 
     private VRI vri;
 
-    VRI uri;
-
-    public TaskSpider(VRI uri) throws ToxOtisException {
-        super();
-        this.uri = uri;
-        GetClient client = new GetClient();
-        client.setMediaType("application/rdf+xml");
-        client.setUri(uri);
-        model = client.getResponseOntModel();
-        resource = model.getResource(uri.toString());
+    public TaskSpider() {
     }
 
     public TaskSpider(VRI vri) throws ToxOtisException {
@@ -65,22 +56,6 @@ public class TaskSpider extends Tarantula<Task> {
 
     public TaskSpider(Resource resource, OntModel model) {
         super(resource, model);
-        try {
-            uri = new VRI(resource.getURI());
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public TaskSpider(OntModel model, String uri) {
-        super();
-        this.model = model;
-        try {
-            this.uri = new VRI(uri);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.resource = model.getResource(uri);
     }
 
     @Override
