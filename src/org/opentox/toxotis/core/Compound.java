@@ -3,7 +3,9 @@ package org.opentox.toxotis.core;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.ArrayList;
-import org.opentox.toxotis.client.GetClient;
+import java.util.List;
+import java.util.Set;
+import org.opentox.toxotis.client.VRI;
 
 /**
  * Provides different representations for chemical compounds with a unique
@@ -13,20 +15,32 @@ import org.opentox.toxotis.client.GetClient;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract  class Compound extends OTComponent<Compound>{
+public class Compound extends OTComponent<Compound>{
 
-    private ArrayList<Conformer> conformers;
+    private List<Conformer> conformers;
 
-    public ArrayList<Conformer> listConformers(){
-        if (conformers==null){
-            // GetClient
+    public Compound(VRI uri) {
+        super(uri);
+    }
+
+    public Compound() {
+    }
+
+    public List<Conformer> getConformers(){
+        if(conformers == null || conformers.isEmpty()){
+            updateConformers();
         }
         return conformers;
     }
 
     public Conformer getPrimaryConformer(){
+        return getConformers().get(0);
+    }
 
-        throw new UnsupportedOperationException();
+
+
+    private void updateConformers(){
+        conformers = new ArrayList<Conformer>();
     }
 
     @Override
@@ -38,5 +52,11 @@ public abstract  class Compound extends OTComponent<Compound>{
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+
+
+
+
+
 
 }
