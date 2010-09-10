@@ -14,7 +14,7 @@ import java.util.Collection;
  * @author Sopasakis Pantelis
  */
 public interface MetaInfo extends java.io.Serializable {
-
+//TODO: add bibtex
     String getComment();
 
     String getDescription();
