@@ -13,9 +13,9 @@ import org.opentox.toxotis.client.VRI;
 public class Task extends OTComponent<Task>{
 
     public enum Status{
-        Running,
-        Completed,
-        Canceled
+        RUNNING,
+        COMPLETED,
+        CANCELLED;
     }
 
     private VRI resultUri;
