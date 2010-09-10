@@ -5,6 +5,6 @@ package org.opentox.toxotis.core;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Conformer {
-
+public class Conformer extends Compound {
+    
 }
