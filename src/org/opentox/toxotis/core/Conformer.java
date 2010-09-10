@@ -27,7 +27,7 @@ public class Conformer extends Compound{
     }
 
     private void updateBasicProperties(){
-        
+
     }
 
     public Dataset getProperty(Feature feature) throws ToxOtisException{
@@ -82,10 +82,10 @@ public class Conformer extends Compound{
 
 
 
-    
 
 
 
-    
+
+
 
 }

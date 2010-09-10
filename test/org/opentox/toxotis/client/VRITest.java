@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.opentox.toxotis.client;
 
 import java.net.MalformedURLException;
@@ -106,5 +102,15 @@ public class VRITest {
         String uri = "http://opentox.ntua.gr:3000/query/compound/Phenol/all";
         VRI vri = new VRI(uri);
         assertEquals(Dataset.class, vri.getOpenToxType());
+    }
+
+    @Test
+    public void testBaseUri() throws URISyntaxException {
+        System.out.println("--. Testing VRI#getServiceBaseUri()");
+        String baseUri = "http://ambit.uni-plovdiv.bg:8080/ambit2%s";
+        String uri = String.format(baseUri, "/compound/50-00-0");
+        VRI vri = new VRI(uri);
+        assertEquals(String.format(baseUri,""), vri.getServiceBaseUri().getStringNoQuery());
+        System.out.println(vri.getOpenToxType());
     }
 }

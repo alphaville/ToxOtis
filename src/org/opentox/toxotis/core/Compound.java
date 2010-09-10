@@ -16,7 +16,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Charalampos Chomenides
  */
 public class Compound extends OTComponent<Compound>{
-    
+
     private List<Conformer> conformers;
 
     public Compound(VRI uri) {
@@ -32,7 +32,7 @@ public class Compound extends OTComponent<Compound>{
         }
         return conformers;
     }
-    
+
     public Conformer getPrimaryConformer(){
         return getConformers().get(0);
     }
