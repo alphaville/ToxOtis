@@ -60,24 +60,24 @@ public class OTObjectPropertyImpl extends OTPropertyImpl implements OTObjectProp
 
         MetaInfo meta = getMetaInfo();
         if (meta != null) {
-            String title = meta.getTitle().getValue();
+            String title = meta.getTitle()!=null?meta.getTitle().getValue():null;
             if (title != null) {
                 property.addLiteral(model.createAnnotationProperty(DC.title.getURI()),
                         model.createTypedLiteral(title, XSDDatatype.XSDstring));
             }
 
-            String description = meta.getDescription().getValue();
+            String description = meta.getDescription()!=null?meta.getDescription().getValue():null;
             if (description != null) {
                 property.addLiteral(model.createAnnotationProperty(DC.description.getURI()),
                         model.createTypedLiteral(description, XSDDatatype.XSDstring));
             }
 
-            String comment = meta.getComment().getValue();
+            String comment = meta.getComment()!=null?meta.getComment().getValue():null;
             if (comment != null) {
                 property.addComment(model.createTypedLiteral(comment, XSDDatatype.XSDstring));
             }
 
-            String identifier = meta.getIdentifier().getValue();
+            String identifier = meta.getIdentifier()!=null?meta.getIdentifier().getValue():null;
             if (identifier != null) {
                 property.addLiteral(model.createAnnotationProperty(DC.identifier.getURI()),
                         model.createTypedLiteral(identifier, XSDDatatype.XSDanyURI));

@@ -107,11 +107,11 @@ public class OntologicalClassImpl implements OntologicalClass {
             clazz = model.createClass(getUri());
             MetaInfo meta = getMetaInfo();
             if (meta != null) {
-                String comment = meta.getComment().getValue();
-                String desc = meta.getDescription().getValue();
-                String identifier = meta.getIdentifier().getValue();
-                String title = meta.getTitle().getValue();
-                String version = meta.getVersionInfo().getValue();
+                String comment = meta.getComment() != null ? meta.getComment().getValue() : null;
+                String desc = meta.getDescription() != null ? meta.getDescription().getValue() : null;
+                String identifier = meta.getIdentifier() != null ? meta.getIdentifier().getValue() : null;
+                String title = meta.getTitle() != null ? meta.getTitle().getValue() : null;
+                String version = meta.getVersionInfo() != null ? meta.getVersionInfo().getValue() : null;
                 if (comment != null) {
                     clazz.addComment(model.createTypedLiteral(comment, XSDDatatype.XSDstring));
                 }

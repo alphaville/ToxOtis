@@ -29,6 +29,9 @@ public class VRI { // Well tested!
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
 
+    /**
+     * Keywords that appear in OpenTox URIs.
+     */
     private enum UriKeywords {
 
         Dataset("dataset"),

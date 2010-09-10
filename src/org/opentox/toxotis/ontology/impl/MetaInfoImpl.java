@@ -165,7 +165,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setComment(String comment) {
-        this.comment = new TypedValue<String>(comment);
+        this.comment = comment != null ? new TypedValue<String>(comment) : null;
         return this;
     }
 
@@ -175,7 +175,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setDescription(String description) {
-        this.description = new TypedValue<String>(description);
+        this.description = description != null ? new TypedValue<String>(description) : null;
         return this;
     }
 
@@ -185,7 +185,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setIdentifier(String identifier) {
-        this.identifier = new TypedValue<String>(identifier);
+        this.identifier = identifier != null ? new TypedValue<String>(identifier) : null;
         return this;
     }
 
@@ -195,7 +195,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setSameAs(String sameAs) {
-        this.sameAs = new TypedValue<String>(sameAs);
+        this.sameAs = sameAs != null ? new TypedValue<String>(sameAs) : null;
         return this;
     }
 
@@ -205,7 +205,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setSeeAlso(String seeAlso) {
-        this.seeAlso = new TypedValue<String>(seeAlso);
+        this.seeAlso = seeAlso != null ? new TypedValue<String>(seeAlso) : null;
         return this;
     }
 
@@ -215,7 +215,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setTitle(String title) {
-        this.title = new TypedValue<String>(title);
+        this.title = title != null ? new TypedValue<String>(title) : null;
         return this;
     }
 
@@ -225,7 +225,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setVersionInfo(String versionInfo) {
-        this.versionInfo = new TypedValue<String>(versionInfo);
+        this.versionInfo = versionInfo != null ? new TypedValue<String>(versionInfo) : null;
         return this;
     }
 
@@ -235,7 +235,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setPublisher(String publisher) {
-        this.comment = new TypedValue<String>(publisher);
+        this.comment = publisher != null ? new TypedValue<String>(publisher) : null;
         return this;
     }
 
@@ -245,7 +245,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setCreator(String creator) {
-        this.creator = new TypedValue<String>(creator);
+        this.creator = creator != null ? new TypedValue<String>(creator) : null;
         return this;
     }
 
@@ -255,7 +255,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setHasSource(String hasSource) {
-        this.hasSource = new TypedValue<String>(hasSource);
+        this.hasSource = hasSource != null ? new TypedValue<String>(hasSource) : null;
         return this;
     }
 
@@ -265,22 +265,31 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo addContributor(String contributor) {
-        this.contributors.add(new TypedValue<String>(contributor));
+        if (contributor != null) {
+            this.contributors.add(new TypedValue<String>(contributor));
+        }
         return this;
     }
 
     public MetaInfo addContributor(TypedValue<String> contributor) {
-        this.contributors.add(contributor);
+        if (contributor != null) {
+            this.contributors.add(contributor);
+        }
         return this;
     }
 
     public MetaInfo addAudience(String audience) {
-        this.audiences.add(new TypedValue<String>(audience));
+        if (audience != null) {
+            this.audiences.add(new TypedValue<String>(audience));
+        }
         return this;
     }
 
     public MetaInfo addAudience(TypedValue<String> audience) {
-        this.audiences.add(audience);
+        if (audience != null) {
+            this.audiences.add(audience);
+        }
+
         return this;
     }
 
@@ -294,7 +303,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setDate(Date date) {
-        this.date = new TypedValue<Date>(date);
+        this.date = date != null ? new TypedValue<Date>(date) : null;
         return this;
     }
 }

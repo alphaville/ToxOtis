@@ -40,7 +40,7 @@ public class AlgorithmSpiderTest {
     public void testAlgorithm() throws ToxOtisException, URISyntaxException {
         AlgorithmSpider spider = null;
         spider = new AlgorithmSpider(new VRI("http://localhost:3000/algorithm/svm",
-                "username", "Sopasakis", "password", "secret"));// <<< This is not my password of course!
+                "username", "Sopasakis", "password", "secret")); // <<< This is not my password of course!
         Algorithm a = spider.parse();
         System.out.println(a.getMeta());
         System.out.println(a.getParameters().iterator().next());

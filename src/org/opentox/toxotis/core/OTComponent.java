@@ -137,11 +137,19 @@ public abstract class OTComponent<T extends OTComponent> {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof OTComponent){
-            return ((OTComponent)obj).getUri().equals(this.uri);
+        if (obj == null) {
+            return false;
         }
-        return false;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OTComponent<T> other = (OTComponent<T>) obj;
+        if (this.uri != other.uri && (this.uri == null || !this.uri.equals(other.uri))) {
+            return false;
+        }
+        return true;
     }
+    
 
     @Override
     public int hashCode() {
