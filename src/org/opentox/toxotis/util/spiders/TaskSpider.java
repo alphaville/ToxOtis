@@ -30,6 +30,8 @@ public class TaskSpider extends Tarantula<Task>{
     public Task parse() throws ToxOtisException {
         Task task = new Task();
 
+        task.setMeta(new MetaInfoSpider(resource, model).parse());
+
         Literal hasStatus = resource.getProperty(
                     OTDatatypeProperties.hasStatus().asDatatypeProperty(model)
                     ).getObject().as(Literal.class);
@@ -48,6 +50,14 @@ public class TaskSpider extends Tarantula<Task>{
             } catch (URISyntaxException ex) {
                 Logger.getLogger(TaskSpider.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+
+        Literal percentageCompleted = resource.getProperty(
+                    OTDatatypeProperties.percentageCompleted().asDatatypeProperty(model)
+                    ).getObject().as(Literal.class);
+
+        if(percentageCompleted != null){
+            task.setPercentageCompleted(percentageCompleted.getFloat());
         }
 
         Resource errorReport = resource.getProperty(

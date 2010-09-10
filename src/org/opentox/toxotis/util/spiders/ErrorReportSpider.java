@@ -26,6 +26,8 @@ public class ErrorReportSpider extends Tarantula<ErrorReport>{
     public ErrorReport parse() throws ToxOtisException {
         ErrorReport errorReport = new ErrorReport();
 
+        errorReport.setMeta(new MetaInfoSpider(resource, model).parse());
+
         Literal errorCode = resource.getProperty(
                     OTDatatypeProperties.errorCode().asDatatypeProperty(model)
                     ).getObject().as(Literal.class);

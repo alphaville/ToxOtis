@@ -18,9 +18,7 @@ public class Task extends OTComponent<Task>{
         Canceled
     }
 
-    private VRI creator;
     private VRI resultUri;
-    private String title;
     private Status hasStatus;
     private float percentageCompleted;
     private Date date;
@@ -28,14 +26,6 @@ public class Task extends OTComponent<Task>{
     private ErrorReport errorReport;
 
     public Task() {
-    }
-
-    public VRI getCreator() {
-        return creator;
-    }
-
-    public void setCreator(VRI creator) {
-        this.creator = creator;
     }
 
     public Date getDate() {
@@ -68,14 +58,6 @@ public class Task extends OTComponent<Task>{
 
     public void setResultUri(VRI resultUri) {
         this.resultUri = resultUri;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public ErrorReport getErrorReport() {
