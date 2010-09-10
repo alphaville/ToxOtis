@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.core.Compound;
 import org.opentox.toxotis.core.Dataset;
 import static org.junit.Assert.*;
 
@@ -108,9 +109,30 @@ public class VRITest {
     public void testBaseUri() throws URISyntaxException {
         System.out.println("--. Testing VRI#getServiceBaseUri()");
         String baseUri = "http://ambit.uni-plovdiv.bg:8080/ambit2%s";
-        String uri = String.format(baseUri, "/compound/50-00-0");
+
+        String uri = String.format(baseUri, "/query/compound/50-00-0/all", "tokenid", "LGL5EJETIJFLKJ2095TOEGD");
         VRI vri = new VRI(uri);
-        assertEquals(String.format(baseUri,""), vri.getServiceBaseUri().getStringNoQuery());
+        assertEquals(String.format(baseUri, ""), vri.getServiceBaseUri().getStringNoQuery());
+        assertEquals(Dataset.class, vri.getOpenToxType());
+
+        uri = String.format(baseUri, "/query/compound/143", "tokenid", "LGL5EJETIJFLKJ2095TOEGD"); // << This is not a compound!!!
+        vri = new VRI(uri);
+        assertEquals(String.format(baseUri, ""), vri.getServiceBaseUri().getStringNoQuery());
+        assertNull(vri.getOpenToxType());
+
+        uri = String.format(baseUri, "/compound/4234", "tokenid", "LGL5EJETIJFLKJ2095TOEGD");
+        vri = new VRI(uri);
+        assertEquals(String.format(baseUri, ""), vri.getServiceBaseUri().getStringNoQuery());
+        assertEquals(Compound.class, vri.getOpenToxType());
+
+        uri = String.format(baseUri, "/compound/4234/whatever", "tokenid", "LGL5EJETIJFLKJ2095TOEGD");
+        vri = new VRI(uri);
+        assertEquals(String.format(baseUri, ""), vri.getServiceBaseUri().getStringNoQuery());
+        assertNull(vri.getOpenToxType());
+        assertNull(new VRI("http://www.whatever.jk:9090/server").getOpenToxType());
+
+        uri = String.format(baseUri, "/compound/234/feature/1", "tokenid", "LGL5EJETIJFLKJ2095TOEGD");
+        vri = new VRI(uri);
         System.out.println(vri.getOpenToxType());
     }
 }

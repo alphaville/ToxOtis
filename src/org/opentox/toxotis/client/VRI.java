@@ -160,6 +160,19 @@ public class VRI { // Well tested!
         }
     }
 
+    /**
+     * Create a new VRI object providing its URI as String (can possibly include
+     * a query part which will be parsed) and a set of parameters (name-value pairs).
+     * @param uri
+     *      The base URI
+     * @param params
+     *      A sequence of parameter names followed by their values. For example
+     *      <code>VRI v = new VRI("http://myserver.com","a","2","option","true")</code>.
+     *      This will generate the URI: http://myserver.com?a=2&option=true. Note that
+     *      the parameter names and values are URL encoded (using the UTF-8 encoding)
+     *      as soon as they are provided to the constructor.
+     * @throws URISyntaxException
+     */
     public VRI(String uri, String... params) throws URISyntaxException {
         this(uri);
 
