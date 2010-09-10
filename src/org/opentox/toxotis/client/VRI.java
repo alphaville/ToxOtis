@@ -4,9 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
+import org.opentox.toxotis.core.*;
 
 /**
  * VRI is an alternative to URI. Being <code>final</code>, the class <code>java.net.URI</code>
@@ -24,6 +28,79 @@ public class VRI { // Well tested!
     private Map<String, String> urlParams = new LinkedHashMap<String, String>();
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
+    private static final String END_SLASH_orNothing = "([^/]+/$|[^/]+)$";
+
+    /**
+     * A collection of regular expressions for the identification of
+     * OpenTox URI patterns.
+     */
+    private enum OpenToxRegEx {
+
+        COMPOUND(Compound.class, ".+/(?i)compound(s||)/" + END_SLASH_orNothing),
+        CONFORMER(Conformer.class, ".+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_orNothing),
+        FEATURE(Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_orNothing),
+        DATASET(Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_orNothing,
+        ".+/(?i)query/(?i)compound/.+/" + END_SLASH_orNothing),
+        ALGORITHM(Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_orNothing),
+        BIBTEX(BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_orNothing),
+        MODEL(Model.class, ".+/(?i)model(s||)/" + END_SLASH_orNothing),
+        TASK(Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing);
+
+        /**
+         * Set of regular expressions that identify a
+         * certain resource.
+         */
+        private Set<String> regexp = new HashSet<String>();
+        /**
+         * The Java class that corresponds to the OpenTox resource
+         */
+        private Class<?> clazz;
+
+        private OpenToxRegEx(Class<?> claz, String... regexp) {
+            Collections.addAll(this.regexp, regexp);
+            this.clazz = claz;
+        }
+
+        /**
+         * Return the set of regular expression that identify a
+         * certain OpenTox resource (e.g. ot:Dataset, ot:Compound etc).
+         * @return
+         */
+        public Set<String> getRegexp() {
+            return regexp;
+        }
+
+        /**
+         * Return the Java class that is related to the OpenTox
+         * resource. For example {@link OpenToxRegEx#ALGORITHM } returns
+         * {@link Algorithm }.
+         * @return
+         */
+        public Class<?> getClazz() {
+            return clazz;
+        }
+    }
+
+    /**
+     * Checks whether a given {@link VRI uri} matches a given pattern.
+     *
+     * @param vri
+     *      A URI (instance of {@link VRI }.
+     * @param otreg
+     *      A regular expression provided as an instance of {@link OpenToxRegEx }.
+     * @return
+     *      <code>true</code>If and only if the provided uri matches the
+     *      regular expression.
+     */
+    private static boolean match(VRI vri, OpenToxRegEx otreg) {
+        String noQuery = vri.getStringNoQuery();
+        for (String re : otreg.getRegexp()) {
+            if (noQuery.matches(re)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Construct a new VRI providing its String representation. Parameters are parsed
@@ -87,6 +164,14 @@ public class VRI { // Well tested!
         }
     }
 
+    /**
+     * Returns a set of name-value pairs that constitute the set of
+     * URL parameters of the VRI. Every key in the map is a parameter name
+     * while the corresponding value is the value for this parameter.
+     *
+     * @return
+     *      The Map of URL parameters
+     */
     public Map<String, String> getUrlParams() {
         return urlParams;
     }
@@ -136,6 +221,11 @@ public class VRI { // Well tested!
         return port;
     }
 
+    /**
+     * Returns the query part of the URI as a String without the question mark.
+     * @return
+     *      Query as String.
+     */
     public String getQueryAsString() {
         StringBuilder string = new StringBuilder();
         final int nParams = urlParams.size();
@@ -157,6 +247,39 @@ public class VRI { // Well tested!
     }
 
     /**
+     * Returns a Java class that best fits the pattern matched by this URI. For
+     * example the URI <code>http://someserver.com:9876/OpenTox/query/compound/phenol/smiles</code>
+     * will return the class <code>org.opentox.toxotis.core.Dataset</code>
+     * @return
+     *      Corresponding OpenTox class (usually a subclass of {@link OTComponent }).
+     * @see OTComponent
+     * @see Dataset
+     */
+    public Class<?> getOpenToxType() {
+        OpenToxRegEx[] reg = OpenToxRegEx.values();
+        for (OpenToxRegEx r : reg) {
+            if (match(this, r)) {
+                if (r.equals(OpenToxRegEx.COMPOUND)) {
+                    if (getUrlParams().isEmpty()) {
+                        return r.getClazz();
+                    }
+                } else {
+                    return r.getClazz();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the base URI of the service.
+     * @return
+     */
+    public VRI getServiceBaseUri() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Returns the URI without the query part.
      * @return
      *      URI without the query part
@@ -164,4 +287,5 @@ public class VRI { // Well tested!
     public String getStringNoQuery() {
         return uri;
     }
+
 }

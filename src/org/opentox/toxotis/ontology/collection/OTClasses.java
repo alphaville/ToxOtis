@@ -21,6 +21,7 @@ public class OTClasses {
     private static OntologicalClass ms_OpenToxResource;
     private static OntologicalClass ms_Algorithm;
     private static OntologicalClass ms_Compound;
+    private static OntologicalClass ms_Conformer;
     private static OntologicalClass ms_DataEntry;
     private static OntologicalClass ms_DataType;
     private static OntologicalClass ms_Nominal;
@@ -108,6 +109,16 @@ public class OTClasses {
             ms_Compound = clazz;
         }
         return ms_Compound;
+    }
+
+    public static OntologicalClass Conformer() {
+        if (ms_Conformer == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("Conformer");
+            clazz.getMetaInfo().setComment("API for OpenTox conformer webservices");
+            clazz.getSuperClasses().add(Compound());
+            ms_Conformer = clazz;
+        }
+        return ms_Conformer;
     }
 
     public static OntologicalClass Model() {
