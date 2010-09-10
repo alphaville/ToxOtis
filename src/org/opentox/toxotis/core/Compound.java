@@ -4,7 +4,6 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.opentox.toxotis.client.VRI;
 
 /**

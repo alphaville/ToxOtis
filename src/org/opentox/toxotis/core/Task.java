@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.Date;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.MetaInfo;
 
 /**
  *
@@ -21,21 +22,13 @@ public class Task extends OTComponent<Task>{
     private VRI resultUri;
     private Status hasStatus;
     private float percentageCompleted;
-    private Date date;
 
     private ErrorReport errorReport;
 
     public Task() {
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
+    
     public Status getHasStatus() {
         return hasStatus;
     }

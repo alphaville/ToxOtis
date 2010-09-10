@@ -43,10 +43,12 @@ public class TaskSpiderTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException , ToxOtisException{
-        VRI vri = new VRI("http://localhost:3000/task/7eb6421f-7ee5-4950-add5-d9c56c7b2d77");
+        VRI vri = new VRI("http://ambit.uni-plovdiv.bg:8080/ambit2/task/93322982-89b8-4738-bb3c-88449c5dc399");
         TaskSpider ts = new TaskSpider(vri);
         Task t = ts.parse();
         System.out.println(t.getResultUri());
+        System.out.println(t.getHasStatus());
+        System.out.println(t.getMeta());
     }
 
 }

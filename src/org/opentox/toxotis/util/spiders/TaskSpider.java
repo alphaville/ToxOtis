@@ -68,7 +68,7 @@ public class TaskSpider extends Tarantula<Task> {
                 OTDatatypeProperties.hasStatus().asDatatypeProperty(model)).getObject().as(Literal.class);
 
         if (hasStatus != null) {
-            task.setHasStatus(Task.Status.valueOf(hasStatus.getString()));
+            task.setHasStatus(Task.Status.valueOf(hasStatus.getString().toUpperCase()));
         }
 
         Literal resultUri = resource.getProperty(
@@ -98,6 +98,8 @@ public class TaskSpider extends Tarantula<Task> {
         if (errorReport != null) {
             task.setErrorReport(new ErrorReportSpider(errorReport, model).parse());
         }
+
+        
 
         return task;
     }

@@ -60,7 +60,12 @@ public abstract class Tarantula<Result> implements Closeable {
                             Date date = (Date) formatter.parse(stringVal);
                             return (new TypedValue<Date>(date, datatype));
                         } catch (ParseException ex) {
-                            Logger.getLogger(Tarantula.class.getName()).log(Level.SEVERE, null, ex);
+                            try {
+                                long longDate = Long.parseLong(stringVal);
+                                return new TypedValue<Date>(new Date(longDate), datatype);
+                            } catch (NumberFormatException nfe) {
+                                nfe.printStackTrace();
+                            }
                         }
                     } else {
                         return (new TypedValue(stringVal, datatype));
