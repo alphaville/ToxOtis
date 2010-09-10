@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.Task;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
@@ -19,11 +20,36 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class TaskSpider extends Tarantula<Task>{
 
-    public TaskSpider() {
+    VRI uri;
+
+    public TaskSpider(VRI uri) throws ToxOtisException {
+        super();
+        this.uri = uri;
+        GetClient client = new GetClient();
+        client.setMediaType("application/rdf+xml");
+        client.setUri(uri);
+        model = client.getResponseOntModel();
+        resource = model.getResource(uri.toString());
     }
 
     public TaskSpider(Resource resource, OntModel model) {
         super(resource, model);
+        try {
+            uri = new VRI(resource.getURI());
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public TaskSpider(OntModel model, String uri) {
+        super();
+        this.model = model;
+        try {
+            this.uri = new VRI(uri);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.resource = model.getResource(uri);
     }
 
     @Override
