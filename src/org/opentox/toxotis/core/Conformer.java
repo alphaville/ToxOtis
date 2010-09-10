@@ -13,60 +13,18 @@ import org.opentox.toxotis.ontology.MetaInfo;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Conformer extends Compound{
-
-    private VRI conformerUri;
-    private MetaInfo conformerMetaInfo;
-    private Dataset basicProperties;
-
-    public Dataset getBasicProperties() {
-        if(basicProperties == null){
-            updateBasicProperties();
-        }
-        return basicProperties;
-    }
-
-    private void updateBasicProperties(){
-
-    }
+public class Conformer extends OTComponent<Conformer>{
 
     public Dataset getProperty(Feature feature) throws ToxOtisException{
-        for(DataEntry dataEntry: getBasicProperties().getDataEntries()){
-            if(dataEntry.getCompound().equals((Compound)this)){
-                for(FeatureValue featureValue : dataEntry.getFeatureValues()){
-                    if(featureValue.getFeature().equals(feature)){
-                        List<FeatureValue> featureValues = new ArrayList<FeatureValue>();
-                        featureValues.add(featureValue);
-                        List<DataEntry> dataEntries = new ArrayList<DataEntry>();
-                        dataEntries.add(new DataEntry((Compound)this, featureValues));
-                        return new Dataset(dataEntries);
-                    }
-                }
-            }
-        }
+        return null;
+    }
+    
+    public Dataset getProperties(Feature... features){
         return null;
     }
 
-    @Override
-    public VRI getUri() {
-        return conformerUri;
-    }
-
-    @Override
-    public MetaInfo getMeta() {
-        return conformerMetaInfo;
-    }
-
-    @Override
-    public Compound setMeta(MetaInfo meta) {
-        this.conformerMetaInfo = meta;
-        return this;
-    }
-
-    @Override
-    public Compound setUri(VRI uri) {
-        this.conformerUri = uri;
-        return this;
+    public Dataset getAllProperties(){
+        return null;
     }
 
     @Override
@@ -78,14 +36,5 @@ public class Conformer extends Compound{
     public Conformer createFrom(OntModel model) {
         throw new UnsupportedOperationException("");
     }
-
-
-
-
-
-
-
-
-
 
 }
