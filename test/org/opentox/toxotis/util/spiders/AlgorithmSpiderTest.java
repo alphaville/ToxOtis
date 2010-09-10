@@ -42,15 +42,16 @@ public class AlgorithmSpiderTest {
     @Test
     public void testAlgorithm() throws ToxOtisException, URISyntaxException {
         AlgorithmSpider spider = null;
-        spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.AMBIT_LR.getServiceUri(),
-                "username", "Sopasakis", "password", "secret")); // << This is not my password of course!
-        Algorithm a = spider.parse();
-        System.out.println(a.getMeta());
-        System.out.println(a.getMeta().getDate());
+        for (int i = 0; i < 50; i++) {
+            spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.AMBIT_LR.getServiceUri(),
+                    "username", "Sopasakis", "password", "secret")); // << This is not my password of course!
+            Algorithm a = spider.parse();
+            System.out.println(a.getMeta());
 
-        Iterator<Parameter> param = a.getParameters().iterator();
-        while (param.hasNext()){
-            System.out.println(param.next());
+            Iterator<Parameter> param = a.getParameters().iterator();
+            while (param.hasNext()) {
+                System.out.println(param.next());
+            }
         }
     }
 }

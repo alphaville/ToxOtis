@@ -47,6 +47,9 @@ public class MetaInfoImpl implements MetaInfo {
         if (description != null) {
             builder.append("description : " + description + "\n");
         }
+        if (date != null) {
+            builder.append("date        : " + date + "\n");
+        }
         if (sameAs != null) {
             builder.append("same as     : " + sameAs + "\n");
         }
