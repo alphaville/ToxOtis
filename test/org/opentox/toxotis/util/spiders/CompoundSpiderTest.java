@@ -39,9 +39,9 @@ public class CompoundSpiderTest {
     @Test
     public void testCompound() throws URISyntaxException, ToxOtisException {
         CompoundSpider spider = new CompoundSpider(
-                new VRI("http://ambit.uni-plovdiv.bg:8080/ambit2/compound/"));
+                new VRI("http://ambit.uni-plovdiv.bg:8080/ambit2/compound"));
         Compound c = spider.parse();
-        System.out.println(c.getUri().toString());
+        System.out.println(c.getUri());
 
     }
 
