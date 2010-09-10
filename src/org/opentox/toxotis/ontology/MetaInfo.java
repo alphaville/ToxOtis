@@ -3,6 +3,8 @@ package org.opentox.toxotis.ontology;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.Collection;
+import java.util.Date;
+import org.opentox.toxotis.util.spiders.TypedValue;
 
 /**
  * <p align=justify width=80%>
@@ -15,53 +17,84 @@ import java.util.Collection;
  */
 public interface MetaInfo extends java.io.Serializable {
 //TODO: add bibtex
-    String getComment();
 
-    String getDescription();
+    TypedValue<String> getComment();
 
-    String getIdentifier();
+    TypedValue<String> getDescription();
 
-    String getSameAs();
+    TypedValue<String> getIdentifier();
 
-    String getSeeAlso();
+    TypedValue<String> getSameAs();
 
-    String getTitle();
+    TypedValue<String> getSeeAlso();
 
-    String getVersionInfo();
+    TypedValue<String> getTitle();
 
-    String getPublisher();
+    TypedValue<String> getVersionInfo();
 
-    String getCreator();
+    TypedValue<String> getPublisher();
 
-    String getHasSource();
+    TypedValue<String> getCreator();
 
-    Collection<String> getContributors();
+    TypedValue<String> getHasSource();
 
-    Collection<String> getAudiences();
+    Collection<TypedValue<String>> getContributors();
 
-    void setComment(String comment);
+    Collection<TypedValue<String>> getAudiences();
 
-    void setDescription(String description);
+    MetaInfo setComment(String comment);
 
-    void setIdentifier(String identifier);
+    MetaInfo setComment(TypedValue<String> comment);
 
-    void setSameAs(String sameAs);
+    MetaInfo setDescription(String description);
 
-    void setSeeAlso(String seeAlso);
+    MetaInfo setDescription(TypedValue<String> description);
 
-    void setTitle(String title);
+    MetaInfo setIdentifier(String identifier);
 
-    void setVersionInfo(String versionInfo);
+    MetaInfo setIdentifier(TypedValue<String> identifier);
 
-    void setPublisher(String publisher);
+    MetaInfo setSameAs(String sameAs);
 
-    void setCreator(String creator);
+    MetaInfo setSameAs(TypedValue<String> sameAs);
 
-    void setHasSource(String hasSource);
+    MetaInfo setSeeAlso(String seeAlso);
 
-    void addContributor(String contributor);
+    MetaInfo setSeeAlso(TypedValue<String> seeAlso);
 
-    void addAudience(String audience);
+    MetaInfo setTitle(String title);
+
+    MetaInfo setTitle(TypedValue<String> title);
+
+    MetaInfo setVersionInfo(String versionInfo);
+
+    MetaInfo setVersionInfo(TypedValue<String> versionInfo);
+
+    MetaInfo setPublisher(String publisher);
+
+    MetaInfo setPublisher(TypedValue<String> publisher);
+
+    MetaInfo setCreator(String creator);
+
+    MetaInfo setCreator(TypedValue<String> creator);
+
+    MetaInfo setHasSource(String hasSource);
+
+    MetaInfo setHasSource(TypedValue<String> hasSource);
+
+    MetaInfo addContributor(String contributor);
+
+    MetaInfo addContributor(TypedValue<String> contributor);
+
+    MetaInfo addAudience(String audience);
+
+    MetaInfo addAudience(TypedValue<String> audience);
+
+    TypedValue<Date> getDate();
+
+    MetaInfo setDate(TypedValue<Date> date);
+
+    MetaInfo setDate(Date date);
 
     /**
      * Attaches the meta data to a given resource in an ontological model

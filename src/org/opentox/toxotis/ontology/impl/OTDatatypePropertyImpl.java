@@ -56,24 +56,24 @@ public class OTDatatypePropertyImpl
 
         MetaInfo meta = getMetaInfo();
         if (meta != null) {
-            String title = meta.getTitle();
+            String title = meta.getTitle().getValue();
             if (title != null) {
                 property.addLiteral(model.createAnnotationProperty(DC.title.getURI()),
                         model.createTypedLiteral(title, XSDDatatype.XSDstring));
             }
 
-            String description = meta.getDescription();
+            String description = meta.getDescription().getValue();
             if (description != null) {
                 property.addLiteral(model.createAnnotationProperty(DC.description.getURI()),
                         model.createTypedLiteral(description, XSDDatatype.XSDstring));
             }
 
-            String comment = meta.getComment();
+            String comment = meta.getComment().getValue();
             if (comment != null) {
                 property.addComment(model.createTypedLiteral(comment, XSDDatatype.XSDstring));
             }
 
-            String identifier = meta.getIdentifier();
+            String identifier = meta.getIdentifier().getValue();
             if (identifier != null) {
                 property.addLiteral(model.createAnnotationProperty(DC.identifier.getURI()),
                         model.createTypedLiteral(identifier, XSDDatatype.XSDanyURI));

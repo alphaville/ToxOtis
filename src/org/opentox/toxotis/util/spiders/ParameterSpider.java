@@ -31,9 +31,9 @@ public class ParameterSpider extends Tarantula<Parameter> {
         MetaInfo mi = metaSpider.parse();
         parameter.setMeta(mi);
         if (mi.getIdentifier() != null) {
-            parameter.setName(mi.getIdentifier());
+            parameter.setName(mi.getIdentifier().getValue());
         } else if (mi.getComment() != null) {
-            parameter.setName(mi.getComment());
+            parameter.setName(mi.getComment().getValue());
         }
 
         return parameter;
