@@ -11,23 +11,23 @@ import java.util.List;
  */
 public class DataEntry extends OTComponent<DataEntry>{
 
-    private Compound compound;
+    private Conformer conformer;
     private List<FeatureValue> featureValues;
 
     public DataEntry() {
     }
 
-    public DataEntry(Compound compound, List<FeatureValue> featureValues) {
-        this.compound = compound;
+    public DataEntry(Conformer compound, List<FeatureValue> featureValues) {
+        this.conformer = compound;
         this.featureValues = featureValues;
     }
 
-    public Compound getCompound() {
-        return compound;
+    public Conformer getConformer() {
+        return conformer;
     }
 
-    public void setCompound(Compound compound) {
-        this.compound = compound;
+    public void setConformer(Conformer compound) {
+        this.conformer = compound;
     }
 
     public List<FeatureValue> getFeatureValues() {

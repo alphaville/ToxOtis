@@ -9,7 +9,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.util.ArrayList;
 import java.util.List;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.core.Compound;
+import org.opentox.toxotis.core.Conformer;
 import org.opentox.toxotis.core.DataEntry;
 import org.opentox.toxotis.core.FeatureValue;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -31,16 +31,16 @@ public class DataEntrySpider extends Tarantula<DataEntry>{
     @Override
     public DataEntry parse() throws ToxOtisException {
         DataEntry dataEntry = new DataEntry();
-        StmtIterator compoundIt = model.listStatements(
+        StmtIterator conformerIt = model.listStatements(
                     new SimpleSelector(resource,
                     OTObjectProperties.compound().asObjectProperty(model),
                     (RDFNode)null));
-            if(compoundIt.hasNext()){
-                Statement compStmt = compoundIt.nextStatement();
+            if(conformerIt.hasNext()){
+                Statement compStmt = conformerIt.nextStatement();
 
-                CompoundSpider compoundSpider = new CompoundSpider(model, compStmt.getObject().as(Resource.class).getURI());
-                Compound compound = compoundSpider.parse();
-                dataEntry.setCompound(compound);
+                ConformerSpider conformerSpider = new ConformerSpider(model, compStmt.getObject().as(Resource.class).getURI());
+                Conformer conformer = conformerSpider.parse();
+                dataEntry.setConformer(conformer);
             }
         StmtIterator valuesIt = model.listStatements(
                 new SimpleSelector(resource,

@@ -8,12 +8,16 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.Compound;
+import org.opentox.toxotis.core.Conformer;
+import org.opentox.toxotis.core.DataEntry;
+import org.opentox.toxotis.core.Dataset;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
@@ -57,23 +61,28 @@ public class CompoundSpider extends Tarantula<Compound>{
     }
 
     @Override
-    public Compound parse() {
+    public Compound parse() throws ToxOtisException {
         Compound compound = new Compound();
-        StmtIterator it = model.listStatements(
-                new SimpleSelector(null,
-                OTObjectProperties.dataEntry().asObjectProperty(model), (RDFNode) null));
-        StmtIterator it2 = null, it3 = null, itCompound = null;
 
-        itCompound = model.listStatements(
-                new SimpleSelector(null,
-                RDF.type,
-                OTClasses.Compound().inModel(model)));
+        compound.setMeta(new MetaInfoSpider(resource, model).parse());
 
-        if (itCompound.hasNext()) {
-            Statement stmt = itCompound.nextStatement();
-            MetaInfoSpider metaSpider = new MetaInfoSpider(stmt.getSubject(), model);
-            compound.setMeta(metaSpider.parse());
+        String conformersUri = uri.toString() + "/conformer";
+        GetClient getConformers = new GetClient();
+        try {
+            getConformers.setUri(conformersUri);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(CompoundSpider.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        model = getConformers.getResponseOntModel();
+        resource = model.getResource(conformersUri);
+
+        ArrayList<Conformer> conformers = new ArrayList<Conformer>();
+        Dataset conformersDS = new DatasetSpider(resource, model).parse();
+        for(DataEntry dataEntry : conformersDS.getDataEntries()){
+            conformers.add(dataEntry.getConformer());
+        }
+        compound.setConformers(conformers);
 
         return compound;
     }

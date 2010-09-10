@@ -15,7 +15,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Compound extends OTComponent<Compound>{
+public class Compound extends OTComponent<Compound> {
 
     private List<Conformer> conformers;
 
@@ -26,21 +26,19 @@ public class Compound extends OTComponent<Compound>{
     public Compound() {
     }
 
-    public List<Conformer> getConformers(){
-        if(conformers == null || conformers.isEmpty()){
-            updateConformers();
+    public List<Conformer> getConformers() {
+        if (conformers == null) {
+            conformers = new ArrayList<Conformer>();
         }
         return conformers;
     }
 
-    public Conformer getPrimaryConformer(){
-        return getConformers().get(0);
+    public void setConformers(List<Conformer> conformers) {
+        this.conformers = conformers;
     }
 
-
-
-    private void updateConformers(){
-        conformers = new ArrayList<Conformer>();
+    public Conformer getPrimaryConformer() {
+        return getConformers().get(0);
     }
 
     @Override
@@ -52,11 +50,4 @@ public class Compound extends OTComponent<Compound>{
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
-
-
-
-
-
 }
