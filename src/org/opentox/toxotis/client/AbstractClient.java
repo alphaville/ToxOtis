@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
@@ -25,7 +27,8 @@ public abstract class AbstractClient {
     protected static final int bufferSize = 4194304;
     /** Accepted mediatype  */
     protected String acceptMediaType = null;
-    
+    /** A mapping from parameter names to their corresponding values */
+    protected Map<String, String> headerValues = new HashMap<String, String>();
 
     /**
      * Get the targetted URI
@@ -39,9 +42,37 @@ public abstract class AbstractClient {
         return acceptMediaType;
     }
 
+    /**
+     * Note: if the parameter name (paramName) is either 'Accept' or 'Content-type', this
+     * method will override {@link PostClient#setMediaType(java.lang.String) setMediaType} and
+     * {@link PostClient#setContentType(java.lang.String) setContentType} respectively. In general
+     * it is not advisable that you choose this method for setting values to these headers. Once the
+     * parameter name and its value are submitted to the client, they are encoded using the
+     * standard UTF-8 encoding.
+     * @param paramName Name of the parameter which will be posted in the header
+     * @param paramValue Parameter value
+     * @return This object
+     * @throws NullPointerException
+     *          If any of the arguments is null
+     */
+    public AbstractClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
+        if (paramName == null) {
+            throw new NullPointerException("ParamName is null");
+        }
+        if (paramValue == null) {
+            throw new NullPointerException("ParamValue is null");
+        }
+        if (RequestHeaders.ACCEPT.equalsIgnoreCase(paramName)) {
+            setMediaType(paramValue);
+            return this;
+        }
+        headerValues.put(paramName, paramValue);
+        return this;
+    }
+
     protected abstract java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException;
 
-     /** Get the normal stream of the response (body) */
+    /** Get the normal stream of the response (body) */
     public java.io.InputStream getRemoteStream() throws ToxOtisException, java.io.IOException {
         if (con == null) {
             con = initializeConnection(vri.toURI());
@@ -56,6 +87,13 @@ public abstract class AbstractClient {
         }
     }
 
+    /**
+     * Get the response body in plain text format.
+     * @return
+     *      String consisting of the response body.
+     * @throws ToxOtisException
+     *      In case some communication, server or request error occurs.
+     */
     public String getResponseText() throws ToxOtisException {
         if (con == null) {
             con = initializeConnection(vri.toURI());
@@ -91,6 +129,18 @@ public abstract class AbstractClient {
         }
     }
 
+    /**
+     * If possible, get the ontological model provided in the response. This assumes
+     * that the {@link RequestHeaders#ACCEPT Accept} Header of the request has value
+     * <code>application/rdf+xml</code> or at least some other rdf-related MIME (like for
+     * example <code>application/x-turtle</code>.
+     * @return
+     *      The ontological model from the response body.
+     * @throws ToxOtisException
+     *      A ToxOtisException is thrown in case the server did not provide a valid
+     *      (syntactically correct) ontological model, or in case some communication
+     *      error will arise.
+     */
     public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ToxOtisException {
         try {
             com.hp.hpl.jena.ontology.OntModel om = new SimpleOntModelImpl();
@@ -111,13 +161,15 @@ public abstract class AbstractClient {
 
     /**
      * Specify the mediatype to be used in the <tt>Accept</tt> header.
-     * @param mediaType Accepted mediatype
+     * @param mediaType 
+     *      Accepted mediatype
+     *
+     * @see RequestHeaders#ACCEPT
      */
     public AbstractClient setMediaType(String mediaType) {
         this.acceptMediaType = mediaType;
         return this;
     }
-
 
     /**
      * Set the URI on which the GET method is applied.
@@ -138,5 +190,4 @@ public abstract class AbstractClient {
         this.vri = new VRI(uri);
         return this;
     }
-
 }

@@ -19,7 +19,6 @@ public class PostClient extends AbstractClient {
     private String contentType = null;
     /** Parameters to be posted as application/x-www-form-urlencoded (if any) */
     private Map<String, String> postParameters = new HashMap<String, String>();
-    private Map<String, String> headerValues = new HashMap<String, String>();
     /** The method that this client applies */
     public static final String METHOD = "POST";
 
@@ -61,20 +60,8 @@ public class PostClient extends AbstractClient {
         return this;
     }
 
-    /**
-     * Note: if the parameter name (paramName) is either 'Accept' or 'Content-type', this
-     * method will override {@link PostClient#setMediaType(java.lang.String) setMediaType} and
-     * {@link PostClient#setContentType(java.lang.String) setContentType} respectively. In general
-     * it is not advisable that you choose this method for setting values to these headers. Once the
-     * parameter name and its value are submitted to the client, they are encoded using the
-     * standard UTF-8 encoding.
-     * @param paramName Name of the parameter which will be posted in the header
-     * @param paramValue Parameter value
-     * @return This object
-     * @throws NullPointerException
-     *          If any of the arguments is null
-     */
-    public PostClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
+    @Override
+    public AbstractClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
         if (paramName == null) {
             throw new NullPointerException("ParamName is null");
         }
@@ -89,8 +76,7 @@ public class PostClient extends AbstractClient {
             setContentType(paramValue);
             return this;
         }
-        headerValues.put(paramName, paramValue);
-        return this;
+        return super.addHeaderParameter(paramName, paramValue);
     }
 
     private String getParametersAsQuery() {
