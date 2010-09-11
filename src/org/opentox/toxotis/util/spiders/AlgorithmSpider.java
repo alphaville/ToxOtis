@@ -10,8 +10,10 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.collection.OpenToxAlgorithms;
+import org.opentox.toxotis.collection.Services;
 import org.opentox.toxotis.core.Algorithm;
-import org.opentox.toxotis.core.AuthenticationToken;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
@@ -21,38 +23,61 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class AlgorithmSpider extends Tarantula<Algorithm> {
 
+    /**
+     * URI of the algorithm to be downloaded and parsed stored in
+     * a private field.
+     */
     private VRI uri;
-    private AuthenticationToken token = null;
 
+    /**
+     * Create a new AlgorithmSpider providing the URI of the algorithm to be
+     * <em>spidered</em> and an authentication token that will allow the client
+     * to access the content of the algorithm.
+     * @param uri
+     *      The URI of the algorithm to be downloaded and parsed into an {@link
+     *      Algorithm } object. You can pick an algorithm URI from the list inside
+     *      {@link OpenToxAlgorithms }; for example {@link OpenToxAlgorithms#NTUA_MLR MLR}
+     *      from the {@link Services#NTUA_SERVICES NTUA} server.
+     * @param token
+     *      An authentication token that will grant the client access to the resource.
+     * @throws ToxOtisException
+     *      In case some exceptional event occurs during the server-client communication,
+     *      the connection is not possible (e.g. the remote server is down), or the
+     *      response status is 403 (Authentication Failed), 401 (The user is not authorized),
+     *      404 (Algorithm not found on the server), 500 (Some internal server error
+     *      occured) or other exceptional status code.
+     */
     public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
-        super();
-        this.token = token;
-        //TODO: Implement this one!
+        this(uri.addUrlParameter("tokenid", token.getTokenUrlEncoded()));
     }
 
     /**
+     *
      * @param uri
      * @throws ToxOtisException
      */
     public AlgorithmSpider(VRI uri) throws ToxOtisException {
         super();
-        this.uri = uri;        
+        this.uri = uri;
         GetClient client = new GetClient();
         client.setMediaType("application/rdf+xml");
         client.setUri(uri);
         try {
+            /*
+             * Handle excpetional events caused during the server-client communiation.
+             */
             final int status = client.getResponseCode();
             if (status == 403) {
-                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + uri+"'");
+                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + uri + "'");
             }
             if (status == 401) {
-                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + uri+"'");
+                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + uri + "'");
             }
             if (status == 404) {
-                throw new ToxOtisException(ErrorCause.AlgorithmNotFound, "The following algorithm was not found : '" + uri+"'");
+                throw new ToxOtisException(ErrorCause.AlgorithmNotFound, "The following algorithm was not found : '" + uri + "'");
             }
             if (status != 200) {
-                throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + uri+"'");
+                throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + uri + "'");
             }
         } catch (IOException ex) {
             throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
@@ -69,7 +94,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
-        if (algorithm == null){
+        if (algorithm == null) {
             throw new ToxOtisException("Make sure that the URI you provided holds a valid representation of an OpenTox algorithm.");
         }
         algorithm.setOntologies(getOTATypes(resource));
@@ -86,5 +111,4 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
         return algorithm;
 
     }
-              
 }

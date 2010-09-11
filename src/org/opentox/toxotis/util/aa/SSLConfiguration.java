@@ -11,7 +11,7 @@ import javax.net.ssl.SSLSession;
 
 
 /**
- * IMPORTANT: You have to add the certificate from opensso.in-silico.ch
+ * IMPORTANT NOTE: You have to add the certificate from opensso.in-silico.ch
  * to your $JAVA_HOME. To do this, run the main method in InstallCert (this
  * is provided by Sun). This will produce a file (ignore the exception messages).
  * @author Pantelis Sopasakis

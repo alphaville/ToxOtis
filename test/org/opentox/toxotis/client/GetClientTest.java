@@ -50,7 +50,7 @@ public class GetClientTest {
     public void testGETURIlist() throws URISyntaxException, ToxOtisException, IOException {
         System.out.println("--. Testing GetClient#getUriList()");
         GetClient client = new GetClient();
-        client.setUri("http://opentox.ntua.gr:3000/algorithm").setMediaType("will be ignored");
+        client.setUri(new VRI("http://opentox.ntua.gr:3000/algorithm")).setMediaType("will be ignored");
         List<String> algorithms = client.getResponseUriList();
         assertEquals(4, algorithms.size());
         assertTrue(algorithms.contains("http://opentox.ntua.gr:3000/algorithm/svm"));
