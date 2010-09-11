@@ -16,7 +16,12 @@ import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class BibTeX extends OTComponent<BibTeX> {
+public class BibTeX extends OTOnlineResource<BibTeX> {
+
+    @Override
+    public BibTeX loadFromRemote() throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     public enum BIB_TYPE {
 
@@ -26,7 +31,6 @@ public class BibTeX extends OTComponent<BibTeX> {
         Phdthesis,
         Entry;
     }
-   
     private String m_abstract;
     private String m_author;
     private String m_title;
@@ -47,7 +51,7 @@ public class BibTeX extends OTComponent<BibTeX> {
     private String m_keywords;
     private String m_key;
     private String m_annotation;
-    private String m_series;    
+    private String m_series;
     private String m_url;
     private BIB_TYPE m_bib_type;
 
@@ -386,10 +390,8 @@ public class BibTeX extends OTComponent<BibTeX> {
         result.append("\n}\n");
         return result.toString();
     }
-    
 
-    @Override
-    public BibTeX createFrom(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public BibTeX createFromString(String string) {
+        return this;
     }
 }

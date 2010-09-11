@@ -9,7 +9,7 @@ import org.opentox.toxotis.util.spiders.TypedValue;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class FeatureValue extends OTComponent<FeatureValue>{
+public class FeatureValue extends OTComponent<FeatureValue> {
 
     private Feature feature;
     private TypedValue value;
@@ -39,14 +39,7 @@ public class FeatureValue extends OTComponent<FeatureValue>{
     }
 
     @Override
-    public FeatureValue createFrom(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-
 }

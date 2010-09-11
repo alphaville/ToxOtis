@@ -3,6 +3,7 @@ package org.opentox.toxotis.core;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.List;
+import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 
 /**
@@ -12,7 +13,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Dataset extends OTComponent<Dataset>{
+public class Dataset extends OTOnlineResource<Dataset>{
 
     List<DataEntry> dataEntries;
 
@@ -35,13 +36,13 @@ public class Dataset extends OTComponent<Dataset>{
         this.dataEntries = dataEntries;
     }
 
-    @Override
-    public Dataset createFrom(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public Individual asIndividual(OntModel model) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Dataset loadFromRemote() throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

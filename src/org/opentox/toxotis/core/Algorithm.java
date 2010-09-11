@@ -6,8 +6,10 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.util.spiders.AlgorithmSpider;
 
 /**
  * Provides access to different types of algorithms. An algorithm object contains
@@ -20,7 +22,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Algorithm extends OTComponent<Algorithm> {
+public class Algorithm extends OTOnlineResource<Algorithm> {
 
     /** Set of parameters of the algorithm. Specify the way the algorithm is parametrized */
     private Set<Parameter> parameters = new HashSet<Parameter>();
@@ -72,12 +74,17 @@ public class Algorithm extends OTComponent<Algorithm> {
     }
 
     @Override
-    public Algorithm createFrom(OntModel model) {
+    public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Individual asIndividual(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Algorithm loadFromRemote() throws ToxOtisException {
+        AlgorithmSpider spider = new AlgorithmSpider(getUri());
+        Algorithm algorithm = spider.parse();
+        setMeta(algorithm.getMeta());
+        setOntologies(algorithm.getOntologies());
+        setParameters(algorithm.getParameters());
+        return this;
     }
 }

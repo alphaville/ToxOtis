@@ -62,17 +62,11 @@ public class DataEntry extends OTComponent<DataEntry>{
         return featureValues.get(index);
     }
 
-    @Override
-    public DataEntry createFrom(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
 
 
 

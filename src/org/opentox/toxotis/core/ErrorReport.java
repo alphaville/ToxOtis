@@ -2,6 +2,8 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.VRI;
 
 /**
  * Error Reports are part of the OpenTox API since version 1.1. Error Reports define a
@@ -13,13 +15,12 @@ import com.hp.hpl.jena.ontology.OntModel;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class ErrorReport extends OTComponent<ErrorReport>{
+public class ErrorReport extends OTOnlineResource<ErrorReport> {
 
     private int errorCode;
     private String actor;
     private String message;
     private String details;
-        
     private ErrorReport errorCause;
 
     public ErrorReport() {
@@ -65,17 +66,12 @@ public class ErrorReport extends OTComponent<ErrorReport>{
         this.message = message;
     }
 
-
-    @Override
-    public ErrorReport createFrom(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Override
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
-
+    public ErrorReport loadFromRemote() throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

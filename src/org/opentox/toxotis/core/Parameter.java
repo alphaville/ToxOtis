@@ -66,11 +66,6 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
     }// </editor-fold>
 
     @Override
-    public Parameter<T> createFrom(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Individual asIndividual(OntModel model) {
 
         Individual indiv = model.createIndividual(getUri().toString(), OTClasses.Parameter().inModel(model));

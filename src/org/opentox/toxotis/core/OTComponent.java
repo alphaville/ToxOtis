@@ -2,9 +2,6 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import java.net.URISyntaxException;
-import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
@@ -43,59 +40,9 @@ public abstract class OTComponent<T extends OTComponent> {
         return meta;
     }
 
-    public T setMeta(MetaInfo meta){
+    public T setMeta(MetaInfo meta) {
         this.meta = meta;
         return (T) this;
-    }
-
-
-    /**
-     * Parses a given ontological model and returns an instance of the underlying
-     * object identified by the generic datatype <code>T</code>.
-     * @param model
-     *      Ontological Model that is parsed to generate an object of type
-     *      <code>T</code>.
-     * @return
-     *      An OpenTox Component.
-     */
-    public abstract T createFrom(OntModel model);
-
-    /**
-     * Update the current component according to some remote resource. Load information
-     * from the remote location.
-     * @param uri
-     *      The remote destination where the data will be downloaded from provided
-     *      as a String.
-     * @return
-     *      An OpenTox component as an instance of <code>T</code>, i.e. of the
-     *      same type with the object performing the request.
-     * @throws URISyntaxException
-     *      In case the provided URI (as String) is not syntactically correct.
-     * @throws ToxOtisException
-     *      In case the Ontological Model cannot be downloaded from the specified
-     *      online resource.
-     */
-    public T loadFromRemote(String uri) throws URISyntaxException, ToxOtisException {
-        return loadFromRemote(new VRI(uri));
-    }
-
-    /**
-     * Update the current component according to some remote resource. Load information
-     * from the remote location.
-     * @param uri
-     *      The remote destination where the data will be downloaded from provided
-     *      as an instance of {@link VRI }.
-     * @return
-     *      An OpenTox component as an instance of <code>T</code>, i.e. of the
-     *      same type with the object performing the request.
-     * @throws ToxOtisException
-     *      In case the Ontological Model cannot be downloaded from the specified
-     *      online resource.
-     */
-    public T loadFromRemote(VRI uri) throws ToxOtisException {
-        GetClient client = new GetClient();
-        client.setUri(uri);
-        return createFrom(client.getResponseOntModel());
     }
 
     /**
@@ -149,7 +96,6 @@ public abstract class OTComponent<T extends OTComponent> {
         }
         return true;
     }
-    
 
     @Override
     public int hashCode() {
@@ -157,6 +103,4 @@ public abstract class OTComponent<T extends OTComponent> {
         hash = 79 * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
     }
-
-
 }

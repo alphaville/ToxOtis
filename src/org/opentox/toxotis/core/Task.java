@@ -2,33 +2,49 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import java.util.Date;
+import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Task extends OTComponent<Task>{
+public class Task extends OTOnlineResource<Task> {
 
-    public enum Status{
+    public Task loadFromRemote() throws ToxOtisException {
+        TaskSpider tSpider = new TaskSpider(uri);
+        Task downloadedTask = tSpider.parse();
+        setMeta(downloadedTask.getMeta());
+        setErrorReport(downloadedTask.getErrorReport());
+        setHasStatus(downloadedTask.getHasStatus());
+        setPercentageCompleted(downloadedTask.getPercentageCompleted());
+        setResultUri(downloadedTask.getResultUri());
+        return this;
+    }
+
+    public enum Status {
+
         RUNNING,
         COMPLETED,
         CANCELLED;
     }
-
     private VRI resultUri;
     private Status hasStatus;
     private float percentageCompleted;
-
     private ErrorReport errorReport;
 
     public Task() {
+        super();
     }
 
-    
+    public Task(VRI uri) {
+        super(uri);
+    }
+
+
+
     public Status getHasStatus() {
         return hasStatus;
     }
@@ -60,16 +76,9 @@ public class Task extends OTComponent<Task>{
     public void setErrorReport(ErrorReport errorReport) {
         this.errorReport = errorReport;
     }
-    
-
-    @Override
-    public Task createFrom(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

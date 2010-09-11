@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.ArrayList;
 import java.util.List;
+import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 
 /**
@@ -14,7 +15,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Compound extends OTComponent<Compound> {
+public class Compound extends OTOnlineResource<Compound>{
 
     private List<Conformer> conformers;
 
@@ -40,13 +41,14 @@ public class Compound extends OTComponent<Compound> {
         return getConformers().get(0);
     }
 
+
     @Override
-    public Compound createFrom(OntModel model) {
+    public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Individual asIndividual(OntModel model) {
+    public Compound loadFromRemote() throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.Iterator;
 import java.util.Set;
+import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
 
@@ -18,7 +19,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Feature extends OTComponent<Feature> {
+public class Feature extends OTOnlineResource<Feature> {
 
     private Set<OntologicalClass> ontologies;
     private String units;
@@ -45,11 +46,6 @@ public class Feature extends OTComponent<Feature> {
 
     public void setUnits(String units) {
         this.units = units;
-    }
-
-    @Override
-    public Feature createFrom(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -83,5 +79,9 @@ public class Feature extends OTComponent<Feature> {
         }
 
         return new String(builder);
+    }
+
+    public Feature loadFromRemote() throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
