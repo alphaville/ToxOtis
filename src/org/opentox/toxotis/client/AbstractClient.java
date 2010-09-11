@@ -25,9 +25,7 @@ public abstract class AbstractClient {
     protected static final int bufferSize = 4194304;
     /** Accepted mediatype  */
     protected String acceptMediaType = null;
-    protected static final String ACCEPT_HEADER = "Accept";
-    protected static final String CONTENT_TYPE_HEADER = "Content-type";
-    protected static final String CONTENT_LENGTH_HEADER = "Content-Length";
+    
 
     /**
      * Get the targetted URI

@@ -81,11 +81,11 @@ public class PostClient extends AbstractClient {
         if (paramValue == null) {
             throw new NullPointerException("ParamValue is null");
         }
-        if (ACCEPT_HEADER.equalsIgnoreCase(paramName)) {
+        if (RequestHeaders.ACCEPT.equalsIgnoreCase(paramName)) {
             setMediaType(paramValue);
             return this;
         }
-        if (CONTENT_TYPE_HEADER.equalsIgnoreCase(paramName)) {
+        if (RequestHeaders.CONTENT_TYPE.equalsIgnoreCase(paramName)) {
             setContentType(paramValue);
             return this;
         }
@@ -128,10 +128,10 @@ public class PostClient extends AbstractClient {
             con.setDoOutput(true); // allow data to be posted
             con.setUseCaches(false);
             if (contentType != null) {
-                con.setRequestProperty(CONTENT_TYPE_HEADER, contentType);
+                con.setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
             }
             if (acceptMediaType != null) {
-                con.setRequestProperty(ACCEPT_HEADER, acceptMediaType);
+                con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
             }
             if (!headerValues.isEmpty()) {
                 for (Map.Entry<String, String> e : headerValues.entrySet()) {
@@ -143,8 +143,8 @@ public class PostClient extends AbstractClient {
              */
             if (!postParameters.isEmpty()) {
                 setContentType(MEDIATYPE_FORM_URL_ENCODED);
-                con.setRequestProperty(CONTENT_TYPE_HEADER, contentType);
-                con.setRequestProperty(CONTENT_LENGTH_HEADER, 
+                con.setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
+                con.setRequestProperty(RequestHeaders.CONTENT_LENGTH,
                         Integer.toString(getParametersAsQuery().getBytes().length));
             }
             return con;

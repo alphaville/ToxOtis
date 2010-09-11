@@ -28,7 +28,7 @@ public class GetClient extends AbstractClient {
             con.setUseCaches(false);
             con.setRequestMethod(METHOD);
             if (acceptMediaType != null) {
-                con.setRequestProperty(ACCEPT_HEADER, acceptMediaType);
+                con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
             }
             return con;
         } catch (final Exception ex) {

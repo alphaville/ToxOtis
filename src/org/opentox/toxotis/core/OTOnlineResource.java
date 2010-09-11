@@ -8,7 +8,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class OTOnlineResource<T extends OTComponent> extends OTComponent<T> {
+public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> {
 
     public OTOnlineResource(VRI uri) {
         super(uri);

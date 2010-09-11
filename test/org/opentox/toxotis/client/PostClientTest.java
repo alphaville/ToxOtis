@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.opentox.toxotis.client;
 
 import java.net.URISyntaxException;
@@ -11,7 +6,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -47,7 +41,7 @@ public class PostClientTest {
         PostClient pc = new PostClient(new VRI("http://localhost:3000/algorithm/mlr"));
         pc.addParameter("dataset_uri", datasetUri);
         pc.addParameter("prediction_feature", targetFeatureUri);
-        pc.postParameters();
+        pc.postParameters();        
         System.out.println(pc.getResponseText());
     }
 
