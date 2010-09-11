@@ -156,8 +156,12 @@ h3. 2.7. Task
 * Given a URI of a task, download and parse it, check the status of the task
 * Get a list of all tasks on a server 
 
-h3. Dependencies
+h2. 3. Dependencies
 
 This project depends on the following libraries (Should be downloaded and added in your classpath).
 
 * Jena, version 2.6.2: Download Jena from http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download. [Make sure to download version 2.6.2. otherwise there is no guarantee it will work as expected.]
+
+h2. 4. Licensing
+
+This project is licensed under the GNU GPL license version 3.0. A copy of this license is found in the ./Licenses folder. Licenses for all dependencies of this project are also included in this directory.
