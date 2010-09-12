@@ -56,6 +56,9 @@ public class EmailValidator {
             + "([\\x20\\x09]+((\\x0d\\x0a)[\\x20\\x09]+)*))*?([\\x41-\\x5a\\x61-\\x7a]|[\\x30-\\x39]|"
             + "[\\x21\\x23-\\x27\\x2a\\x2b\\x2d\\x2e\\x3d\\x3f\\x5e\\x5f\\x60\\x7b-\\x7e])+((([\\x20\\x09]*"
             + "(\\x0d\\x0a))?[\\x20\\x09]+)|([\\x20\\x09]+((\\x0d\\x0a)[\\x20\\x09]+)*))*?))*)))";
+    /**
+     * Extensions copied from http://www.velocityreviews.com/forums/t125158-java-email-validator.html
+     */
     private static String[] mailExt = new String[]{
         "ac", "ad", "ae", "af", "ag", "ai", "al", "am", "an", "ao", "aq",
         "ar", "as", "at", "au", "aw", "az", "ba", "bb", "bd", "be", "bf",

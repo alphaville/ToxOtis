@@ -1,6 +1,5 @@
 package org.opentox.toxotis.util.aa;
 
-
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -8,7 +7,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
-
+import org.opentox.toxotis.collection.Services;
 
 /**
  * IMPORTANT NOTE: You have to add the certificate from opensso.in-silico.ch
@@ -19,21 +18,19 @@ import javax.net.ssl.SSLSession;
  */
 public class SSLConfiguration {
 
-
     private static boolean isSslInitialized = false;
-    private static final String openSsoHost = "opensso.in-silico.ch";
+    private static final String PROTOCOL = "SSL";
 
-    public static void initializeSSLConnection(){
-        if (!isSslInitialized){
+    public static void initializeSSLConnection() {
+        if (!isSslInitialized) {
             initSsl();
         }
     }
 
-
-    private static void initSsl(){
+    private static void initSsl() {
         SSLContext sc = null;
         try {
-            sc = SSLContext.getInstance("SSL");
+            sc = SSLContext.getInstance(PROTOCOL);
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }
@@ -50,12 +47,11 @@ public class SSLConfiguration {
             public boolean verify(String urlHostName, SSLSession session) {
                 /* This is to avoid spoofing */
                 return (urlHostName.equals(session.getPeerHost())
-                        && urlHostName.equals(openSsoHost));
+                        && urlHostName.equals(Services.SSO_HOST));
             }
         };
 
         HttpsURLConnection.setDefaultHostnameVerifier(hv);
         isSslInitialized = true;
     }
-
 }

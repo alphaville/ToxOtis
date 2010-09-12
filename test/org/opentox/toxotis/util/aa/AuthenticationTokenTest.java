@@ -34,7 +34,7 @@ public class AuthenticationTokenTest {
 
     @Test
     public void testAcquireToken() throws ToxOtisException {
-        AuthenticationToken at = new AuthenticationToken("Sopasakis", "abfhs8y"); // << Provide your credentials here
+        AuthenticationToken at = new AuthenticationToken("Sopasakis", "xxx"); // << Provide your credentials here
         System.out.println(at.getToken());
         System.out.println(at.getTokenUrlEncoded());
         System.out.println(at.getTokenCreationTimestamp());

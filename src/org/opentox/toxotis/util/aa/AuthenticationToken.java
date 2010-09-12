@@ -8,8 +8,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.secure.SecurePostClient;
@@ -41,23 +39,65 @@ public class AuthenticationToken {
     private static final long tokenLocalLifeTime = 23 * 3600 * 1000L; // 23hrs
     /** Encoding used to encode tokens received from the SSO server */
     private String encoding = "UTF-8";
-    private static final String tokenValidationUrl = String.format(Services.SSO_IDENTITY, "isTokenValid");
-    private static final String tokenAuthenticationUrl = String.format(Services.SSO_IDENTITY, "authenticate");
-    private static final String tokenInvalidationUrl = String.format(Services.SSO_IDENTITY, "logout");
-    private static final String attribtuesLDAP = String.format(Services.SSO_IDENTITY, "attributes");
+    /** SSO server (A&A) */
+    private String ssoServer = Services.SSO_IDENTITY;
+    /** Service for the validation of tokens: Client needs to know whether a token is valid */
+    private String tokenValidationUrl = String.format(Services.SSO_IDENTITY, "isTokenValid");
+    /** Authentication Service: The client provides credentials and acquires token */
+    private String tokenAuthenticationUrl = String.format(Services.SSO_IDENTITY, "authenticate");
+    /** Logout service */
+    private String tokenInvalidationUrl = String.format(Services.SSO_IDENTITY, "logout");
+    /** LDAP proxy service: The client needs a summary of its attributes (username, email etc) */
+    private String attribtuesLDAP = String.format(Services.SSO_IDENTITY, "attributes");
+    /** Flag used to tell if the token is logged out */
     private boolean logOut = false;
 
+    /**
+     * Initialize a new Authentication Token. The constructor also initializes
+     * the SSL connection with the openSSO server.
+     * @see Services#SSO_SERVER Default SSO Server
+     */
     public AuthenticationToken() {
         SSLConfiguration.initializeSSLConnection();
     }
 
+    /**
+     * <p align=justify>Create a new token providing its String representation. The timestamp of
+     * the constructor invocation is set as the creation timestamp of the token, but
+     * it has to the validated against the openSSO server using the method {@link
+     * AuthenticationToken#validate() validate()} to make sure that the token
+     * will be acceptable by OpenTox services. End users are adviced to prefer the
+     * constructor {@link AuthenticationToken#AuthenticationToken(java.lang.String, java.lang.String) },
+     * providing their username and password.</p>
+     * @param token
+     *      The token as a String.
+     */
     public AuthenticationToken(String token) {
         this();
         this.token = token;
         this.tokenCreationTimestamp = System.currentTimeMillis();
     }
 
+    /**
+     * <p align=justify>Create a new Authentication token providing your credentials.
+     * These credentials are posted to the {@link AuthenticationToken#getSsoServer() SSO} server
+     * which (if they are valid) returns a token. This is used to construct a new
+     * Authentication Token object. The timestamp of the method invokation is set as
+     * the timestamp for the object construction. All data transactions take place
+     * over secure layers (SSL) and using encryption (TLS).
+     * </p>
+     * @param username
+     *      The username of an OpenTox user
+     * @param password
+     *      The password of an OpenTox user
+     * @throws ToxOtisException
+     *      In case the credentials are not valid, some exceptional event occurs
+     *      during the data transaction or in case the SSO service returns an
+     *      error code other than expected (e.g. encounters some internal error
+     *      and returns a status code 500).
+     */
     public AuthenticationToken(String username, String password) throws ToxOtisException {
+        this();
         try {
             SecurePostClient poster = new SecurePostClient(new VRI(tokenAuthenticationUrl));
             poster.addParameter("username", username);
@@ -78,6 +118,41 @@ public class AuthenticationToken {
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public String getSsoServer() {
+        return ssoServer;
+    }
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    /**
+     * Specify the standard encoding that should be used for the encoding of the
+     * token. This will affect the method {@link AuthenticationToken#getTokenUrlEncoded() }.
+     * By default this is set to <code>UTF-8</code>.
+     * @param encoding
+     *      Standard Encoding.
+     */
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    /**
+     * Set the SSO server. Default value is https://opensso.in-silico.ch/opensso/identity/%s.
+     * @param ssoServer
+     *      The URL of the SSO server.
+     */
+    public void setSsoServer(String ssoServer) {
+        if (!ssoServer.matches(".+/%s")) {
+            if (ssoServer.matches(".+/")) {
+                ssoServer += "%s";
+            } else {
+                ssoServer += "/%s";
+            }
+        }
+        this.ssoServer = ssoServer;
     }
 
     /**
@@ -124,6 +199,10 @@ public class AuthenticationToken {
         return token;
     }
 
+    /**
+     * Returns the token as a URL encoded String.
+     * @return
+     */
     public String getTokenUrlEncoded() {
         try {
             return URLEncoder.encode(token, encoding);
@@ -205,6 +284,14 @@ public class AuthenticationToken {
         }
     }
 
+    /**
+     * Information about the user that holds the token (for which the token was
+     * created).
+     * @return
+     *      User information as an instance of {@link User }.
+     * @throws ToxOtisException
+     *
+     */
     public User getUser() throws ToxOtisException {
         try {
             User u = new User();
