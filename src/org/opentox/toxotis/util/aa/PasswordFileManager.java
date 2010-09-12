@@ -41,7 +41,26 @@ import org.opentox.toxotis.ToxOtisException;
  * AuthenticationToken at = PasswordFileManager.CRYPTO.
  *    authFromFile("./secret/my.key");
  * </pre>
- *
+ * <p align=justify>
+ * <b>It does not work:</b> The most common reasons for exceptional events are the
+ * following:
+ * <ol>
+ * <li>The master password file is not found: Make sure you have created a master
+ * password file and have stored it in a directory where the application has access
+ * and read priviledges. You can set the path of the master key file using the method
+ * {@link PasswordFileManager#setMasterPasswordFile(java.lang.String)
+ * setMasterPasswordFile(String)}. The default destination for this file is
+ * './secret/secret.key' on linux and MacOSX machines and '.\secret\secret.key'
+ * on Windows.</li>
+ * <li>The master key file has bad syntax: Make sure your master key file has the
+ * header <code>--- START MASTER KEY ---</code> as the first line and the footer
+ * <code>--- END MASTER KEY ---</code> at the end. Leave no empty lines.</li>
+ * <li>The master key is found and is valid but you cannot authenticate yourself:
+ * This might happen if your password file was created with less or more <code>salt</code>.
+ * Check out the salting iterations using the method {@link PasswordFileManager#getCryptoIterations()
+ * getCryptoIterations()} (The default value is 23).</li>
+ * </ol>
+ * </p>
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  *
@@ -50,6 +69,11 @@ import org.opentox.toxotis.ToxOtisException;
  */
 public class PasswordFileManager {
 
+    private int cryptoIterations = 23;
+    private String masterPasswordFile;
+    private javax.crypto.Cipher eCipher;
+    private javax.crypto.Cipher dCipher;
+    private static char[] masterPassword;
     /** This class is a singleton and this is the access point for it. */
     public static final PasswordFileManager CRYPTO = getInstance();
     /** A dummy variable holding the instance of the singleton */
@@ -63,6 +87,9 @@ public class PasswordFileManager {
     }
 
     private PasswordFileManager() {
+        super();
+        String PATH_SEP = System.getProperty("file.separator");
+        masterPasswordFile = "." + PATH_SEP + "secret" + PATH_SEP + "secret.key";
         FileReader fr = null;
         BufferedReader br = null;
         try {
@@ -178,9 +205,13 @@ public class PasswordFileManager {
     public synchronized AuthenticationToken authFromFile(String filePath) throws IOException, ToxOtisException {
         File file = new File(filePath);
         if (!file.exists()) {
-            throw new FileNotFoundException("File : '" + filePath + "' was not found!");
+            throw new FileNotFoundException("No file found at : '" + filePath + "'");
         }
-        FileReader fr = new FileReader(filePath);
+        return authFromFile(file);
+    }
+
+    public synchronized AuthenticationToken authFromFile(File file) throws IOException, ToxOtisException {
+        FileReader fr = new FileReader(file);
         BufferedReader br = null;
         String username = null;
         String password = null;
@@ -188,8 +219,8 @@ public class PasswordFileManager {
             br = new BufferedReader(fr);
             String line;
             line = br.readLine();
-            if (line==null || (line!=null && !line.equals("--- START PRIVATE KEY ---"))){
-                throw new ToxOtisException("Invalid password file");
+            if (line == null || (line != null && !line.equals("--- START PRIVATE KEY ---"))) {
+                throw new ToxOtisException("Invalid password file: Header not found!");
             }
             line = br.readLine();
             if (line != null) {
@@ -200,8 +231,8 @@ public class PasswordFileManager {
                 password = decrypt(line);
             }
             line = br.readLine();
-            if (line==null || (line!=null && !line.equals("--- END PRIVATE KEY ---"))){
-                throw new ToxOtisException("Invalid password file 2");
+            if (line == null || (line != null && !line.equals("--- END PRIVATE KEY ---"))) {
+                throw new ToxOtisException("Invalid password file: Footer not found!");
             }
             AuthenticationToken at = new AuthenticationToken(username, password);
             return at;
@@ -239,9 +270,4 @@ public class PasswordFileManager {
     public void setCryptoIterations(int cryptoIterations) {
         this.cryptoIterations = cryptoIterations;
     }
-    private int cryptoIterations = 23;
-    private String masterPasswordFile = "./secret/secret.key";
-    private javax.crypto.Cipher eCipher;
-    private javax.crypto.Cipher dCipher;
-    private static char[] masterPassword;
 }
