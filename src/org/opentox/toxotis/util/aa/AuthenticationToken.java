@@ -220,7 +220,11 @@ public class AuthenticationToken {
     }
 
     /**
-     * Ask the remote SSO server whether this token is valid.
+     * Ask the remote SSO server whether this token is valid. This method performs
+     * a (secure) connection to the validation service on the SSO server and
+     * POSTs the token. The RESTful API concerning A&A can be found online at
+     * http://opentox.org/dev/apis/api-1.1/AA.
+     *
      * @return
      *      <code>true</code> if a positive response was returned from the remote
      *      server and <code>false</code> otherwise.
@@ -303,30 +307,31 @@ public class AuthenticationToken {
             BufferedReader reader = null;
             try {
                 final String valueKey = "userdetails.attribute.value=";
+                final String nameKey = "userdetails.attribute.name=%s";
                 is = poster.getRemoteStream();
                 reader = new BufferedReader(new InputStreamReader(is));
                 String line;
                 while ((line = reader.readLine()) != null) {
                     line = line.trim();
-                    if (line.equals("userdetails.attribute.name=uid")) {
+                    if (line.equals(String.format(nameKey, "uid"))) {
                         line = reader.readLine();
                         if (line != null) {
                             line = line.trim();
                             u.setUid(line.replaceAll(valueKey, ""));
                         }
-                    } else if (line.equals("userdetails.attribute.name=mail")) {
+                    } else if (line.equals(String.format(nameKey, "mail"))) {
                         line = reader.readLine();
                         if (line != null) {
                             line = line.trim();
                             u.setMail(line.replaceAll(valueKey, ""));
                         }
-                    } else if (line.equals("userdetails.attribute.name=sn")) {
+                    } else if (line.equals(String.format(nameKey, "sn"))) {
                         line = reader.readLine();
                         if (line != null) {
                             line = line.trim();
                             u.setName(line.replaceAll(valueKey, ""));
                         }
-                    } else if (line.equals("userdetails.attribute.name=userpassword")) {
+                    } else if (line.equals(String.format(nameKey, "userpassword"))) {
                         line = reader.readLine();
                         if (line != null) {
                             line = line.trim();
@@ -384,4 +389,18 @@ public class AuthenticationToken {
         hash = 23 * hash + (this.encoding != null ? this.encoding.hashCode() : 0);
         return hash;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Token               : "+getToken());
+        sb.append("\n");
+        sb.append("Token URL-Encoded   : "+getTokenUrlEncoded());
+        sb.append("\n");
+        sb.append("Creation Timestamp  : "+getTokenCreationDate());
+        sb.append("\n");
+        sb.append("Status              : "+getStatus());
+        return new String(sb);
+    }
+
 }

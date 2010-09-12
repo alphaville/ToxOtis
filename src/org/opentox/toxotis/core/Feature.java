@@ -81,7 +81,7 @@ public class Feature extends OTOnlineResource<Feature> {
         return new String(builder);
     }
 
-    public Feature loadFromRemote() throws ToxOtisException {
+    protected Feature loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

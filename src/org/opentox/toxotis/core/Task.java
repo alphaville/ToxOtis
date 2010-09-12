@@ -13,7 +13,7 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  */
 public class Task extends OTOnlineResource<Task> {
 
-    public Task loadFromRemote() throws ToxOtisException {
+    protected  Task loadFromRemote(VRI uri) throws ToxOtisException {
         TaskSpider tSpider = new TaskSpider(uri);
         Task downloadedTask = tSpider.parse();
         setMeta(downloadedTask.getMeta());

@@ -30,7 +30,7 @@ public class Conformer extends OTOnlineResource<Conformer> {
     }
 
     @Override
-    public Conformer loadFromRemote() throws ToxOtisException {
+    protected  Conformer loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

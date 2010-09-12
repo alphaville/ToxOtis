@@ -42,7 +42,7 @@ public class Dataset extends OTOnlineResource<Dataset>{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Dataset loadFromRemote() throws ToxOtisException {
+    protected Dataset loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.*;
 
@@ -163,6 +165,11 @@ public class VRI { // Well tested!
         }
     }
 
+    public VRI(VRI other) {
+        this.uri = other.uri;
+        this.urlParams = other.urlParams;
+    }
+
     /**
      * Create a new VRI object providing its URI as String (can possibly include
      * a query part which will be parsed) and a set of parameters (name-value pairs).
@@ -213,7 +220,9 @@ public class VRI { // Well tested!
     }
 
     /**
-     * Add a URL parameter
+     * Add a URL parameter. As soon as you provide the URL parameter and its value,
+     * these are encoded using the UTF-8 encoding so you do not need to encode them
+     * before submitting them.
      * @param paramName
      *      The name of the parameter
      * @param paramValue
@@ -222,7 +231,11 @@ public class VRI { // Well tested!
      *      The updated VRI on which the method is applied.
      */
     public VRI addUrlParameter(String paramName, String paramValue) {
-        urlParams.put(paramName, paramValue);
+        try {
+            urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(paramValue, URL_ENCODING));
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex);
+        }
         return this;
     }
 

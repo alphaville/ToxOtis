@@ -19,7 +19,7 @@ import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
 public class BibTeX extends OTOnlineResource<BibTeX> {
 
     @Override
-    public BibTeX loadFromRemote() throws ToxOtisException {
+    protected BibTeX loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

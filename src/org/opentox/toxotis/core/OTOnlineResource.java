@@ -2,6 +2,7 @@ package org.opentox.toxotis.core;
 
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  *
@@ -30,5 +31,17 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @see OTComponent#getUri()
      * @see OTComponent#setUri(org.opentox.toxotis.client.VRI)
      */
-    public abstract T loadFromRemote() throws ToxOtisException;
+    public  T loadFromRemote() throws ToxOtisException{
+        return loadFromRemote(uri);
+    }
+
+    public T loadFromRemote(AuthenticationToken authentication) throws ToxOtisException{
+        VRI authenticatedUri = new VRI(uri);
+        authenticatedUri.addUrlParameter("tokenid", authentication.getToken());
+        return loadFromRemote(authenticatedUri);
+    }
+
+    protected abstract T loadFromRemote(VRI vri) throws ToxOtisException;
+
+    
 }

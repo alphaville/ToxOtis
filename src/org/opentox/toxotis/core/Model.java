@@ -80,7 +80,7 @@ public class Model extends OTOnlineResource<Model> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Model loadFromRemote() throws ToxOtisException {
+    protected  Model loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

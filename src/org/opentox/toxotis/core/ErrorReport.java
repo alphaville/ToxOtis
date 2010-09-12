@@ -71,7 +71,7 @@ public class ErrorReport extends OTOnlineResource<ErrorReport> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public ErrorReport loadFromRemote() throws ToxOtisException {
+    protected ErrorReport loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

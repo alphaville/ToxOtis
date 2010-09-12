@@ -15,7 +15,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Compound extends OTOnlineResource<Compound>{
+public class Compound extends OTOnlineResource<Compound> {
 
     private List<Conformer> conformers;
 
@@ -41,14 +41,13 @@ public class Compound extends OTOnlineResource<Compound>{
         return getConformers().get(0);
     }
 
-
     @Override
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Compound loadFromRemote() throws ToxOtisException {
+    protected Compound loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -1,5 +1,6 @@
 package org.opentox.toxotis.util.spiders;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 import org.junit.After;
@@ -13,6 +14,7 @@ import org.opentox.toxotis.collection.OpenToxAlgorithms;
 import org.opentox.toxotis.core.Algorithm;
 import org.opentox.toxotis.core.Parameter;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.PasswordFileManager;
 import static org.junit.Assert.*;
 
 /**
@@ -41,9 +43,9 @@ public class AlgorithmSpiderTest {
     }
 
     @Test
-    public void testAlgorithm() throws ToxOtisException, URISyntaxException {
+    public void testAlgorithm() throws ToxOtisException, URISyntaxException, IOException {
         AlgorithmSpider spider = null;
-        final AuthenticationToken tok = new AuthenticationToken("Sopasakis", "secret");// << This is not my password of course!
+        AuthenticationToken tok = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
         for (int i = 0; i < 50; i++) {
             spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.AMBIT_LR.getServiceUri()), tok); // << Authentication/Authorization using token
             Algorithm a = spider.parse();

@@ -44,7 +44,7 @@ public class User {
      *      specifications of RFC 2822.
      * @see EmailValidator
      */
-    public void setMail(String mail) throws ToxOtisException {        
+    public void setMail(String mail) throws ToxOtisException {
         if (!EmailValidator.validate(mail)) {
             throw new ToxOtisException("Bad email address according to RFC 2822 : '" + mail + "'");
         }
@@ -84,5 +84,4 @@ public class User {
         sb.append(hashedPass);
         return new String(sb);
     }
-    
 }
