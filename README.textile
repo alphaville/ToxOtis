@@ -9,7 +9,7 @@ h2. 1. Components
 h3. 1.1. Necessary Components
 
 The following components should be part of the OpenTox client:
-* Compound/Conformer (Compound is abstract and Conformer its Implementation)
+* Compound/Conformer (Compound and Conformer are considered to be distinct objects in this context, i.e. there is no inheritance involved. A compound is, inter alia, characterized by its conformers)
 * Feature
 * Dataset, FeatureValue, DataEntry
 * Algorithm
@@ -54,7 +54,8 @@ Each component needs a method to be transformed into an Ontological Model (OntMo
 
 h4. 1.2.1. Compound/Conformer:
 
-* Chemical Identifiers: CasRN, Smiles
+* Chemical Identifiers: CasRN, Smiles and other related properties are retrieved on request and not upon construction.
+* A compound has a list of conformers that are updated upon request.
 
 
 h4. 1.2.2. Feature
@@ -79,6 +80,7 @@ h4. 1.2.4. DataEntry
 h4. 1.2.5. Algorithm
 
 * Set of parameters (see Parameter)
+* Set of ontological classes formally classifying the algorithm (according to the OpenTox algorithms ontology; see http://opentox.org/dev/apis/api-1.1/Algorithms
 
 
 h4. 1.2.6. Parameter
@@ -99,7 +101,22 @@ h4. 1.2.7. Model
 
 h4. 1.2.8. Task
 
-* 
+* Task status (Completed, Error, Cancelled)
+* Percentage Completed
+* Result URI (null if not completed)
+* Error Report (In case of exceptional events)
+
+h3. Make it available online
+
+The following OpenTox compounds are POSTable by the client, i.e. a client can perform a POST request on a service and obtain a URI for its resource. Then it will be available online on some related server. This way clients can publish datasets, compounds and features.
+
+* Dataset
+* BibTeX
+* Feature
+* Compound
+* Conformer
+
+Upon such a POST request, servers either return a Task or the URI of the created resource.
 
 h2. 2. Supported Functionalities
 
