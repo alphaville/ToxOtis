@@ -1,11 +1,14 @@
 package org.opentox.toxotis.util.spiders;
 
+import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
@@ -49,6 +52,18 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      */
     public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
         this(uri.addUrlParameter("tokenid", token.getTokenUrlEncoded()));
+    }
+
+    public AlgorithmSpider(Resource resource, OntModel model) throws ToxOtisException {
+        super(resource, model);
+        try {
+            uri = new VRI(resource.getURI());
+            if (!Algorithm.class.equals(uri.getOpenToxType())) {
+                throw new ToxOtisException("Bad URI : Not an algorithm URI (" + uri + ")");
+            }
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(AlgorithmSpider.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

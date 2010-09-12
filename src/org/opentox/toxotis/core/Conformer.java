@@ -12,6 +12,15 @@ import org.opentox.toxotis.client.VRI;
  */
 public class Conformer extends OTOnlineResource<Conformer> {
 
+    public Conformer() {
+        super();
+    }
+
+    public Conformer(VRI uri) {
+        super(uri);
+    }
+
+
     public Dataset getProperty(Feature feature) throws ToxOtisException {
         return null;
     }

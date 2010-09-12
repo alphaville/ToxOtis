@@ -8,16 +8,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.Compound;
+import org.opentox.toxotis.core.Model;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author hampos
+ * @author chung
  */
-public class CompoundSpiderTest {
+public class ModelSpiderTest {
 
-    public CompoundSpiderTest() {
+    public ModelSpiderTest() {
     }
 
     @BeforeClass
@@ -37,11 +37,13 @@ public class CompoundSpiderTest {
     }
 
     @Test
-    public void testCompound() throws URISyntaxException, ToxOtisException {
-        CompoundSpider spider = new CompoundSpider(
-                new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/5"));
-        Compound c = spider.parse();
-        System.out.println(c.getUri());
+    public void testSomeMethod() throws URISyntaxException, ToxOtisException {
+        String modelUri = "http://opentox.ntua.gr:3000/model/f9a97443-6baf-4361-a55c-b08cf12c3e39";
+        VRI vri = new VRI(modelUri);
+        ModelSpider mSpider = new ModelSpider(vri);
+        Model m = mSpider.parse();
+        System.out.println(m.getAlgorithm().getMeta());
 
     }
+
 }

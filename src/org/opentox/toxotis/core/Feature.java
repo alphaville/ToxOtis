@@ -7,6 +7,7 @@ import java.util.Set;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.util.spiders.FeatureSpider;
 
 /**
  * A Feature is an object,representing any kind of property, assigned to a
@@ -82,6 +83,11 @@ public class Feature extends OTOnlineResource<Feature> {
     }
 
     protected Feature loadFromRemote(VRI uri) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        FeatureSpider fSpider = new FeatureSpider(uri);
+        Feature f = fSpider.parse();
+        setMeta(f.getMeta());
+        setOntologies(f.getOntologies());
+        setUnits(f.getUnits());
+        return this;
     }
 }

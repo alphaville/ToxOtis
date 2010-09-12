@@ -8,7 +8,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.DataEntry;
 import org.opentox.toxotis.core.Dataset;
+import org.opentox.toxotis.core.FeatureValue;
 import static org.junit.Assert.*;
 
 /**
@@ -38,14 +40,14 @@ public class DatasetSpiderTest {
 
     @Test
     public void testDataset() throws URISyntaxException, ToxOtisException {
-        
-        DatasetSpider spider = new DatasetSpider(
-                new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/6"));
-             //   new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/999/conformer/999"));
 
+        DatasetSpider spider = new DatasetSpider(
+                new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/54"));
         Dataset ds = spider.parse();
         System.out.println(ds.getMeta());
-        System.out.println(ds.getDataEntries().get(0).getFeatureValue(7).getFeature().getUri());
+        DataEntry de = ds.getDataEntries().get(4);
+        FeatureValue fv = de.getFeatureValue(3);
+        System.out.println(de.getConformer().getUri());
+        System.out.println(fv.getFeature().getUri() + " = " + fv.getValue().getValue());
     }
-
 }

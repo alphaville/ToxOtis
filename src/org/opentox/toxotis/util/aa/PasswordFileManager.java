@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import javax.crypto.BadPaddingException;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -74,9 +75,10 @@ public class PasswordFileManager {
     private javax.crypto.Cipher eCipher;
     private javax.crypto.Cipher dCipher;
     private static char[] masterPassword;
-    /** This class is a singleton and this is the access point for it. */
+    /** This class is a singleton and this is the access point for it. Being final users
+    don't need to worry about synchronization*/
     public static final PasswordFileManager CRYPTO = getInstance();
-    /** A dummy variable holding the instance of the singleton */
+    /** A dummy variable holding the instance of the singleton. */
     private static PasswordFileManager instanceOfThis = null;
 
     private static PasswordFileManager getInstance() {
@@ -173,11 +175,28 @@ public class PasswordFileManager {
             byte[] dec = Base64.decode(encrypted);
             byte[] utf8 = dCipher.doFinal(dec);
             return new String(utf8, "UTF-8");
+        } catch (BadPaddingException ex) {
+            throw new SecurityException("The master key might has been corrupted!", ex);
         } catch (Exception exc) {
             throw new SecurityException(exc);
         }
     }
 
+    /**
+     * Create an encrypted file containing the credentials provided in this method.
+     * You need the master password file that was used to encrypt these credentials
+     * to decrypt them and use them to acquire an authentication token.
+     * @param username
+     *      You username
+     * @param password
+     *      Your password
+     * @param filePath
+     *      The file where the credentials should be stored.
+     * @throws IOException
+     *      In case the destination is not reachable or you do not have access and
+     *      write priviledges to that file or other I/O event inhibits the data
+     *      transaction.
+     */
     public synchronized void createPasswordFile(String username, String password, String filePath) throws IOException {
         FileWriter fstream = null;
         BufferedWriter out = null;
@@ -202,6 +221,29 @@ public class PasswordFileManager {
         }
     }
 
+    /**
+     * Acquire an authentication token using the credentials in an encrypted file.
+     * These are decrypted using the master key (the destination to the master
+     * key file should have been set properly) and POSTed to the SSO server which
+     * returns a token for that user or an error response if the credentials are
+     * not valid.
+     *
+     * @param filePath
+     *      Path to the file containing the credentials
+     * @return
+     *      An Authentication Token upon successful authentication against the
+     *      SSO server.
+     * @throws IOException
+     *      In case the file path you provided cannot be found (an instance of
+     *      <code>java.io.FileNotFoundException</code> or if you do not have
+     *      sufficient priviledges to read from that file.
+     * @throws ToxOtisException
+     *      In case the remote SSO server responds with an error code (e.g. 401 -
+     *      Unauthorized or 403 - Forbidden), other HTTP related events inhibit the
+     *      creation of am Authentication Token or if the provided password file
+     *      is not valid.
+     * @see PasswordFileManager#authFromFile(java.io.File) authFromFile(File)
+     */
     public synchronized AuthenticationToken authFromFile(String filePath) throws IOException, ToxOtisException {
         File file = new File(filePath);
         if (!file.exists()) {
@@ -210,6 +252,29 @@ public class PasswordFileManager {
         return authFromFile(file);
     }
 
+    /**
+     * Acquire an authentication token using the credentials in an encrypted file.
+     * These are decrypted using the master key (the destination to the master
+     * key file should have been set properly) and POSTed to the SSO server which
+     * returns a token for that user or an error response if the credentials are
+     * not valid.
+     *
+     * @param file
+     *      File containing the credentials (an instance of <code>java.io.File</code>)
+     * @return
+     *      An Authentication Token upon successful authentication against the
+     *      SSO server.
+     * @throws IOException
+     *      In case the file path you provided cannot be found (an instance of
+     *      <code>java.io.FileNotFoundException</code> or if you do not have
+     *      sufficient priviledges to read from that file.
+     * @throws ToxOtisException
+     *      In case the remote SSO server responds with an error code (e.g. 401 -
+     *      Unauthorized or 403 - Forbidden), other HTTP related events inhibit the
+     *      creation of am Authentication Token or if the provided password file
+     *      is not valid.
+     * @see PasswordFileManager#authFromFile(java.lang.String) authFromFile(String)
+     */
     public synchronized AuthenticationToken authFromFile(File file) throws IOException, ToxOtisException {
         FileReader fr = new FileReader(file);
         BufferedReader br = null;
@@ -267,6 +332,13 @@ public class PasswordFileManager {
         return cryptoIterations;
     }
 
+    /**
+     * Set the salting iterations to be used in all encryption/decryption
+     * operations of the Password Manager. A large number of salting iterations
+     * offers greater security but might cause slower responses.
+     * @param cryptoIterations
+     *      Number of salting iteration.
+     */
     public void setCryptoIterations(int cryptoIterations) {
         this.cryptoIterations = cryptoIterations;
     }

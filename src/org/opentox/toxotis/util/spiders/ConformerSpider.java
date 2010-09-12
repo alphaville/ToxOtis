@@ -58,7 +58,7 @@ public class ConformerSpider extends Tarantula<Conformer>{
 
     @Override
     public Conformer parse() throws ToxOtisException {
-        Conformer conformer = new Conformer();
+        Conformer conformer = new Conformer(uri);
         StmtIterator it = model.listStatements(
                 new SimpleSelector(null,
                 OTObjectProperties.dataEntry().asObjectProperty(model), (RDFNode) null));

@@ -114,12 +114,12 @@ public class ModelSpider extends Tarantula<Model>{
                 (RDFNode) null));
         if (itAlgorithm.hasNext()) {
             AlgorithmSpider aspider;
-            try {
-                aspider = new AlgorithmSpider(new VRI(itAlgorithm.nextStatement().getObject().as(Resource.class).getURI()), null);
+//            try {
+                aspider = new AlgorithmSpider(itAlgorithm.nextStatement().getObject().as(Resource.class),model);
                 m.setAlgorithm(aspider.parse());
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            } catch (URISyntaxException ex) {
+//                Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
+//            }
 
         }
 

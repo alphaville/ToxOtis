@@ -59,6 +59,7 @@ public class AuthenticationToken {
      * @see Services#SSO_SERVER Default SSO Server
      */
     public AuthenticationToken() {
+        super();
         SSLConfiguration.initializeSSLConnection();
     }
 
@@ -121,7 +122,13 @@ public class AuthenticationToken {
         }
     }
 
+    /**
+     * Construct an authentication token as a clone of an existing one.
+     * @param other
+     *      An authentication token to be cloned.
+     */
     public AuthenticationToken(AuthenticationToken other) {
+        this();
         token = other.token;
         ssoServer = other.ssoServer;
         encoding = other.encoding;
@@ -148,10 +155,21 @@ public class AuthenticationToken {
         this(PasswordFileManager.CRYPTO.authFromFile(file));
     }
 
+    /**
+     * Retrieve the SSO server to which all A&A related operations are addressed.
+     * @return
+     *      The URI of the SSO server.
+     */
     public String getSsoServer() {
         return ssoServer;
     }
 
+    /**
+     * Retrieve the encoding used to encode tokens. The default value used in this
+     * implementation is 'UTF-8'.
+     * @return
+     *      URL encoding standard.
+     */
     public String getEncoding() {
         return encoding;
     }
@@ -190,7 +208,8 @@ public class AuthenticationToken {
 
         /**
          * The token is still active and can be used in
-         * an A&A session.
+         * an A&A session. However it is advisable to use the method {@link AuthenticationToken#validate() }
+         * to validate the token against the SSO server prior to its use.
          */
         ACTIVE,
         /**
@@ -205,6 +224,15 @@ public class AuthenticationToken {
         DEAD;
     }
 
+    /**
+     * Get the status of the token. Token status is characterized by the enumeration
+     * {@link TokenStatus }.
+     * @return
+     *      Status of the token as an element of {@link TokenStatus }. Will return the
+     *      value {@link TokenStatus#DEAD DEAD} if the token was never successfully initialized,
+     *      {@link TokenStatus#INACTIVE INACTIVE} if the token was invalidated (logged out)
+     *      of if it has expired, otherwise {@link TokenStatus#ACTIVE ACTIVE}.
+     */
     public TokenStatus getStatus() {
         if (logOut) {
             return TokenStatus.INACTIVE;
@@ -239,6 +267,15 @@ public class AuthenticationToken {
         }
     }
 
+    /**
+     * Retrieve the timestamp of the token creation. If the difference between
+     * the current timestamp retrieved by <code>System.currentTimeMillis()</code>
+     * and the timestamp of the token creation exceeds {@link AuthenticationToken#tokenLocalLifeTime }
+     * then the token is considered to be {@link TokenStatus#INACTIVE Inactive}.
+     * @return
+     *      The timestamp of the token creation
+     * @see AuthenticationToken#getStatus()
+     */
     public long getTokenCreationTimestamp() {
         return tokenCreationTimestamp;
     }

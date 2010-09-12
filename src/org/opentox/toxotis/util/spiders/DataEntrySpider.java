@@ -37,7 +37,6 @@ public class DataEntrySpider extends Tarantula<DataEntry>{
                     (RDFNode)null));
             if(conformerIt.hasNext()){
                 Statement compStmt = conformerIt.nextStatement();
-
                 ConformerSpider conformerSpider = new ConformerSpider(model, compStmt.getObject().as(Resource.class).getURI());
                 Conformer conformer = conformerSpider.parse();
                 dataEntry.setConformer(conformer);

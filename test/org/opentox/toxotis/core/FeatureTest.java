@@ -1,4 +1,4 @@
-package org.opentox.toxotis.util.spiders;
+package org.opentox.toxotis.core;
 
 import java.net.URISyntaxException;
 import org.junit.After;
@@ -8,16 +8,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.Compound;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author hampos
+ * @author chung
  */
-public class CompoundSpiderTest {
+public class FeatureTest {
 
-    public CompoundSpiderTest() {
+    public FeatureTest() {
     }
 
     @BeforeClass
@@ -37,11 +36,11 @@ public class CompoundSpiderTest {
     }
 
     @Test
-    public void testCompound() throws URISyntaxException, ToxOtisException {
-        CompoundSpider spider = new CompoundSpider(
-                new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/5"));
-        Compound c = spider.parse();
-        System.out.println(c.getUri());
-
+    public void testLoadRemoteFeature() throws URISyntaxException, ToxOtisException {
+        Feature f = new Feature(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/10"));
+        f.loadFromRemote();
+        System.out.println(f.meta);
+        
     }
+
 }

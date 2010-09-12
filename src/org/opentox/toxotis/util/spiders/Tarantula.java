@@ -1,6 +1,7 @@
 package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
@@ -54,7 +55,7 @@ public abstract class Tarantula<Result> implements Closeable {
                 if (node.isLiteral()) {
                     XSDDatatype datatype = (XSDDatatype) node.as(Literal.class).getDatatype();
                     String stringVal = node.as(Literal.class).getString();
-                    if (datatype.equals(XSDDatatype.XSDdateTime)) {
+                    if (datatype != null && datatype.equals(XSDDatatype.XSDdateTime)) {
                         DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
                         try {
                             Date date = (Date) formatter.parse(stringVal);
@@ -123,11 +124,18 @@ public abstract class Tarantula<Result> implements Closeable {
                 (RDFNode) null));
         Set<OntClass> ontClassSet = new HashSet<OntClass>();
         while (classIt.hasNext()) {
-            OntClass tempClass = classIt.nextStatement().getObject().as(OntClass.class);
-            if (tempClass.getNameSpace().equals(OTClasses.NS)) {
-                ontClassSet.add(tempClass);
-                ontClassSet = getSuperTypes(ontClassSet);
+            try {
+                OntClass tempClass = classIt.nextStatement().getObject().as(OntClass.class);
+                if (tempClass.getNameSpace().equals(OTClasses.NS)) {
+                    ontClassSet.add(tempClass);
+                    ontClassSet = getSuperTypes(ontClassSet);
+                }
+            } catch (ConversionException ex) {
+                // Masking the exception; this has to be fixed
+                //TODO: Fix this!!!
+                // ex.printStackTrace();
             }
+
         }
         for (OntClass oc : ontClassSet) {
             ontClasses.add(OTClasses.forName(oc.getLocalName()));

@@ -62,10 +62,8 @@ public class CompoundSpider extends Tarantula<Compound>{
 
     @Override
     public Compound parse() throws ToxOtisException {
-        Compound compound = new Compound();
-
+        Compound compound = new Compound(uri);
         compound.setMeta(new MetaInfoSpider(resource, model).parse());
-
         String conformersUri = uri.toString() + "/conformer";
         GetClient getConformers = new GetClient();
         try {
@@ -76,12 +74,9 @@ public class CompoundSpider extends Tarantula<Compound>{
 
         model = getConformers.getResponseOntModel();
         resource = model.getResource(conformersUri);
-
-        
-
+       
         ArrayList<Conformer> conformers = new ArrayList<Conformer>();
         Dataset conformersDS = new DatasetSpider(resource, model).parse();
-        System.out.println(conformersDS.getDataEntries());
         for(DataEntry dataEntry : conformersDS.getDataEntries()){
             conformers.add(dataEntry.getConformer());
         }
