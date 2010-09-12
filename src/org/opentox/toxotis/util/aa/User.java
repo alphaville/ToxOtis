@@ -1,6 +1,5 @@
 package org.opentox.toxotis.util.aa;
 
-import java.util.regex.Pattern;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -26,6 +25,11 @@ public class User {
         this.hashedPass = hashedPass;
     }
 
+    /**
+     * Retrieve the email of the user
+     * @return
+     *      User email
+     */
     public String getMail() {
         return mail;
     }
@@ -38,6 +42,7 @@ public class User {
      * @throws ToxOtisException
      *      In case the provided e-mail address is not compliant to the
      *      specifications of RFC 2822.
+     * @see EmailValidator
      */
     public void setMail(String mail) throws ToxOtisException {        
         if (!EmailValidator.validate(mail)) {

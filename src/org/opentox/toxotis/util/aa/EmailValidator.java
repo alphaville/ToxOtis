@@ -3,7 +3,13 @@ package org.opentox.toxotis.util.aa;
 import java.util.regex.Pattern;
 
 /**
- *
+ * <p align=justify>A Class for validating email addresses according to the RFC syntax rules (RFC 2822
+ * specification) and other syntatical rules that can identify various fake email
+ * addresses like john@yahoo.wtf. Two regular expressions are used found at
+ * http://code.iamcal.com/php/rfc822/full_regexp.txt and http://www.regular-expressions.info/email.html
+ * respectively and a set of valid email extensions was established from
+ * http://www.velocityreviews.com/forums/t125158-java-email-validator.html.</p>
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -85,6 +91,14 @@ public class EmailValidator {
         "za", "zm", "zw", "aero", "biz", "coop", "com", "edu", "gov", "info",
         "mil", "museum", "name", "net", "org", "pro", "jobs"};
 
+    /**
+     * Validate an email address
+     * @param mail
+     *      The email address to be validated
+     * @return
+     *      <code>true</code> if the e-mail address is RFC compliant and meets
+     *      the structural requirements imposed by this class.
+     */
     public static boolean validate(String mail) {
         StringBuilder sb = new StringBuilder("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+(?:[A-Z]{2}|");
         for (int i = 0; i < mailExt.length; i++) {
