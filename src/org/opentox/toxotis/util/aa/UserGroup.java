@@ -1,10 +1,10 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.util.aa;
 
 /**
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class User {
+public class UserGroup {
 
 }

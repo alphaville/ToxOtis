@@ -12,6 +12,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.collection.OpenToxAlgorithms;
 import org.opentox.toxotis.core.Algorithm;
 import org.opentox.toxotis.core.Parameter;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import static org.junit.Assert.*;
 
 /**
@@ -42,9 +43,9 @@ public class AlgorithmSpiderTest {
     @Test
     public void testAlgorithm() throws ToxOtisException, URISyntaxException {
         AlgorithmSpider spider = null;
+        final AuthenticationToken tok = new AuthenticationToken("Sopasakis", "secret");// << This is not my password of course!
         for (int i = 0; i < 50; i++) {
-            spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.AMBIT_LR.getServiceUri(),
-                    "username", "Sopasakis", "password", "secret")); // << This is not my password of course!
+            spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.AMBIT_LR.getServiceUri()), tok); // << Authentication/Authorization using token
             Algorithm a = spider.parse();
             System.out.println(a.getMeta());
             Iterator<Parameter> param = a.getParameters().iterator();

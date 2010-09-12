@@ -106,8 +106,8 @@ public class PostClient extends AbstractClient {
     protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
-            java.net.URL dataset_url = uri.toURL();
-            con = (java.net.HttpURLConnection) dataset_url.openConnection();
+            java.net.URL target = uri.toURL();
+            con = (java.net.HttpURLConnection) target.openConnection();
             con.setRequestMethod(METHOD);
             con.setAllowUserInteraction(false);
             con.setDoInput(true);
