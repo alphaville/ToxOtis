@@ -1,0 +1,16 @@
+h1. Authentication and Authorization with ToxOtis
+
+h2. Introduction
+
+h3. About Sigle sign-on
+
+In <a href="http://opentox.org>"OpenTox</a>, access is controlled by an <a href="http://en.wikipedia.org/wiki/Single_sign-on">SSO</a> server (based on Sun's <a href="">openSSO</a>). Single Sign-on can control access to systems based on any distributed architecture. Different services address to an SSO server to authenticate a client and ask permission for a given request. More on Single sign-on can be found at <a href="http://en.wikipedia.org/wiki/Single_sign-on">wikipedia</a>. 
+
+h3. OpenTox A&A API
+
+The OpenTox A&A API is documented at <a href="http://opentox.org/dev/apis/api-1.1/AA">http://opentox.org/dev/apis/api-1.1/AA</a>. If you don't have an account on OpenTox, you should head over to the <a href="http://opentox.org/join_form?came_from=http%3A//opentox.org/dev/apis/api-1.1/AA">registration form</a>.
+
+
+h2. ToxOtis Authentication and Authorization
+
+
