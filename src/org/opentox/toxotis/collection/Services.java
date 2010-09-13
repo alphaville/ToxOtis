@@ -12,12 +12,14 @@ public class Services {
 
     private static final String _NTUA_SERVICES = "http://opentox.ntua.gr:3000/%s";
     private static final String _AMBIT_PLOVDIV = "http://ambit.uni-plovdiv.bg:8080/ambit2/%s";
+    private static final String _IDEACONSULT = "http://apps.ideaconsult.net:8080/ambit2/%s";
     public static final String SSO_HOST = "opensso.in-silico.ch";
     private static final String _SSO_SERVER = "https://" + SSO_HOST;
     private static final String _SSO_IDENTITY = "https://" + SSO_HOST + "/opensso/identity/%s";
     private static final String _SSO_POLICY = "https://" + SSO_HOST + "/Pol/opensso-pol";
     public static final VRI NTUA;
     public static final VRI AMBIT_UNI_PLOVDIV;
+    public static final VRI IDEACONSULT;
     public static final VRI TUM_DEV;
     public static final VRI SSO;
     public static final VRI SSO_IDENTITY;
@@ -31,6 +33,7 @@ public class Services {
         try {
             NTUA = new VRI(String.format(_NTUA_SERVICES, ""));
             AMBIT_UNI_PLOVDIV = new VRI(String.format(_AMBIT_PLOVDIV, ""));
+            IDEACONSULT = new VRI(String.format(_IDEACONSULT, ""));
             TUM_DEV = new VRI("http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev");
             SSO = new VRI(_SSO_SERVER);
             SSO_IDENTITY = new VRI(String.format(_SSO_IDENTITY, ""));

@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.collection.Services;
 import org.opentox.toxotis.core.DataEntry;
 import org.opentox.toxotis.core.Dataset;
 import org.opentox.toxotis.core.FeatureValue;
@@ -42,26 +43,22 @@ public class DatasetSpiderTest {
 
     @Test
     public void testDataset() throws URISyntaxException, ToxOtisException {
-        VRI vri = new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/5");
+        VRI vri = new VRI(Services.IDEACONSULT.augment("dataset","5"));
         final int size = 10;
         vri.addUrlParameter("max", size);
         DatasetSpider spider = new DatasetSpider(vri);
         Dataset ds = spider.parse();
         System.out.println(ds.getMeta());
         assertEquals(10, ds.getDataEntries().size());
-        DataEntry de = ds.getDataEntries().get(2);
-        for (FeatureValue fv : de.getFeatureValues()){
-            if (fv.getFeature().getOntologies().contains(OTClasses.NominalFeature())){
-                System.out.println("*");
-            }
-            if (fv.getFeature().getOntologies().contains(OTClasses.NumericFeature())){
-                System.out.println("**");
-            }
-            if (fv.getFeature().getOntologies().contains(OTClasses.StringFeature())){
-                System.out.println("***");
-            }
-        }
 
-        
+        DataEntry de = ds.getDataEntries().get(2);
+        FeatureValue fv = de.getFeatureValue(0);
+
+        System.out.println(de.getConformer().getUri());
+        System.out.println(fv.getFeature().getUri() + " = " + fv.getValue());
+
+
+
+
     }
 }

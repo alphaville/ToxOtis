@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  * Provides different representations for chemical compounds with a unique
@@ -15,7 +16,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Compound extends OTOnlineResource<Compound> {
+public class Compound extends OTPublishable<Compound> {
 
     private List<Conformer> conformers;
 
@@ -54,6 +55,16 @@ public class Compound extends OTOnlineResource<Compound> {
 
     @Override
     protected Compound loadFromRemote(VRI uri) throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
