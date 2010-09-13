@@ -1,5 +1,8 @@
 package org.opentox.toxotis.collection;
 
+import java.net.URISyntaxException;
+import org.opentox.toxotis.client.VRI;
+
 /**
  *
  * @author Pantelis Sopasakis
@@ -7,12 +10,35 @@ package org.opentox.toxotis.collection;
  */
 public class Services {
 
-    public static final String NTUA_SERVICES = "http://opentox.ntua.gr:3000/%s";
-    public static final String AMBIT_PLOVDIV = "http://ambit.uni-plovdiv.bg:8080/ambit2/%s";
+    private static final String _NTUA_SERVICES = "http://opentox.ntua.gr:3000/%s";
+    private static final String _AMBIT_PLOVDIV = "http://ambit.uni-plovdiv.bg:8080/ambit2/%s";
     public static final String SSO_HOST = "opensso.in-silico.ch";
-    public static final String SSO_SERVER = "https://" + SSO_HOST;
-    public static final String SSO_IDENTITY = "https://opensso.in-silico.ch/opensso/identity/%s";
-    public static final String SSO_AUTHENTICATE = "https://opensso.in-silico.ch/opensso/identity/authenticate?uri=service=openldap";
-    public static final String SSO_POLICY = "https://opensso.in-silico.ch/Pol/opensso-pol";
+    private static final String _SSO_SERVER = "https://" + SSO_HOST;
+    private static final String _SSO_IDENTITY = "https://" + SSO_HOST + "/opensso/identity/%s";
+    private static final String _SSO_POLICY = "https://" + SSO_HOST + "/Pol/opensso-pol";
+    public static final VRI NTUA;
+    public static final VRI AMBIT_UNI_PLOVDIV;
+    public static final VRI SSO;
+    public static final VRI SSO_IDENTITY;
+    public static final VRI SSO_AUTHENTICATE;
+    public static final VRI SSO_POLICY;
+    public static final VRI SSO_TOKEN_VALIDATE;
+    public static final VRI SSO_TOKEN_INVALIDATE;
+    public static final VRI SSO_ATTRIBUTES;
 
+    static {
+        try {
+            NTUA = new VRI(String.format(_NTUA_SERVICES, ""));
+            AMBIT_UNI_PLOVDIV = new VRI(String.format(_AMBIT_PLOVDIV, ""));
+            SSO = new VRI(_SSO_SERVER);
+            SSO_IDENTITY = new VRI(String.format(_SSO_IDENTITY, ""));
+            SSO_AUTHENTICATE = new VRI(String.format(_SSO_IDENTITY, "/authenticate?uri=service=openldap"));
+            SSO_TOKEN_VALIDATE = new VRI(String.format(_SSO_IDENTITY, "isTokenValid"));
+            SSO_TOKEN_INVALIDATE = new VRI(String.format(_SSO_IDENTITY, "logout"));
+            SSO_ATTRIBUTES = new VRI(String.format(_SSO_IDENTITY, "attribtues"));
+            SSO_POLICY = new VRI(String.format(_SSO_POLICY, ""));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

@@ -270,6 +270,35 @@ public class VRI { // Well tested!
         return new String(string);
     }
 
+    public VRI augment(String... fragments) {
+        String noQueryUri = getStringNoQuery();
+        StringBuilder builder = new StringBuilder(getStringNoQuery());
+        if (!noQueryUri.matches(".+/$")) {
+            builder.append("/"); // Append a slash at the end (if not any)
+        }
+
+        for (int i = 0; i < fragments.length; i++) {
+            String frg = fragments[i];
+            if (frg != null) {
+                try {
+                    builder.append(URLEncoder.encode(frg, URL_ENCODING));
+                } catch (UnsupportedEncodingException ex) {
+                    throw new RuntimeException(ex);
+                }
+                if (i < fragments.length - 1) {
+                    builder.append("/");
+                }
+            }
+        }
+        this.uri = new String(builder);
+        try {
+            new URI(uri);
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+        return this;
+    }
+
     /**
      * Returns the protocol of the URI (HTTP, HTTPS, etc)
      * @return

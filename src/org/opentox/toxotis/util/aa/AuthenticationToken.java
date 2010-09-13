@@ -40,23 +40,13 @@ public class AuthenticationToken {
     private static final long tokenLocalLifeTime = 23 * 3600 * 1000L; // 23hrs
     /** Encoding used to encode tokens received from the SSO server */
     private String encoding = "UTF-8";
-    /** SSO server (A&A) */
-    private String ssoServer = Services.SSO_IDENTITY;
-    /** Service for the validation of tokens: Client needs to know whether a token is valid */
-    private String tokenValidationUrl = String.format(Services.SSO_IDENTITY, "isTokenValid");
-    /** Authentication Service: The client provides credentials and acquires token */
-    private String tokenAuthenticationUrl = String.format(Services.SSO_IDENTITY, "authenticate");
-    /** Logout service */
-    private String tokenInvalidationUrl = String.format(Services.SSO_IDENTITY, "logout");
-    /** LDAP proxy service: The client needs a summary of its attributes (username, email etc) */
-    private String attribtuesLDAP = String.format(Services.SSO_IDENTITY, "attributes");
     /** Flag used to tell if the token is logged out */
     private boolean logOut = false;
 
     /**
      * Initialize a new Authentication Token. The constructor also initializes
      * the SSL connection with the openSSO server.
-     * @see Services#SSO_SERVER Default SSO Server
+     * @see Services#_SSO_SERVER Default SSO Server
      */
     public AuthenticationToken() {
         super();
@@ -100,26 +90,22 @@ public class AuthenticationToken {
      */
     public AuthenticationToken(String username, String password) throws ToxOtisException {
         this();
-        try {
-            SecurePostClient poster = new SecurePostClient(new VRI(tokenAuthenticationUrl));
-            poster.addParameter("username", username);
-            poster.addParameter("password", password);
-            username = null;
-            password = null;
-            poster.postParameters();
-            int status = poster.getResponseCode();
-            if (status != 200) {
-                throw new ToxOtisException("Invalid Credentials!");
-            }
-            String response = poster.getResponseText();
-            if (response.contains("token.id=")) {
-                response = response.replaceAll("token.id=", "");
-            }
-            this.token = response;
-            this.tokenCreationTimestamp = System.currentTimeMillis();
-        } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+        SecurePostClient poster = new SecurePostClient(Services.SSO_AUTHENTICATE);
+        poster.addParameter("username", username);
+        poster.addParameter("password", password);
+        username = null;
+        password = null;
+        poster.postParameters();
+        int status = poster.getResponseCode();
+        if (status != 200) {
+            throw new ToxOtisException("Invalid Credentials!");
         }
+        String response = poster.getResponseText();
+        if (response.contains("token.id=")) {
+            response = response.replaceAll("token.id=", "");
+        }
+        this.token = response;
+        this.tokenCreationTimestamp = System.currentTimeMillis();
     }
 
     /**
@@ -130,7 +116,6 @@ public class AuthenticationToken {
     public AuthenticationToken(AuthenticationToken other) {
         this();
         token = other.token;
-        ssoServer = other.ssoServer;
         encoding = other.encoding;
         tokenCreationTimestamp = other.tokenCreationTimestamp;
     }
@@ -156,15 +141,6 @@ public class AuthenticationToken {
     }
 
     /**
-     * Retrieve the SSO server to which all A&A related operations are addressed.
-     * @return
-     *      The URI of the SSO server.
-     */
-    public String getSsoServer() {
-        return ssoServer;
-    }
-
-    /**
      * Retrieve the encoding used to encode tokens. The default value used in this
      * implementation is 'UTF-8'.
      * @return
@@ -183,22 +159,6 @@ public class AuthenticationToken {
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
-    }
-
-    /**
-     * Set the SSO server. Default value is https://opensso.in-silico.ch/opensso/identity/%s.
-     * @param ssoServer
-     *      The URL of the SSO server.
-     */
-    public void setSsoServer(String ssoServer) {
-        if (!ssoServer.matches(".+/%s")) {
-            if (ssoServer.matches(".+/")) {
-                ssoServer += "%s";
-            } else {
-                ssoServer += "/%s";
-            }
-        }
-        this.ssoServer = ssoServer;
     }
 
     /**
@@ -301,29 +261,25 @@ public class AuthenticationToken {
         if (token == null || (token != null && token.isEmpty())) {
             return false;
         }
-        try {
-            SecurePostClient poster = new SecurePostClient(new VRI(tokenValidationUrl));
-            poster.addParameter("tokenid", getToken());
-            poster.postParameters();
-            final int status = poster.getResponseCode();
-            final String message = (poster.getResponseText()).trim();
-            if (status != 200 && status != 401) {
-                throw new ToxOtisException("Status code " + status + " received from " + tokenValidationUrl);
-            } else if (status == 401) {
-                if (!message.equals("boolean=false")) {
-                    return false;
-                } else {
-                    throw new ToxOtisException("Status code " + status + " received from " + tokenValidationUrl);
-                }
-            }
-
-            if (message.equals("boolean=true")) {
-                return true;
-            } else {
+        SecurePostClient poster = new SecurePostClient(Services.SSO_TOKEN_VALIDATE);
+        poster.addParameter("tokenid", getToken());
+        poster.postParameters();
+        final int status = poster.getResponseCode();
+        final String message = (poster.getResponseText()).trim();
+        if (status != 200 && status != 401) {
+            throw new ToxOtisException("Status code " + status + " received from " + Services.SSO_TOKEN_VALIDATE);
+        } else if (status == 401) {
+            if (!message.equals("boolean=false")) {
                 return false;
+            } else {
+                throw new ToxOtisException("Status code " + status + " received from " + Services.SSO_TOKEN_VALIDATE);
             }
-        } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+        }
+
+        if (message.equals("boolean=true")) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -340,16 +296,12 @@ public class AuthenticationToken {
         if (token == null || (token != null && token.isEmpty())) {
             return; // Nothing to invalidate!
         }
-        try {
-            SecurePostClient poster = new SecurePostClient(new VRI(tokenInvalidationUrl));
-            poster.addParameter("subjectid", getToken());
-            poster.postParameters();
-            int status = poster.getResponseCode();
-            if (status != 200) {
-                throw new ToxOtisException("Status code " + status + " received from " + tokenInvalidationUrl);
-            }
-        } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+        SecurePostClient poster = new SecurePostClient(Services.SSO_TOKEN_INVALIDATE);
+        poster.addParameter("subjectid", getToken());
+        poster.postParameters();
+        int status = poster.getResponseCode();
+        if (status != 200) {
+            throw new ToxOtisException("Status code " + status + " received from " + Services.SSO_TOKEN_INVALIDATE);
         }
     }
 
@@ -362,71 +314,67 @@ public class AuthenticationToken {
      *
      */
     public User getUser() throws ToxOtisException {
-        try {
-            User u = new User();
-            SecurePostClient poster = new SecurePostClient(new VRI(attribtuesLDAP));
-            poster.addParameter("subjectid", getToken());
-            poster.postParameters();
+        User u = new User();
+        SecurePostClient poster = new SecurePostClient(Services.SSO_ATTRIBUTES);
+        poster.addParameter("subjectid", getToken());
+        poster.postParameters();
 
-            InputStream is = null;
-            BufferedReader reader = null;
-            try {
-                final String valueKey = "userdetails.attribute.value=";
-                final String nameKey = "userdetails.attribute.name=%s";
-                is = poster.getRemoteStream();
-                reader = new BufferedReader(new InputStreamReader(is));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
-                    if (line.equals(String.format(nameKey, "uid"))) {
-                        line = reader.readLine();
-                        if (line != null) {
-                            line = line.trim();
-                            u.setUid(line.replaceAll(valueKey, ""));
-                        }
-                    } else if (line.equals(String.format(nameKey, "mail"))) {
-                        line = reader.readLine();
-                        if (line != null) {
-                            line = line.trim();
-                            u.setMail(line.replaceAll(valueKey, ""));
-                        }
-                    } else if (line.equals(String.format(nameKey, "sn"))) {
-                        line = reader.readLine();
-                        if (line != null) {
-                            line = line.trim();
-                            u.setName(line.replaceAll(valueKey, ""));
-                        }
-                    } else if (line.equals(String.format(nameKey, "userpassword"))) {
-                        line = reader.readLine();
-                        if (line != null) {
-                            line = line.trim();
-                            u.setHashedPass(line.replaceAll(valueKey, ""));
-                        }
+        InputStream is = null;
+        BufferedReader reader = null;
+        try {
+            final String valueKey = "userdetails.attribute.value=";
+            final String nameKey = "userdetails.attribute.name=%s";
+            is = poster.getRemoteStream();
+            reader = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.equals(String.format(nameKey, "uid"))) {
+                    line = reader.readLine();
+                    if (line != null) {
+                        line = line.trim();
+                        u.setUid(line.replaceAll(valueKey, ""));
                     }
-                }
-            } catch (IOException io) {
-                throw new ToxOtisException(io);
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException ex) {
-                        throw new ToxOtisException(ex);
+                } else if (line.equals(String.format(nameKey, "mail"))) {
+                    line = reader.readLine();
+                    if (line != null) {
+                        line = line.trim();
+                        u.setMail(line.replaceAll(valueKey, ""));
                     }
-                }
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException ex) {
-                        throw new ToxOtisException(ex);
+                } else if (line.equals(String.format(nameKey, "sn"))) {
+                    line = reader.readLine();
+                    if (line != null) {
+                        line = line.trim();
+                        u.setName(line.replaceAll(valueKey, ""));
+                    }
+                } else if (line.equals(String.format(nameKey, "userpassword"))) {
+                    line = reader.readLine();
+                    if (line != null) {
+                        line = line.trim();
+                        u.setHashedPass(line.replaceAll(valueKey, ""));
                     }
                 }
             }
-
-            return u;
-        } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+        } catch (IOException io) {
+            throw new ToxOtisException(io);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
+            }
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
+            }
         }
+
+        return u;
     }
 
     @Override

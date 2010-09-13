@@ -1,10 +1,8 @@
 package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.ontology.AnnotationProperty;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.vocabulary.DC;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,7 +15,6 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.spiders.AlgorithmSpider;
-import org.opentox.toxotis.util.spiders.TypedValue;
 
 /**
  * Provides access to different types of algorithms. An algorithm object contains

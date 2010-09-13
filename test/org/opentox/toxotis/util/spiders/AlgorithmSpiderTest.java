@@ -47,18 +47,17 @@ public class AlgorithmSpiderTest {
     public void testAlgorithm() throws ToxOtisException, URISyntaxException, IOException {
         AlgorithmSpider spider = null;
         AuthenticationToken tok = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
-        final int repeat = 2;
-        for (int i = 0; i < repeat; i++) {
-            spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.NTUA_MLR.getServiceUri()), tok); // << Authentication/Authorization using token
-            Algorithm a = spider.parse();
-            System.out.println(a.getMeta());
-            Iterator<Parameter> param = a.getParameters().iterator();
-            while (param.hasNext()) {
-                System.out.println(param.next());
-            }
-            for (OntologicalClass cl : a.getOntologies()){
-                System.out.println(cl.getUri());
-            }
+
+        spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.NTUA_MLR.getServiceUri()), tok); // << Authentication/Authorization using token
+        Algorithm a = spider.parse();        
+
+        System.out.println(a.getMeta());
+        Iterator<Parameter> param = a.getParameters().iterator();
+        while (param.hasNext()) {
+            System.out.println(param.next());
+        }
+        for (OntologicalClass cl : a.getOntologies()) {
+            System.out.println(cl.getUri());
         }
     }
 }

@@ -1,0 +1,11 @@
+h1. Parse OpenTox Entities with ToxOtis
+
+ Using ToxOtis one can parse remote OpenTox entities providing their URI or even OpenTox resources that are stored in some local file. Behind the scenes, ToxOtis downloads and parses an <a href="http://www.w3.org/RDF/">RDF</a> representation of the resource and parses it into some instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a>. For this purpose, the user is endowed with two tools: The abstract method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a> and a set of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/spiders/">spiders</a> which are more powerful tools but also require a higher level of acquaintance with RDF and <a href="http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download">Jena</a> (a library for parsing and editing RDF documents in Java).
+ The ToxOtis API for downloading and parsing OpenTox resources is intertwined with the OpenTox A&A API, so in many cases users will need to provide their <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_01_Login.textile">authentication token</a>.
+
+h2. 1. Parsing 
+
+h3. 1.1. Algorithms
+
+
+

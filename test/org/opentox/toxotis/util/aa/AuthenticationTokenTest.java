@@ -1,5 +1,7 @@
 package org.opentox.toxotis.util.aa;
 
+import java.io.File;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -33,8 +35,8 @@ public class AuthenticationTokenTest {
     }
 
     @Test
-    public void testAcquireToken() throws ToxOtisException {
-        AuthenticationToken at = new AuthenticationToken("Sopasakis", "xxx"); // << Provide your credentials here
+    public void testAcquireToken() throws ToxOtisException, IOException {
+        AuthenticationToken at = new AuthenticationToken(new File("./secret/my.key")); // << Provide your credentials here
         System.out.println(at.getToken());
         System.out.println(at.getTokenUrlEncoded());
         System.out.println(at.getTokenCreationTimestamp());

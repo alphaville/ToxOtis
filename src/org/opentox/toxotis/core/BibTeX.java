@@ -27,7 +27,6 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 public class BibTeX extends OTPublishable<BibTeX> {
 
     //TODO: We could use this: http://www.bibtex.org/Convert/ to create HTML representations of BibTeXs!!! ;-)
-
     public BibTeX() {
         super();
     }
@@ -98,8 +97,12 @@ public class BibTeX extends OTPublishable<BibTeX> {
     }
 
     @Override
-    public Task publishOnline(AuthenticationToken token) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
+        VRI bibTexService = getBibTexService();
+        if (token != null) {// Append tokenid to the list of URL parameters
+            bibTexService.addUrlParameter("tokenid", token.getToken());
+        }
+        return publishOnline(bibTexService, token);
     }
 
     public enum BIB_TYPE {
@@ -464,6 +467,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
         return result.toString();
     }
 
+    // TODO: Implement this ASAP!!! HIGH PRIORITY!!!
     public BibTeX createFromString(String string) {
         return this;
     }

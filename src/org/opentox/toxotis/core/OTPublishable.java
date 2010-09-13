@@ -26,7 +26,7 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
 
     /**
      * Publish the component to a proper server identified by the uri of the
-     * publishing service providing in this method. The resource will be posted to the
+     * publishing service provided in this method. The resource will be posted to the
      * server in RDF format (application/rdf+xml).
      * @param vri
      *      URI of the service that is responsible for the publication of
@@ -52,5 +52,12 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      */
     public abstract Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException;
 
-    public abstract Task publishOnline(AuthenticationToken token);
+    /**
+     * Publish the component to a standard server. The resource will be posted to the
+     * server in RDF format (application/rdf+xml).
+     * @param token
+     * @return
+     * @throws ToxOtisException
+     */
+    public abstract Task publishOnline(AuthenticationToken token) throws ToxOtisException ;
 }

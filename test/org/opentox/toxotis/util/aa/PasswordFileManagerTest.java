@@ -50,7 +50,7 @@ public class PasswordFileManagerTest {
 
     @Test
     public void testCreatePassFile() throws IOException, ToxOtisException {
-        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./secret/hampos.key");
+        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile(   "./secret/hampos.key");
         System.out.println(at.getUser());
     }
 
