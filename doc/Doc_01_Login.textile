@@ -1,16 +1,64 @@
 h1. Authentication and Authorization with ToxOtis
 
-h2. Introduction
+h2. 1. Introduction
 
-h3. About Sigle sign-on
+h3. 1.1. About Sigle sign-on
 
 In <a href="http://opentox.org>"OpenTox</a>, access is controlled by an <a href="http://en.wikipedia.org/wiki/Single_sign-on">SSO</a> server (based on Sun's <a href="">openSSO</a>). Single Sign-on can control access to systems based on any distributed architecture. Different services address to an SSO server to authenticate a client and ask permission for a given request. More on Single sign-on can be found at <a href="http://en.wikipedia.org/wiki/Single_sign-on">wikipedia</a>. 
 
-h3. OpenTox A&A API
+h3. 1.2. OpenTox A&A API
 
 The OpenTox A&A API is documented at <a href="http://opentox.org/dev/apis/api-1.1/AA">http://opentox.org/dev/apis/api-1.1/AA</a>. If you don't have an account on OpenTox, you should head over to the <a href="http://opentox.org/join_form?came_from=http%3A//opentox.org/dev/apis/api-1.1/AA">registration form</a>.
 
 
-h2. ToxOtis Authentication and Authorization
+h2. 2. ToxOtis Authentication and Authorization
 
+2.1. Acquire an Authentication Token
 
+Once you provide your credentials to the SSO server, you acquire an authentication token. This will be used to authenticate your self against any web service in OpenTox (if needed) and get permission to perform an operation. This is easily accomplished in ToxOtis. You simply provide your credentials to the <code>AuthenticationToken</code>:
+
+<pre>
+AuthenticationToken at = new AuthenticationToken("JohnSmith","mysecretPass111");
+</pre>
+
+If you have a password file (read next section), you can use it to acquire an authentication token:
+
+<pre>
+File passwordFile = new File("/path/to/my_sercret.key");
+AuthenticationToken at = new AuthenticationToken(passwordFile);
+</pre>
+
+2.2. Advanced Security Issues
+
+In general, it is not good practise to store unencrypted passwords in your program or in your database. However, if you need to have your username and password stored so that you can easily use them, ToxOtis offers an encryption utility. First of all, you have to create a (private) master key and store it in a file. You should make this file hidden and modify its permissions so that only your application will have access to it. The file should look like this:
+
+<pre>
+--- START MASTER KEY ---
+fEFWQ1FRUVdSXXxhOVBnazQyKy8vUzRcPWFfM2tmKjE
+ajoTmn7ieV1qfb3645fFqa2MowkmMmP3Xg0A1gCRjTp
+D96r3MEhKC89EAfpNG3hIKVxi4JBtyBxWySJIiidJX3
+De6mx2tYqTJgyC8g83141qf27p59z5P51lw7VQ8E55n
+wFr3T53y4WMW1nW5CN77C6oP832C2EtjUwR381ms6T3
+P96y1NGm7I78k3sb4efDT462xVVUA8OU461u22T2v78
+x3Mt6591855xKP65vQWn730jY889w47h9Fm0h6zYS04
+--- END MASTER KEY ---
+</pre>
+
+Soon we will also provide tools for creating such files. Now use this master password to create an <em>encrypted</em> password file:
+
+<pre>
+PasswordFileManager.CRYPTO.createPasswordFile("JohnSmith", "s3cret", "/home/john/.hidpass/.my.key");
+</pre>
+
+This will create a password file at <code>/home/john/.hidpass/my.key</code> (Note that the file is hidden). Now you can delete the line above which contains your credentials and any line like that and use the generated encrypted file to authenticate your self. Here is an example:
+
+<pre>
+File passwordFile = new File("/home/john/.hidpass/.my.key");
+AuthenticationToken at = new AuthenticationToken(passwordFile);
+</pre>
+
+or alternatively:
+
+<pre>
+AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/john/.hidpass/.my.key");
+</pre>
