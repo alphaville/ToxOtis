@@ -56,7 +56,7 @@ public class FeatureSpider extends Tarantula<Feature> {
         Feature feature = new Feature();
         feature.setMeta(new MetaInfoSpider(resource, model).parse()); // Parse meta-info
         feature.setUri(uri);
-        feature.setOntologies(getFeatureTypes(resource));
+        feature.setOntologies(getOntologicalTypes(resource));
         Statement unitsStatement = resource.getProperty(OTDatatypeProperties.units().asDatatypeProperty(model));
         if (unitsStatement != null) {
             feature.setUnits(unitsStatement.getString());            

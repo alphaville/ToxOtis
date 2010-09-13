@@ -16,7 +16,8 @@ import org.opentox.toxotis.util.spiders.TypedValue;
  * @author Sopasakis Pantelis
  */
 public interface MetaInfo extends java.io.Serializable {
-//TODO: add bibtex
+//TODO: add bibtex?
+
 
     TypedValue<String> getComment();
 
@@ -28,7 +29,23 @@ public interface MetaInfo extends java.io.Serializable {
 
     TypedValue<String> getSeeAlso();
 
+    /**
+     * Get the name given to the resource.
+     * Typically, a Title will be a name by which the resource is formally known.
+     * @return
+     *      Tile as a Typed Value
+     */
     TypedValue<String> getTitle();
+
+    /**
+     * Ge the topic of the content of the resource. Typically, a Subject will be
+     * expressed as keywords or key phrases or classification codes that describe the
+     * topic of the resource. Recommended best practice is to select a value from
+     * a controlled vocabulary or formal classification scheme.
+     * @return
+     *      Subject as a typed value
+     */
+    TypedValue<String> getSubject();
 
     TypedValue<String> getVersionInfo();
 
@@ -65,6 +82,10 @@ public interface MetaInfo extends java.io.Serializable {
     MetaInfo setTitle(String title);
 
     MetaInfo setTitle(TypedValue<String> title);
+
+    MetaInfo setSubject(String subject);
+
+    MetaInfo setSubject(TypedValue<String> subject);
 
     MetaInfo setVersionInfo(String versionInfo);
 

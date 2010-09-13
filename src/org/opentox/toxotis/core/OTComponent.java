@@ -40,6 +40,14 @@ public abstract class OTComponent<T extends OTComponent> {
         return meta;
     }
 
+    /**
+     * Set the meta-information of the component
+     * @param meta
+     *      Meta information for the component
+     * @return
+     *      The component itself with the updated meta-information
+     * @see MetaInfo Meta Information
+     */
     public T setMeta(MetaInfo meta) {
         this.meta = meta;
         return (T) this;
@@ -58,6 +66,8 @@ public abstract class OTComponent<T extends OTComponent> {
      * Creates a new Ontological Model (uses an instance of {@link SimpleOntModelImpl })
      * and assigns to it the Individual from the method
      * {@link OTComponent#asIndividual(com.hp.hpl.jena.ontology.OntModel) asIndividual(OntModel)}.
+     * The ontological model will contain no other information apart from the representation
+     * of the inderlying OpenTox component.
      * @return
      *      An ontological model for the current OpenTox component.
      */
@@ -77,6 +87,13 @@ public abstract class OTComponent<T extends OTComponent> {
         return uri;
     }
 
+    /**
+     * Set the URI of the component which has to be an instance of VRI
+     * @param uri
+     *      URI of component
+     * @return
+     *      The component itself with the updated URI
+     */
     public T setUri(VRI uri) {
         this.uri = uri;
         return (T) this;

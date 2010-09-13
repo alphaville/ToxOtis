@@ -18,11 +18,15 @@ import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
+ * <p align=justify>
  *
+ * </p>
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public class BibTeX extends OTPublishable<BibTeX> {
+
+    //TODO: We could use this: http://www.bibtex.org/Convert/ to create HTML representations of BibTeXs!!! ;-)
 
     public BibTeX() {
         super();

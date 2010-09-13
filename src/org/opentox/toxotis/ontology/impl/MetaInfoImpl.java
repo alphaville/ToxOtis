@@ -26,6 +26,7 @@ public class MetaInfoImpl implements MetaInfo {
     private TypedValue<String> creator;
     private TypedValue<String> publisher;
     private TypedValue<String> hasSource;
+    private TypedValue<String> subject;
     private TypedValue<Date> date;
     private Collection<TypedValue<String>> contributors = new ArrayList<TypedValue<String>>();
     private Collection<TypedValue<String>> audiences = new ArrayList<TypedValue<String>>();
@@ -69,6 +70,9 @@ public class MetaInfoImpl implements MetaInfo {
         if (versionInfo != null) {
             builder.append("version info: " + versionInfo + "\n");
         }
+        if (subject != null) {
+            builder.append("subject     : " + subject + "\n");
+        }
         return new String(builder);
     }
 
@@ -93,6 +97,9 @@ public class MetaInfoImpl implements MetaInfo {
         }
         if (creator != null) {
             resource.addLiteral(DC.creator.inModel(model).as(Property.class), model.createTypedLiteral(creator.getValue()));
+        }
+        if (subject != null) {
+            resource.addLiteral(DC.subject.inModel(model).as(Property.class), model.createTypedLiteral(subject.getValue()));
         }
         if (hasSource != null) {
             /*
@@ -305,6 +312,20 @@ public class MetaInfoImpl implements MetaInfo {
 
     public MetaInfo setDate(Date date) {
         this.date = date != null ? new TypedValue<Date>(date) : null;
+        return this;
+    }
+
+    public TypedValue<String> getSubject() {
+        return subject;
+    }
+
+    public MetaInfo setSubject(String subject) {
+        this.subject = subject != null ? new TypedValue<String>(subject) : null;
+        return this;
+    }
+
+    public MetaInfo setSubject(TypedValue<String> subject) {
+        this.subject = subject;
         return this;
     }
 }
