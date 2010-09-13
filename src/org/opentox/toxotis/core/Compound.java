@@ -19,8 +19,14 @@ public class Compound extends OTOnlineResource<Compound> {
 
     private List<Conformer> conformers;
 
-    public Compound(VRI uri) {
+    public Compound(VRI uri) throws ToxOtisException {
         super(uri);
+        if (uri != null) {
+            if (!Compound.class.equals(uri.getOpenToxType())) {
+                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
+                        + "' is not a valid Compound uri according to the OpenTox specifications.");
+            }
+        }
     }
 
     public Compound() {

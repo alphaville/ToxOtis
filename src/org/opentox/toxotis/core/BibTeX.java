@@ -7,8 +7,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
@@ -29,8 +28,28 @@ public class BibTeX extends OTPublishable<BibTeX> {
         super();
     }
 
-    public BibTeX(VRI uri) {
+    public BibTeX(VRI uri) throws ToxOtisException {
         super(uri);
+        if (uri != null) {
+            if (!BibTeX.class.equals(uri.getOpenToxType())) {
+                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
+                        + "' is not a valid BibTeX uri according to the OpenTox specifications.");
+            }
+        }
+    }
+
+    public VRI getBibTexService() {
+        if (uri == null) {
+            return null;
+        }
+        Pattern pattern = Pattern.compile("/bibtex/");
+        String[] splitted = pattern.split(uri.toString());
+        String bibtexUri = splitted[0] + "/bibtex";
+        try {
+            return new VRI(bibtexUri);
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
@@ -40,6 +59,9 @@ public class BibTeX extends OTPublishable<BibTeX> {
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
+        if (token != null) {
+            vri.addUrlParameter("tokenid", token.getToken());
+        }
         PostClient pc = new PostClient(vri);
         pc.setMediaType("text/uri-list");
         pc.setContentType("application/rdf+xml");

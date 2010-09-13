@@ -38,7 +38,7 @@ public class AlgorithmTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException, IOException {
         Algorithm a = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceUri());
         AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
@@ -46,4 +46,11 @@ public class AlgorithmTest {
         System.out.println(a.getMeta());
     }
 
+
+        @Test
+    public void testRdf() throws URISyntaxException, ToxOtisException, IOException {
+        Algorithm a = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceUri());
+        a.getMeta().setComment("This is a comment");
+        a.asOntModel().write(System.out);
+    }
 }

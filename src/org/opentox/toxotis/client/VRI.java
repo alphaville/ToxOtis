@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.*;
 
@@ -332,7 +330,15 @@ public class VRI { // Well tested!
     /**
      * Returns a Java class that best fits the pattern matched by this URI. For
      * example the URI <code>http://someserver.com:9876/OpenTox/query/compound/phenol/smiles</code>
-     * will return the class <code>org.opentox.toxotis.core.Dataset</code>
+     * will return the class <code>org.opentox.toxotis.core.Dataset</code>. Note that this
+     * method will return <code>null</code> in case the URI does not comply with the pattern
+     * for the URI of OpenTox resource and it will also return <code>null</code> for URIs
+     * that identify sets/collections of resource such as /compound (list all
+     * compounds). So the following code will print <code>null</code>:
+     * <pre> VRI uri = new VRI("http://someserver.com/opentox/dataset");
+     * Class&lt;?&gt; cl = uri.getOpenToxType();
+     * System.out.println(cl);
+     * </pre>
      * @return
      *      Corresponding OpenTox class (usually a subclass of {@link OTComponent }).
      * @see OTComponent
@@ -344,7 +350,8 @@ public class VRI { // Well tested!
             return null;
         }
         if (rex == OpenToxRegEx.COMPOUND || rex == OpenToxRegEx.CONFORMER) {
-            if (getQueryAsString() == null || (getQueryAsString() != null && getQueryAsString().isEmpty())) {
+            String queryString = getQueryAsString();
+            if (queryString == null || (queryString != null && queryString.isEmpty())) {
                 return rex.getClazz();
             }
         } else {

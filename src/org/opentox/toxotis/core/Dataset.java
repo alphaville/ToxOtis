@@ -13,16 +13,22 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Dataset extends OTOnlineResource<Dataset>{
+public class Dataset extends OTOnlineResource<Dataset> {
 
     List<DataEntry> dataEntries;
 
-    public Dataset(VRI uri) {
+    public Dataset(VRI uri) throws ToxOtisException {
         super(uri);
+        if (uri != null) {
+            if (!Dataset.class.equals(uri.getOpenToxType())) {
+                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
+                        + "' is not a valid Dataset uri according to the OpenTox specifications.");
+            }
+        }
     }
 
     public Dataset() {
-    }    
+    }
 
     public Dataset(List<DataEntry> dataEntries) {
         this.dataEntries = dataEntries;
@@ -36,7 +42,6 @@ public class Dataset extends OTOnlineResource<Dataset>{
         this.dataEntries = dataEntries;
     }
 
-
     @Override
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -45,5 +50,4 @@ public class Dataset extends OTOnlineResource<Dataset>{
     protected Dataset loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }
