@@ -1,5 +1,6 @@
 package org.opentox.toxotis.client;
 
+import com.hp.hpl.jena.ontology.OntModel;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,6 +22,7 @@ public class PostClient extends AbstractClient {
     private Map<String, String> postParameters = new HashMap<String, String>();
     /** The method that this client applies */
     public static final String METHOD = "POST";
+    private OntModel model;
 
     public PostClient() {
         super();
@@ -40,6 +42,15 @@ public class PostClient extends AbstractClient {
         return this;
     }
 
+    public PostClient setPostableOntModel(OntModel model) {
+        this.model = model;
+        return this;
+    }
+
+    public OntModel getPostableOntModel() {
+        return model;
+    }
+
     /**
      * Add a parameter which will be posted to the target URI. Once the parameter is
      * submitted to the PostClient, it is stored as URL-encoded using the UTF-8 encoding.
@@ -48,7 +59,7 @@ public class PostClient extends AbstractClient {
      * @return This object
      * @throws NullPointerException If paramName is <code>null</code>.
      */
-    public PostClient addParameter(String paramName, String paramValue) throws NullPointerException {
+    public PostClient addPostParameter(String paramName, String paramValue) throws NullPointerException {
         if (paramName == null) {
             throw new NullPointerException("paramName must be not null");
         }
@@ -139,12 +150,18 @@ public class PostClient extends AbstractClient {
         }
     }
 
-    public void postParameters() throws ToxOtisException {
+    public void post() throws ToxOtisException {
         initializeConnection(vri.toURI());
         DataOutputStream wr;
         try {
             wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(getParametersAsQuery());// POST the parameters
+            String query = getParametersAsQuery();
+            if (query != null) {
+                wr.writeBytes(getParametersAsQuery());// POST the parameters
+            }
+            if (model != null) {
+                model.write(wr);
+            }
             wr.flush();
             wr.close();
         } catch (final IOException ex) {

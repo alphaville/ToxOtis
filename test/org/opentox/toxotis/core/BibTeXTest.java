@@ -37,12 +37,15 @@ public class BibTeXTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException {
-        BibTeX bib = new BibTeX(new VRI("http://localhost:3000/bibtex/3ae95773-c121-47ec-bc43-8e95e867b488"));
+        BibTeX bib = new BibTeX();
         bib.setAuthor("Sopasakis P.");
         bib.setTitle("This is the Title");
         bib.setVolume(100);
+        bib.setCrossref("http://localhost:3000/bibtex/549a9f40-9758-44b3-90fe-db31fe1a1a01");
         bib.setBibType(BibTeX.BIB_TYPE.Article);
-        System.out.println(bib);
+        Task t = bib.publishOnline(new VRI("http://localhost:3000/bibtex"), null);
+        System.out.println(t.getResultUri().getOpenToxType());
+
     }
 
 }
