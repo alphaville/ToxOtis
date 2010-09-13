@@ -48,7 +48,6 @@ public class AuthenticationTokenTest {
         at.invalidate();
         System.out.println("Status : " + at.getStatus());
         System.out.println(at.validate() ? "Valid" : "Stale");
-
     }
 }
 

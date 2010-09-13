@@ -41,14 +41,18 @@ public class ParameterTest {
     @Test
     public void testSomeMethod() throws URISyntaxException {
         Parameter<String> p = new Parameter<String>();
-        p.setUri(new VRI("http://sth.com/x/1"));
-        p.setName("xx");
-        p.setScope(ParameterScope.OPTIONAL);
-        p.setTypedValue(new TypedValue<String>("yyy"));
+        //p.setName("xx");
+        //p.setScope(ParameterScope.OPTIONAL);
+        //p.setTypedValue(new TypedValue<String>("yyy"));
         //p.getMeta().setDescription("My parameter");
         OntModel om = p.asOntModel();
-        ParameterSpider pS = new ParameterSpider(om, om.getResource("http://sth.com/x/1"));
+        om.write(System.out);
+        ParameterSpider pS = new ParameterSpider(om, null);
+        System.out.println(p.getUri());
+        System.out.println(p.equals(pS.parse()));
 
     }
 
 }
+
+

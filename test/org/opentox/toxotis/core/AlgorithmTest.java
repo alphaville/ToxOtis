@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.collection.OpenToxAlgorithms;
+import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.PasswordFileManager;
 import static org.junit.Assert.*;
@@ -40,11 +41,13 @@ public class AlgorithmTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException, IOException {
-        Algorithm a = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceVri());
-        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
-        System.out.println(at.validate());
-        a.loadFromRemote(at);
-        System.out.println(a.getMeta());
+        Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceVri());
+        //AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
+//        System.out.println(at.validate());
+        a.loadFromRemote();
+        for (Parameter oc : a.getParameters()){
+            System.out.println(oc);
+        }
     }
 
 

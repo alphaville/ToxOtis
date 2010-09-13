@@ -18,6 +18,7 @@ public class Services {
     private static final String _SSO_POLICY = "https://" + SSO_HOST + "/Pol/opensso-pol";
     public static final VRI NTUA;
     public static final VRI AMBIT_UNI_PLOVDIV;
+    public static final VRI TUM_DEV;
     public static final VRI SSO;
     public static final VRI SSO_IDENTITY;
     public static final VRI SSO_AUTHENTICATE;
@@ -30,6 +31,7 @@ public class Services {
         try {
             NTUA = new VRI(String.format(_NTUA_SERVICES, ""));
             AMBIT_UNI_PLOVDIV = new VRI(String.format(_AMBIT_PLOVDIV, ""));
+            TUM_DEV = new VRI("http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev");
             SSO = new VRI(_SSO_SERVER);
             SSO_IDENTITY = new VRI(String.format(_SSO_IDENTITY, ""));
             SSO_AUTHENTICATE = new VRI(String.format(_SSO_IDENTITY, "/authenticate?uri=service=openldap"));

@@ -23,8 +23,10 @@ public class ParameterSpider extends Tarantula<Parameter> {
         TypedValue<String> typedScope = retrieveProp(OTDatatypeProperties.paramScope().
                 asDatatypeProperty(model));
         String scope = typedScope != null ? typedScope.getValue().toUpperCase() : null;
-        parameter.setScope(
-                Parameter.ParameterScope.valueOf(scope));
+        if (scope != null) {
+            parameter.setScope(
+                    Parameter.ParameterScope.valueOf(scope));
+        }
         TypedValue paramTypedValue = retrieveProp(OTDatatypeProperties.paramValue().asDatatypeProperty(model));
         parameter.setTypedValue(paramTypedValue);
 

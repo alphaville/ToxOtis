@@ -97,9 +97,10 @@ public class AuthenticationToken {
         password = null;
         poster.postParameters();
         int status = poster.getResponseCode();
-        if (status != 200) {
-            throw new ToxOtisException("Invalid Credentials!");
+        if (status >= 400) {
+            throw new ToxOtisException("Remote Server Error. Status code : "+status);
         }
+
         String response = poster.getResponseText();
         if (response.contains("token.id=")) {
             response = response.replaceAll("token.id=", "");

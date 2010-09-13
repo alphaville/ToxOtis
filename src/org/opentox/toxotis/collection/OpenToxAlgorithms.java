@@ -18,8 +18,8 @@ public enum OpenToxAlgorithms {
     NTUA_LEVERAGES(Services.NTUA.augment("algorithm","leverages")),
     NTUA_SVM(Services.NTUA.augment("algorithm","svm")),
     NTUA_FILTER(Services.NTUA.augment("algorithm","filter")),
-    AMBIT_LR(Services.AMBIT_UNI_PLOVDIV.augment("algorithm","LR"));
-    
+    AMBIT_LR(Services.AMBIT_UNI_PLOVDIV.augment("algorithm","LR")),
+    TUM_KNN_CLASSIFICATION(Services.TUM_DEV.augment("algorithm","kNNclassification"));
     private static final Date LAST_UPDATE;
 
     static {

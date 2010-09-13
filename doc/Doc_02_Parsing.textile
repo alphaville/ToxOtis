@@ -1,11 +1,44 @@
 h1. Parse OpenTox Entities with ToxOtis
 
- Using ToxOtis one can parse remote OpenTox entities providing their URI or even OpenTox resources that are stored in some local file. Behind the scenes, ToxOtis downloads and parses an <a href="http://www.w3.org/RDF/">RDF</a> representation of the resource and parses it into some instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a>. For this purpose, the user is endowed with two tools: The abstract method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a> and a set of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/spiders/">spiders</a> which are more powerful tools but also require a higher level of acquaintance with RDF and <a href="http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download">Jena</a> (a library for parsing and editing RDF documents in Java).
+s
+  Using ToxOtis one can parse remote OpenTox entities providing their URI or even OpenTox resources that are stored in some local file. Behind the scenes, ToxOtis downloads and parses an <a href="http://www.w3.org/RDF/">RDF</a> representation of the resource and parses it into some instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a>. For this purpose, the user is endowed with two tools: The abstract method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a> and a set of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/spiders/">spiders</a> which are more powerful tools but also require a higher level of acquaintance with RDF and <a href="http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download">Jena</a> (a library for parsing and editing RDF documents in Java).
  The ToxOtis API for downloading and parsing OpenTox resources is intertwined with the OpenTox A&A API, so in many cases users will need to provide their <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_01_Login.textile">authentication token</a>.
 
 h2. 1. Parsing 
 
+Before proceeding to the next sections, users are adviced to the a look at the <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_00_Components.textile">documentation</a> about the implementation of OpenTox components in ToxOtis.
+
 h3. 1.1. Algorithms
 
+A predefined collection of OpenTox algorithms is available within the class <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/collection/OpenToxAlgorithms.java">OpenToxAlgorithms</a>. You can load the algorithm data from the remote location using the method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Algorithm.java">Algorithm</a>. Here is an example:
 
+<pre>
+ Algorithm myAlg = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceVri());
+ // This will load into your object all information found at the remote location:
+ myAlg.loadFromRemote();
+ System.out.println(myAlg.getMeta());
+</pre>
+
+The above source code will print the following to the System standard output:
+
+<pre>
+identifier  : http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev/algorithm/kNNclassification^^string
+title       : kNNclassification^^string
+description : OpenTox REST interface to the WEKA k-Nearest Neighbor learning algorithm. 
+              Can select appropriate value of K based on cross-validation. Can also do distance weighting.^^string
+date        : Mon Sep 13 20:19:24 EEST 2010^^dateTime
+creator     : tobias.girschick@in.tum.de^^string
+</pre>
+
+If the algorithm is a protected resource you will have to authenticate yourself against that algorithm service providing an <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_01_Login.textile">authentication token</a>. Here is an example:
+
+<pre>
+ Algorithm myAlg = new Algorithm(OpenToxAlgorithms.MTUA_MLR.getServiceVri());
+ AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./.secret/.my_secret.key");
+ // This will load into your object all information found at the remote location:
+ myAlg.loadFromRemote(at);
+</pre>
+
+
+h3. BibTeX Entries
 

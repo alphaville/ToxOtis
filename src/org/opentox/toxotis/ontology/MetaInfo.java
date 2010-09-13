@@ -13,20 +13,77 @@ import org.opentox.toxotis.util.spiders.TypedValue;
  * these are included in the Dublin Core ontology for modeling meta-data and partially
  * in the OpenTox ontology (e.g. hasSource) for modeling some OT-specific properties.
  * </p>
+ *
  * @author Sopasakis Pantelis
+ *
+ * @see http://dublincore.org/documents/usageguide/elements.shtml
  */
 public interface MetaInfo extends java.io.Serializable {
 //TODO: add bibtex?
 
-
+    /**
+     * The property <code>rdfs:comment</code> is used to provide a human-readable
+     * description of a resource.
+     *
+     * @return
+     *      A comment on the described entity.
+     */
     TypedValue<String> getComment();
 
+    /**
+     * An account of the content of the resource. Description may include but is not
+     * limited to: an abstract, table of contents, reference to a graphical representation
+     * of content or a free-text account of the content.
+     * @return
+     *      Description as a typed value
+     */
     TypedValue<String> getDescription();
 
+    /**
+     * Get the identifier (ID) of the described entity. An identifier is an unambiguous
+     * reference to the resource within a given context. Recommended best practice is
+     * to identify the resource by means of a string or number conforming to a
+     * formal identification system. Examples of formal identification systems include
+     * the Uniform Resource Identifier (URI) (including the Uniform Resource Locator (URL),
+     * the Digital Object Identifier (DOI) and the International Standard Book Number (ISBN).
+     * @return
+     *      Identifier as a Typed Value
+     * @see http://dublincore.org/documents/usageguide/elements.shtml
+     */
     TypedValue<String> getIdentifier();
 
+    /**
+     * The built-in OWL property <code>owl:sameAs</code> links an individual to an individual.
+     * Such an <code>owl:sameAs</code> statement indicates that two URI references
+     * actually refer to the same thing: the individuals have the same "identity".
+     * For individuals such as "people" this notion is relatively easy to understand.
+     * For example, we could state that the following two URI references actually refer
+     * to the same person:
+     * <pre>
+     * &lt;rdf:Description rdf:about="#William_Jefferson_Clinton"&gt;
+     * &lt;owl:sameAs rdf:resource="#BillClinton"/&gt;
+     * &lt;/rdf:Description&gt;
+     * </pre>
+     * The <code>owl:sameAs</code> statements are often used in defining mappings between ontologies.
+     * It is unrealistic to assume everybody will use the same name to refer to individuals.
+     * That would require some grand design, which is contrary to the spirit of the web.
+     * @return
+     *      A link to a resource that resembles the described entity
+     *
+     */
     TypedValue<String> getSameAs();
 
+    /**
+     * Related to the datatype ontological property <code>rdfs:seeAlso</code>. The property
+     * <code>rdfs:seeAlso</code> specifies a resource that might provide additional information
+     * about the subject resource. This property may be specialized using rdfs:subPropertyOf
+     * to more precisely indicate the nature of the information the object resource has about the
+     * subject resource. The object and the subject resources are constrained only to be instances
+     * of the class rdfs:Resource.
+     *
+     * @return
+     *      A reference to some other entity as a typed value.
+     */
     TypedValue<String> getSeeAlso();
 
     /**
@@ -51,6 +108,14 @@ public interface MetaInfo extends java.io.Serializable {
 
     TypedValue<String> getPublisher();
 
+    /**
+     * The <code>creator</code> is an entity primarily responsible for making the content
+     * of the resource. Examples of a Creator include a person, an organization, or a service.
+     * Typically the name of the Creator should be used to indicate the entity.
+     * @return
+     *      Creator as a typed value
+     */
+    //TODO: Change this into a list of creators
     TypedValue<String> getCreator();
 
     TypedValue<String> getHasSource();
