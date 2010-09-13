@@ -90,6 +90,16 @@ If you need to discard your token so that it will not be active any more, you ca
 AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/john/.hidpass/.my.key");
 // ... use your token ...
 at.invalidate(); // Log out
-boolean isValid = at.validate(); // &lt;&lt;&lt; equals false
+boolean isValid = at.validate(); // isvalid is false
+</pre>
+
+h3. 2.4. Retrieve user information from a token
+
+You can use a token to obtain information about the user that created it providing its username and password. These information will be returned as an instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/User.java">User</a>. Here is an example:
+
+<pre>
+AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/john/.hidpass/.my.key");
+User user = at.getUser();
+System.out.println(user.getMail()); // Email address of the user
 </pre>
 
