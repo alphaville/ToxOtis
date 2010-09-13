@@ -13,7 +13,7 @@ The OpenTox A&A API is documented at <a href="http://opentox.org/dev/apis/api-1.
 
 h2. 2. ToxOtis Authentication and Authorization
 
-2.1. Acquire an Authentication Token
+h3. 2.1. Acquire an Authentication Token
 
 Once you provide your credentials to the SSO server, you acquire an authentication token. This will be used to authenticate your self against any web service in OpenTox (if needed) and get permission to perform an operation. This is easily accomplished in ToxOtis. You simply provide your credentials to the <code>AuthenticationToken</code>:
 
@@ -28,7 +28,7 @@ File passwordFile = new File("/path/to/my_sercret.key");
 AuthenticationToken at = new AuthenticationToken(passwordFile);
 </pre>
 
-2.2. Advanced Security Issues
+h3. 2.2. Advanced Security Issues
 
 In general, it is not good practise to store unencrypted passwords in your program or in your database. However, if you need to have your username and password stored so that you can easily use them, ToxOtis offers an encryption utility. First of all, you have to create a (private) master key and store it in a file. You should make this file hidden and modify its permissions so that only your application will have access to it. The file should look like this:
 
@@ -50,7 +50,16 @@ Soon we will also provide tools for creating such files. Now use this master pas
 PasswordFileManager.CRYPTO.createPasswordFile("JohnSmith", "s3cret", "/home/john/.hidpass/.my.key");
 </pre>
 
-This will create a password file at <code>/home/john/.hidpass/my.key</code> (Note that the file is hidden). Now you can delete the line above which contains your credentials and any line like that and use the generated encrypted file to authenticate your self. Here is an example:
+This will create a password file at <code>/home/john/.hidpass/my.key</code> (Note that the file is hidden). Your private key will look like the following:
+
+<pre>
+--- START PRIVATE KEY ---
+/EXEudbuXSmvp2SrNI6iewwq==
+2SSiPLZuCMLlz81=
+--- END PRIVATE KEY ---
+</pre>
+
+Now you can delete the line above which contains your credentials and any line like that and use the generated encrypted file to authenticate your self. Here is an example:
 
 <pre>
 File passwordFile = new File("/home/john/.hidpass/.my.key");
@@ -62,3 +71,25 @@ or alternatively:
 <pre>
 AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/john/.hidpass/.my.key");
 </pre>
+
+Authentication tokens are of high importance in ToxOtis, as they are necessary for most server-client data transactions.
+
+
+h3. 2.3. Validate and Log out
+
+The <em>local</em> status of a token can be retrieved using the method: <code>AuthenticationToken#getStatus()</code>. This checks whether the token has timed out. It is however more reliable to validate your token against an SSO server. For this purpose you should use the method <code>AuthenticationToken#validate() : boolean</code>. The method will return <code>true</code> if the token is valid and <code>false</code> otherwise.
+
+<pre>
+AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/john/.hidpass/.my.key");
+boolean isValid = at.validate();
+</pre>
+
+If you need to discard your token so that it will not be active any more, you can invalidate it using the method <code>AuthenticationToken#invalidate()</code>.
+
+<pre>
+AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/john/.hidpass/.my.key");
+// ... use your token ...
+at.invalidate(); // Log out
+boolean isValid = at.validate(); // &lt;&lt;&lt; equals false
+</pre>
+
