@@ -118,10 +118,8 @@ public abstract class Tarantula<Result> implements Closeable {
 
     protected Set<OntologicalClass> getOntologicalTypes(Resource currentResource) {
         Set<OntologicalClass> ontClasses = new HashSet<OntologicalClass>();
-
-        StmtIterator classIt = model.listStatements(
-                new SimpleSelector(currentResource, RDF.type,
-                (RDFNode) null));
+        System.out.println(currentResource.getURI() + "...");
+        StmtIterator classIt = model.listStatements(new SimpleSelector(currentResource, RDF.type, (RDFNode) null));
         Set<OntClass> ontClassSet = new HashSet<OntClass>();
         while (classIt.hasNext()) {
             OntClass tempClass = null;
@@ -129,10 +127,12 @@ public abstract class Tarantula<Result> implements Closeable {
                 tempClass = classIt.nextStatement().getObject().as(OntClass.class); // <<<<<< ConversionException is thrown here!!!
             } catch (ConversionException ex) { // >>> This is to handle some malformed RDFs coming from some dataset servers
                 // >>>> This is a just workaround but needs to be fixed!!!!
-                tempClass = model.getOntClass(classIt.nextStatement().getObject().as(Resource.class).getURI()); // <<<<<< ConversionException is thrown here!!!                
+                String classUri = classIt.nextStatement().getObject().as(Resource.class).getURI();
+                tempClass = model.createClass(classUri); // <<<<<< ConversionException is thrown here!!!
             }
 
             if (tempClass != null && OTClasses.NS.equals(tempClass.getNameSpace())) {
+                System.out.println(tempClass.getURI());
                 ontClassSet.add(tempClass);
                 ontClassSet = getSuperTypes(ontClassSet);
             }

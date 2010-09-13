@@ -32,7 +32,7 @@ public class DatasetSpider extends Tarantula<Dataset>{
         client.setMediaType("application/rdf+xml");
         client.setUri(uri);
         model = client.getResponseOntModel();
-        resource = model.getResource(uri.toString());
+        resource = model.getResource(uri.getStringNoQuery());
     }
 
     public DatasetSpider(Resource resource, OntModel model) {

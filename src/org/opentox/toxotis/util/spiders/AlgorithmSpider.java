@@ -51,7 +51,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      *      occured) or other exceptional status code.
      */
     public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
-        this(uri.addUrlParameter("tokenid", token.getTokenUrlEncoded()));
+        this(uri.addUrlParameter("tokenid", token.getToken()));
     }
 
     public AlgorithmSpider(Resource resource, OntModel model) throws ToxOtisException {

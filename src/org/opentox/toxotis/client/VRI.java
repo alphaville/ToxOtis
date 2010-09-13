@@ -237,6 +237,15 @@ public class VRI { // Well tested!
         return this;
     }
 
+    public VRI addUrlParameter(String paramName, int paramValue) {
+        try {
+            urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(new Integer(paramValue).toString(), URL_ENCODING));
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex);
+        }
+        return this;
+    }
+
     /**
      * Converts the VRI object into the corresponding <code>java.net.URI</code>
      * @return
