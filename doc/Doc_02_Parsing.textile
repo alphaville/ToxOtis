@@ -45,7 +45,7 @@ h3. 1.2. Datasets
 The following example illustates how to use a Dataset Spider to download and parse a dataset from a remote server:
 
 <pre>
-VRI vri = new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/5");
+VRI vri = new VRI(Services.IDEACONSULT.augment("dataset","5"));
 // Require that the dataset will contain no more than 10 compounds
 final int size = 10;
 vri.addUrlParameter("max", size);
