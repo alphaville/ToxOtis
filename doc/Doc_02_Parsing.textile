@@ -1,8 +1,9 @@
 h1. Parse OpenTox Entities with ToxOtis
 
 
-  Using ToxOtis one can parse remote OpenTox entities providing their URI or even OpenTox resources that are stored in some local file. Behind the scenes, ToxOtis downloads and parses an <a href="http://www.w3.org/RDF/">RDF</a> representation of the resource and parses it into some instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a>. For this purpose, the user is endowed with two tools: The abstract method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a> and a set of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/spiders/">spiders</a> which are more powerful tools but also require a higher level of acquaintance with RDF and <a href="http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download">Jena</a> (a library for parsing and editing RDF documents in Java).
+<p align=justify>Using ToxOtis one can parse remote OpenTox entities providing their URI or even OpenTox resources that are stored in some local file. Behind the scenes, ToxOtis downloads and parses an <a href="http://www.w3.org/RDF/">RDF</a> representation of the resource and parses it into some instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a>. For this purpose, the user is endowed with two tools: The abstract method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a> and a set of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/spiders/">spiders</a> which are more powerful tools but also require a higher level of acquaintance with RDF and <a href="http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download">Jena</a> (a library for parsing and editing RDF documents in Java).
  The ToxOtis API for downloading and parsing OpenTox resources is intertwined with the OpenTox A&A API, so in many cases users will need to provide their <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_01_Login.textile">authentication token</a>.
+</p>
 
 h2. 1. Parsing 
 
@@ -40,5 +41,31 @@ If the algorithm is a protected resource you will have to authenticate yourself 
 </pre>
 
 
-h3. BibTeX Entries
+h3. 1.2. Datasets
 
+The following example illustates how to use a Dataset Spider to download and parse a dataset from a remote server:
+
+<pre>
+VRI vri = new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/5");
+// Require that the dataset will contain no more than 10 compounds
+final int size = 10;
+vri.addUrlParameter("max", size);
+DatasetSpider spider = new DatasetSpider(vri);
+Dataset ds = spider.parse();
+</pre>
+
+Now we can use this Dataset object to inspect its dataentries and values:
+
+<pre>
+DataEntry de = ds.getDataEntries().get(2);
+FeatureValue fv = de.getFeatureValue(0);
+System.out.println(de.getConformer().getUri());
+System.out.println(fv.getFeature() + " = " + fv.getValue());
+</pre>
+
+The above code will print the following message to the System's standard output:
+
+<pre>
+http://apps.ideaconsult.net:8080/ambit2/compound/2554/conformer/327497
+http://apps.ideaconsult.net:8080/ambit2/feature/20083 = 100-01-6^^string
+</pre>
