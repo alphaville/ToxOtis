@@ -26,9 +26,19 @@ The above code will print the following to the System output:
 @attribute http://apps.ideaconsult.net:8080/ambit2/feature/22199 numeric
 
 @data
-http://apps.ideaconsult.net:8080/ambit2/compound/261/conformer/419588,113.730003,chloramphenicol,3.7508,Molecule-1,-4.69,0.2812,1.14
-http://apps.ideaconsult.net:8080/ambit2/compound/116508/conformer/419581,54.27,artemisinin,2.746,Molecule-1,-4.52,0.0667,2.22
+http://apps.ideaconsult.net:8080/ambit2/compound/261/conformer/419588,...
+      113.730003,chloramphenicol,3.7508,Molecule-1,-4.69,0.2812,1.14
+http://apps.ideaconsult.net:8080/ambit2/compound/116508/conformer/419581,...
+      54.27,artemisinin,2.746,Molecule-1,-4.52,0.0667,2.22
 ...
 </pre>
 
 As you can notice, the Instances object has a structure that retains the links (URIs) to the dataset from which it was created and the feature URIs. Unfortunately, "Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html objects are just data wrappers and were not designed to serve as data models so all meta information about the dataset and its contained features and compounds will not be found in this object. 
+
+h2. References
+
+# "Use weka in your Java code":http://weka.wikispaces.com/Use+WEKA+in+your+Java+code
+# "Create an Instances object using Weka":http://weka.wikispaces.com/Creating+an+ARFF+file
+# "Weka Home Page":http://www.cs.waikato.ac.nz/ml/weka/
+# "Weka API":http://weka.sourceforge.net/doc.stable/ (for the latest stable version)
+# "OpenTox API":http://opentox.org/dev/apis/api-1.1
