@@ -41,7 +41,7 @@ public class DatasetSpiderTest {
 
     @Test
     public void testDataset() throws URISyntaxException, ToxOtisException {
-        VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset","19"));
+        VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset","5"));
         final int size = 4;
         vri.addUrlParameter("max", size);
         DatasetSpider spider = new DatasetSpider(vri);

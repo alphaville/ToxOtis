@@ -72,6 +72,7 @@ public class Feature extends OTOnlineResource<Feature> {
     public Individual asIndividual(OntModel model) {
         String featureUri = getUri() != null ? getUri().getStringNoQuery() : null;
         Resource mainType = null;
+        /* Check if the feature is either Numeric or String */
         if (ontologies != null && !ontologies.isEmpty()) {
             if (ontologies.contains(OTClasses.StringFeature())) {
                 mainType = (OTClasses.StringFeature().inModel(model));
@@ -79,12 +80,20 @@ public class Feature extends OTOnlineResource<Feature> {
                 mainType = (OTClasses.NumericFeature().inModel(model));
             }
         }
-        Individual indiv = model.createIndividual(featureUri, mainType);
+        /* If the feature is not Numeric nor String, might be Nominal... */
+        if (mainType==null && (ontologies != null && !ontologies.isEmpty())) {
+            if (ontologies.contains(OTClasses.NominalFeature())) {
+                mainType = (OTClasses.NominalFeature().inModel(model));
+            }
+        }
+        Individual indiv = model.createIndividual(featureUri, mainType!=null?mainType:OTClasses.Feature().inModel(model));
+        /* Check again if the feature is additionaly nominal */
         if (ontologies != null && !ontologies.isEmpty()) {
             if (ontologies.contains(OTClasses.NominalFeature())) {
                 indiv.addRDFType(OTClasses.NominalFeature().inModel(model));
             }
         }
+        /* Add admissible values in the RDF graph */
         if (admissibleValue != null && !admissibleValue.isEmpty()) {
             DatatypeProperty accepts = OTDatatypeProperties.acceptValue().asDatatypeProperty(model);
             for (TypedValue tv : admissibleValue) {
@@ -93,6 +102,7 @@ public class Feature extends OTOnlineResource<Feature> {
                 }
             }
         }
+        /* Add meta data */
         if (meta != null) {
             meta.attachTo(indiv, model);
         }
