@@ -38,10 +38,11 @@ public class DatasetTest {
 
     @Test
     public void testLoadFromRemote() throws URISyntaxException, ToxOtisException{
-        VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset","9"));
+        VRI vri = new VRI(Services.IDEACONSULT.augment("dataset","54"));
         Dataset ds = new Dataset(vri);
         ds.loadFromRemote();
-        System.out.println(ds.getDataEntries().get(0).getFeatureValue(0).getFeature());
+        weka.core.Instances data = ds.getInstances();
+        System.out.println(data);
     }
 
 }

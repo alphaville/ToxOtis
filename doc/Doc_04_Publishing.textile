@@ -1,0 +1,13 @@
+h1. Publish your Component
+
+h2. 1. POSTing a resource
+
+p<>. A client can publish some OpenTox component, that is obtain a URI for its resource on some publicly available location, using the "POST":http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5 HTTP method. According to the OpenTox "REST API":http://opentox.org/dev/framework/restweb clients create new resources and acquire a URI for them by POSTing an RDF representation of these resources to an appropriate service. There are a couple of notes we need to make here. First, as far as the service response is concerned, the following status codes are possible:
+
+* "200":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1 A new resource is created; the URI(s) of the created resource(s) is(are) contained in the response body.
+* "202":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.3 An asynchronous job was initiated and a Task is returned to the client to monitor the progress of the procedure.
+* "400":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1 The representation that was POSTed by the client is malformed (syntactic or semantic errors) or some other parameters in the request are inappropriate.
+* "404":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5 The location at which the client attempted to POST the entity was not found on the server.
+* "500":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1 Internal Server Error
+* "503":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4 The service is temporarily unavailable: The resource is created but not yet available
+

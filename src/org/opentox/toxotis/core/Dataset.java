@@ -4,7 +4,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
-import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +51,7 @@ public class Dataset extends OTOnlineResource<Dataset> {
             }
         }
     }
+
     private List<DataEntry> dataEntries;
 
     public Dataset(VRI uri) throws ToxOtisException {
@@ -87,7 +87,6 @@ public class Dataset extends OTOnlineResource<Dataset> {
         if (meta != null) {
             meta.attachTo(indiv, model);
         }
-        /** */
         if (dataEntries != null && !dataEntries.isEmpty()) {
             ObjectProperty otdataentry = OTObjectProperties.dataEntry().asObjectProperty(model);
             for (DataEntry dataEntry : dataEntries) {
@@ -117,18 +116,21 @@ public class Dataset extends OTOnlineResource<Dataset> {
     }
 
     /**
-     * Creates and returns a Weka Instances object from the data contained in this
-     * Dataset. <br> The Instances object created has the following specific structure:
-     * <br> The first element in each Instance is always the Compound's URI. It is
-     * identified by the keyword <i>'compound_uri'</i>. <br>Following that comes a sequence
+     * <p align="justify">Creates and returns a <code>weka.core.Instances</code>
+     * object from the data contained in this Dataset. The Instances object created has the following specific structure:
+     * The first element in each Instance is always the Compound's URI. It is
+     * identified by the keyword <code>compound_uri</code>. Following that comes a sequence
      * of all Features contained the Dataset's DataEntries, described as
-     * either <b>String</b>,<b> Numeric</b> or <b> Nominal</b>. <br> If a compound doesn't
-     * possess a value for a specific Feature, or the value is unreadable or wrong,
-     * a missing value is placed instead. <br> If a Feature is tagged as both
+     * either <code>String</code>,<code>Numeric</code> or <code> Nominal</code>.
+     * If a compound doesn't possess a value for a specific Feature, or the value is
+     * unreadable or unacceptable (e.g. a String value is present when a Numeric is
+     * expected), a missing value is placed instead. If a Feature is tagged as both
      * Numeric|String and Nominal, the Nominal property wins. If it is tagged as
      * both Numeric and String, the String property wins.
+     * </p>
      *
-     * @return Weka Instances from the data contained in this Dataset.
+     * @return
+     *      Weka Instances from the data contained in this Dataset.
      */
     public Instances getInstances() {
         // GET THE ATTRIBUTES FOR THE DATASET:
@@ -139,7 +141,6 @@ public class Dataset extends OTOnlineResource<Dataset> {
         attributes.addElement(new Attribute(compound_uri, (FastVector) null));
         // ADD NUMERIC AND STRING ATTRIBUTES INTO THE FASTVECTOR:
         for (Feature feature : features) {
-
             WekaDataTypes dataType = WekaDataTypes.getFromFeature(feature);
             if (dataType.equals(WekaDataTypes.numeric)) {
                 attributes.addElement(new Attribute(feature.getUri().getStringNoQuery()));
@@ -207,11 +208,5 @@ public class Dataset extends OTOnlineResource<Dataset> {
         return data;
     }
 
-    public static void main(String... args) throws URISyntaxException, ToxOtisException {
-
-        Dataset ds = new DatasetSpider(new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/55")).parse();
-
-        System.out.println(ds.getInstances().toString());
-
-    }
+    
 }
