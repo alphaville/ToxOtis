@@ -116,6 +116,20 @@ public class Dataset extends OTOnlineResource<Dataset> {
         return features;
     }
 
+    /**
+     * Creates and returns a Weka Instances object from the data contained in this
+     * Dataset. <br> The Instances object created has the following specific structure:
+     * <br> The first element in each Instance is always the Compound's URI. It is
+     * identified by the keyword <i>'compound_uri'</i>. <br>Following that comes a sequence
+     * of all Features contained the Dataset's DataEntries, described as
+     * either <b>String</b>,<b> Numeric</b> or <b> Nominal</b>. <br> If a compound doesn't
+     * possess a value for a specific Feature, or the value is unreadable or wrong,
+     * a missing value is placed instead. <br> If a Feature is tagged as both
+     * Numeric|String and Nominal, the Nominal property wins. If it is tagged as
+     * both Numeric and String, the String property wins.
+     *
+     * @return Weka Instances from the data contained in this Dataset.
+     */
     public Instances getInstances() {
         // GET THE ATTRIBUTES FOR THE DATASET:
         FastVector attributes = new FastVector();
