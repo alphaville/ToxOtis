@@ -7,7 +7,7 @@ p<>. Using ToxOtis one can parse remote OpenTox entities providing their URI or 
 
 h2. 2. Examples
 
-p<>. Before proceeding to the next sections, users are adviced to the a look at the <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_00_Components.textile">documentation</a> about the implementation of OpenTox components in ToxOtis.
+p<>. Before proceeding to the next sections, users are adviced to take a look at the <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_00_Components.textile">documentation</a> about the implementation of OpenTox components in ToxOtis.
 
 h3. 2.1. Algorithms
 
