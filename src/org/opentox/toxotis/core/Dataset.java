@@ -8,6 +8,7 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.util.spiders.DatasetSpider;
 
 /**
  * A dataset provides access to chemical compounds and their features
@@ -18,7 +19,7 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class Dataset extends OTOnlineResource<Dataset> {
 
-    List<DataEntry> dataEntries;
+    private List<DataEntry> dataEntries;
 
     public Dataset(VRI uri) throws ToxOtisException {
         super(uri);
@@ -64,6 +65,11 @@ public class Dataset extends OTOnlineResource<Dataset> {
     }
 
     protected Dataset loadFromRemote(VRI uri) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        DatasetSpider spider = new DatasetSpider(uri);
+        Dataset ds = spider.parse();
+        setDataEntries(ds.getDataEntries());
+        setUri(ds.getUri());
+        setMeta(ds.getMeta());
+        return this;
     }
 }

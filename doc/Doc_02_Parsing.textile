@@ -69,3 +69,46 @@ The above code will print the following message to the System's standard output:
 http://apps.ideaconsult.net:8080/ambit2/compound/2554/conformer/327497
 http://apps.ideaconsult.net:8080/ambit2/feature/20083 = 100-01-6^^string
 </pre>
+
+Alternatively you can of course use the implementation of the method <code>loadFromRemote()</code> in <code>Dataset</code>. Here is an example:
+
+<pre>
+VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset","9"));
+Dataset ds = new Dataset(vri);
+ds.loadFromRemote();
+</pre>
+
+This will parse into the object <code>ds</code> the data downloaded from the URI: <a href="http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/9">ambit.uni-plovdiv.bg:8080/ambit2/dataset/9</a>.
+
+h3. 2.3. Error Reports
+
+Error Reports are part of the OpenTox API since version 1.1. Error Reports define a formal way to handle exceptional situations while invoking a service or during inter-service communication thus facilitating debugging. They are sufficiently documented online at <a href="http://opentox.org/dev/apis/api-1.1/Error%20Reports">opentox.org/dev/apis/api-1.1/Error Reports</a>. The parsing of Error Reports is carried out quite the same way as the entities mentioned above. The only difference with Error Reports is the the URL that hosts the error report differs from the IRI that describes the report in the RDF graph returned. So, if you choose to use a spider for parsing an Error Report you have to be careful with the initialization: The standard constructor for a spider <code>ErrorReportSpider(Resource resource, Model model)</code> will probably throw an error if you provide the wrong resource. This is why, you should prefer the constructor <code>ErrorReportSpider(URI actorUri, Model ontModel)</code> where you provide the URI of the actor of the exception and not the RDF node straightforward! Here is an example to obfuscate any misunderstanding:
+
+<pre>
+ VRI uri = new VRI(Services.NTUA.augment("algorithm", "mlr"));
+ GetClient client = new GetClient();
+ client.setUri(uri);
+ OntModel model = client.getResponseOntModel();
+ ErrorReportSpider spider = new ErrorReportSpider(uri, model);
+ ErrorReport er = spider.parse();
+</pre>
+
+Error reports also appear in "ToxOtisException":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/ToxOtisException.java . When a ToxOtis Exception is thrown due to some exception thrown by a remote service, the Error Report from that service is incorporated into the exception. Here is an example:
+
+<pre>
+VRI uri = new VRI(Services.NTUA.augment("algorithm", "mlr"));
+try {
+     new AlgorithmSpider(uri);
+} catch (ToxOtisException tox) {
+     System.out.println(tox.getRemoteErrorReport());
+}
+</pre>
+
+This will print to the System's output:
+
+<pre>
+URI    : http://opentox.ntua.gr:3000/errorReport/#2390078396
+Actor  : http://opentox.ntua.gr:3000/algorithm/mlr
+Code   : AuthenticationFailed
+Status : 403
+</pre>
