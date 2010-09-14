@@ -1,15 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.opentox.toxotis.core;
 
+import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.collection.Services;
 import static org.junit.Assert.*;
 
 /**
@@ -38,7 +37,11 @@ public class DatasetTest {
     }
 
     @Test
-    public void testSomeMethod() {
+    public void testLoadFromRemote() throws URISyntaxException, ToxOtisException{
+        VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset","9"));
+        Dataset ds = new Dataset(vri);
+        ds.loadFromRemote();
+        System.out.println(ds.getDataEntries().get(0).getFeatureValue(0).getFeature());
     }
 
 }

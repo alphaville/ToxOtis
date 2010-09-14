@@ -16,6 +16,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.collection.OpenToxAlgorithms;
 import org.opentox.toxotis.collection.Services;
 import org.opentox.toxotis.core.Algorithm;
+import org.opentox.toxotis.core.ErrorReport;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
@@ -82,17 +83,22 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
              * Handle excpetional events caused during the server-client communiation.
              */
             final int status = client.getResponseCode();
-            if (status == 403) {
-                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + uri + "'");
-            }
-            if (status == 401) {
-                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + uri + "'");
-            }
-            if (status == 404) {
-                throw new ToxOtisException(ErrorCause.AlgorithmNotFound, "The following algorithm was not found : '" + uri + "'");
-            }
             if (status != 200) {
-                throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + uri + "'");
+                OntModel om = client.getResponseOntModel();
+                ErrorReportSpider ersp = new ErrorReportSpider(uri, om);
+                ErrorReport er = ersp.parse();
+
+                if (status == 403) {
+                    throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + uri + "'",er);
+                }
+                if (status == 401) {
+                    throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + uri + "'",er);
+                }
+                if (status == 404) {
+                    throw new ToxOtisException(ErrorCause.AlgorithmNotFound, "The following algorithm was not found : '" + uri + "'",er);
+                } else {
+                    throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + uri + "'",er);
+                }
             }
         } catch (IOException ex) {
             throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);

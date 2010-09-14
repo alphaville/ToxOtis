@@ -1,5 +1,7 @@
 package org.opentox.toxotis;
 
+import org.opentox.toxotis.core.ErrorReport;
+
 /**
  *
  * @author Pantelis Sopasakis
@@ -7,15 +9,16 @@ package org.opentox.toxotis;
  */
 public class ToxOtisException extends Exception {
 
-    private ErrorCause cause = null;    
+    private ErrorCause cause = null;
+    private ErrorReport remoteErrorReport;
 
     public ToxOtisException(String string, Exception ex) {
         super(string, ex);
     }
-    
+
     public ErrorCause getCode() {
         return cause;
-    }    
+    }
 
     /**
      * Creates a new instance of <code>ToxOtisException</code> without detail message.
@@ -50,12 +53,25 @@ public class ToxOtisException extends Exception {
     public ToxOtisException(String message) {
         super(message);
     }
-    
+
+    public ToxOtisException(String message, ErrorReport remoteErrorReport) {
+        super(message);
+        this.remoteErrorReport = remoteErrorReport;
+    }
+
+    public ToxOtisException(ErrorCause cause, String message, ErrorReport remoteErrorReport){
+        this(cause, message);
+        this.remoteErrorReport = remoteErrorReport;
+    }
+
+    public ErrorReport getRemoteErrorReport() {
+        return remoteErrorReport;
+    }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        if (getCause()!=null){
+        if (getCause() != null) {
             builder.append("[");
             builder.append(getCause());
             builder.append("] - ");

@@ -145,6 +145,10 @@ public class MetaInfoImpl implements MetaInfo {
             ObjectProperty sameProp = model.createObjectProperty(OTObjectProperties.hasSource().getUri());
             try {
                 IRIFactory.semanticWebImplementation().construct(hasSource.getValue());
+                /*
+                 * TODO: In the following line change 'OTClasses.OpenToxResource().inModel(model))' with
+                 * the right Ontological Class in every case according to the value of hasSource...
+                 */
                 resource.addProperty(sameProp, model.createResource(hasSource.getValue(), OTClasses.OpenToxResource().inModel(model)));
             } catch (IRIException ex) {
                 System.err.println("[WARNING] Cannot create a resource with identifier : '" + hasSource.getValue() + "'. Not a valid IRI!");

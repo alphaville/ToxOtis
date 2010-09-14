@@ -15,7 +15,6 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.BibTeX;
 
 /**
  *

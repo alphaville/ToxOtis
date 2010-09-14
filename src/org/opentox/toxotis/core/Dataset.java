@@ -52,7 +52,7 @@ public class Dataset extends OTOnlineResource<Dataset> {
             }
         }
     }
-    List<DataEntry> dataEntries;
+    private List<DataEntry> dataEntries;
 
     public Dataset(VRI uri) throws ToxOtisException {
         super(uri);
@@ -98,7 +98,12 @@ public class Dataset extends OTOnlineResource<Dataset> {
     }
 
     protected Dataset loadFromRemote(VRI uri) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        DatasetSpider spider = new DatasetSpider(uri);
+        Dataset ds = spider.parse();
+        setDataEntries(ds.getDataEntries());
+        setUri(ds.getUri());
+        setMeta(ds.getMeta());
+        return this;
     }
 
     public Set<Feature> getContainedFeatures() {

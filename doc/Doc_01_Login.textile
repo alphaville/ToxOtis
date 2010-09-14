@@ -15,7 +15,7 @@ h2. 2. ToxOtis Authentication and Authorization
 
 h3. 2.1. Acquire an Authentication Token
 
-Once you provide your credentials to the SSO server, you acquire an authentication token. This will be used to authenticate your self against any web service in OpenTox (if needed) and get permission to perform an operation. This is easily accomplished in ToxOtis. You simply provide your credentials to the <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/AuthenticationToken.java"></a>AuthenticationToken</a>:
+Once you provide your credentials to the SSO server, you acquire an authentication token. This will be used to authenticate yourself against any web service in OpenTox (if needed) and get permission to perform an operation. This is easily accomplished in ToxOtis. You simply provide your credentials to the <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/AuthenticationToken.java"></a>AuthenticationToken</a>:
 
 <pre>
 AuthenticationToken at = new AuthenticationToken("JohnSmith","mysecretPass111");
