@@ -55,7 +55,6 @@ public class DatasetSpiderTest {
 //        System.out.println(de.getConformer().getUri());
 //        System.out.println(fv.getFeature().getUri() + " = " + fv.getValue());
 
-
         ds.asOntModel().write(System.out);  
 
     }

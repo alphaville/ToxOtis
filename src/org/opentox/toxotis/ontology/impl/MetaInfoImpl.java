@@ -1,6 +1,10 @@
 package org.opentox.toxotis.ontology.impl;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIException;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.impl.IRIImpl;
 import com.hp.hpl.jena.ontology.AnnotationProperty;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -139,8 +143,12 @@ public class MetaInfoImpl implements MetaInfo {
              * is a mapping from ot:Feature ot ot:Dataset or ot:Dataset or ot:Model.
              */
             ObjectProperty sameProp = model.createObjectProperty(OTObjectProperties.hasSource().getUri());
-            resource.addProperty(sameProp, model.createResource(sameAs.getValue(), OTClasses.OpenToxResource().inModel(model)));
-
+            try {
+                IRIFactory.semanticWebImplementation().construct(hasSource.getValue());
+                resource.addProperty(sameProp, model.createResource(hasSource.getValue(), OTClasses.OpenToxResource().inModel(model)));
+            } catch (IRIException ex) {
+                System.err.println("[WARNING] Cannot create a resource with identifier : '" + hasSource.getValue() + "'. Not a valid IRI!");
+            }
         }
         if (comment != null) {
             resource.addLiteral(RDFS.comment.inModel(model).as(Property.class),

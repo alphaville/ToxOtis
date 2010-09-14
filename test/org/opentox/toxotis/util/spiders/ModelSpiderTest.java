@@ -42,8 +42,13 @@ public class ModelSpiderTest {
         VRI vri = new VRI(modelUri);
         ModelSpider mSpider = new ModelSpider(vri);
         Model m = mSpider.parse();
+        System.out.println("META INFO :");
         System.out.println(m.getAlgorithm().getMeta());
+        System.out.println("DEPENDENT FEATURE :");
+        System.out.println(m.getDependentFeature());
+        System.out.println("PREDICTED FEATURE :");
+        System.out.println(m.getPredictedFeature());
 
+        m.asOntModel().write(System.out);
     }
-
 }
