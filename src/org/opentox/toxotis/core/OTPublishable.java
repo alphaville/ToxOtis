@@ -34,7 +34,10 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      * @param token
      *      Provide an authentication token. If you think that the service does not
      *      require auhtentication/authorization, you can leave this field <code>null</code> or
-     *      you can provide an empty authentication token.
+     *      you can provide an empty authentication token. If the provided URI
+     *      already contains an authentication token (as the URL parameter <code>
+     *      tokenid</code>) it will be replaced by the new token provided to
+     *      this method.
      * @return
      *      A Task for monitoring the progress of your request. If the service
      *      returns the URI of the resource right away and does not return a task,
@@ -54,10 +57,31 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
 
     /**
      * Publish the component to a standard server. The resource will be posted to the
-     * server in RDF format (application/rdf+xml).
+     * server in RDF format (application/rdf+xml). If you want to specify at which
+     * server the resource should be posted, use the {@link
+     * OTPublishable#publishOnline(org.opentox.toxotis.client.VRI, org.opentox.toxotis.util.aa.AuthenticationToken) other method}.
      * @param token
+     *      Provide an authentication token. If you think that the service does not
+     *      require auhtentication/authorization, you can leave this field <code>null</code> or
+     *      you can provide an empty authentication token.If the provided URI
+     *      already contains an authentication token (as the URL parameter <code>
+     *      tokenid</code>) it will be replaced by the new token provided to
+     *      this method.
      * @return
+     *      A Task for monitoring the progress of your request. If the service
+     *      returns the URI of the resource right away and does not return a task,
+     *      then the object you will receive from this method will now have an identifier,
+     *      its status will be set to {@link Task.Status#COMPLETED }, its progress
+     *      will be set to <code>100%</code> and the URI of the created resource will
+     *      be available applying the method {@link Task#getResultUri() } on the returned
+     *      task. In any case, the service's response will be wrapped in a {@link Task }
+     *      object.
      * @throws ToxOtisException
+     *      In case of invalid credentials, if the POSTed resource is not acceptable
+     *      by the remote service (returns a status code 400), communication error
+     *      occur with the remote server or other connection problems or the access
+     *      to the service was denied (401 or 403).
+     * @see OTPublishable#publishOnline(org.opentox.toxotis.client.VRI, org.opentox.toxotis.util.aa.AuthenticationToken) alternative method
      */
     public abstract Task publishOnline(AuthenticationToken token) throws ToxOtisException ;
 }
