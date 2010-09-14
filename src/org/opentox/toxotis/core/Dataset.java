@@ -109,8 +109,7 @@ public class Dataset extends OTOnlineResource<Dataset> {
     public Set<Feature> getContainedFeatures() {
         Set<Feature> features = new HashSet<Feature>();
         for (DataEntry dataEntry : getDataEntries()) {
-            for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
-                System.out.println("FEATURE IS: " + featureValue.getFeature().getUri().getStringNoQuery());
+            for (FeatureValue featureValue : dataEntry.getFeatureValues()) {                
                 features.add(featureValue.getFeature());
             }
         }
