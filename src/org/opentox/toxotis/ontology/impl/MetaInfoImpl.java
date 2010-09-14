@@ -9,12 +9,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -141,7 +139,7 @@ public class MetaInfoImpl implements MetaInfo {
              * is a mapping from ot:Feature ot ot:Dataset or ot:Dataset or ot:Model.
              */
             ObjectProperty sameProp = model.createObjectProperty(OTObjectProperties.hasSource().getUri());
-            resource.addProperty(sameProp, model.createResource(sameAs.getValue(),OTClasses.OpenToxResource().inModel(model)));
+            resource.addProperty(sameProp, model.createResource(sameAs.getValue(), OTClasses.OpenToxResource().inModel(model)));
 
         }
         if (comment != null) {
@@ -155,8 +153,9 @@ public class MetaInfoImpl implements MetaInfo {
 
         AnnotationProperty contributorProperty = model.createAnnotationProperty(DC.contributor.getURI());
         if (contributors != null && !contributors.isEmpty()) {
-            for (TypedValue<String> contr : contributors) {
-                resource.addLiteral(contributorProperty, model.createTypedLiteral(contr != null ? contr.getValue() : null));
+            Iterator<TypedValue<String>> contrIt = contributors.iterator();
+            while (contrIt.hasNext()) {
+                resource.addLiteral(contributorProperty, contrIt.next());
             }
         }
         return resource;

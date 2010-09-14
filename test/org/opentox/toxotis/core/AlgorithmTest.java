@@ -45,16 +45,17 @@ public class AlgorithmTest {
         //AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
 //        System.out.println(at.validate());
         a.loadFromRemote();
-        for (Parameter oc : a.getParameters()){
-            System.out.println(oc);
-        }
+//        for (Parameter oc : a.getParameters()){
+//            System.out.println(oc);
+//        }
+        a.asOntModel().write(System.out);
     }
 
 
     @Test
     public void testRdf() throws URISyntaxException, ToxOtisException, IOException {
-        Algorithm a = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceUri());
+        Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceUri());
         a.getMeta().setComment("This is a comment");
-        a.asOntModel().write(System.out);
+//        a.asOntModel().write(System.out);
     }
 }

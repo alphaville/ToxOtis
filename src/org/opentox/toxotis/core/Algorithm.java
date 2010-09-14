@@ -101,7 +101,7 @@ public class Algorithm extends OTOnlineResource<Algorithm> {
                 indiv.addRDFType(ontClassIter.next().inModel(model));
             }
         }
-        if (parameters != null) {
+        if (parameters != null) {            
             for (Parameter param : parameters) {
                 indiv.addProperty(OTObjectProperties.parameters().asObjectProperty(model), param.asIndividual(model));
             }
