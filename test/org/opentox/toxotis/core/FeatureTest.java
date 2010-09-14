@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.collection.Services;
 import static org.junit.Assert.*;
 
 /**
@@ -37,9 +38,16 @@ public class FeatureTest {
 
     @Test
     public void testLoadRemoteFeature() throws URISyntaxException, ToxOtisException {
-        Feature f = new Feature(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/10"));
+        Feature f = new Feature(Services.IDEACONSULT.augment("feature","10"));
         f.loadFromRemote();
-        System.out.println(f.meta);
+        System.out.println(f.getMeta().getSameAs());
+        System.out.println(f.getMeta().getHasSource());
+        f.setUri(null);
+        f.getMeta().setComment("Comment");
+        f.getMeta().setTitle("Chemical Name");
+        f.setUnits("");
+        
+        f.publishOnline(Services.IDEACONSULT.augment("feature"), null);
         
     }
 

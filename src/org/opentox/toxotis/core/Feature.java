@@ -1,16 +1,23 @@
 package org.opentox.toxotis.core;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.FeatureSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 
@@ -25,7 +32,7 @@ import org.opentox.toxotis.util.spiders.TypedValue;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Feature extends OTOnlineResource<Feature> {
+public class Feature extends OTPublishable<Feature> {
 
     private Set<OntologicalClass> ontologies;
     private String units;
@@ -80,12 +87,12 @@ public class Feature extends OTOnlineResource<Feature> {
             }
         }
         /* If the feature is not Numeric nor String, might be Nominal... */
-        if (mainType==null && (ontologies != null && !ontologies.isEmpty())) {
+        if (mainType == null && (ontologies != null && !ontologies.isEmpty())) {
             if (ontologies.contains(OTClasses.NominalFeature())) {
                 mainType = (OTClasses.NominalFeature().inModel(model));
             }
         }
-        Individual indiv = model.createIndividual(featureUri, mainType!=null?mainType:OTClasses.Feature().inModel(model));
+        Individual indiv = model.createIndividual(featureUri, mainType != null ? mainType : OTClasses.Feature().inModel(model));
         /* Check again if the feature is additionaly nominal */
         if (ontologies != null && !ontologies.isEmpty()) {
             if (ontologies.contains(OTClasses.NominalFeature())) {
@@ -100,6 +107,11 @@ public class Feature extends OTOnlineResource<Feature> {
                     indiv.addProperty(accepts, model.createTypedLiteral(tv.getValue(), tv.getType()));
                 }
             }
+        }
+        /* Add units */
+        if (units != null) {
+            DatatypeProperty unitsProp = OTDatatypeProperties.units().asDatatypeProperty(model);
+            indiv.addProperty(unitsProp, model.createTypedLiteral(units, XSDDatatype.XSDstring));
         }
         /* Add meta data */
         if (meta != null) {
@@ -143,5 +155,34 @@ public class Feature extends OTOnlineResource<Feature> {
         setOntologies(f.getOntologies());
         setUnits(f.getUnits());
         return this;
+    }
+
+    @Override
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
+        /** Handle provided token */
+        if (token != null) {
+            // Replace existing token with the new one
+            if (vri.getUrlParams().containsKey("tokenid")) {
+                vri.getUrlParams().remove("tokenid");
+            }
+            vri.addUrlParameter("tokenid", token.getToken());
+        }
+        PostClient client = new PostClient(vri);
+        client.setContentType("application/rdf+xml");
+        client.setPostableOntModel(asOntModel());
+        client.setMediaType("application/rdf+xml");
+        client.post();
+        System.out.println(client.getResponseText());
+        try {
+            System.out.println(client.getResponseCode());
+        } catch (IOException ex) {
+            Logger.getLogger(Feature.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @Override
+    public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

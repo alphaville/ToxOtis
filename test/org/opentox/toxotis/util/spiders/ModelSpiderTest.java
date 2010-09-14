@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.collection.Services;
 import org.opentox.toxotis.core.Model;
 import static org.junit.Assert.*;
 
@@ -38,10 +39,12 @@ public class ModelSpiderTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException {
-        String modelUri = "http://opentox.ntua.gr:3000/model/f9a97443-6baf-4361-a55c-b08cf12c3e39";
-        VRI vri = new VRI(modelUri);
-        ModelSpider mSpider = new ModelSpider(vri);
-        Model m = mSpider.parse();
+        VRI vri = new VRI(Services.TUM_DEV.augment("model","TUMOpenToxModel_j48_7"));
+//        ModelSpider mSpider = new ModelSpider(vri);
+//        Model m = mSpider.parse();
+
+        Model m = new Model(vri);
+        m.loadFromRemote();
         System.out.println("META INFO :");
         System.out.println(m.getAlgorithm().getMeta());
         System.out.println("DEPENDENT FEATURE :");
