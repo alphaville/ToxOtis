@@ -2,6 +2,9 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.spiders.TypedValue;
 
 /**
@@ -40,6 +43,15 @@ public class FeatureValue extends OTComponent<FeatureValue> {
 
     @Override
     public Individual asIndividual(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String featureValueUri = getUri() != null ? getUri().getStringNoQuery() : null;
+        Individual indiv = model.createIndividual(featureValueUri, OTClasses.FeatureValue().inModel(model));
+        indiv.addProperty(OTObjectProperties.feature().asObjectProperty(model), feature.asIndividual(model));
+        if (value != null) {
+            indiv.addLiteral(OTDatatypeProperties.value().asDatatypeProperty(model), model.createTypedLiteral(value.getValue(), value.getType()));
+        }
+        if (meta != null) {
+            meta.attachTo(indiv, model);
+        }
+        return indiv;
     }
 }

@@ -11,7 +11,8 @@ import org.opentox.toxotis.ontology.OTDatatypeProperty;
 import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
 
 /**
- *
+ * Collection of datatype properties used in OpenTox.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -48,6 +49,18 @@ public class OTDatatypeProperties {
         }
     }
 
+    /**
+     * Return a datatype property given its name. The input argument of this method
+     * is case sensitive and this in some cases might cause an exception to be
+     * thrown. This method performs reflective lookups only once (when invoked for
+     * the first time)  for efficiency.
+     * @param name
+     *      Name of the datatype property to search for
+     * @return
+     *      The datatype property that was requested
+     * @throws ToxOtisException
+     *      In case the requested datatype property is not found in the cache.
+     */
     public static OTDatatypeProperty forName(String name) throws ToxOtisException {
         initMethodCache();
         try {
@@ -66,6 +79,13 @@ public class OTDatatypeProperties {
 
     }
 
+    /**
+     * The property <code>ot:hasStatus</code> assigns status values to Tasks. The
+     * domain of this property is the ontological class {@link OTClasses#Task() }
+     * and its range is <code>xsd:string</code>. Acceptable values are <code>RUNNING</code>,
+     * <code>COMPLETED</code>, <code>ERROR</code> and <code>CANCELED</code>.
+     * @return
+     */
     public static OTDatatypeProperty hasStatus() {
         if (ms_hasStatus == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasStatus");
@@ -77,6 +97,14 @@ public class OTDatatypeProperties {
         return ms_hasStatus;
     }
 
+    /**
+     * Datatype property used to link an <code>ot:Nominal</code> with its admissible
+     * values. This property is also used to assign range values to Nominal Features.
+     * The domain of this property is the class {@link OTClasses#Nominal() } and its
+     * range is <code>xsd:string</code>.
+     * @return
+     *      The datatype property ot:acceptValue
+     */
     public static OTDatatypeProperty acceptValue() {
         if (ms_acceptValue == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("acceptValue");
@@ -166,6 +194,13 @@ public class OTDatatypeProperties {
         return ms_percentageCompleted;
     }
 
+    /**
+     * This is a generic property. Subproperties usually used are: <code>ot:actor</code>
+     * <code>ot:message</code>, <code>ot:details</code>, <code>ot:httpStatus</code> and
+     * <code>ot:errorCode</code>.
+     * @return
+     *      The error report super-property.
+     */
     public static OTDatatypeProperty errorReportProperty() {
         if (ms_errorReportProperty == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("errorReportProperty");

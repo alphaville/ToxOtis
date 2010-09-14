@@ -1,10 +1,13 @@
 package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.List;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
  * A dataset provides access to chemical compounds and their features
@@ -44,7 +47,20 @@ public class Dataset extends OTOnlineResource<Dataset> {
 
     @Override
     public Individual asIndividual(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String datasetUri = getUri() != null ? getUri().getStringNoQuery() : null;
+        Individual indiv = model.createIndividual(datasetUri, OTClasses.Dataset().inModel(model));
+        /* Attach the metadata to the dataset node... */
+        if (meta != null) {
+            meta.attachTo(indiv, model);
+        }
+        /** */
+        if (dataEntries != null && !dataEntries.isEmpty()) {
+            ObjectProperty otdataentry = OTObjectProperties.dataEntry().asObjectProperty(model);
+            for (DataEntry dataEntry : dataEntries) {
+                indiv.addProperty(otdataentry, dataEntry.asIndividual(model));
+            }
+        }
+        return indiv;
     }
 
     protected Dataset loadFromRemote(VRI uri) throws ToxOtisException {

@@ -14,6 +14,7 @@ import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.DataEntry;
 import org.opentox.toxotis.core.Dataset;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
@@ -59,6 +60,19 @@ public class DatasetSpider extends Tarantula<Dataset>{
     public Dataset parse() throws ToxOtisException {
         Dataset dataset = new Dataset();
         dataset.setUri(datasetUri);
+        /**
+         * START **
+         * The following lines is a workaround will all RDF representations from 
+         * remote servers are well formed. This will force the data model of a dataset
+         * to have explicit declarations of ot:Feature, ot:NominalFeautre, ot:NumericFeature 
+         * and ot:StringFeature
+         */
+        OTClasses.Feature().inModel(model);
+        OTClasses.NominalFeature().inModel(model);
+        OTClasses.NumericFeature().inModel(model);
+        OTClasses.StringFeature().inModel(model);
+        /** END */
+
         dataset.setMeta(new MetaInfoSpider(resource, model).parse());
 
         StmtIterator entryIt = model.listStatements(

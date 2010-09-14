@@ -1,7 +1,6 @@
 package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
@@ -10,7 +9,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.Closeable;
 import java.text.DateFormat;
@@ -20,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTAlgorithmTypes;
@@ -118,21 +114,12 @@ public abstract class Tarantula<Result> implements Closeable {
 
     protected Set<OntologicalClass> getOntologicalTypes(Resource currentResource) {
         Set<OntologicalClass> ontClasses = new HashSet<OntologicalClass>();
-        System.out.println(currentResource.getURI() + "...");
         StmtIterator classIt = model.listStatements(new SimpleSelector(currentResource, RDF.type, (RDFNode) null));
         Set<OntClass> ontClassSet = new HashSet<OntClass>();
         while (classIt.hasNext()) {
             OntClass tempClass = null;
-            try {
-                tempClass = classIt.nextStatement().getObject().as(OntClass.class); // <<<<<< ConversionException is thrown here!!!
-            } catch (ConversionException ex) { // >>> This is to handle some malformed RDFs coming from some dataset servers
-                // >>>> This is a just workaround but needs to be fixed!!!!
-                String classUri = classIt.nextStatement().getObject().as(Resource.class).getURI();
-                tempClass = model.createClass(classUri); // <<<<<< ConversionException is thrown here!!!
-            }
-
+            tempClass = classIt.nextStatement().getObject().as(OntClass.class); 
             if (tempClass != null && OTClasses.NS.equals(tempClass.getNameSpace())) {
-                System.out.println(tempClass.getURI());
                 ontClassSet.add(tempClass);
                 ontClassSet = getSuperTypes(ontClassSet);
             }

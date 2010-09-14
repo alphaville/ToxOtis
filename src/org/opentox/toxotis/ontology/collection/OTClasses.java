@@ -71,6 +71,12 @@ public class OTClasses {
         }
     }
 
+    /**
+     * Every individual in the OWL world is a member of the class <code>owl:Thing</code>.
+     * Every ontological class of the OpenTox ontology is a subclass of <code>owl:Thing</code>.
+     * @return
+     *      Universal class <code>owl:Thing</code>.
+     */
     private static OntologicalClass Thing() {
         if (ms_Thing == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Thing");
@@ -80,6 +86,12 @@ public class OTClasses {
         return ms_Thing;
     }
 
+    /**
+     * Superclass for all OpenTox resources. All classes of the OpenTox ontologies,
+     * subclass ot:OpenToxResource
+     * @return
+     *      OpenTox superclass.
+     */
     public static OntologicalClass OpenToxResource() {
         if (ms_OpenToxResource == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OpenToxResource");
@@ -90,6 +102,10 @@ public class OTClasses {
         return ms_OpenToxResource;
     }
 
+    /**
+     * Ontological class that provides access to all OpenTox algorithms
+     * @see OTAlgorithmTypes OpenTox Algorithm Ontology
+     */
     public static OntologicalClass Algorithm() {
         if (ms_Algorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Algorithm");
@@ -148,6 +164,13 @@ public class OTClasses {
         return ms_DataType;
     }
 
+    /**
+     * A Dataset Provides access to chemical compounds
+     * and their features (e.g. structural, physical-chemical,
+     * biological, toxicological properties)
+     * @return
+     *      Ontological class for Datasets
+     */
     public static OntologicalClass Dataset() {
         if (ms_Dataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Dataset");
@@ -290,6 +313,18 @@ public class OTClasses {
         return ms_Task;
     }
 
+    /**
+     * Instances of the class ErrorReport
+     * appear in ontological models to report some exceptional event
+     * that happened during the transaction of data from one server
+     * to another, request errors or internal server errors. An error
+     * report is characterized by its actor, the corresponding status code,
+     * some unique identifier for the exceptional event and possibly
+     * another error report that triggered its creation.
+     * 
+     * @return
+     *      Ontological class for Error Reports in OpenTox ontology.
+     */
     public static OntologicalClass ErrorReport() {
         if (ms_ErrorReport == null) {
             OntologicalClass clazz = new OntologicalClassImpl("ErrorReport");

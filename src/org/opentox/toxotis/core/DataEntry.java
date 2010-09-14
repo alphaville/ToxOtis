@@ -1,15 +1,18 @@
 package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.List;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class DataEntry extends OTComponent<DataEntry>{
+public class DataEntry extends OTComponent<DataEntry> {
 
     private Conformer conformer;
     private List<FeatureValue> featureValues;
@@ -62,12 +65,22 @@ public class DataEntry extends OTComponent<DataEntry>{
         return featureValues.get(index);
     }
 
-
     @Override
     public Individual asIndividual(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String dataEntryUri = getUri() != null ? getUri().getStringNoQuery() : null;
+        Individual indiv = model.createIndividual(dataEntryUri, OTClasses.DataEntry().inModel(model));
+        if (meta != null) {
+            meta.attachTo(indiv, model);
+        }
+        indiv.addProperty(OTObjectProperties.conformer().asObjectProperty(model), conformer.asIndividual(model));
+        if (featureValues != null && !featureValues.isEmpty()) {
+            ObjectProperty valuesProp = OTObjectProperties.values().asObjectProperty(model);
+            for (FeatureValue fv : featureValues) {
+                if (fv != null) {
+                    indiv.addProperty(valuesProp, fv.asIndividual(model));
+                }
+            }
+        }
+        return indiv;
     }
-
-
-
 }

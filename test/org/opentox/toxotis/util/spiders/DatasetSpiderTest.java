@@ -12,8 +12,6 @@ import org.opentox.toxotis.collection.Services;
 import org.opentox.toxotis.core.DataEntry;
 import org.opentox.toxotis.core.Dataset;
 import org.opentox.toxotis.core.FeatureValue;
-import org.opentox.toxotis.ontology.OntologicalClass;
-import org.opentox.toxotis.ontology.collection.OTClasses;
 import static org.junit.Assert.*;
 
 /**
@@ -43,22 +41,22 @@ public class DatasetSpiderTest {
 
     @Test
     public void testDataset() throws URISyntaxException, ToxOtisException {
-        VRI vri = new VRI(Services.IDEACONSULT.augment("dataset","5"));
-        final int size = 10;
+        VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset","19"));
+        final int size = 4;
         vri.addUrlParameter("max", size);
         DatasetSpider spider = new DatasetSpider(vri);
         Dataset ds = spider.parse();
         System.out.println(ds.getMeta());
-        assertEquals(10, ds.getDataEntries().size());
+        assertEquals(size, ds.getDataEntries().size());
 
         DataEntry de = ds.getDataEntries().get(2);
         FeatureValue fv = de.getFeatureValue(0);
 
-        System.out.println(de.getConformer().getUri());
-        System.out.println(fv.getFeature().getUri() + " = " + fv.getValue());
+//        System.out.println(de.getConformer().getUri());
+//        System.out.println(fv.getFeature().getUri() + " = " + fv.getValue());
 
 
-
+        ds.asOntModel().write(System.out);  
 
     }
 }

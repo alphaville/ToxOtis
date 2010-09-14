@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
  *
@@ -35,7 +36,9 @@ public class Conformer extends OTOnlineResource<Conformer> {
 
     @Override
     public Individual asIndividual(OntModel model) {
-        throw new UnsupportedOperationException("");
+        String conformerUri = getUri() != null ? getUri().getStringNoQuery() : null;
+        Individual indiv = model.createIndividual(conformerUri, OTClasses.Conformer().inModel(model));
+        return indiv;
     }
 
     @Override

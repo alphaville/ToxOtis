@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.*;
+import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.collection.KnoufBibTex;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
  * VRI is an alternative to URI. Being <code>final</code>, the class <code>java.net.URI</code>
@@ -60,15 +63,15 @@ public class VRI { // Well tested!
      */
     private enum OpenToxRegEx {
 
-        COMPOUND(Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_orNothing),
-        CONFORMER(Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_orNothing),
-        FEATURE(Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_orNothing),
-        DATASET(Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_orNothing,
+        COMPOUND(OTClasses.Compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_orNothing),
+        CONFORMER(OTClasses.Conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_orNothing),
+        FEATURE(OTClasses.Feature(), Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_orNothing),
+        DATASET(OTClasses.Dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_orNothing,
         ".+/(?i)query/(?i)compound/.+/" + END_SLASH_orNothing),
-        ALGORITHM(Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_orNothing),
-        BIBTEX(BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_orNothing),
-        MODEL(Model.class, ".+/(?i)model(s||)/" + END_SLASH_orNothing),
-        TASK(Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing);
+        ALGORITHM(OTClasses.Algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_orNothing),
+        BIBTEX(KnoufBibTex.Entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_orNothing),
+        MODEL(OTClasses.Model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_orNothing),
+        TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing);
         /**
          * Set of regular expressions that identify a
          * certain resource.
@@ -79,9 +82,12 @@ public class VRI { // Well tested!
          */
         private final Class<?> clazz;
 
-        private OpenToxRegEx(final Class<?> claz, final String... regexp) {
+        private OntologicalClass ontologicalClass;
+
+        private OpenToxRegEx(final OntologicalClass ont, final Class<?> claz, final String... regexp) {
             Collections.addAll(this.regexp, regexp);
             this.clazz = claz;
+            this.ontologicalClass = ont;
         }
 
         /**
@@ -102,6 +108,11 @@ public class VRI { // Well tested!
         public Class<?> getClazz() {
             return clazz;
         }
+
+        public OntologicalClass getOntologicalClass() {
+            return ontologicalClass;
+        }
+        
     }
 
     /**
@@ -394,6 +405,22 @@ public class VRI { // Well tested!
             }
         } else {
             return rex.getClazz();
+        }
+        return null;
+    }
+
+    public OntologicalClass getOntologicalClass() {
+        OpenToxRegEx rex = getMatchingRegEx();
+        if (rex == null) {
+            return null;
+        }
+        if (rex == OpenToxRegEx.COMPOUND || rex == OpenToxRegEx.CONFORMER) {
+            String queryString = getQueryAsString();
+            if (queryString == null || (queryString != null && queryString.isEmpty())) {
+                return rex.getOntologicalClass();
+            }
+        } else {
+            return rex.getOntologicalClass();
         }
         return null;
     }
