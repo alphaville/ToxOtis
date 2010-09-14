@@ -104,7 +104,7 @@ try {
 }
 </pre>
 
-This will print to the System's output:
+This will print to the System's output the following text:
 
 <pre>
 URI    : http://opentox.ntua.gr:3000/errorReport/#2390078396
@@ -126,7 +126,8 @@ Model m = mSpider.parse();
 The above code downloads the model from <a href="http://opentox.ntua.gr:3000/model/f9a97443-6baf-4361-a55c-b08cf12c3e39">opentox.ntua.gr</a> and creates the object <code>m: Model</code>. The same can be accomplished using a Model object exclusivle. Here is an alternative way:
 
 <pre>
-VRI vri = new VRI(Services.NTUA.augment("model","f9a97443-6baf-4361-a55c-b08cf12c3e39"));
+VRI vri = new VRI(Services.TUM_DEV.augment("model","TUMOpenToxModel_j48_7"));
 Model m = new Model(vri);
 m.loadFromRemote();
 </pre>
+
