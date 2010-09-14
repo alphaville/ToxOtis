@@ -112,3 +112,21 @@ Actor  : http://opentox.ntua.gr:3000/algorithm/mlr
 Code   : AuthenticationFailed
 Status : 403
 </pre>
+
+h3. 2.4. Models
+
+This is an example of how a user can download and parse an OpenTox model from a remote location:
+
+<pre>
+VRI vri = new VRI(Services.NTUA.augment("model","f9a97443-6baf-4361-a55c-b08cf12c3e39"));
+ModelSpider mSpider = new ModelSpider(vri);
+Model m = mSpider.parse();
+</pre>
+
+The above code downloads the model from <a href="http://opentox.ntua.gr:3000/model/f9a97443-6baf-4361-a55c-b08cf12c3e39">opentox.ntua.gr</a> and creates the object <code>m: Model</code>. The same can be accomplished using a Model object exclusivle. Here is an alternative way:
+
+<pre>
+VRI vri = new VRI(Services.NTUA.augment("model","f9a97443-6baf-4361-a55c-b08cf12c3e39"));
+Model m = new Model(vri);
+m.loadFromRemote();
+</pre>

@@ -1,16 +1,19 @@
 h1. OpenTox Components in ToxOtis
 
+h2. 1. Introduction
+
 A Note for developers: OpenTox components are the <a href="http://github.com/alphaville/ToxOtis/tree/master/src/org/opentox/toxotis/core/">core elements</a> in ToxOtis. These are all entities manipulated in OpenTox each one of which has a corresponding representation in RDF, i.e. a standard representation of a data model that describes it. Example of such components are <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Algorithm.java">Algorithms</a>, <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Model.java">Models</a>, <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Task.java">Tasks</a> and <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Dataset.java">Datasets</a>. As far as their ontological nature and the corresponding RESTful API are concerned, you can find detailed documentation at the <a href="http://opentox.org/dev/apis/api-1.1">OpenTox site</a>. From a programmatic point of view, all classes in <code>org.opentox.toxotis.core</code> subclass <code>OTComponent</code>. This is an abstract class holding a URI and a MetaInfo field for all its subclasses; a very useful (abstract) method is included in this class: <code>public abstract Individual asIndividual(OntModel model)</code> which is implemented by all subclasses of OTComponent and allows the users to get an RDF representation straight from the component (we will provide some explanatory code snippets in the sequel). Other intermediate levels of abstraction are available such as <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a> and <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTPublishable.java">OTPublishable</a>. All components are characterized by their meta information which consist of a subset of the Dublin Core properties, some <a href="http://www.w3.org/TR/rdf-schema/">RDFS</a> and <a href="http://www.w3.org/TR/owl-features/">OWL</a> properties and a couple of OpenTox specific properties (like ot:hasSource).
 
 
-!http://opentox.org/dev/apis/api-1.1/OpentToxResources/image(OpenTox Resources.)!:OTResources
+!http://opentox.org/dev/apis/api-1.1/OpentToxResources/image(OpenTox Resources.)!:http://opentox.org/dev/apis/api-1.1/OpentToxResources/view
 
+h2. 2. Components
 
-h4. 1. Algorithm
+h4. 2.1. Algorithm
 
 An algorithm is characterized by a set of Ontological Classes that classify it according to the OpenTox <a href="http://opentox.org/dev/apis/api-1.1/Algorithms">Algorithms Ontology</a>. A set of parameters with their scope (optional/mandatory) and default values are also available for every algorithm. What might be done in the future, is to employ the WADL representation of the algorithm to construct Algorithm Training Wizards tailored to each algorithm.
 
-h4. 2. BibTeX
+h4. 2.2. BibTeX
 
 BibTeX is a bibliographic reference characterized by the following attributes:
 
@@ -31,30 +34,30 @@ BibTeX is a bibliographic reference characterized by the following attributes:
 
 The above attributes are compliant with the <a href="http://zeitkunst.org/bibtex/0.1/bibtex.owl">Knouf ontology</a> (see also <a href="http://oaei.ontologymatching.org/tests/301/onto.html">this summary</a>).
 
-h4. 3. Conformer
+h4. 2.3. Conformer
 
 A Conformer is an identifier of a unique chemical substance up to its 3D characteristics.
 
-h4. 4. Compound
+h4. 2.4. Compound
 
 A Compound is a wrapper for a set of conformers. When used to identify a chemical substance acts as a proxy for a conformer. As it is implemented in ToxOtis, Compound is an implementation of OTPublishable characterized by a list of conformers. A compound acts as proxy for the first conformer in the contained list.
 
-h4. 5. Feature
+h4. 2.5. Feature
 
 A Feature is an object,representing any kind of property, assigned to a Compound. The feature types are determined via their links to ontologies (Feature ontologies, Decsriptor ontologies, Endpoints ontologies). OpenTox has established an ontology for biological/toxicological and chemical features that is <a href="http://opentox.org/dev/apis/api-1.1/feature_ontology">available online</a>.
 
-h4. 6. Dataset
+h4. 2.6. Dataset
 
 A Dataset consists of a <a href="http://download.oracle.com/javase/1.4.2/docs/api/java/util/List.html">List</a> of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/DataEntry.java">Data Entries</a>. Each Data Entry contains a Compound and a <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/FeatureValue.java">Feature-Value Pair</a>. A Dataset can be converted into a <a href="http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html">weka.core.Instances</a> object.
 
-h4. 7. Model
+h4. 2.7. Model
 
 A model is characterized by its parameters, the training dataset (the dataset used to produce the model), a set of independent variables and its predicted and dependent variables.
 
-h4. 8. Task
+h4. 2.8. Task
 
 Asynchronous jobs are handled via an intermediate Task resource. Tasks are objects through which a long running process is monitored. For example while uploading a dataset, the client is given a Task URI for moniroting the progress of the upload and afterwards the HTTP connection is released. Tasks are also characterized by their percentage of completion, their status (running, completed, cancelled, error), the result URI (appears upon completion) and an error report in case of an exceptional event.
 
-h4. 9. Error Reports
+h4. 2.9. Error Reports
 
 Error Reports are part of the OpenTox API since version 1.1. Error Reports define a formal way to handle exceptional situations while invoking a service or during inter-service communication thus facilitating debugging. They are sufficiently documented online at <a href="http://opentox.org/dev/apis/api-1.1/Error%20Reports">http://opentox.org/dev/apis/api-1.1/Error Reports</a>. Error Reports are characterized by the actor of the exception (URI of the server or client that initiated the event), a brief explanatory message about the event, a detailed message that can also contain technical details , the HTTP status code that accompanies the report and another error report if the server reporting the exception acts as an error-proxy for an exception that happened while the server was acting as a client or proxy to some other server.
