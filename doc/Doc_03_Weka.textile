@@ -2,7 +2,7 @@ h1. ToxOtis and Weka
 
 h2. Converting a Dataset into a weka.core.Instances object
 
-p<>. ToxOtis can be used in combintation with "Weka":http://www.cs.waikato.ac.nz/ml/weka/ (version 3.6.2), a well known open source machine learning package for Java. Using ToxOtis you can convert your <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Dataset.java">datasets</a> into instances of "weka.core.Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html which in turn can be used in some filtering, training or other data processing procedure. Here is an example of downloading a dataset and creating a corresponding "weka.core.Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html object. 
+p<>. ToxOtis can be used in combintation with "Weka":http://www.cs.waikato.ac.nz/ml/weka/ (version 3.6.2), a well known open source machine learning package for Java. Using ToxOtis you can convert your "datasets":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Dataset.java into instances of "weka.core.Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html which in turn can be used in some filtering, training or other data processing procedure. Here is an example of downloading a dataset and creating a corresponding "weka.core.Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html object. 
 
 <pre>
 VRI vri = new VRI(Services.IDEACONSULT.augment("dataset","9"));
@@ -11,4 +11,24 @@ ds.loadFromRemote();
 weka.core.Instances data = ds.getInstances();
 </pre>
 
-Unfortunately, "Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html objects are just data wrappers and were not designed to serve as data models so all meta information about the dataset and its contained features and compounds will not be found in this object. 
+The above code will print the following to the System output:
+
+<pre>
+@relation http://apps.ideaconsult.net:8080/ambit2/dataset/54
+
+@attribute compound_uri string
+@attribute http://apps.ideaconsult.net:8080/ambit2/feature/22202 numeric
+@attribute http://apps.ideaconsult.net:8080/ambit2/feature/22197 string
+@attribute http://apps.ideaconsult.net:8080/ambit2/feature/22201 numeric
+@attribute http://apps.ideaconsult.net:8080/ambit2/feature/22196 string
+@attribute http://apps.ideaconsult.net:8080/ambit2/feature/22200 numeric
+@attribute http://apps.ideaconsult.net:8080/ambit2/feature/22198 numeric
+@attribute http://apps.ideaconsult.net:8080/ambit2/feature/22199 numeric
+
+@data
+http://apps.ideaconsult.net:8080/ambit2/compound/261/conformer/419588,113.730003,chloramphenicol,3.7508,Molecule-1,-4.69,0.2812,1.14
+http://apps.ideaconsult.net:8080/ambit2/compound/116508/conformer/419581,54.27,artemisinin,2.746,Molecule-1,-4.52,0.0667,2.22
+...
+</pre>
+
+As you can notice, the Instances object has a structure that retains the links (URIs) to the dataset from which it was created and the feature URIs. Unfortunately, "Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html objects are just data wrappers and were not designed to serve as data models so all meta information about the dataset and its contained features and compounds will not be found in this object. 
