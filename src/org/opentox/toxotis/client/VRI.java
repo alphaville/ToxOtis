@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.*;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -458,4 +460,33 @@ public class VRI { // Well tested!
     public String getStringNoQuery() {
         return uri;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final VRI other = (VRI) obj;
+
+        if ((this.uri == null) || (other.uri == null)) {
+            return false;
+        }
+        try {
+           return new URI(getStringNoQuery()).equals(new URI(other.getStringNoQuery()));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + (this.uri != null ? this.uri.hashCode() : 0);
+        return hash;
+    }
+
+
 }
