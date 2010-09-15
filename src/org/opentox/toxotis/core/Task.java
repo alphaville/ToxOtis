@@ -81,4 +81,8 @@ public class Task extends OTOnlineResource<Task> {
     public Individual asIndividual(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    
+
+
 }

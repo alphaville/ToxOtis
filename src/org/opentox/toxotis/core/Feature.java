@@ -6,6 +6,8 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
@@ -34,13 +36,9 @@ import org.opentox.toxotis.util.spiders.TypedValue;
  */
 public class Feature extends OTPublishable<Feature> {
 
-    private Set<OntologicalClass> ontologies;
+    private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
     private String units;
-    /**
-     * If this is null, it means that the feature is not nominal. If the feature is
-     * nominal, this should contain its admissible values (wrt a dataset).
-     */
-    private Set<TypedValue> admissibleValue = null;
+    private Set<TypedValue> admissibleValue = new HashSet<TypedValue>();
 
     public Feature() {
         super();
@@ -170,11 +168,23 @@ public class Feature extends OTPublishable<Feature> {
         PostClient client = new PostClient(vri);
         client.setContentType("application/rdf+xml");
         client.setPostableOntModel(asOntModel());
-        client.setMediaType("application/rdf+xml");
+        client.setMediaType("text/uri-list");
         client.post();
-        System.out.println(client.getResponseText());
+        int status;
         try {
-            System.out.println(client.getResponseCode());
+            status = client.getResponseCode();
+            if (status == 200) {
+                Task readyTask = new Task();
+                readyTask.setPercentageCompleted(100);
+                readyTask.setHasStatus(Task.Status.COMPLETED);
+                try {
+                    readyTask.setResultUri(new VRI(client.getResponseText()));
+                    return readyTask;
+                } catch (URISyntaxException ex) {
+                    throw new ToxOtisException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
+                            + "'. Received status code 200 and messaage:");
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(Feature.class.getName()).log(Level.SEVERE, null, ex);
         }
