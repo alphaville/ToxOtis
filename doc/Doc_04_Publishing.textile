@@ -67,6 +67,7 @@ h3. 2.2. Publish a bibliographic reference
 
 We can publish a bibliographic reference as we did with features. Here is an example where a BibTeX object is created and published online:
 
+<pre>
 BibTeX bib = new BibTeX(); // ...Create anonymous bibtex
 bib.setAuthor("Chung W.");
 bib.setTitle("The truth about UFOs");
@@ -75,3 +76,4 @@ bib.setJournal("International Journal of Conspiracy Theory");
 bib.setCrossref("http://localhost:3000/bibtex/549a9f40-9758-44b3-90fe-db31fe1a1a01");
 bib.setBibType(BibTeX.BIB_TYPE.Article);
 Task t = bib.publishOnline(Services.NTUA.augment("bibtex")), null);
+</pre>
