@@ -34,7 +34,7 @@ creator     : tobias.girschick@in.tum.de^^string
 If the algorithm is a protected resource you will have to authenticate yourself against that algorithm service providing an <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_01_Login.textile">authentication token</a>. Here is an example:
 
 <pre>
- Algorithm myAlg = new Algorithm(OpenToxAlgorithms.MTUA_MLR.getServiceVri());
+ Algorithm myAlg = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceVri());
  AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./.secret/.my_secret.key");
  // This will load into your object all information found at the remote location:
  myAlg.loadFromRemote(at);

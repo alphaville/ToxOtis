@@ -1,8 +1,8 @@
 h1. Publish your Component
 
-h2. 1. POSTing a resource
+h2. 1. POSTing a Component
 
-p<>. A client can publish some OpenTox component, that is obtain a URI for its resource on some publicly available location, using the "POST":http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5 HTTP method. According to the OpenTox "REST API":http://opentox.org/dev/framework/restweb clients create new resources and acquire a URI for them by POSTing an RDF representation of these resources to an appropriate service. There are a couple of notes we need to make here. First, as far as the service response is concerned, the following status codes are possible:
+p<>. A client can publish some OpenTox component, that is obtain a URI for its resource on some publicly available location, using the "POST":http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5 HTTP method. According to the OpenTox "REST API":http://opentox.org/dev/framework/restweb clients create new resources and acquire a URI for them by POSTing an RDF representation of these resources to an appropriate service. There are a couple of notes we need to make here. First, the entity is always "POSTed":http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5 as an "RDF":http://www.w3.org/RDF/ document containing all necessary information that describe the OpenTox component in a formal way according to the specifications of the "OpenTox ontology":http://opentox.org/data/documents/development/RDF%20files/OpenToxOntology/view . Second, as far as the service response is concerned, the following status codes are possible:
 
 * "200":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1 A new resource is created; the URI(s) of the created resource(s) is(are) contained in the response body.
 * "202":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.3 An asynchronous job was initiated and a Task is returned to the client to monitor the progress of the procedure.
@@ -11,3 +11,20 @@ p<>. A client can publish some OpenTox component, that is obtain a URI for its r
 * "500":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1 Internal Server Error
 * "503":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4 The service is temporarily unavailable: The resource is created but not yet available
 
+h2. Examples
+
+h3. Publish a Feature
+
+Using the ToxOtis API, one can create a new feature and publish it to some feature server. Here is an example:
+
+<pre>
+Feature f = new Feature();
+f.setUnits("m^4*mA*s^2*kg^-2");
+f.getMeta().setTitle("Toxicity of my city");
+f.getMeta().setHasSource("http://otherserver.net:8283/opentox/model/15451");
+f.getMeta().setSameAs("http://www.youtube.com/watch?v=WMKmQmkJ9gg");
+Task t = f.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("feature"), null);
+System.out.println(t.getResultUri());
+</pre>
+
+This will print a "feature URI":http://ambit.uni-plovdiv.bg:8080/ambit2/feature/22210 to the standard output of your System.
