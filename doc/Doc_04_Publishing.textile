@@ -11,9 +11,42 @@ p<>. A client can publish some OpenTox component, that is obtain a URI for its r
 * "500":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1 Internal Server Error
 * "503":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4 The service is temporarily unavailable: The resource is created but not yet available
 
-h2. Examples
+Publichable components in ToxOtis subclass "OTPublishable"http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTPublishable.java which defines two methods: <code>Task publishOnline(VRI,AuthenticationToken)</code> and <code>Task publishOnline(AuthenticationToken)</code>. We copy here the documentation for the first of these two that allows users to POST their components to a specified server:
 
-h3. Publish a Feature
+<pre>
+/**
+* Publish the component to a proper server identified by the uri of the
+* publishing service provided in this method. The resource will be posted to the
+* server in RDF format (Mediatype: application/rdf+xml).
+* @param token
+*      Provide an authentication token. If you think that the service does not
+*      require auhtentication/authorization, you can leave this field <code>null</code> or
+*      you can provide an empty authentication token.If the provided URI
+*      already contains an authentication token (as the URL parameter <code>
+*      tokenid</code>) it will be replaced by the new token provided to
+*      this method.
+* @return
+*      A Task for monitoring the progress of your request. If the service
+*      returns the URI of the resource right away and does not return a task,
+*      then the object you will receive from this method will now have an identifier,
+*      its status will be set to {@link Task.Status#COMPLETED }, its progress
+*      will be set to <code>100%</code> and the URI of the created resource will
+*      be available applying the method {@link Task#getResultUri() } on the returned
+*      task. In any case, the service's response will be wrapped in a {@link Task }
+*      object.
+* @throws ToxOtisException
+*      In case of invalid credentials, if the POSTed resource is not acceptable
+*      by the remote service (returns a status code 400), communication error
+*      occur with the remote server or other connection problems or the access
+*      to the service was denied (401 or 403).
+*/
+1.  abstract Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException;</code>
+</pre>
+
+
+h2. 2. Examples
+
+h3. 2.1. Publish a Feature
 
 Using the ToxOtis API, one can create a new feature and publish it to some feature server. Here is an example:
 
@@ -28,3 +61,4 @@ System.out.println(t.getResultUri());
 </pre>
 
 This will print a "feature URI":http://ambit.uni-plovdiv.bg:8080/ambit2/feature/22210 to the standard output of your System.
+
