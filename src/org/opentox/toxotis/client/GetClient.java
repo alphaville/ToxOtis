@@ -1,6 +1,8 @@
 package org.opentox.toxotis.client;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -15,7 +17,6 @@ public class GetClient extends AbstractClient {
     /** Create a new instance of GetClient */
     public GetClient() {
     }
-        
 
     /** Initialize a connection to the target URI */
     protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
@@ -35,10 +36,9 @@ public class GetClient extends AbstractClient {
             throw new ToxOtisException(ex);
         }
     }
-        
 
     /** Get the result as a URI list */
-    public java.util.List<String> getResponseUriList() throws ToxOtisException, IOException {
+    public java.util.List<String> getResponseUriList() throws ToxOtisException {
         setMediaType("text/uri-list");// Set the mediatype to text/uri-list
         java.util.List<String> list = new java.util.ArrayList<String>();
         java.io.InputStreamReader isr = null;
@@ -58,20 +58,31 @@ public class GetClient extends AbstractClient {
         } catch (ToxOtisException cl) {
             throw cl;
         } catch (IOException io) {
-            throw io;
+            throw new ToxOtisException(io);
         } finally {
             if (reader != null) {
-                reader.close();
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
             }
             if (isr != null) {
-                isr.close();
+                try {
+                    isr.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
             }
             if (is != null) {
-                is.close();
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
             }
         }
         return list;
     }
-        
 }
 

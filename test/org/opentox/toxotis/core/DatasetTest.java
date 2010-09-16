@@ -7,8 +7,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.collection.Services;
+import org.opentox.toxotis.ontology.WonderWebValidator;
 import static org.junit.Assert.*;
 
 /**
@@ -37,19 +39,22 @@ public class DatasetTest {
     }
 
     @Test
-    public void testLoadFromRemote() throws URISyntaxException, ToxOtisException, InterruptedException{
-        VRI vri = new VRI(Services.IDEACONSULT.augment("dataset","54"));
+    public void testLoadFromRemote() throws URISyntaxException, ToxOtisException, InterruptedException {
+        VRI vri = new VRI(Services.IDEACONSULT.augment("dataset", "54").addUrlParameter("max", "5"));
+        System.out.println(vri);
         Dataset ds = new Dataset(vri).loadFromRemote();
+        ds.asOntModel().write(System.out);
 
         Task t = ds.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("dataset"), null);
-       System.out.println(t.getHasStatus());
-       while (t.getHasStatus().equals(Task.Status.RUNNING)){
-           t.loadFromRemote();
-           Thread.sleep(100);
-       }
-       System.out.println(t.getResultUri());
-//        weka.core.Instances data = ds.getInstances();
-//        System.out.println(data);
-    }
+        System.out.println(t.getHasStatus());
+        while (t.getHasStatus().equals(Task.Status.RUNNING)) {
+            t.loadFromRemote();
+            Thread.sleep(100);
+        }
+        System.out.println(t.getResultUri());
 
+        weka.core.Instances data = ds.getInstances();
+        System.out.println(data);
+        
+    }
 }

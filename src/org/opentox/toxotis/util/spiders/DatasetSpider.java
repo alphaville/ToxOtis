@@ -22,7 +22,7 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
-public class DatasetSpider extends Tarantula<Dataset>{
+public class DatasetSpider extends Tarantula<Dataset> {
 
     VRI datasetUri;
 
@@ -51,7 +51,7 @@ public class DatasetSpider extends Tarantula<Dataset>{
         try {
             this.datasetUri = new VRI(uri);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
         }
         this.resource = model.getResource(uri);
     }
@@ -72,15 +72,14 @@ public class DatasetSpider extends Tarantula<Dataset>{
         OTClasses.NumericFeature().inModel(model);
         OTClasses.StringFeature().inModel(model);
         /** END */
-
         dataset.setMeta(new MetaInfoSpider(resource, model).parse());
 
         StmtIterator entryIt = model.listStatements(
                 new SimpleSelector(resource, OTObjectProperties.dataEntry().asObjectProperty(model),
-                (RDFNode)null));
+                (RDFNode) null));
 
         ArrayList<DataEntry> dataEntries = new ArrayList<DataEntry>();
-        while(entryIt.hasNext()){
+        while (entryIt.hasNext()) {
             Resource entryResource = entryIt.nextStatement().getObject().as(Resource.class);
             DataEntrySpider dataEntrySpider = new DataEntrySpider(entryResource, model);
             dataEntries.add(dataEntrySpider.parse());
@@ -88,5 +87,4 @@ public class DatasetSpider extends Tarantula<Dataset>{
         dataset.setDataEntries(dataEntries);
         return dataset;
     }
-
 }
