@@ -71,8 +71,12 @@ public class DataEntry extends OTComponent<DataEntry> {
         Individual indiv = model.createIndividual(dataEntryUri, OTClasses.DataEntry().inModel(model));
         if (meta != null) {
             meta.attachTo(indiv, model);
-        }
+        }        
+        // @chung: just testing
+        //TODO: We might need to delete one of the following lines
         indiv.addProperty(OTObjectProperties.conformer().asObjectProperty(model), conformer.asIndividual(model));
+        indiv.addProperty(OTObjectProperties.compound().asObjectProperty(model), conformer.asIndividual(model));
+
         if (featureValues != null && !featureValues.isEmpty()) {
             ObjectProperty valuesProp = OTObjectProperties.values().asObjectProperty(model);
             for (FeatureValue fv : featureValues) {

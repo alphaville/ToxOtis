@@ -4,16 +4,21 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import weka.core.Attribute;
@@ -28,9 +33,40 @@ import weka.core.Instances;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Dataset extends OTOnlineResource<Dataset> {
+public class Dataset extends OTPublishable<Dataset> {
 
     private static final String compound_uri = "compound_uri";
+
+    @Override
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
+        PostClient client = new PostClient(vri);
+        client.setContentType("application/rdf+xml");
+        client.setMediaType("text/uri-list");
+        client.setPostableOntModel(asOntModel());
+        client.post();
+        int status;
+        try {
+            status = client.getResponseCode();
+        } catch (IOException ex) {
+            throw new ToxOtisException(ErrorCause.CommunicationError, "Could not read the stream from '" + vri.getStringNoQuery() + "'");
+        }
+        Task dsUpload = new Task();
+        String remoteResult = client.getResponseText();
+        if (status==202){
+            try {
+                dsUpload.setUri(new VRI(remoteResult));
+            } catch (URISyntaxException ex) {
+                throw new RuntimeException(ex);
+            }
+            dsUpload.loadFromRemote();
+        }        
+        return dsUpload;
+    }
+
+    @Override
+    public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     private enum WekaDataTypes {
 
@@ -51,7 +87,6 @@ public class Dataset extends OTOnlineResource<Dataset> {
             }
         }
     }
-
     private List<DataEntry> dataEntries;
 
     public Dataset(VRI uri) throws ToxOtisException {
@@ -108,7 +143,7 @@ public class Dataset extends OTOnlineResource<Dataset> {
     public Set<Feature> getContainedFeatures() {
         Set<Feature> features = new HashSet<Feature>();
         for (DataEntry dataEntry : getDataEntries()) {
-            for (FeatureValue featureValue : dataEntry.getFeatureValues()) {                
+            for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
                 features.add(featureValue.getFeature());
             }
         }
@@ -207,6 +242,4 @@ public class Dataset extends OTOnlineResource<Dataset> {
         }
         return data;
     }
-
-    
 }

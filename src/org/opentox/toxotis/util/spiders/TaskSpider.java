@@ -42,10 +42,10 @@ public class TaskSpider extends Tarantula<Task> {
                 throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + vri + "'");
             }
             if (status == 404) {
-                throw new ToxOtisException(ErrorCause.TaskNotFoundError,"The following task was not found : '" + vri + "'");
+                throw new ToxOtisException(ErrorCause.TaskNotFoundError, "The following task was not found : '" + vri + "'");
             }
-            if (status != 200) {
-                throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + vri + "'");
+            if (status != 200 && status != 202) {
+                throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + vri + "'. status = " + status);
             }
         } catch (IOException ex) {
             throw new ToxOtisException("Communication Error with the remote service at :" + vri, ex);
@@ -71,8 +71,13 @@ public class TaskSpider extends Tarantula<Task> {
             task.setHasStatus(Task.Status.valueOf(hasStatus.getString().toUpperCase()));
         }
 
-        Literal resultUri = resource.getProperty(
-                OTDatatypeProperties.resultURI().asDatatypeProperty(model)).getObject().as(Literal.class);
+
+        Statement resultUriStmt = resource.getProperty(
+                OTDatatypeProperties.resultURI().asDatatypeProperty(model));
+        Literal resultUri = null;
+        if (resultUriStmt != null) {
+            resultUri = resultUriStmt.getObject().as(Literal.class);
+        }
 
         if (resultUri != null) {
             try {
@@ -93,13 +98,13 @@ public class TaskSpider extends Tarantula<Task> {
 
         Statement errorReportStmt = resource.getProperty(
                 OTObjectProperties.errorReport().asObjectProperty(model));
-        Resource errorReport = errorReportStmt!=null?errorReportStmt.getObject().as(Resource.class):null;
+        Resource errorReport = errorReportStmt != null ? errorReportStmt.getObject().as(Resource.class) : null;
 
         if (errorReport != null) {
             task.setErrorReport(new ErrorReportSpider(errorReport, model).parse());
         }
 
-        
+
 
         return task;
     }

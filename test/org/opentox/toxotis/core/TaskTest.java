@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.Task.Status;
+import org.opentox.toxotis.util.aa.PasswordFileManager;
 import static org.junit.Assert.*;
 
 /**
@@ -37,12 +38,14 @@ public class TaskTest {
     }
 
     @Test
-    public void testSomeMethod() throws URISyntaxException, ToxOtisException {
-        Task t = new Task(new VRI("http://opentox.ntua.gr:3000/task/0fc060a0-f69b-4a81-bb2e-b9b32c8a04b3"));
-        t.loadFromRemote();  // This will update t
+    public void testSomeMethod() throws Exception {
+        Task t =
+                new Task(
+                new VRI("http://opentox.ntua.gr:3000/task/0fc060a0-f69b-4a81-bb2e-b9b32c8a04b3")).loadFromRemote(
+                PasswordFileManager.CRYPTO.authFromFile("./secret/my.key")
+                );
         assertNotNull(t.getHasStatus());
-        assertEquals(Status.COMPLETED,t.getHasStatus());
+        assertEquals(Status.COMPLETED, t.getHasStatus());
 
     }
-
 }
