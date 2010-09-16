@@ -11,7 +11,7 @@ p<>. A client can publish some OpenTox component, that is obtain a URI for its r
 * "500":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1 Internal Server Error
 * "503":http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4 The service is temporarily unavailable: The resource is created but not yet available
 
-Publichable components in ToxOtis subclass "OTPublishable"http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTPublishable.java which defines two abstract methods: <code>Task publishOnline(VRI,AuthenticationToken)</code> and <code>Task publishOnline(AuthenticationToken)</code>. We copy here the documentation for the first of these two that allows users to POST their components to a specified server:
+Publishable components in ToxOtis subclass "OTPublishable":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTPublishable.java which defines two abstract methods: <code>Task publishOnline(VRI,AuthenticationToken)</code> and <code>Task publishOnline(AuthenticationToken)</code>. We copy here the documentation for the first of these two that allows users to POST their components to a specified server:
 
 <pre>
 /**
@@ -77,3 +77,22 @@ bib.setCrossref("http://localhost:3000/bibtex/549a9f40-9758-44b3-90fe-db31fe1a1a
 bib.setBibType(BibTeX.BIB_TYPE.Article);
 Task t = bib.publishOnline(Services.NTUA.augment("bibtex")), null);
 </pre>
+
+
+h3. 2.3. Publish a dataset
+
+POSTing a dataset always creates a new resource. A task URI is usually returned to the the client (with HTTP status 202) for monitoring the progress of the uploading. In the following example a dataset is downloaded from a remote server and POSTed to some other dataset server. Particularly, only the first 5 compounds of the dataset are requested using the URL query <code>?max=N</code>.
+
+<pre>
+VRI vri = new VRI(Services.IDEACONSULT.augment("dataset", "54").addUrlParameter("max", "5"));
+Dataset ds = new Dataset(vri).loadFromRemote();
+Task t = ds.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("dataset"), null);
+System.out.println(t.getHasStatus());
+while (t.getHasStatus().equals(Task.Status.RUNNING)) {
+     t.loadFromRemote();
+     Thread.sleep(100);
+}
+System.out.println(t.getResultUri());
+</pre>
+
+The above example will POST the dataset as application/rdf+xml to the dataset server at "ambit.uni-plovdiv.bg":http://ambit.uni-plovdiv.bg:8080/ambit2/dataset and monitor the returned task. The dataset "http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/64":http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/64 has been created by running the above example code.

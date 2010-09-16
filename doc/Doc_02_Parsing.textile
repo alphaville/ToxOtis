@@ -131,3 +131,12 @@ Model m = new Model(vri);
 m.loadFromRemote();
 </pre>
 
+
+h3. 2.5. Tasks
+
+A Task is parsed as simply as any other OpenTox component. You simply have to provide its URI and invoke the method <code>loadFromRemote()</code> or, in case authentication is needed, <code>loadFromRemote(AuthenticationToken)</code>. Here is an example of use:
+
+<pre>
+VRI vri = new VRI("http://opentox.ntua.gr:3000/task/0fc060a0-f69b-4a81-bb2e-b9b32c8a04b3");
+Task t = new Task(vri).loadFromRemote();
+</pre>
