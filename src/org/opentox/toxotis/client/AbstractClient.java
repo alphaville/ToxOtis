@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**
@@ -165,6 +166,7 @@ public abstract class AbstractClient {
      *      Accepted mediatype
      *
      * @see RequestHeaders#ACCEPT
+     
      */
     public AbstractClient setMediaType(String mediaType) {
         this.acceptMediaType = mediaType;

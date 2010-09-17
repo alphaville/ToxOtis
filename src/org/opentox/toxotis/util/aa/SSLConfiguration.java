@@ -7,7 +7,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
-import org.opentox.toxotis.collection.Services;
+import org.opentox.toxotis.client.collection.Services;
 
 /**
  * IMPORTANT NOTE: You have to add the certificate from opensso.in-silico.ch

@@ -36,14 +36,17 @@ public class ConformerTest {
 
     @Test
     public void testSomeMethod() throws Exception{
-        VRI vri = new VRI("http://ambit.uni-plovdiv.bg:8080/ambit2/compound/226519/conformer/423169");
-        Conformer c = new Conformer(vri);
-        System.out.println(c.getProperty(new VRI("http://ambit.uni-plovdiv.bg:8080/ambit2/feature/22212")));
+        VRI vri = new VRI("http://ambit.uni-plovdiv.bg:8080/ambit2/compound/226519/conformer/423169/?a=1&b=&c=6&&");
+        System.out.println("QUERY : "+vri.getQueryAsString());
 
-        Set<VRI> features = c.getAvailableFeatures();
-        for (VRI f : features){
-            System.out.println(f);
-        }
+        //        Conformer c = new Conformer(vri);
+//        System.out.println(c.getUri());
+//        System.out.println(c.getProperty(new VRI("http://ambit.uni-plovdiv.bg:8080/ambit2/feature/22212")));
+//
+//        Set<VRI> features = c.getAvailableFeatures();
+//        for (VRI f : features){
+//            System.out.println(f);
+//        }
         
     }
 

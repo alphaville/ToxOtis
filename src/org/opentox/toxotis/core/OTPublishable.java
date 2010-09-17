@@ -17,9 +17,17 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  */
 public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineResource<T> {
 
+    /**
+     * Create a new empty publishable object
+     */
     public OTPublishable() {
     }
 
+    /**
+     * Create a new publishable object providing its URI
+     * @param uri
+     *      URI of the publishable object
+     */
     public OTPublishable(VRI uri) {
         super(uri);
     }

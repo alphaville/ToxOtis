@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.Compound;
 import org.opentox.toxotis.core.Conformer;
 import org.opentox.toxotis.core.DataEntry;
@@ -34,7 +35,7 @@ public class CompoundSpider extends Tarantula<Compound>{
         super();
         this.uri = uri;
         GetClient client = new GetClient();
-        client.setMediaType("application/rdf+xml");
+        client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
         client.setUri(uri);
         model = client.getResponseOntModel();
         resource = model.getResource(uri.toString());
@@ -64,24 +65,6 @@ public class CompoundSpider extends Tarantula<Compound>{
     public Compound parse() throws ToxOtisException {
         Compound compound = new Compound(uri);
         compound.setMeta(new MetaInfoSpider(resource, model).parse());
-        String conformersUri = uri.toString() + "/conformer";
-        GetClient getConformers = new GetClient();
-        try {
-            getConformers.setUri(conformersUri);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(CompoundSpider.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        model = getConformers.getResponseOntModel();
-        resource = model.getResource(conformersUri);
-       
-        ArrayList<Conformer> conformers = new ArrayList<Conformer>();
-        Dataset conformersDS = new DatasetSpider(resource, model).parse();
-        for(DataEntry dataEntry : conformersDS.getDataEntries()){
-            conformers.add(dataEntry.getConformer());
-        }
-        compound.setConformers(conformers);
-
         return compound;
     }
 

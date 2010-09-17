@@ -12,7 +12,7 @@ import java.util.Date;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.secure.SecurePostClient;
-import org.opentox.toxotis.collection.Services;
+import org.opentox.toxotis.client.collection.Services;
 
 /**
  * <p align=justify>OpenTox specific implementation regarding the token provided by the OpenSSO server.

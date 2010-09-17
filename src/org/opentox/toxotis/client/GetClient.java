@@ -18,6 +18,12 @@ public class GetClient extends AbstractClient {
     public GetClient() {
     }
 
+    public GetClient(final VRI uri) {
+        setUri(uri);
+    }
+
+
+
     /** Initialize a connection to the target URI */
     protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
         try {

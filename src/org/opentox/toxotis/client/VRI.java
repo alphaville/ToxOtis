@@ -83,7 +83,6 @@ public class VRI { // Well tested!
          * The Java class that corresponds to the OpenTox resource
          */
         private final Class<?> clazz;
-
         private OntologicalClass ontologicalClass;
 
         private OpenToxRegEx(final OntologicalClass ont, final Class<?> claz, final String... regexp) {
@@ -114,7 +113,6 @@ public class VRI { // Well tested!
         public OntologicalClass getOntologicalClass() {
             return ontologicalClass;
         }
-        
     }
 
     /**
@@ -152,27 +150,33 @@ public class VRI { // Well tested!
         if (uri.contains("?")) {
             String[] splitted = uri.split(Pattern.quote("?"));
             this.uri = splitted[0];
-            String query = splitted[1];
-            String[] queryParts = query.split(Pattern.quote("&"));
-            String paramName, paramValue;
-            try {
-                for (int i = 0; i < queryParts.length; i++) {
-                    paramName = null;
-                    paramValue = null;
-                    String queryFragment = queryParts[i];
-                    String[] queryFragmentComponents = queryFragment.split(Pattern.quote("="));
-                    if (queryFragmentComponents.length == 1) {
-                        paramName = queryFragment;
-                    } else if (queryFragmentComponents.length > 1) {
-                        paramName = queryFragmentComponents[0];
-                        paramValue = queryFragmentComponents[1];
+            if (splitted.length >= 2) {// Could be http://something.abc/service? where there is no query...
+                String query = splitted[1];
+                String[] queryParts = query.split(Pattern.quote("&"));
+                String paramName, paramValue;
+                try {
+                    for (int i = 0; i < queryParts.length; i++) {
+                        paramName = null;
+                        paramValue = null;
+                        String queryFragment = queryParts[i];
+                        String[] queryFragmentComponents = queryFragment.split(Pattern.quote("="));
+                        if (queryFragmentComponents.length == 1) {
+                            paramName = queryFragmentComponents[0];
+                        } else if (queryFragmentComponents.length > 1) {
+                            paramName = queryFragmentComponents[0];
+                            paramValue = queryFragmentComponents[1];
+                        }
+                        System.out.println(paramName);
+                        urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), // paramname cannot be null
+                                paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "");
                     }
-                    urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(paramValue, URL_ENCODING));
+
+                } catch (UnsupportedEncodingException ex) {
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
                 }
-            } catch (UnsupportedEncodingException ex) {
-                ex.printStackTrace();
-                throw new RuntimeException(ex);
             }
+
         }
     }
 
@@ -475,7 +479,7 @@ public class VRI { // Well tested!
             return false;
         }
         try {
-           return new URI(getStringNoQuery()).equals(new URI(other.getStringNoQuery()));
+            return new URI(getStringNoQuery()).equals(new URI(other.getStringNoQuery()));
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
@@ -487,6 +491,4 @@ public class VRI { // Well tested!
         hash = 37 * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
     }
-
-
 }

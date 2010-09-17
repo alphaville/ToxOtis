@@ -16,4 +16,8 @@ public interface IConformer {
     public TypedValue getProperty(VRI uri) throws ToxOtisException;
     public TypedValue getProperty(Feature feature) throws ToxOtisException;
     public Dataset getProperties(Feature... features) throws ToxOtisException;
+
+    //TODO: We need two functionalities:
+    // 1. Publish a conformer using a file
+    // 2. DOwnload a conformer in a certain format
 }

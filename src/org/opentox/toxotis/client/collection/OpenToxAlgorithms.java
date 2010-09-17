@@ -1,4 +1,4 @@
-package org.opentox.toxotis.collection;
+package org.opentox.toxotis.client.collection;
 
 import java.net.URISyntaxException;
 import java.util.Calendar;

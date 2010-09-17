@@ -9,8 +9,9 @@ import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.collection.Services;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.ontology.WonderWebValidator;
+import org.opentox.toxotis.util.spiders.TypedValue;
 import static org.junit.Assert.*;
 
 /**
@@ -43,6 +44,7 @@ public class DatasetTest {
         VRI vri = new VRI(Services.IDEACONSULT.augment("dataset", "54").addUrlParameter("max", "5"));
         System.out.println(vri);
         Dataset ds = new Dataset(vri).loadFromRemote();
+        ds.getDataEntries().get(0).getFeatureValue(2).setValue(new TypedValue(4.32));
         ds.asOntModel().write(System.out);
 
         Task t = ds.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("dataset"), null);

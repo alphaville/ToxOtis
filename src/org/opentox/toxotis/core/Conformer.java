@@ -20,18 +20,36 @@ import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 
 /**
- *
+ * WARNING: This is utterly under developement!!!!!
+ * WARNING: This is utterly under developement!!!!!
+ * WARNING: This is utterly under developement!!!!!
+ * WARNING: This is utterly under developement!!!!!
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Conformer extends OTOnlineResource<Conformer> {
+public class Conformer extends Compound {
+
+    private String conformerId;
 
     public Conformer() {
         super();
     }
 
-    public Conformer(VRI uri) {
-        super(uri);
+    public Conformer(VRI uri) throws ToxOtisException {
+        /** Extract the compound URI*/
+        String id =  uri.toString().split("/compound/")[1].split("conformer/")[1];
+        if (id.endsWith("/")){
+            id = id.substring(0, id.length()-2);
+        }
+        conformerId = id;
+        System.out.println(conformerId);
+        String compoundUri = uri.toString().split("/conformer/")[0];
+        try {
+            this.uri = new VRI(compoundUri + "?" + uri.getQueryAsString());
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
