@@ -15,8 +15,9 @@ public class Services {
     private static final String _IDEACONSULT = "http://apps.ideaconsult.net:8080/ambit2/%s";
     public static final String SSO_HOST = "opensso.in-silico.ch";
     private static final String _SSO_SERVER = "https://" + SSO_HOST;
-    private static final String _SSO_IDENTITY = "https://" + SSO_HOST + "/opensso/identity/%s";
-    private static final String _SSO_POLICY = "https://" + SSO_HOST + "/Pol/opensso-pol";
+    private static final String _SSO_IDENTITY = "https://" + SSO_HOST + "/auth/%s";
+    private static final String _SSO_POLICY = "https://" + SSO_HOST + "/pol";
+
     public static final VRI NTUA;
     public static final VRI AMBIT_UNI_PLOVDIV;
     public static final VRI IDEACONSULT;
@@ -37,10 +38,10 @@ public class Services {
             TUM_DEV = new VRI("http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev");
             SSO = new VRI(_SSO_SERVER);
             SSO_IDENTITY = new VRI(String.format(_SSO_IDENTITY, ""));
-            SSO_AUTHENTICATE = new VRI(String.format(_SSO_IDENTITY, "/authenticate?uri=service=openldap"));
+            SSO_AUTHENTICATE = new VRI(String.format(_SSO_IDENTITY, "authenticate?uri=service=openldap"));
             SSO_TOKEN_VALIDATE = new VRI(String.format(_SSO_IDENTITY, "isTokenValid"));
             SSO_TOKEN_INVALIDATE = new VRI(String.format(_SSO_IDENTITY, "logout"));
-            SSO_ATTRIBUTES = new VRI(String.format(_SSO_IDENTITY, "attribtues"));
+            SSO_ATTRIBUTES = new VRI(String.format(_SSO_IDENTITY, "attributes"));
             SSO_POLICY = new VRI(String.format(_SSO_POLICY, ""));
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);

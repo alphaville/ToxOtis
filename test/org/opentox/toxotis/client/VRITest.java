@@ -134,4 +134,10 @@ public class VRITest {
         vri = new VRI(uri);
         assertEquals(String.format(baseUri, "/whatever"),vri.getServiceBaseUri().getStringNoQuery());
     }
+
+    @Test
+    public void testMultipleEquals() throws Exception{
+        VRI v = new VRI("http://something.com?a=b=c");
+        System.out.println(v);
+    }
 }

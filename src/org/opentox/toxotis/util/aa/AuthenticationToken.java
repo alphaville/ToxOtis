@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.secure.SecurePostClient;
@@ -98,7 +99,7 @@ public class AuthenticationToken {
         poster.postParameters();
         int status = poster.getResponseCode();
         if (status >= 400) {
-            throw new ToxOtisException("Remote Server Error. Status code : "+status);
+            throw new ToxOtisException("Remote Server Error " + poster.getUri() + ". Status code : " + status);
         }
 
         String response = poster.getResponseText();
@@ -322,14 +323,29 @@ public class AuthenticationToken {
 
         InputStream is = null;
         BufferedReader reader = null;
+        final int status = poster.getResponseCode();
+        if (status != 200) {
+            if (status == 401) {
+                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access the resource at : '"
+                        + poster.getUri() + "'. Status is " + status);
+            }
+            if (status == 403) {
+                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "Permission is denied to : '"
+                        + poster.getUri() + "'. Status is " + status);
+            }
+            throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service '" + poster.getUri()
+                    + "' returned status code " + status);
+        }
         try {
             final String valueKey = "userdetails.attribute.value=";
             final String nameKey = "userdetails.attribute.name=%s";
             is = poster.getRemoteStream();
             reader = new BufferedReader(new InputStreamReader(is));
             String line;
+
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
+                System.out.println("*   " + line + "\n");
                 if (line.equals(String.format(nameKey, "uid"))) {
                     line = reader.readLine();
                     if (line != null) {

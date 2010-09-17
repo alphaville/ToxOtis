@@ -41,13 +41,9 @@ public class AuthenticationTokenTest {
         System.out.println(at.getTokenUrlEncoded());
         System.out.println(at.getTokenCreationTimestamp());
         System.out.println(at.getTokenCreationDate());
-        System.out.println("Status : " + at.getStatus());
-        System.out.println(at.validate() ? "Valid" : "Stale");
+      
         System.out.println(at.getUser());
-        System.out.println("Logging out...");
-        at.invalidate();
-        System.out.println("Status : " + at.getStatus());
-        System.out.println(at.validate() ? "Valid" : "Stale");
+      
     }
 }
 

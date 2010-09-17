@@ -164,7 +164,12 @@ public class VRI { // Well tested!
                             paramName = queryFragmentComponents[0];
                         } else if (queryFragmentComponents.length > 1) {
                             paramName = queryFragmentComponents[0];
-                            paramValue = queryFragmentComponents[1];
+                            for (int k = 1; k < queryFragmentComponents.length; k++) {
+                                paramValue = paramValue==null?queryFragmentComponents[k]:paramValue+queryFragmentComponents[k];
+                                if (k!=queryFragmentComponents.length-1){
+                                    paramValue += "=";
+                                }
+                            }
                         }
                         System.out.println(paramName);
                         urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), // paramname cannot be null
