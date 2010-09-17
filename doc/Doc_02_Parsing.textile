@@ -140,3 +140,15 @@ A Task is parsed as simply as any other OpenTox component. You simply have to pr
 VRI vri = new VRI("http://opentox.ntua.gr:3000/task/0fc060a0-f69b-4a81-bb2e-b9b32c8a04b3");
 Task t = new Task(vri).loadFromRemote();
 </pre>
+
+
+h3. 2.6. Compounds
+
+Compounds, as these are represented in OpenTox, do not provide much information that could be parsed from their RDF representation, so the API for Compounds is formulated in a way that meaningful information would be returned to the user. First of all, users can obtain the Set of conformers (if any) that it groups and delegates. In cases where 3D characteristics of the compound are not taken into account, conformers do not play a particular role, otherwise the exact conformer has to be determined. The set of these conformers is available using the method <code>Set<Conformer> listConformers(AuthenticationToken token) throws ToxOtisException</code>. What is more, one can download the compound and store it in some supported chemical media type like <code>sdf</code> or <code>mol</code>. Here is an example:
+
+<pre>
+Compound c =new Compound(Services.IDEACONSULT.augment("compound","100"));
+c.downloadAsFile(new File("/path/to/file.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
+</pre>
+
+The compound and conformer APIs in ToxOtis are taking just their first steps so there is not much functionality in there yet.
