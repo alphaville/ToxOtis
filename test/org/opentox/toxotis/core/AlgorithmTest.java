@@ -52,7 +52,8 @@ public class AlgorithmTest {
     @Test
     public void testRdf() throws URISyntaxException, ToxOtisException, IOException {
         Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceUri());
-        a.getMeta().setComment("This is a comment");
+        a.loadFromRemote();
+        System.out.println(a.getMeta());
 //        a.asOntModel().write(System.out);
     }
 }

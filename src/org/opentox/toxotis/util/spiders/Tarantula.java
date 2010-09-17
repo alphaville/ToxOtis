@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -52,7 +53,8 @@ public abstract class Tarantula<Result> implements Closeable {
                     XSDDatatype datatype = (XSDDatatype) node.as(Literal.class).getDatatype();
                     String stringVal = node.as(Literal.class).getString();
                     if (datatype != null && datatype.equals(XSDDatatype.XSDdateTime)) {
-                        DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+                        // For the following bug fix, credits go to FABIAN BUCHWALD!!!!!!
+                        DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
                         try {
                             Date date = (Date) formatter.parse(stringVal);
                             return (new TypedValue<Date>(date, datatype));
@@ -61,6 +63,7 @@ public abstract class Tarantula<Result> implements Closeable {
                                 long longDate = Long.parseLong(stringVal);
                                 return new TypedValue<Date>(new Date(longDate), datatype);
                             } catch (NumberFormatException nfe) {
+                                System.err.println("[WARNING] Date format not supported.");
                                 nfe.printStackTrace();
                             }
                         }

@@ -145,7 +145,10 @@ public class VRI { // Well tested!
      *      In case the provided URI is syntactically incorrect.
      */
     public VRI(String uri) throws URISyntaxException {
-        new URI(uri);
+        new URI(uri);        
+        if (!uri.contains("://")){
+            uri = "http://" + uri;
+        }
         this.uri = uri;
         if (uri.contains("?")) {
             String[] splitted = uri.split(Pattern.quote("?"));
@@ -171,7 +174,6 @@ public class VRI { // Well tested!
                                 }
                             }
                         }
-                        System.out.println(paramName);
                         urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), // paramname cannot be null
                                 paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "");
                     }

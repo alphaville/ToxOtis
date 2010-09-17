@@ -70,9 +70,11 @@ public class VRITest {
 
     @Test
     public void testURlEncoding() throws URISyntaxException {
-        System.out.print("--. Testing VRI URL Encoding");
-        VRI v = new VRI("http://something.abc:8181/", "a", "f f%&&[]");
-        System.out.println(": " + v);
+        System.out.println("--. Testing VRI URL Encoding");
+        VRI v = new VRI("something.abc:8181/", "a", "f f%&&[]");
+        assertEquals("a=f+f%25%26%26%5B%5D", v.getQueryAsString());
+        assertEquals("http", v.getProtocol());
+        assertEquals("http://something.abc:8181/", v.getStringNoQuery());
     }
 
     @Test
@@ -132,12 +134,24 @@ public class VRITest {
 
         uri = String.format(baseUri, "/whatever/feature/1", "tokenid", "LGL5EJETIJFLKJ2095TOEGD"); // << Feature
         vri = new VRI(uri);
-        assertEquals(String.format(baseUri, "/whatever"),vri.getServiceBaseUri().getStringNoQuery());
+        assertEquals(String.format(baseUri, "/whatever"), vri.getServiceBaseUri().getStringNoQuery());
     }
 
     @Test
-    public void testMultipleEquals() throws Exception{
+    public void testMultipleEquals() throws Exception {
+        System.out.println("--. Testing Equality Symbol in parameter value");
         VRI v = new VRI("http://something.com?a=b=c");
-        System.out.println(v);
+        assertEquals("http://something.com?a=b%3Dc", v.toString());
+    }
+
+    @Test
+    public void testEquality() throws Exception {
+        java.net.URI tst1 = new java.net.URI("sth.com/a");
+        java.net.URI tst2 = new java.net.URI("sth.com/a/");
+        System.out.println(tst1.equals(tst2));
+
+        VRI v1 = new VRI("sth.com/a");
+        VRI v2 = new VRI("sth.com/a/");
+        assertEquals(v1, v2);
     }
 }
