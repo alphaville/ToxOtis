@@ -149,6 +149,18 @@ You can use a token to obtain information about the user that created it providi
 <pre>
 AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/john/.hidpass/.my.key");
 User user = at.getUser();
-System.out.println(user.getMail()); // Email address of the user
+System.out.println(user); 
 </pre>
+
+This will print:
+
+<pre>
+UID   : john
+Name  : John Smith
+Mail  : john@smith.org
+Pass  : {SSHA}FZLdpBMyrOO8SCYU7TeQY1JWAleotAVi7482
+</pre>
+
+Users are suggested to invalidate their tokens if they don't need them anymore in other A&A sessions. What is more, if you need to create a new token, make sure you have invalidated your old one.
+
 
