@@ -345,7 +345,6 @@ public class AuthenticationToken {
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                System.out.println("*   " + line + "\n");
                 if (line.equals(String.format(nameKey, "uid"))) {
                     line = reader.readLine();
                     if (line != null) {

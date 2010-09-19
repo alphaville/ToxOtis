@@ -1,6 +1,6 @@
 h1. ToxOtis
 
-Version: 0.1.0.1, first alpha version
+Version: 0.1.0.9, first alpha version
 
 ToxOtis is the Greek word for Sagittarius, that actually means 'archer'. ToxOtis is more than a web client and parser; it is a versatile tool for using the OpenTox predictive toxicology web services from inside your Java application providing a flexible API. You can find full documentation at the "doc":http://github.com/alphaville/ToxOtis/tree/master/doc/ directory.
 

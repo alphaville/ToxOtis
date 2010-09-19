@@ -1,6 +1,9 @@
 package org.opentox.toxotis.util.aa;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,21 +39,29 @@ public class PasswordFileManagerTest {
 
     @Test
     public void testDecryption() {
+        System.out.println("--. Testing Encryption-Decryption w.r.t. the master key");
         final String initialMessage = "Haha";
+        PasswordFileManager.CRYPTO.setCryptoIterations(56);
         String encrypted = PasswordFileManager.CRYPTO.encrypt(initialMessage);
         assertNotNull(encrypted);
-        assertEquals(initialMessage,PasswordFileManager.CRYPTO.decrypt(encrypted));
+        assertEquals(initialMessage, PasswordFileManager.CRYPTO.decrypt(encrypted));
+    }
+
+    @Test
+    public void testCredentialsFile() throws IOException {
+        System.out.println("--. Testing Creation of Credentials File");
+        PasswordFileManager.CRYPTO.createPasswordFile("john", "smith", "/home/chung/toxotisKeys/js.key");
+    }
+
+    @Test
+    public void testCreateMasterPass() throws IOException {
+        System.out.println("--. Testing Creation of Master Key File");
+        PasswordFileManager.CRYPTO.createMasterPasswordFile(null, "/home/chung/Desktop/alt.key", 100);
     }
 
     @Test
     public void testFileAuth() throws IOException, ToxOtisException {
-        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
-        System.out.println(at.getUser());
-    }
-
-    @Test
-    public void testCreatePassFile() throws IOException, ToxOtisException {
-        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile(   "./secret/hampos.key");
+        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
         System.out.println(at.getUser());
     }
 

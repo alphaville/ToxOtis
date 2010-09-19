@@ -44,13 +44,62 @@ x3Mt6591855xKP65vQWn730jY889w47h9Fm0h6zYS04
 --- END MASTER KEY ---
 </pre>
 
-Soon we will also provide tools for creating such files. Now use this master password to create an <em>encrypted</em> password file:
+You should use the password generator of ToxOtis to create a good and <em>valid</em> master key. Here is an example of using <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/PasswordFileManager.java">PasswordFileManager</a> for this purpose:
 
 <pre>
+Thread createPasswordFile = new Thread() {
+	@Override
+	public void run() {
+		try {
+			PasswordFileManager.CRYPTO.
+				createMasterPasswordFile("/dev/random", "/home/user/toxotisKeys/master.key", 500);
+		} catch (IOException ex) {
+			// Handle the exception properly!
+		}
+	}
+};
+Executors.newFixedThreadPool(1).submit(createPasswordFile);
+</pre>
+
+Here is the output of this method:
+
+<pre>
+----- ToxOtis Pasword Generator -----
+Random number generator : /dev/random
+Password file           : /home/chung/toxotisKeys/master.key
+Password Stength        : EXCELENT
+</pre>
+
+The class <code>PasswordFileManager</code> is <code>Observable</code>, so you can monitor the progress of the password generation (That is why we wrap the execution of the master password file cretion in a Thread). This process might take long especially if you choose a good random number generator such as <code>/dev/random</code> on Linux. In case you do not provide a random number source (<code>null</code>), <code>java.security.SecureRandom</code> will be used instead (This is an RNG implementation by Java). In that case the method will print:
+
+<pre>
+----- ToxOtis Pasword Generator -----
+Random number generator : Secure RNG (java.security.SecureRandom)
+Password file           : /home/chung/Desktop/alt.key
+Password Stength        : EXCELECT (100)
+</pre>
+
+While running you can monitor the process of the key creation:
+
+<pre>
+while (true) {
+	if (CRYPTO.hasChanged()) {
+	    System.out.println(CRYPTO.getPasswordGenerationProgress());
+	}
+	if (CRYPTO.getPasswordGenerationProgress()==100){
+	    break;
+	}
+}
+</pre>
+
+Suppose now that your username is <code>JohnSmith</code> and your password is <code>s3cret</code>. Then you can use the above master password file to create an <em>encrypted</em> file for your credentials:
+
+<pre>
+PasswordFileManager.CRYPTO.setMasterPasswordFile("/home/user/toxotisKeys/master.key");
 PasswordFileManager.CRYPTO.createPasswordFile("JohnSmith", "s3cret", "/home/john/.hidpass/.my.key");
 </pre>
 
-This will create a password file at <code>/home/john/.hidpass/my.key</code> (Note that the file is hidden). Your private key will look like the following:
+This will create a file with your credentials at the specified destination, that is<code>/home/john/.hidpass/my.key</code> (We suggest that this file should be hidden). Your private key will look like the following:
 
 <pre>
 --- START PRIVATE KEY ---
