@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,10 +29,10 @@ import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ontology.collection.OTClasses;
-import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.CompoundSpider;
 
@@ -264,6 +265,16 @@ public class Compound extends OTPublishable<Compound> {
         } catch (IOException ex) {
             throw new ToxOtisException("Remote stream from '" + newUri.getStringNoQuery() + "' is not readable!", ex);
         }
+    }
+
+
+    public Dataset getProperties(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
+        return null;
+    }
+
+
+    public TypedValue<?> getAssayProperty(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
+        return null;
     }
 
     /**

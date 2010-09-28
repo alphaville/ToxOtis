@@ -42,7 +42,7 @@ public class Dataset extends OTPublishable<Dataset> {
         PostClient client = new PostClient(vri);
         client.setContentType("application/rdf+xml");
         client.setMediaType("text/uri-list");
-        client.setPostableOntModel(asOntModel());
+        client.setPostable(asOntModel());
         client.post();
         int status;
         try {

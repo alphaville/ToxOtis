@@ -72,7 +72,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
         PostClient pc = new PostClient(vri);
         pc.setMediaType("text/uri-list");
         pc.setContentType("application/rdf+xml");
-        pc.setPostableOntModel(asOntModel());
+        pc.setPostable(asOntModel());
         pc.post();
         Task task = new Task();
         try {

@@ -55,7 +55,7 @@ public class PostClientTest {
         PostClient pc = new PostClient(new VRI("http://localhost:3000/bibtex"));
         pc.setMediaType("text/uri-list");
         pc.setContentType("application/rdf+xml");
-        pc.setPostableOntModel(b.asOntModel());
+        pc.setPostable(b.asOntModel());
         pc.post();
         System.out.println(pc.getResponseText());
     }

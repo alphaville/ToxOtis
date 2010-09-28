@@ -167,7 +167,7 @@ public class Feature extends OTPublishable<Feature> {
         }
         PostClient client = new PostClient(vri);
         client.setContentType("application/rdf+xml");
-        client.setPostableOntModel(asOntModel());
+        client.setPostable(asOntModel());
         client.setMediaType("text/uri-list");
         client.post();
         int status;

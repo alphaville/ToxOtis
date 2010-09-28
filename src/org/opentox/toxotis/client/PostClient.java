@@ -1,12 +1,18 @@
 package org.opentox.toxotis.client;
 
 import com.hp.hpl.jena.ontology.OntModel;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -23,6 +29,10 @@ public class PostClient extends AbstractClient {
     /** The method that this client applies */
     public static final String METHOD = "POST";
     private OntModel model;
+    /** Arbitrary object to be posted to the remote server s*/
+    private File fileContentToPost = null;
+    /** */
+    private String stringToPost;
 
     public PostClient() {
         super();
@@ -42,13 +52,26 @@ public class PostClient extends AbstractClient {
         return this;
     }
 
-    public PostClient setPostableOntModel(OntModel model) {
+    public PostClient setPostable(OntModel model) {
         this.model = model;
         return this;
     }
 
-    public OntModel getPostableOntModel() {
-        return model;
+    public PostClient setPostable(File objectToPost) {
+        if (objectToPost != null && !objectToPost.exists()) {
+            throw new IllegalArgumentException("No file was found at the specified path!");
+        }
+        this.fileContentToPost = objectToPost;
+        return this;
+    }
+
+    /**
+     *
+     * @param string
+     * @return
+     */
+    public PostClient setPostable(String string) {
+        return this;
     }
 
     /**
@@ -152,20 +175,63 @@ public class PostClient extends AbstractClient {
 
     public void post() throws ToxOtisException {
         initializeConnection(vri.toURI());
-        DataOutputStream wr;
+        DataOutputStream wr = null;
         try {
             wr = new DataOutputStream(con.getOutputStream());
             String query = getParametersAsQuery();
             if (query != null) {
                 wr.writeBytes(getParametersAsQuery());// POST the parameters
-            }
-            if (model != null) {
+            } else if (model != null) {
                 model.write(wr);
+            } else if (fileContentToPost != null) {
+                FileReader fr = new FileReader(fileContentToPost);
+                BufferedReader br = new BufferedReader(fr);
+                String line;
+                while ((line = br.readLine()) != null) {
+                    wr.writeBytes(line);
+                    wr.writeChars("\n");
+                }
+                Throwable thr = null;
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (Throwable ex) {
+                        thr = ex;
+                    }
+                }
+                if (fr != null) {
+                    try {
+                        fr.close();
+                    } catch (Throwable ex) {
+                        thr = ex;
+                    }
+                }
+                if (thr != null) {
+                    throw new ToxOtisException(thr);
+                }
+            } else if (stringToPost != null) {
+                wr.writeChars(stringToPost);
+            }else{
+                throw new ToxOtisException("Nothing to POST!");
             }
-            wr.flush();
-            wr.close();
+
         } catch (final IOException ex) {
             throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
+        } finally {
+            IOException ioex = null;
+            try {
+                wr.flush();
+            } catch (IOException ex) {
+                ioex = ex;
+            }
+            try {
+                wr.close();
+            } catch (IOException ex) {
+                ioex = ex;
+            }
+            if (ioex != null) {
+                throw new ToxOtisException("I/O Exception caught while closing DataOutputStream", ioex);
+            }
         }
     }
 }
