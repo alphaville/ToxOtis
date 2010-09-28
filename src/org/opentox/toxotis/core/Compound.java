@@ -189,7 +189,7 @@ public class Compound extends OTPublishable<Compound> {
                     new VRI(service).appendToken(token));
             postClient.setPostable(sourceFile);
             postClient.setContentType(fileType);
-            postClient.setMediaType("text/uri-list");
+            postClient.setMediaType(Media.TEXT_URI_LIST.getMime());
             postClient.post();
             VRI newVRI = new VRI(postClient.getResponseText());
             CompoundSpider compoundSpider = new CompoundSpider(newVRI);
