@@ -1,11 +1,20 @@
 package org.opentox.toxotis.factory;
 
+import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.core.Feature;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.spiders.FeatureSpider;
 
 /**
  *
@@ -17,7 +26,7 @@ public class FeatureFactory {
     //TODO: If the user does not provide a URI for a lookup service,
     // then the Ontology service should be used.
 
-    private FeatureFactory factory = null;
+    private static FeatureFactory factory = null;
 
     /**
      * Returns the FeatureFactory object associated with the current Java application.
@@ -26,7 +35,7 @@ public class FeatureFactory {
      * @return
      *      The FeatureFactory object associated with the current Java application.
      */
-    public FeatureFactory getInstance() {
+    public static FeatureFactory getInstance() {
         if (factory == null) {
             factory = new FeatureFactory();
         }
@@ -58,10 +67,22 @@ public class FeatureFactory {
      *      Auththentication token provided by the user to authenticate against the service in case
      *      it has restricted access.
      *
-     * @return
+     * @return a Set of Features that are <code>same as</code> the ECHA endpoint provided.
      */
-    public Set<VRI> lookupSameAs(VRI uri, OntologicalClass echaEndpoint, AuthenticationToken token){
-        GetClient client = new GetClient(uri);
-        return null;
+    public Set<VRI> lookupSameAs(VRI service, OntologicalClass echaEndpoint, AuthenticationToken token) throws ToxOtisException{
+        GetClient client = new GetClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
+        client.setMediaType(Media.TEXT_URI_LIST.getMime());
+
+        List<String> featureUris = client.getResponseUriList();
+
+        Set<VRI> features = new HashSet<VRI>();
+        for(String featureUri : featureUris){
+            try {
+                features.add(new VRI(featureUri));
+            } catch (URISyntaxException ex) {
+                throw new ToxOtisException(ex);
+            }
+        }
+        return features;
     }
 }
