@@ -7,9 +7,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +33,7 @@ public class VRI { // Well tested!
     private ArrayList<Pair<String, String>> urlParams = new ArrayList<Pair<String, String>>();
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
+    private static final String TOKENID = "tokenid";
 
     /**
      * Keywords that appear in OpenTox URIs.
@@ -196,6 +194,11 @@ public class VRI { // Well tested!
         }
     }
 
+    /**
+     * Creates a VRI as a clone of a given VRI.
+     * @param other
+     *      VRI to be cloned.
+     */
     public VRI(VRI other) {
         this.uri = other.uri;
         this.urlParams = other.urlParams;
@@ -244,7 +247,7 @@ public class VRI { // Well tested!
      * while the corresponding value is the value for this parameter.
      *
      * @return
-     *      The Map of URL parameters
+     *      The ArrayList of URL parameters as a list of name-value pairs.
      */
     public ArrayList<Pair<String, String>> getUrlParams() {
         return urlParams;
@@ -295,6 +298,17 @@ public class VRI { // Well tested!
         return this;
     }
 
+    /**
+     * Add an integer valued URL parameter. As soon as you provide the URL parameter and its value,
+     * these are encoded using the UTF-8 encoding so you do not need to (and must not) encode them
+     * before submitting them.
+     * @param paramName
+     *      The name of the parameter
+     * @param paramValue
+     *      The value for the parameter (integer value)
+     * @return
+     *      The updated VRI on which the method is applied.
+     */
     public VRI addUrlParameter(String paramName, int paramValue) {
         try {
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(new Integer(paramValue).toString(), URL_ENCODING)));
@@ -304,9 +318,17 @@ public class VRI { // Well tested!
         return this;
     }
 
+    /**
+     * Adds a URL parameter that corresponds to an authentication token using the
+     * URL parameter <code>tokenid</code>.
+     * @param token
+     *      Authentication Token
+     * @return
+     *      The updated VRI with the token.
+     */
     public VRI appendToken(AuthenticationToken token) {
         if (token != null) {
-            return addUrlParameter("tokenid", token.stringValue());
+            return addUrlParameter(TOKENID, token.stringValue());
         }
         return this;
     }

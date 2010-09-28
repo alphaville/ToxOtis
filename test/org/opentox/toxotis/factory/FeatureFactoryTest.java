@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.opentox.toxotis.factory;
 
 import java.util.Set;
@@ -46,11 +41,8 @@ public class FeatureFactoryTest {
     @Test
     public void testLookUpSameAs() throws ToxOtisException {
         FeatureFactory ff = FeatureFactory.getInstance();
-
-        System.out.println(OTEchaEndpoints.Gastrointestinal_absorption().getUri());
-
-        Set<VRI> features = ff.lookupSameAs(Services.IDEACONSULT.augment("feature"), OTEchaEndpoints.Mutagenicity(), null);
-
+        Set<VRI> features = ff.lookupSameAs(Services.IDEACONSULT.augment("feature"),
+                OTEchaEndpoints.Mutagenicity(), null);
         for(VRI f : features){
             System.out.println(f.toString());
         }

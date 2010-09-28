@@ -1,9 +1,11 @@
 package org.opentox.toxotis.factory;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
@@ -21,7 +23,6 @@ public class FeatureFactory {
 
     //TODO: If the user does not provide a URI for a lookup service,
     // then the Ontology service should be used.
-
     private static FeatureFactory factory = null;
 
     /**
@@ -65,18 +66,38 @@ public class FeatureFactory {
      *
      * @return a Set of Features that are <code>same as</code> the ECHA endpoint provided.
      */
-    public Set<VRI> lookupSameAs(VRI service, OntologicalClass echaEndpoint, AuthenticationToken token) throws ToxOtisException{
+    public Set<VRI> lookupSameAs(VRI service, OntologicalClass echaEndpoint, AuthenticationToken token) throws ToxOtisException {
         GetClient client = new GetClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
-        List<String> featureUris = client.getResponseUriList();
-        Set<VRI> features = new HashSet<VRI>();
-        for(String featureUri : featureUris){
-            try {
-                features.add(new VRI(featureUri));
-            } catch (URISyntaxException ex) {
-                throw new ToxOtisException(ex);
-            }
+        final int responseStatus;
+        try {
+            responseStatus = client.getResponseCode();
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
         }
-        return features;
+        if (responseStatus == 200) {
+            List<String> featureUris = client.getResponseUriList();
+            Set<VRI> features = new HashSet<VRI>();
+            for (String featureUri : featureUris) {
+                try {
+                    features.add(new VRI(featureUri));
+                } catch (URISyntaxException ex) {
+                    throw new ToxOtisException(ex);
+                }
+            }
+            return features;
+        } else if (responseStatus == 403) {
+            throw new ToxOtisException(ErrorCause.AuthenticationFailed,
+                    "Client failed to authenticate itself against the SSO service due to " +
+                    "incorrect credentials or due to invalid token");
+        } else if (responseStatus == 401) {
+            throw new ToxOtisException(ErrorCause.UnauthorizedUser,
+                    "The client is authenticated but not authorized to perform this operation");
+        } else {
+            throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
+                    "The remote service returned the unexpected status : " + responseStatus);
+        }
+
+
     }
 }
