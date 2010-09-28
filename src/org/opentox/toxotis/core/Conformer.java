@@ -37,19 +37,8 @@ public class Conformer extends Compound {
     }
 
     public Conformer(VRI uri) throws ToxOtisException {
-        /** Extract the compound URI*/
-        String id =  uri.toString().split("/compound/")[1].split("conformer/")[1];
-        if (id.endsWith("/")){
-            id = id.substring(0, id.length()-2);
-        }
-        conformerId = id;
-        System.out.println(conformerId);
-        String compoundUri = uri.toString().split("/conformer/")[0];
-        try {
-            this.uri = new VRI(compoundUri + "?" + uri.getQueryAsString());
-        } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
-        }
+        super();
+        setUri(uri);
     }
 
     /**
@@ -60,81 +49,11 @@ public class Conformer extends Compound {
         throw new UnsupportedOperationException();
     }
 
-    public TypedValue getProperty(VRI uri) throws ToxOtisException {
-        Feature tempFeat = new Feature(uri);
-        return getProperty(tempFeat);
+    public String getConformerId(){
+        throw new UnsupportedOperationException();
     }
 
-    /**
-     *
-     * @param feature
-     * @return
-     * @throws ToxOtisException
-     */
-    public TypedValue getProperty(Feature feature) throws ToxOtisException {
-        /**
-         *TODO: Should this request include the uri parameters for the feature?
-         */
-        VRI dsUri = new VRI(getUri()).addUrlParameter("feature_uris[]", feature.getUri().toString());
-        GetClient client = new GetClient();
-        client.setUri(dsUri);
-        client.setMediaType("application/rdf+xml");
-        OntModel model = client.getResponseOntModel();
-        RDF.type.inModel(model);
-        StmtIterator dsIt = model.listStatements(null, RDF.type, (RDFNode) OTClasses.Dataset().inModel(model));
-        Resource baseResource = null;
-        if (dsIt.hasNext()) {
-            baseResource = dsIt.nextStatement().getSubject();
-            DatasetSpider dsSpider = new DatasetSpider(baseResource, model);
-            Dataset ds = dsSpider.parse();
-            List<DataEntry> data = ds.getDataEntries();
-            if (data != null && data.size() >= 1) {
-                DataEntry firstEntry = ds.getDataEntries().get(0);
-                if (firstEntry != null && firstEntry.getFeatureValues().size() >= 1) {
-                    FeatureValue fVal = firstEntry.getFeatureValue(0);
-                    if (fVal != null) {
-                        return fVal.getValue();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public Dataset getProperties(VRI... featureUris) throws ToxOtisException {
-        VRI dsUri = new VRI(getUri());
-        for (VRI featureUri : featureUris) {
-            dsUri.addUrlParameter("feature_uris[]", featureUri.toString());
-        }
-        GetClient client = new GetClient();
-        client.setUri(dsUri);
-        client.setMediaType("application/rdf+xml");
-        OntModel model = client.getResponseOntModel();
-        StmtIterator dsIt = model.listStatements(null, RDF.type, (RDFNode) OTClasses.Dataset().inModel(model));
-        Resource baseResource = null;
-        if (dsIt.hasNext()) {
-            baseResource = dsIt.nextStatement().getSubject();
-            DatasetSpider dsSpider = new DatasetSpider(baseResource, model);
-            return dsSpider.parse();
-        }
-        return null;
-    }
-
-    public Set<VRI> getAvailableFeatures() throws ToxOtisException {
-        VRI featuresUri = new VRI(uri).augment("feature");
-        GetClient client = new GetClient();
-        client.setUri(featuresUri);
-        Set<VRI> availableUris = new HashSet<VRI>();
-        for (String fUri : client.getResponseUriList()) {
-            try {
-                availableUris.add(new VRI(fUri));
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(Conformer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return availableUris;
-
-    }
+        
 
     @Override
     public Individual asIndividual(OntModel model) {

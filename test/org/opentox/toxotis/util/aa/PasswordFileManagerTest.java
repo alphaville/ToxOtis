@@ -37,7 +37,7 @@ public class PasswordFileManagerTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
     public void testDecryption() {
         System.out.println("--. Testing Encryption-Decryption w.r.t. the master key");
         final String initialMessage = "Haha";
@@ -47,13 +47,13 @@ public class PasswordFileManagerTest {
         assertEquals(initialMessage, PasswordFileManager.CRYPTO.decrypt(encrypted));
     }
 
-    @Test
+    //@Test
     public void testCredentialsFile() throws IOException {
         System.out.println("--. Testing Creation of Credentials File");
         PasswordFileManager.CRYPTO.createPasswordFile("john", "smith", "/home/chung/toxotisKeys/js.key");
     }
 
-    @Test
+    //@Test
     public void testCreateMasterPass() throws IOException {
         System.out.println("--. Testing Creation of Master Key File");
         PasswordFileManager.CRYPTO.createMasterPasswordFile(null, "/home/chung/Desktop/alt.key", 100);
@@ -61,8 +61,9 @@ public class PasswordFileManagerTest {
 
     @Test
     public void testFileAuth() throws IOException, ToxOtisException {
-        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
+        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");        
         System.out.println(at.getUser());
+        System.out.println(at);
     }
 
 }

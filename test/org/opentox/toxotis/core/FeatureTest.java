@@ -40,12 +40,14 @@ public class FeatureTest {
 
     @Test
     public void testLoadRemoteFeature() throws URISyntaxException, ToxOtisException {
-        Feature f = new Feature();
-        f.setUnits("m^4*mA*s^2*kg^-2");
-        f.getMeta().setTitle("Toxicity of my city");
-        f.getMeta().setHasSource("http://otherserver.net:8283/opentox/model/15451");
-        f.getMeta().setSameAs("http://www.youtube.com/watch?v=WMKmQmkJ9gg");
-        Task t = f.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("feature"), null);
+        Feature f = new Feature(Services.IDEACONSULT.augment("feature","22200"));
+        f.loadFromRemote();
+        System.out.println(f.getMeta());
+//        f.setUnits("m^4*mA*s^2*kg^-2");
+//        f.getMeta().setTitle("Toxicity of my city");
+//        f.getMeta().setHasSource("http://otherserver.net:8283/opentox/model/15451");
+//        f.getMeta().setSameAs("http://www.youtube.com/watch?v=WMKmQmkJ9gg");
+        //Task t = f.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("feature"), null);
         
     }
 

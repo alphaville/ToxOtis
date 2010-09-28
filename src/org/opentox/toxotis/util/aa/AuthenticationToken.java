@@ -209,11 +209,13 @@ public class AuthenticationToken {
     }
 
     /**
-     * Returns the token as a String (not URL encoded)
+     * Returns the token as a String (not URL encoded). Tokens are retrived by the
+     * remote openSSO server either using the constructor {@link AuthenticationToken#AuthenticationToken(java.lang.String, java.lang.String)
+     * AuthenticationToken(String, String)} or the {@link PasswordFileManager } (read documentation therein).
      * @return
-     *      Token as string
+     *      Token as string; not encoded
      */
-    public String getToken() {
+    public String stringValue() {
         return token;
     }
 
@@ -264,7 +266,7 @@ public class AuthenticationToken {
             return false;
         }
         SecurePostClient poster = new SecurePostClient(Services.SSO_TOKEN_VALIDATE);
-        poster.addParameter("tokenid", getToken());
+        poster.addParameter("tokenid", stringValue());
         poster.postParameters();
         final int status = poster.getResponseCode();
         final String message = (poster.getResponseText()).trim();
@@ -299,7 +301,7 @@ public class AuthenticationToken {
             return; // Nothing to invalidate!
         }
         SecurePostClient poster = new SecurePostClient(Services.SSO_TOKEN_INVALIDATE);
-        poster.addParameter("subjectid", getToken());
+        poster.addParameter("subjectid", stringValue());
         poster.postParameters();
         int status = poster.getResponseCode();
         if (status != 200) {
@@ -318,7 +320,7 @@ public class AuthenticationToken {
     public User getUser() throws ToxOtisException {
         User u = new User();
         SecurePostClient poster = new SecurePostClient(Services.SSO_ATTRIBUTES);
-        poster.addParameter("subjectid", getToken());
+        poster.addParameter("subjectid", stringValue());
         poster.postParameters();
 
         InputStream is = null;
@@ -422,7 +424,7 @@ public class AuthenticationToken {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Token               : " + getToken());
+        sb.append("Token               : " + stringValue());
         sb.append("\n");
         sb.append("Token URL-Encoded   : " + getTokenUrlEncoded());
         sb.append("\n");

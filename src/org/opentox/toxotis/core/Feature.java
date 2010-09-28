@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
-import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -145,6 +144,7 @@ public class Feature extends OTPublishable<Feature> {
 
         return new String(builder);
     }
+    
 
     protected Feature loadFromRemote(VRI uri) throws ToxOtisException {
         FeatureSpider fSpider = new FeatureSpider(uri);
@@ -163,7 +163,7 @@ public class Feature extends OTPublishable<Feature> {
             if (vri.getUrlParams().containsKey("tokenid")) {
                 vri.getUrlParams().remove("tokenid");
             }
-            vri.addUrlParameter("tokenid", token.getToken());
+            vri.addUrlParameter("tokenid", token.stringValue());
         }
         PostClient client = new PostClient(vri);
         client.setContentType("application/rdf+xml");

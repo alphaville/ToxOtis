@@ -503,22 +503,23 @@ public class PasswordFileManager extends Observable {
             @Override
             public void run() {
                 try {
-                    PasswordFileManager.CRYPTO.createMasterPasswordFile("/dev/random", "/home/chung/toxotisKeys/master2.key", 1000);
+                    PasswordFileManager.CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/master.key", 1000);
                 } catch (IOException ex) {
                     Logger.getLogger(PasswordFileManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         };
 
-        Executors.newFixedThreadPool(1).submit(createPasswordFile);
+        createPasswordFile.start();
 
         while (true) {
             if (CRYPTO.hasChanged()) {
                 System.out.println(CRYPTO.getPasswordGenerationProgress() + " %");
             }
-            if (CRYPTO.getPasswordGenerationProgress() == 100) {
+            if (Math.abs(CRYPTO.getPasswordGenerationProgress() - 100) < 0.001) {
                 break;
             }
+            Thread.sleep(100);
         }
 
 

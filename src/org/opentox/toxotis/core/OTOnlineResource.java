@@ -37,7 +37,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
 
     public T loadFromRemote(AuthenticationToken authentication) throws ToxOtisException{
         VRI authenticatedUri = new VRI(uri);
-        authenticatedUri.addUrlParameter("tokenid", authentication.getToken());
+        authenticatedUri.addUrlParameter("tokenid", authentication.stringValue());
         return loadFromRemote(authenticatedUri);
     }
 

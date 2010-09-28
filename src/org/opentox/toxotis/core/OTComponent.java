@@ -2,10 +2,12 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  *
@@ -120,4 +122,6 @@ public abstract class OTComponent<T extends OTComponent> {
         hash = 79 * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
     }
+   
+    
 }

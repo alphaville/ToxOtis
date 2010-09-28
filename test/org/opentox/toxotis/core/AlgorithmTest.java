@@ -9,6 +9,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.OpenToxAlgorithms;
+import org.opentox.toxotis.ontology.WonderWebValidator;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.PasswordFileManager;
 import static org.junit.Assert.*;
 
 /**
@@ -39,17 +42,15 @@ public class AlgorithmTest {
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException, IOException {
         Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceVri());
-        //AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
-//        System.out.println(at.validate());
+        AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
         a.loadFromRemote();
-//        for (Parameter oc : a.getParameters()){
-//            System.out.println(oc);
-//        }
-        a.asOntModel().write(System.out);
+        System.out.println(a.getMeta());
+        WonderWebValidator wwv = new WonderWebValidator(a.asOntModel());
+        System.out.println(wwv.post()?"HORRRAAAAYYY!!":"SHIT!");
     }
 
 
-    @Test
+    //@Test
     public void testRdf() throws URISyntaxException, ToxOtisException, IOException {
         Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceUri());
         a.loadFromRemote();

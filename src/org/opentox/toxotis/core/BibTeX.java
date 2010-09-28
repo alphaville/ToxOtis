@@ -67,7 +67,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
             if (vri.getUrlParams().containsKey("tokenid")){
                 vri.getUrlParams().remove("tokenid");
             }
-            vri.addUrlParameter("tokenid", token.getToken());
+            vri.addUrlParameter("tokenid", token.stringValue());
         }
         PostClient pc = new PostClient(vri);
         pc.setMediaType("text/uri-list");
@@ -104,7 +104,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
     public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
         VRI bibTexService = getBibTexService();
         if (token != null) {// Append tokenid to the list of URL parameters
-            bibTexService.addUrlParameter("tokenid", token.getToken());
+            bibTexService.addUrlParameter("tokenid", token.stringValue());
         }
         return publishOnline(bibTexService, token);
     }

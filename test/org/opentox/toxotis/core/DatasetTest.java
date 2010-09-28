@@ -41,21 +41,9 @@ public class DatasetTest {
 
     @Test
     public void testLoadFromRemote() throws URISyntaxException, ToxOtisException, InterruptedException {
-        VRI vri = new VRI(Services.IDEACONSULT.augment("dataset", "54").addUrlParameter("max", "5"));
-        System.out.println(vri);
+        VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset", "4").addUrlParameter("max", "5"));
         Dataset ds = new Dataset(vri).loadFromRemote();
-        ds.getDataEntries().get(0).getFeatureValue(2).setValue(new TypedValue(4.32));
-        ds.asOntModel().write(System.out);
-
-        Task t = ds.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("dataset"), null);
-        System.out.println(t.getHasStatus());
-        while (t.getHasStatus().equals(Task.Status.RUNNING)) {
-            t.loadFromRemote();
-            Thread.sleep(100);
-        }
-        System.out.println(t.getResultUri());
-
-        weka.core.Instances data = ds.getInstances();
+        weka.core.Instances data = ds.getInstances();        
         System.out.println(data);
         
     }

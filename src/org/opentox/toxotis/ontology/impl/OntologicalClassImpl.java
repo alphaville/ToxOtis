@@ -25,6 +25,11 @@ public class OntologicalClassImpl implements OntologicalClass {
         this.name = name;
     }
 
+    public OntologicalClassImpl(String name, String namespace) {
+        this(name);
+        setNameSpace(namespace);
+    }
+
     @Override
     public MetaInfo getMetaInfo() {
         return metaInfo;
