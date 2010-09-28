@@ -46,14 +46,8 @@ public class VRITest {
         v = new VRI(baseUri);
         assertEquals(baseUri, v.toString());
         v = new VRI(baseUri, "a", "1", "b");
-        assertTrue(v.getUrlParams().keySet().contains("a"));
-        assertTrue(v.getUrlParams().keySet().contains("b"));
-        assertTrue(v.getUrlParams().values().contains("1"));
         v = new VRI("https://tricky.net?a=7&d=1", "b", "1");
-        assertEquals(3, v.getUrlParams().size());
-        java.util.Map.Entry<String, String> e = v.getUrlParams().entrySet().iterator().next();
-        assertEquals("a", e.getKey());
-        assertEquals("7", e.getValue());
+        assertEquals(3, v.getUrlParams().size());       
         assertEquals(443, v.getPort());
         assertEquals("https", v.getProtocol());
     }

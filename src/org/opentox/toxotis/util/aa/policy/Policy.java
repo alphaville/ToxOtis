@@ -29,12 +29,20 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- *
+ * An authentication/authorization policy defines explicitly the way in which clients
+ * are granted permissions to access certain resource and perform HTTP requests. Policies
+ * may grant access to certain individuals or subject groups
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public class Policy {
 
+    public Policy() {
+    }
+
+    public Policy(String policyName) {
+        this.policyName = policyName;
+    }
     private static final String _DocTypePublic =
             "-//Sun Java System Access Manager7.1 2006Q3 Admin CLI DTD//EN";
     private static final String _DocTypeSystem =
@@ -210,8 +218,7 @@ public class Policy {
             policyServer = Services.SSO_POLICY;
         }
         SecurePostClient spc = new SecurePostClient(policyServer);
-        spc.addParameter("", getText());
-        spc.addParameter("subjectid", token.stringValue());
+        spc.addHeaderParameter(subjectid, token.stringValue());
         spc.postParameters();
         System.out.println(spc.getResponseText());
         return null;

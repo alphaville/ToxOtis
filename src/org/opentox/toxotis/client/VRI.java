@@ -4,13 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.*;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -31,7 +31,7 @@ public class VRI { // Well tested!
     /** The URI as a string */
     private String uri;
     /** The mapping from parameter names to parameter values */
-    private Map<String, String> urlParams = new LinkedHashMap<String, String>();
+    private ArrayList<Pair<String, String>> urlParams = new ArrayList<Pair<String, String>>();
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
 
@@ -138,6 +138,12 @@ public class VRI { // Well tested!
     }
 
     /**
+     * Dummy contructor
+     */
+    private VRI() {
+    }
+
+    /**
      * Construct a new VRI providing its String representation. Parameters are parsed
      * and stored separately in a map.
      * @param uri
@@ -146,6 +152,7 @@ public class VRI { // Well tested!
      *      In case the provided URI is syntactically incorrect.
      */
     public VRI(String uri) throws URISyntaxException {
+        this();
         new URI(uri);
         if (!uri.contains("://")) {
             uri = "http://" + uri;
@@ -175,10 +182,9 @@ public class VRI { // Well tested!
                                 }
                             }
                         }
-                        urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), // paramname cannot be null
-                                paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "");
+                        urlParams.add(new Pair(URLEncoder.encode(paramName, URL_ENCODING), // paramname cannot be null
+                                paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : ""));
                     }
-
                 } catch (UnsupportedEncodingException ex) {
                     ex.printStackTrace();
                     throw new RuntimeException(ex);
@@ -220,8 +226,8 @@ public class VRI { // Well tested!
                     paramValue = params[++i];
                 }
                 try {
-                    urlParams.put(URLEncoder.encode(paramName, URL_ENCODING),
-                            paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : null);
+                    urlParams.add(new Pair(URLEncoder.encode(paramName, URL_ENCODING),
+                            paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : null));
                 } catch (UnsupportedEncodingException ex) {
                     ex.printStackTrace();
                     throw new RuntimeException(ex);
@@ -238,7 +244,7 @@ public class VRI { // Well tested!
      * @return
      *      The Map of URL parameters
      */
-    public Map<String, String> getUrlParams() {
+    public ArrayList<Pair<String, String>> getUrlParams() {
         return urlParams;
     }
 
@@ -255,7 +261,7 @@ public class VRI { // Well tested!
      */
     public VRI addUrlParameter(String paramName, String paramValue) {
         try {
-            urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(paramValue, URL_ENCODING));
+            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(paramValue, URL_ENCODING)));
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
@@ -264,7 +270,7 @@ public class VRI { // Well tested!
 
     public VRI addUrlParameter(String paramName, int paramValue) {
         try {
-            urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(new Integer(paramValue).toString(), URL_ENCODING));
+            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(new Integer(paramValue).toString(), URL_ENCODING)));
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
@@ -367,7 +373,7 @@ public class VRI { // Well tested!
         final int nParams = urlParams.size();
         if (nParams > 0) {
             int counter = 0;
-            for (Map.Entry<String, String> e : urlParams.entrySet()) {
+            for (Pair<String, String> e : urlParams) {
                 string.append(e.getKey());
                 string.append("=");
                 if (e.getValue() != null) {
