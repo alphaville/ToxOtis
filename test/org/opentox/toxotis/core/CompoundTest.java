@@ -42,4 +42,10 @@ public class CompoundTest {
         c.downloadAsFile(new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
     }
 
+    @Test
+    public void testPublishFromFile() throws ToxOtisException {
+       Compound c = Compound.publishFromFile(null, null, null);
+       System.out.println(c.getUri().toString());
+    }
+
 }

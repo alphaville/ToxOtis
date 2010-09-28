@@ -5,6 +5,8 @@ import com.hp.hpl.jena.ontology.OntModel;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,12 +15,17 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
+import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.spiders.CompoundSpider;
 
 /**
  * Provides different representations for chemical compounds with a unique
@@ -114,7 +121,7 @@ public class Compound extends OTPublishable<Compound> {
 
     /**
      * POSTs a file to the compound service using a specified Content-type header
-     * in order to create a new Compound. The VRI of the created compound is returned
+     * in order to create a new Compound. The created compound is returned
      * to the user.
      * @param sourceFile
      *      File where information about the compound are stored. Can be a <code>mol</code>
@@ -126,14 +133,46 @@ public class Compound extends OTPublishable<Compound> {
      * @param fileType
      *      The Content-type of the file to be posted.
      * @return
-     *      The URI of the created resource.
+     *      The compound created by the Service.
      * @throws ToxOtisException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      */
-    public VRI publishFromFile(File sourceFile, String fileType, AuthenticationToken token) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public static Compound publishFromFile(File sourceFile, String fileType, AuthenticationToken token) throws ToxOtisException {
+        FileReader fr = null;
+        BufferedReader br = null;
+        try {
+            PostClient postClient = new PostClient(
+                    new VRI(String.format(Services.IDEACONSULT.toString(), "compound")));
+            fr = new FileReader(sourceFile);
+            br = new BufferedReader(fr);
+            String representation = "";
+            String line = br.readLine();
+            while (line != null) {
+                representation += line;
+                line = br.readLine();
+            }
+            postClient.addPostParameter("compound", representation);
+            postClient.setContentType(fileType);
+            postClient.post();
+            VRI newVRI = new VRI(postClient.getResponseText());
+            CompoundSpider compoundSpider = new CompoundSpider(newVRI);
+            return compoundSpider.parse();
+        } catch (FileNotFoundException ex) {
+            throw new ToxOtisException(ex);
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        } catch (URISyntaxException ex) {
+            throw new ToxOtisException(ex);
+        } finally {
+            try {
+                br.close();
+                fr.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Compound.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**
@@ -199,7 +238,7 @@ public class Compound extends OTPublishable<Compound> {
                     failure = th;
                 }
             }
-            
+
 
             if (bufferedWriter != null) {
                 try {
