@@ -134,7 +134,7 @@ public class Compound extends OTPublishable<Compound> {
     }
 
     /**
-     * POSTs a file to the compound service using a specified Content-type header
+     * POSTs a file to a default compound service using a specified Content-type header
      * in order to create a new Compound. The created compound is returned
      * to the user.
      * @param sourceFile
@@ -153,39 +153,49 @@ public class Compound extends OTPublishable<Compound> {
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      */
-    public static Compound publishFromFile(File sourceFile, String fileType, AuthenticationToken token) throws ToxOtisException {
-        FileReader fr = null;
-        BufferedReader br = null;
+    public static Compound publishFromFile(
+            File sourceFile, String fileType, AuthenticationToken token)
+            throws ToxOtisException {
+        return publishFromFile(sourceFile, fileType, token, Services.IDEACONSULT.augment("compound").toString());
+    }
+
+    /**
+     * POSTs a file to a specified compound service using a specified Content-type header
+     * in order to create a new Compound. The created compound is returned
+     * to the user.
+     * @param sourceFile
+     *      File where information about the compound are stored. Can be a <code>mol</code>
+     *      file, a <code>CML</code> one, an <code>SD</code> file or other file
+     *      format that is accepted by the compound service.
+     * @param token
+     *      Token used for authenticating the client against the remote compound
+     *      service (You can set it to <code>null</code>).
+     * @param fileType
+     *      The Content-type of the file to be posted.
+     * @param service
+     *      The URI of the service on which the new Compound will be posted.
+     * @return
+     *      The compound created by the Service.
+     * @throws ToxOtisException
+     *      In case an authentication error occurs or the remote service responds
+     *      with an error code like 500 or 503 or the submitted representation is
+     *      syntactically or semantically wrong (status 400).
+     */
+    public static Compound publishFromFile(
+            File sourceFile, String fileType, AuthenticationToken token, String service)
+            throws ToxOtisException{
         try {
             PostClient postClient = new PostClient(
-                    new VRI(String.format(Services.IDEACONSULT.toString(), "compound")));
-            fr = new FileReader(sourceFile);
-            br = new BufferedReader(fr);
-            String representation = "";
-            String line = br.readLine();
-            while (line != null) {
-                representation += line;
-                line = br.readLine();
-            }
-            postClient.addPostParameter("compound", representation);
+                    new VRI(service).appendToken(token));
+            postClient.setPostable(sourceFile);
             postClient.setContentType(fileType);
+            postClient.setMediaType("text/uri-list");
             postClient.post();
             VRI newVRI = new VRI(postClient.getResponseText());
             CompoundSpider compoundSpider = new CompoundSpider(newVRI);
             return compoundSpider.parse();
-        } catch (FileNotFoundException ex) {
-            throw new ToxOtisException(ex);
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
         } catch (URISyntaxException ex) {
             throw new ToxOtisException(ex);
-        } finally {
-            try {
-                br.close();
-                fr.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Compound.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 

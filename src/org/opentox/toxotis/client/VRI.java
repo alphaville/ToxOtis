@@ -16,6 +16,7 @@ import org.opentox.toxotis.core.*;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  * VRI is an alternative to URI. Being <code>final</code>, the class <code>java.net.URI</code>
@@ -145,8 +146,8 @@ public class VRI { // Well tested!
      *      In case the provided URI is syntactically incorrect.
      */
     public VRI(String uri) throws URISyntaxException {
-        new URI(uri);        
-        if (!uri.contains("://")){
+        new URI(uri);
+        if (!uri.contains("://")) {
             uri = "http://" + uri;
         }
         this.uri = uri;
@@ -168,8 +169,8 @@ public class VRI { // Well tested!
                         } else if (queryFragmentComponents.length > 1) {
                             paramName = queryFragmentComponents[0];
                             for (int k = 1; k < queryFragmentComponents.length; k++) {
-                                paramValue = paramValue==null?queryFragmentComponents[k]:paramValue+queryFragmentComponents[k];
-                                if (k!=queryFragmentComponents.length-1){
+                                paramValue = paramValue == null ? queryFragmentComponents[k] : paramValue + queryFragmentComponents[k];
+                                if (k != queryFragmentComponents.length - 1) {
                                     paramValue += "=";
                                 }
                             }
@@ -266,6 +267,13 @@ public class VRI { // Well tested!
             urlParams.put(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(new Integer(paramValue).toString(), URL_ENCODING));
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
+        }
+        return this;
+    }
+
+    public VRI appendToken(AuthenticationToken token) {
+        if (token != null) {
+            return addUrlParameter("tokenid", token.stringValue());
         }
         return this;
     }

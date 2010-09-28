@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import static org.junit.Assert.*;
@@ -36,7 +37,7 @@ public class CompoundTest {
     public void tearDown() {
     }
 
-    @Test
+  //  @Test
     public void testSomeMethod() throws ToxOtisException {
         Compound c =new Compound(Services.IDEACONSULT.augment("compound","100"));
         c.downloadAsFile(new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
@@ -44,7 +45,11 @@ public class CompoundTest {
 
     @Test
     public void testPublishFromFile() throws ToxOtisException {
-       Compound c = Compound.publishFromFile(null, null, null);
+       File f;
+       Compound comp = new Compound(new VRI(Services.AMBIT_UNI_PLOVDIV.augment("compound","4")));
+       comp.downloadAsFile(f = new File("/Users/hampos/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
+
+       Compound c = Compound.publishFromFile(f, Media.CHEMICAL_SMILES.getMime(), null);
        System.out.println(c.getUri().toString());
     }
 
