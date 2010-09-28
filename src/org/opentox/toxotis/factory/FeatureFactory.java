@@ -4,17 +4,13 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.core.Feature;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.spiders.FeatureSpider;
 
 /**
  *
@@ -72,9 +68,7 @@ public class FeatureFactory {
     public Set<VRI> lookupSameAs(VRI service, OntologicalClass echaEndpoint, AuthenticationToken token) throws ToxOtisException{
         GetClient client = new GetClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
-
         List<String> featureUris = client.getResponseUriList();
-
         Set<VRI> features = new HashSet<VRI>();
         for(String featureUri : featureUris){
             try {

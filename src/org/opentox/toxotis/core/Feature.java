@@ -144,7 +144,6 @@ public class Feature extends OTPublishable<Feature> {
 
         return new String(builder);
     }
-    
 
     protected Feature loadFromRemote(VRI uri) throws ToxOtisException {
         FeatureSpider fSpider = new FeatureSpider(uri);
@@ -160,10 +159,7 @@ public class Feature extends OTPublishable<Feature> {
         /** Handle provided token */
         if (token != null) {
             // Replace existing token with the new one
-            if (vri.getUrlParams().containsKey("tokenid")) {
-                vri.getUrlParams().remove("tokenid");
-            }
-            vri.addUrlParameter("tokenid", token.stringValue());
+            vri.removeUrlParameter("tokenid").addUrlParameter("tokenid", token.stringValue());
         }
         PostClient client = new PostClient(vri);
         client.setContentType("application/rdf+xml");

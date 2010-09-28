@@ -64,10 +64,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
         if (token != null) {
             // Replace existing token with the new one
-            if (vri.getUrlParams().containsKey("tokenid")){
-                vri.getUrlParams().remove("tokenid");
-            }
-            vri.addUrlParameter("tokenid", token.stringValue());
+            vri.removeUrlParameter("tokenid").addUrlParameter("tokenid", token.stringValue());
         }
         PostClient pc = new PostClient(vri);
         pc.setMediaType("text/uri-list");

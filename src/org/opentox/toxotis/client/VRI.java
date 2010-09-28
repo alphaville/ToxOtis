@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.*;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -246,6 +248,31 @@ public class VRI { // Well tested!
      */
     public ArrayList<Pair<String, String>> getUrlParams() {
         return urlParams;
+    }
+
+    /**
+     * Removes all parameters that match the given parameter name. If no parameter
+     * is found to match the search criterion, no action is taken and the VRI is
+     * returned without any modifications.
+     * 
+     * @param paramName
+     *      Name of parameter to be removed from the set of name-value pairs
+     * @return
+     *      The updated VRI without the parameter.
+     */
+    public VRI removeUrlParameter(String paramName){
+        String encodedParamName = null;
+        try {
+            encodedParamName = URLEncoder.encode(paramName, URL_ENCODING);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(VRI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (Pair<String, String> pair : urlParams){
+           if (encodedParamName.equals(pair.getKey())){
+               urlParams.remove(pair);
+           }
+        }
+        return this;
     }
 
     /**
