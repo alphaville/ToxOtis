@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -12,6 +13,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.collection.Media;
 
 /**
  *
@@ -50,25 +52,58 @@ public class PostClient extends AbstractClient {
         return this;
     }
 
+    /**
+     * Set an ontological data model which is to be posted to the remote location
+     * as application/rdf+xml. Invokations of this method set automatically the content-type
+     * to application/rdf+xml though it can be overriden afterwards.
+     * @param model
+     * @return
+     */
     public PostClient setPostable(OntModel model) {
         this.model = model;
         return this;
     }
 
+    /**
+     * Set a file whose contents are to be posted to the remote server specified
+     * in the constructor of this class. If the file is not found under the specified
+     * path, an IllegalArgumentException is thrown. Because the type of the file is
+     * in general unknown and it is not considered to be a good practise to deduce the
+     * file type from the file extension, it is up to the user to specify the content
+     * type of the posted object using the method {@link PostClient#setContentType(java.lang.String)
+     * setContentType}. Since it is not possible to POST entities of different content
+     * types to an HTTP server, any invokation to this method will override any previous
+     * invokation of {@link PostClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
+     * setPostable(OntModel) } and {@link PostClient#setPostable(java.lang.String)
+     * setPostable(String)}.
+     *
+     * @param objectToPost
+     *      File whose contents are to be posted.
+     * @return
+     *      This post client
+     * @throws IllegalArgumentException
+     *      In case the provided file does not exist
+     */
     public PostClient setPostable(File objectToPost) {
         if (objectToPost != null && !objectToPost.exists()) {
-            throw new IllegalArgumentException("No file was found at the specified path!");
+            throw new IllegalArgumentException(new FileNotFoundException("No file was found at the specified path!"));
         }
         this.fileContentToPost = objectToPost;
         return this;
     }
 
     /**
-     *
+     * Provide a POSTable object as a string. Keep in mind that the this string will
+     * <b>not</b> be URL-Encoded or by any means modified prior to the POST operation.
+     * It is also up to the user to specify a proper Content-type.
      * @param string
+     *      String representation of an entity to be posted to a remote server.
      * @return
+     *      This post client with an updated value of the postable object.
+     * @see Media Collection of Media Types
      */
     public PostClient setPostable(String string) {
+        this.stringToPost = string;
         return this;
     }
 
@@ -171,7 +206,18 @@ public class PostClient extends AbstractClient {
         }
     }
 
-      public void post() throws ToxOtisException {
+    /**
+     * According to the the configuration of the PostClient, permorms a remote POST
+     * request to the server identified by the URI provided in the contructor. First,
+     * the protected method {@link PostClient#initializeConnection(java.net.URI)
+     * initializeConnection(URI)} is invoked and then a DataOutputStream opens to
+     * tranfer the data to the server.
+     *
+     * @throws ToxOtisException
+     *      Encapsulates an IOException which might be thrown due to I/O errors
+     *      during the data transaction.
+     */
+    public void post() throws ToxOtisException {
         initializeConnection(vri.toURI());
         DataOutputStream wr;
         try {
@@ -181,9 +227,9 @@ public class PostClient extends AbstractClient {
                 wr.writeBytes(getParametersAsQuery());// POST the parameters
             } else if (model != null) {
                 model.write(wr);
-            } else if (stringToPost!=null){
+            } else if (stringToPost != null) {
                 wr.writeChars(stringToPost);
-            } else if (fileContentToPost!=null){
+            } else if (fileContentToPost != null) {
                 FileReader fr = new FileReader(fileContentToPost);
                 BufferedReader br = new BufferedReader(fr);
                 String line;
@@ -195,14 +241,14 @@ public class PostClient extends AbstractClient {
                 if (br != null) {
                     try {
                         br.close();
-                    } catch (Throwable ex) {
+                    } catch (final IOException ex) {
                         thr = ex;
                     }
                 }
                 if (fr != null) {
                     try {
                         fr.close();
-                    } catch (Throwable ex) {
+                    } catch (final IOException ex) {
                         thr = ex;
                     }
                 }
@@ -216,5 +262,4 @@ public class PostClient extends AbstractClient {
             throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
         }
     }
-
 }
