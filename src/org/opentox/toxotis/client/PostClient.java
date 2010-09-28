@@ -11,8 +11,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -173,17 +171,19 @@ public class PostClient extends AbstractClient {
         }
     }
 
-    public void post() throws ToxOtisException {
+      public void post() throws ToxOtisException {
         initializeConnection(vri.toURI());
-        DataOutputStream wr = null;
+        DataOutputStream wr;
         try {
             wr = new DataOutputStream(con.getOutputStream());
             String query = getParametersAsQuery();
-            if (query != null) {
+            if (query != null && !query.isEmpty()) {
                 wr.writeBytes(getParametersAsQuery());// POST the parameters
             } else if (model != null) {
                 model.write(wr);
-            } else if (fileContentToPost != null) {
+            } else if (stringToPost!=null){
+                wr.writeChars(stringToPost);
+            } else if (fileContentToPost!=null){
                 FileReader fr = new FileReader(fileContentToPost);
                 BufferedReader br = new BufferedReader(fr);
                 String line;
@@ -209,29 +209,12 @@ public class PostClient extends AbstractClient {
                 if (thr != null) {
                     throw new ToxOtisException(thr);
                 }
-            } else if (stringToPost != null) {
-                wr.writeChars(stringToPost);
-            }else{
-                throw new ToxOtisException("Nothing to POST!");
             }
-
+            wr.flush();
+            wr.close();
         } catch (final IOException ex) {
             throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
-        } finally {
-            IOException ioex = null;
-            try {
-                wr.flush();
-            } catch (IOException ex) {
-                ioex = ex;
-            }
-            try {
-                wr.close();
-            } catch (IOException ex) {
-                ioex = ex;
-            }
-            if (ioex != null) {
-                throw new ToxOtisException("I/O Exception caught while closing DataOutputStream", ioex);
-            }
         }
     }
+
 }

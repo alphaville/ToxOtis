@@ -45,13 +45,14 @@ public class PostClientTest {
 //        pc.post();
 //        System.out.println(pc.getResponseText());
 
-        BibTeX b = new BibTeX(new VRI("http://localhost:3000/bibtex/123"));
-        b.setBibType(BibTeX.BIB_TYPE.Conference);
+        BibTeX b = new BibTeX(null);
+        b.setBibType(BibTeX.BIB_TYPE.Article);
         b.setAuthor("me");
         b.setTitle("haha");
         //b.setVolume(10);
         //b.setNumber(10);
         //b.setYear(2010);
+        b.asOntModel().write(System.out);
         PostClient pc = new PostClient(new VRI("http://localhost:3000/bibtex"));
         pc.setMediaType("text/uri-list");
         pc.setContentType("application/rdf+xml");
