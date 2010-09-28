@@ -2,6 +2,7 @@ package org.opentox.toxotis.client;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -137,15 +138,11 @@ public class VRITest {
         VRI v = new VRI("http://something.com?a=b=c");
         assertEquals("http://something.com?a=b%3Dc", v.toString());
     }
+   
 
     @Test
-    public void testEquality() throws Exception {
-        java.net.URI tst1 = new java.net.URI("sth.com/a");
-        java.net.URI tst2 = new java.net.URI("sth.com/a/");
-        System.out.println(tst1.equals(tst2));
-
-        VRI v1 = new VRI("sth.com/a");
-        VRI v2 = new VRI("sth.com/a/");
-        assertEquals(v1, v2);
+    public void testArrays() throws Exception {
+        VRI v1 = new VRI("sth.com/a").addUrlParameter("a[]","1").addUrlParameter("a[]","2");
+        assertEquals("a[]=1&a[]=2",URLDecoder.decode(v1.getQueryAsString(),"UTF-8"));
     }
 }

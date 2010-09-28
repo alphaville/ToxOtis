@@ -1,8 +1,13 @@
-h1. ToxOtis [人馬座]
+h1. 人馬座 - ToxOtis
 
-Version: 0.1.0.9, first alpha version
+Version: 0.1.0.11, first alpha version
+Authors:
+ + "Sopasakis Pantelis":http://gr.linkedin.com/in/sopasakis
+ + "Charalampos Chomenidis":http://gr.linkedin.com/pub/hampos-chomenidis/14/29a/778
 
 ToxOtis is the Greek word for Sagittarius, that actually means 'archer'. ToxOtis is more than a web client and parser; it is a versatile tool for using the OpenTox predictive toxicology web services from inside your Java application providing a flexible API. You can find full documentation at the "doc":http://github.com/alphaville/ToxOtis/tree/master/doc/ directory.
+
+ Follow "isToxic":http://twitter.com/isToxic on Twitter and stay tuned with the latest updates!
 
 h2. Dependencies
 
@@ -12,6 +17,8 @@ This project depends on the following libraries (Should be downloaded and added 
 
 * "Weka, version 3.6.2":http://sourceforge.net/projects/weka/files/weka-3-6/3.6.2/weka-3-6-2.zip/download : Download weka and add weka.jar in your classpath.
 
-h2. Licensing
+h2. Licensing and Other Info
 
 This project is licensed under the GNU GPL license version 3.0. A copy of this license is found in the ./Licenses folder. Licenses for all dependencies of this project are also included in this directory.
+
+This project is being developed in the "Automatic Control Lab":http://www.chemeng.ntua.gr/labs/control_lab/index.html of the "School of Chemical Engineering":http://www.chemeng.ntua.gr/index.php?lang_change=en, "NTUA":http://www.ntua.gr/index_en.html, Athens, Greece and is part of "OpenTox":http://opentox.org; an EU funded FP7 research project.
