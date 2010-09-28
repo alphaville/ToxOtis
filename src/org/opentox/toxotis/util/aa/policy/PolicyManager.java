@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.SSLConfiguration;
 
@@ -25,7 +26,7 @@ public class PolicyManager {
      * NOTE: Only admins are allowed to create/modify policies.
      */
     private Policy policy;
-    private String policyServiceUrl = "https://opensso.in-silico.ch/pol";
+    private String policyServiceUrl = Services.SSO_POLICY.toString();
     private AuthenticationToken token;
     private static final String subjectIdHeader = "subjectid";
 
@@ -68,6 +69,7 @@ public class PolicyManager {
     }
 
     public void postToRemote() throws ToxOtisException {
+
         throw new UnsupportedOperationException();
     }
 

@@ -1,7 +1,10 @@
 package org.opentox.toxotis.util.aa.policy;
 
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +18,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.opentox.toxotis.ErrorCause;
+import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.client.secure.SecureGetClient;
+import org.opentox.toxotis.client.secure.SecurePostClient;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,6 +43,7 @@ public class Policy {
     private Set<PolicyRule> rules = new HashSet<PolicyRule>();
     private Set<PolicySubject> subjects = new HashSet<PolicySubject>();
     private String subjectsCollectionName = "mySubjects";
+    private static final String subjectid = "subjectid";
     private String subjectsDescription = "";
     private static Document policyDocument = null;
 
@@ -173,5 +184,74 @@ public class Policy {
 
     public void setSubjectsDescription(String subjectsDescription) {
         this.subjectsDescription = subjectsDescription;
+    }
+
+    /**
+     * Publish this policy to a remote server and acquire a URI for it.
+     * 
+     * @param policyServer
+     *      URI of the policy server. If set to <code>null</code> then the standard
+     *      policy service of OpenTox at https://opensso.in-silico.ch/pol will be
+     *      used instead.
+     * @param token
+     *      Token used to authenticate the user that attempts to publish a new policy
+     *      against the policy service. If you think that no authentication is needed
+     *      to perform the HTTP request you may set it to <code>null</code>.
+     * @return
+     *      URI of the created policy.
+     * @throws ToxOtisException
+     *      In case a HTTP related error occurs (I/O communication error, or the
+     *      remote server is down), the service respondes in an unexpected manner
+     *      like a status code 500 or 503 or authentication/authorization fails and
+     *      a status code 403 or 401 are returned respectively.
+     */
+    public VRI publishPolicy(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
+        if (policyServer == null) {
+            policyServer = Services.SSO_POLICY;
+        }
+        SecurePostClient spc = new SecurePostClient(policyServer);
+        spc.addParameter("", getText());
+        spc.addParameter("subjectid", token.stringValue());
+        spc.postParameters();
+        System.out.println(spc.getResponseText());
+        return null;
+    }
+
+    /**
+     * List all policies that are hosted in the provided policy service.
+     * @param policyService
+     *      Policy service in which this method will search for registered policies.
+     *      If set to <code>null</code> then the standard policy service at
+     *      https://opensso.in-silico.ch/pol will be automatically chosen.
+     * @param token
+     *      Token URI used to authenticate the client against the opensso service
+     *      and acquire permissions to get the list of policies!
+     * @return
+     *      A list of policy IDs that are hosted in the SSO service by the user
+     *      that is identified by the provided authenticaton token. Note that the IDs of
+     *      policies are not URIs.
+     */
+    public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ToxOtisException {
+        SecureGetClient sgt = null;
+        if (policyService == null) {
+            policyService = Services.SSO_POLICY;
+        }
+        sgt = new SecureGetClient(policyService);
+        sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
+        List<String> policies = null;
+
+
+        final int responseStatus = sgt.getResponseCode();
+        if (responseStatus == 200) {
+            policies = sgt.getResponseUriList();
+            for (String s : policies) {
+                System.out.println(s);
+            }
+        } else if (responseStatus == 403) {
+            throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
+        } else {
+            throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus);
+        }
+        return null;
     }
 }

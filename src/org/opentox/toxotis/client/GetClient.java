@@ -1,6 +1,7 @@
 package org.opentox.toxotis.client;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
@@ -22,8 +23,6 @@ public class GetClient extends AbstractClient {
         setUri(uri);
     }
 
-
-
     /** Initialize a connection to the target URI */
     protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
         try {
@@ -31,11 +30,15 @@ public class GetClient extends AbstractClient {
             java.net.URL dataset_url = uri.toURL();
             con = (java.net.HttpURLConnection) dataset_url.openConnection();
             con.setDoInput(true);
-            con.setDoOutput(true);
             con.setUseCaches(false);
             con.setRequestMethod(METHOD);
             if (acceptMediaType != null) {
                 con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
+            }
+            if (headerValues!=null && !headerValues.isEmpty()) {
+                for (Map.Entry<String, String> e : headerValues.entrySet()) {
+                    con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
+                }
             }
             return con;
         } catch (final Exception ex) {
