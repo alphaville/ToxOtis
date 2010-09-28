@@ -14,7 +14,13 @@ public class OTEchaEndpoints {
     public static final String NS = String.format(_NS, "");
     private static OntologicalClass ms_Gastrointestinal_absorption;
     private static OntologicalClass ms_Endpoints;
-    private static OntologicalClass ms_PhysicoChemicalEffects;
+
+    private static OntologicalClass ms_PhysicoChemicalEffects,
+            ms_AirWaterPartitionCoefficient,
+            ms_BoilingPoint,
+            ms_DissociationConstantPKa,
+            ms_MeltingPoint;
+
     private static OntologicalClass ms_EnvironmentalFateParameters;
     private static OntologicalClass ms_EcotoxicEffects;
     
@@ -61,6 +67,49 @@ public class OTEchaEndpoints {
         }
         return ms_PhysicoChemicalEffects;
     }
+
+    public static OntologicalClass AirWaterPartitionCoefficient() {
+        if (ms_AirWaterPartitionCoefficient == null) {
+            ms_AirWaterPartitionCoefficient = new OntologicalClassImpl("Air-water_partition_coefficient_Henry_s_law_constant_H", NS);
+            ms_AirWaterPartitionCoefficient.getMetaInfo().setTitle("Air- water partition coefficient (Henry`s law constant, H)");
+            ms_AirWaterPartitionCoefficient.getMetaInfo().setIdentifier("1.9");
+            ms_AirWaterPartitionCoefficient.getSuperClasses().add(PhysicoChemicalEffects());
+        }
+        return ms_PhysicoChemicalEffects;
+    }
+
+    public static OntologicalClass BoilingPoint() {
+        if (ms_BoilingPoint == null) {
+            ms_BoilingPoint = new OntologicalClassImpl("Boiling_point", NS);
+            ms_BoilingPoint.getMetaInfo().setTitle("Boiling point");
+            ms_BoilingPoint.getMetaInfo().setIdentifier("1.2");
+            ms_BoilingPoint.getSuperClasses().add(PhysicoChemicalEffects());
+        }
+        return ms_BoilingPoint;
+    }
+
+    public static OntologicalClass DissociationConstantPKa() {
+        if (ms_DissociationConstantPKa == null) {
+            ms_DissociationConstantPKa = new OntologicalClassImpl("Dissociation_constant_pKa", NS);
+            ms_DissociationConstantPKa.getMetaInfo().setTitle("Dissociation constant (pKa)");
+            ms_DissociationConstantPKa.getMetaInfo().setIdentifier("1.10");
+            ms_DissociationConstantPKa.getSuperClasses().add(PhysicoChemicalEffects());
+        }
+        return ms_DissociationConstantPKa;
+    }
+
+    public static OntologicalClass MeltingPoint() {
+        if (ms_MeltingPoint == null) {
+            ms_MeltingPoint = new OntologicalClassImpl("Melting_point", NS);
+            ms_MeltingPoint.getMetaInfo().setTitle("Melting point");
+            ms_MeltingPoint.getMetaInfo().setIdentifier("1.1");
+            ms_MeltingPoint.getSuperClasses().add(PhysicoChemicalEffects());
+        }
+        return ms_MeltingPoint;
+    }
+
+
+    
 
     public static OntologicalClass EnvironmentalFateParameters() {
         if (ms_EnvironmentalFateParameters == null) {
