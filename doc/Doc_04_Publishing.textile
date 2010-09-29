@@ -96,3 +96,15 @@ System.out.println(t.getResultUri());
 </pre>
 
 The above example will POST the dataset as application/rdf+xml to the dataset server at "ambit.uni-plovdiv.bg":http://ambit.uni-plovdiv.bg:8080/ambit2/dataset and monitor the returned task. The dataset "http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/64":http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/64 has been created by running the above example code.
+
+
+h3. 2.4. Publish a compound
+
+Publishing of compounds works exactly the same as it does for datasets and bibTex entries as already mentioned. However in case of compounds, users are additionaly able to create new compounds using "SD files":http://en.wikipedia.org/wiki/Chemical_table_file, "MOL files":http://en.wikipedia.org/wiki/Chemical_table_file, "SMILES":http://en.wikipedia.org/wiki/Simplified_molecular_input_line_entry_specification and other chemical formats. Such files are well known on the planet of chemo and bioinformatics and lots of scientists maintain databases of such files. The related method in Compound is static since it is not an operation applied on some specific compound but in general creates a new compound on an online service. Here is an example of use where we create a new compound from an SD file:
+
+<pre>
+File myFile = new File("/path/to/opentoxin.sdf");
+Task task = Compound.publishFromFile(f, Media.CHEMICAL_MDLSDF.getMime(), (AuthenticationToken)null);
+</pre>
+
+
