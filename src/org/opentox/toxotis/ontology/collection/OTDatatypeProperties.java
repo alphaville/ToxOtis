@@ -85,6 +85,7 @@ public class OTDatatypeProperties {
      * and its range is <code>xsd:string</code>. Acceptable values are <code>RUNNING</code>,
      * <code>COMPLETED</code>, <code>ERROR</code> and <code>CANCELED</code>.
      * @return
+     *      The property ot:hasStatus
      */
     public static OTDatatypeProperty hasStatus() {
         if (ms_hasStatus == null) {

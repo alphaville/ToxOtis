@@ -7,12 +7,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.ontology.WonderWebValidator;
-import org.opentox.toxotis.util.spiders.TypedValue;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -41,9 +37,9 @@ public class DatasetTest {
 
     @Test
     public void testLoadFromRemote() throws URISyntaxException, ToxOtisException, InterruptedException {
-        VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset", "4").addUrlParameter("max", "5"));
+        VRI vri = new VRI(Services.IDEACONSULT.augment("dataset", "9"));
         Dataset ds = new Dataset(vri).loadFromRemote();
-        weka.core.Instances data = ds.getInstances();        
+        weka.core.Instances data = ds.getInstances();
         System.out.println(data);
         
     }

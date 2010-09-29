@@ -3,6 +3,7 @@ package org.opentox.toxotis.core;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,6 +15,8 @@ import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.AlgorithmSpider;
 
 /**
@@ -27,7 +30,7 @@ import org.opentox.toxotis.util.spiders.AlgorithmSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Algorithm extends OTOnlineResource<Algorithm> {
+public class Algorithm extends OTOnlineResource<Algorithm> implements OntologyServiceSupport<Algorithm>{
 
     /** Set of parameters of the algorithm. Specify the way the algorithm is parametrized */
     private Set<Parameter> parameters = new HashSet<Parameter>();
@@ -49,6 +52,13 @@ public class Algorithm extends OTOnlineResource<Algorithm> {
         }
     }
 
+    /**
+     * Constructs a new instance of Algorithm with given URI.
+     * @param uri
+     *      URI of the algorithm
+     * @throws URISyntaxException
+     *      In case the provided string cannot be cast as a {@link VRI }.
+     */
     public Algorithm(String uri) throws URISyntaxException {
         super(new VRI(uri));
     }
@@ -74,14 +84,20 @@ public class Algorithm extends OTOnlineResource<Algorithm> {
     /**
      * Retrieve the set of parameters for this algorithm.
      * @return
-     *      Set of parameters
+     *      Set of parameters.
      */
     public Set<Parameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(Set<Parameter> parameters) {
+    /**
+     * Set the parameters of the algorithm.
+     * @param parameters
+     *      Set of parameters.
+     */
+    public Algorithm setParameters(Set<Parameter> parameters) {
         this.parameters = parameters;
+        return this;
     }
 
     @Override
@@ -101,12 +117,43 @@ public class Algorithm extends OTOnlineResource<Algorithm> {
                 indiv.addRDFType(ontClassIter.next().inModel(model));
             }
         }
-        if (parameters != null) {            
+        if (parameters != null) {
             for (Parameter param : parameters) {
                 indiv.addProperty(OTObjectProperties.parameters().asObjectProperty(model), param.asIndividual(model));
             }
         }
         return indiv;
+    }
+
+    /**
+     * Allows algorithms to be created from arbitrary input sources
+     * (in general files, URLs or other).Note that this is still an experimental
+     * method.
+     *
+     * @param stream
+     *      Input stream used to create the algorithm
+     * @param uri
+     *      The URI of the algorithm resource. To obfuscate any misunderstanding
+     *      we underline that this URI needs not be a URL, i.e. it will not be used
+     *      to retrieve any information from the corresponding (remote) location
+     *      but serves exclusively as a reference. It indicates which individual
+     *      or the data model should be parsed. If set to <code>null</code>, then
+     *      an arbitrary individual is chosen. This is not a good practise in cases
+     *      where more than one instances of <code>ot:Algorithm</code> might be
+     *      present in the same data model.
+     *
+     * @return
+     *      Updates this algorithm object and returns the updated instance.
+     *
+     * @throws ToxOtisException
+     *      In case the input stream does not provide a valid data model for
+     *      an algorithm
+     */
+    public Algorithm loadFromRemote(InputStream stream, VRI uri) throws ToxOtisException {
+        com.hp.hpl.jena.ontology.OntModel om = new SimpleOntModelImpl();
+        om.read(stream, null);
+        AlgorithmSpider spider = new AlgorithmSpider(null, om);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -117,5 +164,9 @@ public class Algorithm extends OTOnlineResource<Algorithm> {
         setOntologies(algorithm.getOntologies());
         setParameters(algorithm.getParameters());
         return this;
+    }
+
+    public Algorithm publishToOntService(AuthenticationToken token) throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

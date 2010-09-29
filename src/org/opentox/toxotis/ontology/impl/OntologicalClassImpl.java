@@ -18,16 +18,39 @@ public class OntologicalClassImpl implements OntologicalClass {
     private Collection<OntologicalClass> superClasses = new ArrayList<OntologicalClass>();
     private Collection<OntologicalClass> disjointWith = new ArrayList<OntologicalClass>();
 
+    /**
+     * Contruct an empty instance of OntologicalClass. The namespace is by default
+     * set to {@link OTClasses#NS ot} and its name is <code>null</code>.
+     */
     public OntologicalClassImpl() {
     }
 
+    /**
+     * Create a new Ontological Class with gicen name. The namespace is by default
+     * set to {@link OTClasses#NS ot}. Thus the URI of this class will be
+     * <code>ot:{name}</code>.
+     * @param name
+     *      Name of the ontological class.
+     */
     public OntologicalClassImpl(String name) {
+        this();
         this.name = name;
     }
 
+    /**
+     * Constructs a new Ontological class with given name and namespace. In case
+     * the provided namespace is <code>null</code> then the default value for it
+     * is set, that is {@link OTClasses#NS ot}.
+     * @param name
+     *      Local name of the ontological class
+     * @param namespace
+     *      The namespace in which the ontological class belongs.
+     */
     public OntologicalClassImpl(String name, String namespace) {
         this(name);
-        setNameSpace(namespace);
+        if (namespace != null) {
+            setNameSpace(namespace);
+        }
     }
 
     @Override

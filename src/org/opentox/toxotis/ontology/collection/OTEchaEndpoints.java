@@ -68,10 +68,15 @@ public class OTEchaEndpoints {
         return ms_PhysicoChemicalEffects;
     }
 
+    /**
+     * Air- water partition coefficient (Henry's law constant, H).
+     * @return
+     *      Ontological Class for <code>otee:Air-water_partition_coefficient_Henry_s_law_constant_H</code>.
+     */
     public static OntologicalClass AirWaterPartitionCoefficient() {
         if (ms_AirWaterPartitionCoefficient == null) {
             ms_AirWaterPartitionCoefficient = new OntologicalClassImpl("Air-water_partition_coefficient_Henry_s_law_constant_H", NS);
-            ms_AirWaterPartitionCoefficient.getMetaInfo().setTitle("Air- water partition coefficient (Henry`s law constant, H)");
+            ms_AirWaterPartitionCoefficient.getMetaInfo().setTitle("Air- water partition coefficient (Henry's law constant, H)");
             ms_AirWaterPartitionCoefficient.getMetaInfo().setIdentifier("1.9");
             ms_AirWaterPartitionCoefficient.getSuperClasses().add(PhysicoChemicalEffects());
         }
@@ -201,10 +206,17 @@ public class OTEchaEndpoints {
         return ms_EndocrineActivity;
     }
 
+    /**
+     * Other (e.g. inhibition of specific enzymes involved in hormone synthesis
+     * or regulation, specify enzyme(s) and hormone)
+     * @return
+     *      Ontological class for <code>otee:Other</code>
+     */
     public static OntologicalClass Other(){
         if (ms_Other == null) {
             ms_Other = new OntologicalClassImpl("Other", NS);
-            ms_Other.getMetaInfo().setTitle("Other (e.g. inhibition of specific enzymes involved in hormone synthesis or regulation, specify enzyme(s) and hormone)");
+            ms_Other.getMetaInfo().setTitle("Other (e.g. inhibition of specific enzymes involved in hormone " +
+                    "synthesis or regulation, specify enzyme(s) and hormone)");
             ms_Other.getMetaInfo().setIdentifier("4.18.c");
             ms_Other.getSuperClasses().add(EndocrineActivity());
         }
@@ -244,7 +256,8 @@ public class OTEchaEndpoints {
     public static OntologicalClass InVitroReproductiveToxicity(){
         if (ms_InVitroReproductiveToxicity == null) {
             ms_InVitroReproductiveToxicity = new OntologicalClassImpl("InVitroReproductiveToxicity", NS);
-            ms_InVitroReproductiveToxicity.getMetaInfo().setTitle("In vitro reproductive toxicity (e.g. embryotoxic effects in cell culture such as embryo stem cells) ");
+            ms_InVitroReproductiveToxicity.getMetaInfo().setTitle("In vitro reproductive toxicity (e.g. " +
+                    "embryotoxic effects in cell culture such as embryo stem cells) ");
             ms_InVitroReproductiveToxicity.getMetaInfo().setIdentifier("4.15");
             ms_InVitroReproductiveToxicity.getSuperClasses().add(HumanHealthEffects());
         }
@@ -254,13 +267,19 @@ public class OTEchaEndpoints {
     public static OntologicalClass InVivoPrePeriPostNatalDevelopment(){
         if (ms_InVivoPrePeriPostNatalDevelopment == null) {
             ms_InVivoPrePeriPostNatalDevelopment = new OntologicalClassImpl("InVivoPrePeriPostNatalDevelopmentAndOrFertility", NS);
-            ms_InVivoPrePeriPostNatalDevelopment.getMetaInfo().setTitle("In vivo pre-, peri-, post natal development and / or fertility (1 or 2 gen. Study or enhanced 1 gen study) ");
+            ms_InVivoPrePeriPostNatalDevelopment.getMetaInfo().setTitle("In vivo pre-, peri-, post natal development and / or " +
+                    "fertility (1 or 2 gen. Study or enhanced 1 gen study) ");
             ms_InVivoPrePeriPostNatalDevelopment.getMetaInfo().setIdentifier("4.17");
             ms_InVivoPrePeriPostNatalDevelopment.getSuperClasses().add(HumanHealthEffects());
         }
         return ms_InVivoPrePeriPostNatalDevelopment;
     }
 
+    /**
+     * In vivo pre-natal-developmental toxicity
+     * @return
+     *      Ontological class for <code>otee:InVivoPreNatalDevelopmentToxicity</code>
+     */
     public static OntologicalClass InVivoPreNatalDevelopmentToxicity(){
         if (ms_InVivoPreNatalDevelopmentToxicity == null) {
             ms_InVivoPreNatalDevelopmentToxicity = new OntologicalClassImpl("InVivoPreNatalDevelopmentToxicity", NS);
@@ -366,6 +385,8 @@ public class OTEchaEndpoints {
     /**
      * Gastrointestinal absorption
      * @return
+     *      Ontological class corresponding to the Gastrointestinal absorption:
+     *      <code>otee:Gastrointestinal_absorption</code>
      */
     public static OntologicalClass Gastrointestinal_absorption() {
         if (ms_Gastrointestinal_absorption == null) {
@@ -378,6 +399,8 @@ public class OTEchaEndpoints {
     /**
      * DNA-binding
      * @return
+     *      Ontological class corresponding to the DNA binding: <code>otee:DNA-binding</code>
+     *
      */
     public static OntologicalClass DNA_Binding() {
         if (ms_DNA_Binding == null) {

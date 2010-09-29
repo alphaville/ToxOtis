@@ -2,22 +2,9 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
-import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.collection.OTClasses;
-import org.opentox.toxotis.util.spiders.DatasetSpider;
-import org.opentox.toxotis.util.spiders.TypedValue;
 
 /**
  * WARNING: This is utterly under developement!!!!!

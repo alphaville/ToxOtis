@@ -4,9 +4,18 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.DC;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
@@ -15,14 +24,21 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
+import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import weka.core.Instances;
 
 /**
  * <p align=justify>
- *
+ * Bibliographic reference designed according to the BibTeX specifications. OpenTox
+ * resource are pointing to bibliographic entries (articles, conferences etc) using the
+ * Knouf ontology.
  * </p>
+ *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
+ *
+ * @see KnoufBibTex Knouf Ontology
  */
 public class BibTeX extends OTPublishable<BibTeX> {
 
@@ -143,184 +159,207 @@ public class BibTeX extends OTPublishable<BibTeX> {
         return m_abstract;
     }
 
-    public void setAbstract(String m_abstract) {
+    public BibTeX setAbstract(String m_abstract) {
         this.m_abstract = m_abstract;
+        return this;
     }
 
     public String getAuthor() {
         return m_author;
     }
 
-    public void setAuthor(String m_author) {
+    public BibTeX setAuthor(String m_author) {
         this.m_author = m_author;
+        return this;
     }
 
     public BIB_TYPE getBibType() {
         return m_bib_type;
     }
 
-    public void setBibType(BIB_TYPE m_bib_type) {
+    public BibTeX setBibType(BIB_TYPE m_bib_type) {
         this.m_bib_type = m_bib_type;
+        return this;
     }
 
     public String getBookTitle() {
         return m_bookTitle;
     }
 
-    public void setBookTitle(String m_bookTitle) {
+    public BibTeX setBookTitle(String m_bookTitle) {
         this.m_bookTitle = m_bookTitle;
+        return this;
     }
 
     public String getChapter() {
         return m_chapter;
     }
 
-    public void setChapter(String m_chapter) {
+    public BibTeX setChapter(String m_chapter) {
         this.m_chapter = m_chapter;
+        return this;
     }
 
     public String getCopyright() {
         return m_copyright;
     }
 
-    public void setCopyright(String m_copyright) {
+    public BibTeX setCopyright(String m_copyright) {
         this.m_copyright = m_copyright;
+        return this;
     }
 
     public String getCrossref() {
         return m_crossref;
     }
 
-    public void setCrossref(String m_crossref) {
+    public BibTeX setCrossref(String m_crossref) {
         this.m_crossref = m_crossref;
+        return this;
     }
 
     public String getEdition() {
         return m_edition;
     }
 
-    public void setEdition(String m_edition) {
+    public BibTeX setEdition(String m_edition) {
         this.m_edition = m_edition;
+        return this;
     }
 
     public String getEditor() {
         return m_editor;
     }
 
-    public void setEditor(String m_editor) {
+    public BibTeX setEditor(String m_editor) {
         this.m_editor = m_editor;
+        return this;
     }
 
     public String getIsbn() {
         return m_isbn;
     }
 
-    public void setIsbn(String isbn) {
+    public BibTeX setIsbn(String isbn) {
         this.m_isbn = isbn;
+        return this;
     }
 
     public String getIssn() {
         return m_issn;
     }
 
-    public void setIssn(String issn) {
+    public BibTeX setIssn(String issn) {
         this.m_issn = issn;
+        return this;
     }
 
     public String getJournal() {
         return m_journal;
     }
 
-    public void setJournal(String journal) {
+    public BibTeX setJournal(String journal) {
         this.m_journal = journal;
+        return this;
     }
 
     public String getKey() {
         return m_key;
     }
 
-    public void setKey(String key) {
+    public BibTeX setKey(String key) {
         this.m_key = key;
+        return this;
     }
 
     public String getKeywords() {
         return m_keywords;
     }
 
-    public void setKeywords(String keywords) {
+    public BibTeX setKeywords(String keywords) {
         this.m_keywords = keywords;
+        return this;
     }
 
     public int getNumber() {
         return Integer.parseInt(m_number);
     }
 
-    public void setNumber(int number) {
+    public BibTeX setNumber(int number) {
         this.m_number = Integer.toString(number);
+        return this;
     }
 
     public String getPages() {
         return m_pages;
     }
 
-    public void setPages(String pages) {
+    public BibTeX setPages(String pages) {
         this.m_pages = pages;
+        return this;
     }
 
     public int getVolume() {
         return Integer.parseInt(m_volume);
     }
 
-    public void setVolume(int volume) {
+    public BibTeX setVolume(int volume) {
         this.m_volume = Integer.toString(volume);
+        return this;
     }
 
     public int getYear() {
         return Integer.parseInt(m_year);
     }
 
-    public void setYear(int year) {
+    public BibTeX setYear(int year) {
         this.m_year = Integer.toString(year);
+        return this;
     }
 
     public String getAddress() {
         return m_address;
     }
 
-    public void setAddress(String address) {
+    public BibTeX setAddress(String address) {
         this.m_address = address;
+        return this;
     }
 
     public String getAnnotation() {
         return m_annotation;
     }
 
-    public void setAnnotation(String annotation) {
+    public BibTeX setAnnotation(String annotation) {
         this.m_annotation = annotation;
+        return this;
     }
 
     public String getSeries() {
         return m_series;
     }
 
-    public void setSeries(String m_series) {
+    public BibTeX setSeries(String m_series) {
         this.m_series = m_series;
+        return this;
     }
 
     public String getTitle() {
         return m_title;
     }
 
-    public void setTitle(String title) {
+    public BibTeX setTitle(String title) {
         this.m_title = title;
+        return this;
     }
 
     public String getUrl() {
         return m_url;
     }
 
-    public void setUrl(String Url) {
+    public BibTeX setUrl(String Url) {
         this.m_url = Url;
+        return this;
     }// </editor-fold>
 
     public Individual asIndividual(OntModel model) {
@@ -468,8 +507,107 @@ public class BibTeX extends OTPublishable<BibTeX> {
         return result.toString();
     }
 
-    // TODO: Implement this ASAP!!! HIGH PRIORITY!!!
-    public BibTeX createFromString(String string) {
+    /**
+     * Create a new BibTeX resource from its String representation. Parses the
+     * String representation of a BibTeX into an instance of BibTeX. Then you can
+     * use the methods defined in {@link BibTeX } to publish the BibTeX in some
+     * BibTeX service or create an RDF rerpesentation of it (using the Knouf ontology).
+     * @param string
+     *      String representation of the BibTeX entity. The provided string is not
+     *      expected to be URL encoded. In case it is, you should consider using a
+     *      decoder (e.g. <code>java.net.URLDecoder</code>.
+     * @return
+     *      Updated instance of BibTeX
+     * @throws ToxOtisException
+     *      In case the provided string representation is not valid.
+     */
+    public BibTeX readString(String string) throws ToxOtisException {
+        StringReader sr = new StringReader(string);
+        BufferedReader br = new BufferedReader(sr);
+        String line;
+        try {
+            /*
+             * Iterate through all emtpy lines that might be present in the begining
+             * of the representation till the first line is found. Check if it has the
+             * expected format. retrieve the bib type and its identifier
+             */
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("@")) {
+                    String[] firstLineFragments = line.split(Pattern.quote("{"));
+                    if (firstLineFragments.length == 2) {
+                        String type = firstLineFragments[0].trim().replaceAll("@", "");
+                        setBibType(BIB_TYPE.valueOf(type));
+                        String identifier = firstLineFragments[1].trim().replaceAll(",", "");
+                        try {
+                            setUri(new VRI(identifier));
+                        } catch (URISyntaxException ex) {
+                            try {
+                                setUri(new VRI("example.org/bibtex/" + UUID.randomUUID().toString()));
+                            } catch (URISyntaxException ex1) {
+                                throw new RuntimeException(ex1);
+                            }
+                        }
+                    } else {
+                        throw new ToxOtisException("Invalid BibTeX representation; for line : \n" + line);
+                    }
+                    break;
+                }
+            }
+            /*
+             * Proceed with the parsing of other lines:
+             */
+            Field[] fields = this.getClass().getDeclaredFields();
+            Set<Field> setOfFields = new HashSet<Field>();
+            java.util.Collections.addAll(setOfFields, fields);
+            try {
+                setOfFields.remove(this.getClass().getField("m_id"));       // ..__ Already parsed!
+                setOfFields.remove(this.getClass().getField("m_author"));   // ..__ Already parsed!
+                setOfFields.remove(this.getClass().getField("m_bib_type")); // ..__  Already parsed!
+            } catch (NoSuchFieldException ex) {
+                Logger.getLogger(BibTeX.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(BibTeX.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex){
+                Logger.getLogger(BibTeX.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.equals("}") || line.endsWith("}")){
+                    break;
+                }
+                String[] nameValueFragments = line.split(Pattern.quote("="));
+                if (nameValueFragments.length == 2){
+                    String paramName = nameValueFragments[0];
+                    String paramCal = nameValueFragments[1];
+                    for (Field f : setOfFields){
+                        
+                    }
+                }
+            }
+
+        } catch (IOException ex) {
+            throw new RuntimeException("Error while reading String! Utterly unexpected!", ex);
+        }
         return this;
+    }
+
+    public BibTeX readString(InputStream string) {
+        return this;
+    }
+
+    public BibTeX readString(Reader string) {
+        return this;
+    }
+
+    public static void main(String... art) throws URISyntaxException, ToxOtisException {
+        BibTeX b = new BibTeX();
+        b.readString("@Article{http://bibtex/xx,\n"
+                + "author = \"me\",\n"
+                + "edition = \"1\"\n"
+                + "\"}\"");
+        System.out.println(b);
+
     }
 }

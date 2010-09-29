@@ -48,18 +48,19 @@ public class Dataset extends OTPublishable<Dataset> {
         try {
             status = client.getResponseCode();
         } catch (IOException ex) {
-            throw new ToxOtisException(ErrorCause.CommunicationError, "Could not read the stream from '" + vri.getStringNoQuery() + "'");
+            throw new ToxOtisException(ErrorCause.CommunicationError,
+                    "Could not read the stream from '" + vri.getStringNoQuery() + "'");
         }
         Task dsUpload = new Task();
         String remoteResult = client.getResponseText();
-        if (status==202){
+        if (status == 202) {
             try {
                 dsUpload.setUri(new VRI(remoteResult));
             } catch (URISyntaxException ex) {
                 throw new RuntimeException(ex);
             }
             dsUpload.loadFromRemote();
-        }        
+        }
         return dsUpload;
     }
 
@@ -210,36 +211,50 @@ public class Dataset extends OTPublishable<Dataset> {
                 String featureName = feature.getUri().getStringNoQuery();
                 TypedValue value = featureValue.getValue();
 
-                if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.numeric)) {
-                    try {
+                if (value != null) {
+                    if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.numeric)) {
+                        try {
+                            vals[data.attribute(featureName).index()] =
+                                    Double.parseDouble(value.getValue().toString());
+                        } catch (NumberFormatException ex) {
+                            // Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE,"Type is: "+ value.getType().getURI(), ex);
+                        }
+                    } else if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.string)) {
                         vals[data.attribute(featureName).index()] =
-                                Double.parseDouble(value.getValue().toString());
-                    } catch (NumberFormatException ex) {
-                        // Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE,"Type is: "+ value.getType().getURI(), ex);
+                                data.attribute(featureName).addStringValue((String) value.getValue().toString());
+                    } else if (XSDDatatype.XSDdate.getURI().equals(featureName)) {
+                        try {
+                            vals[data.attribute(featureName).index()] = data.attribute(featureName).parseDate((String) value.getValue());
+                        } catch (ParseException ex) {
+                            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.nominal)) {
+                        //TODO: Nominals may not work, testing is needed.
+                        vals[data.attribute(featureName).index()] =
+                                data.attribute(featureName).indexOfValue(value.getValue().toString());
                     }
-                } else if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.string)) {
-                    vals[data.attribute(featureName).index()] =
-                            data.attribute(featureName).addStringValue((String) value.getValue().toString());
-                } else if (XSDDatatype.XSDdate.getURI().equals(featureName)) {
-                    try {
-                        vals[data.attribute(featureName).index()] = data.attribute(featureName).parseDate((String) value.getValue());
-                    } catch (ParseException ex) {
-                        Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.nominal)) {
-                    //TODO: Nominals may not work, testing is needed.
-                    vals[data.attribute(featureName).index()] =
-                            data.attribute(featureName).indexOfValue((String) value.getValue());
                 }
             }
+
             Instance valuesInstance = new Instance(1.0, vals);
             // Add the Instance only if its compatible with the dataset!
             if (data.checkInstance(valuesInstance)) {
                 data.add(valuesInstance);
             } else {
-                Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Warning! The instance " + valuesInstance + " is not compatible with the dataset!");
+                Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Warning! The instance "
+                        + valuesInstance + " is not compatible with the dataset!");
             }
         }
         return data;
     }
+
+    public int countCompounds(){
+        throw new UnsupportedOperationException();
+    }
+
+    public int countFeatures(){
+        throw new UnsupportedOperationException();
+    }
+
+    
 }

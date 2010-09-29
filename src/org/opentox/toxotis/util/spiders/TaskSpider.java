@@ -64,11 +64,14 @@ public class TaskSpider extends Tarantula<Task> {
 
         task.setMeta(new MetaInfoSpider(resource, model).parse());
 
-        Literal hasStatus = resource.getProperty(
-                OTDatatypeProperties.hasStatus().asDatatypeProperty(model)).getObject().as(Literal.class);
+        Statement hasStatusProp = resource.getProperty(
+                OTDatatypeProperties.hasStatus().asDatatypeProperty(model));
+        if (hasStatusProp != null) {
+            Literal hasStatus = hasStatusProp.getObject().as(Literal.class);
 
-        if (hasStatus != null) {
-            task.setHasStatus(Task.Status.valueOf(hasStatus.getString().toUpperCase()));
+            if (hasStatus != null) {
+                task.setHasStatus(Task.Status.valueOf(hasStatus.getString().toUpperCase()));
+            }
         }
 
 

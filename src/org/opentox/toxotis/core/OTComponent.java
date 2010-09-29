@@ -2,30 +2,33 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
-import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
+ * Abstract class that includes all OpenTox components. This class is on the top
+ * of the class hierarchy in this package.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public abstract class OTComponent<T extends OTComponent> {
 
+    /** URI of the component */
     protected VRI uri;
+    /** Meta information (including DC and OT meta) about the component */
     protected MetaInfo meta = new MetaInfoImpl();
 
     /**
      * Constructor for an empty OpenTox Component
      */
-    public OTComponent() {
+    protected OTComponent() {
     }
 
-    public OTComponent(VRI uri) {
+    protected OTComponent(VRI uri) {
+        this();
         this.uri = uri;
     }
 

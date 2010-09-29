@@ -67,6 +67,9 @@ public class TypedValue<T> {
 
     @Override
     public String toString() {
+        if (getType()==null){
+            return getValue().toString();
+        }
         return getValue() + "^^" + getType().getURI().replaceAll(XSDDatatype.XSD+"#", "");
     }
 }

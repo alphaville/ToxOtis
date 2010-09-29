@@ -73,7 +73,7 @@ public class AuthenticationToken {
 
     /**
      * <p align=justify>Create a new Authentication token providing your credentials.
-     * These credentials are posted to the {@link AuthenticationToken#getSsoServer() SSO} server
+     * These credentials are posted to the {@link Services#SSO_AUTHENTICATE SSO} server
      * which (if they are valid) returns a token. This is used to construct a new
      * Authentication Token object. The timestamp of the method invokation is set as
      * the timestamp for the object construction. All data transactions take place

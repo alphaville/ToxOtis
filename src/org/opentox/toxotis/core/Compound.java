@@ -35,6 +35,7 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.CompoundSpider;
+import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
  * Provides different representations for chemical compounds with a unique
@@ -132,72 +133,7 @@ public class Compound extends OTPublishable<Compound> {
         }
         return conformers;
     }
-
-    /**
-     * POSTs a file to a default compound service using a specified Content-type header
-     * in order to create a new Compound. The created compound is returned
-     * to the user.
-     * @param sourceFile
-     *      File where information about the compound are stored. Can be a <code>mol</code>
-     *      file, a <code>CML</code> one, an <code>SD</code> file or other file
-     *      format that is accepted by the compound service.
-     * @param token
-     *      Token used for authenticating the client against the remote compound
-     *      service (You can set it to <code>null</code>).
-     * @param fileType
-     *      The Content-type of the file to be posted.
-     * @return
-     *      The compound created by the Service.
-     * @throws ToxOtisException
-     *      In case an authentication error occurs or the remote service responds
-     *      with an error code like 500 or 503 or the submitted representation is
-     *      syntactically or semantically wrong (status 400).
-     */
-    public static Compound publishFromFile(
-            File sourceFile, String fileType, AuthenticationToken token)
-            throws ToxOtisException {
-        return publishFromFile(sourceFile, fileType, token, Services.IDEACONSULT.augment("compound").toString());
-    }
-
-    /**
-     * POSTs a file to a specified compound service using a specified Content-type header
-     * in order to create a new Compound. The created compound is returned
-     * to the user.
-     * @param sourceFile
-     *      File where information about the compound are stored. Can be a <code>mol</code>
-     *      file, a <code>CML</code> one, an <code>SD</code> file or other file
-     *      format that is accepted by the compound service.
-     * @param token
-     *      Token used for authenticating the client against the remote compound
-     *      service (You can set it to <code>null</code>).
-     * @param fileType
-     *      The Content-type of the file to be posted.
-     * @param service
-     *      The URI of the service on which the new Compound will be posted.
-     * @return
-     *      The compound created by the Service.
-     * @throws ToxOtisException
-     *      In case an authentication error occurs or the remote service responds
-     *      with an error code like 500 or 503 or the submitted representation is
-     *      syntactically or semantically wrong (status 400).
-     */
-    public static Compound publishFromFile(
-            File sourceFile, String fileType, AuthenticationToken token, String service)
-            throws ToxOtisException{
-        try {
-            PostClient postClient = new PostClient(
-                    new VRI(service).appendToken(token));
-            postClient.setPostable(sourceFile);
-            postClient.setContentType(fileType);
-            postClient.setMediaType(Media.TEXT_URI_LIST.getMime());
-            postClient.post();
-            VRI newVRI = new VRI(postClient.getResponseText());
-            CompoundSpider compoundSpider = new CompoundSpider(newVRI);
-            return compoundSpider.parse();
-        } catch (URISyntaxException ex) {
-            throw new ToxOtisException(ex);
-        }
-    }
+    
 
     /**
      * Downloads a certain representation of the compound in a specified MIME
@@ -277,11 +213,9 @@ public class Compound extends OTPublishable<Compound> {
         }
     }
 
-
     public Dataset getProperties(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
         return null;
     }
-
 
     public TypedValue<?> getAssayProperty(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
         return null;
@@ -292,7 +226,7 @@ public class Compound extends OTPublishable<Compound> {
      * server that hosts the underlying compound.
      * @param feature
      *      Feature for which the value is retrieved
-     * @param
+     * @param token
      *      Token used to authenticate the client and authorize it to perform the
      *      GET request to the remote servrer. If you think that no authentication
      *      is needed to access the resource, you may set it to <code>null</code>.
@@ -365,7 +299,8 @@ public class Compound extends OTPublishable<Compound> {
 
     @Override
     public Individual asIndividual(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String compoundUri = getUri() != null ? getUri().getStringNoQuery() : null;
+        return model.createIndividual(compoundUri, OTClasses.Compound().inModel(model));
     }
 
     @Override
@@ -375,7 +310,45 @@ public class Compound extends OTPublishable<Compound> {
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println(617);
+        /** Handle provided token */
+        if (token != null) {
+            // Replace existing token with the new one
+            vri.removeUrlParameter("tokenid").addUrlParameter("tokenid", token.stringValue());
+        }
+        PostClient client = new PostClient(vri);
+        client.setContentType(Media.APPLICATION_RDF_XML.getMime());
+        client.setPostable(asOntModel());
+        client.setMediaType(Media.TEXT_URI_LIST.getMime());
+        client.post();
+        int status;
+        try {
+            status = client.getResponseCode();
+            if (status == 200) {
+                Task readyTask = new Task();
+                readyTask.setPercentageCompleted(100);
+                readyTask.setHasStatus(Task.Status.COMPLETED);
+                try {
+                    readyTask.setResultUri(new VRI(client.getResponseText()));
+                    return readyTask;
+                } catch (URISyntaxException ex) {
+                    throw new ToxOtisException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
+                            + "'. Received status code 200 and messaage:" + client.getResponseText());
+                }
+            } else if (status == 202) {
+                try {
+                    VRI taskUri = new VRI(client.getResponseText());
+                    TaskSpider tskSpider = new TaskSpider(taskUri);
+                    return tskSpider.parse();
+                } catch (URISyntaxException ex) {
+                    throw new ToxOtisException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
+                            + "'. Received status code 202 and messaage:" + client.getResponseText());
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Feature.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override

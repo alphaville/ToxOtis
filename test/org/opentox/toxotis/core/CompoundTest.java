@@ -10,6 +10,8 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.factory.CompoundFactory;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import static org.junit.Assert.*;
 
 /**
@@ -46,11 +48,20 @@ public class CompoundTest {
     @Test
     public void testPublishFromFile() throws ToxOtisException {
        File f;
-       Compound comp = new Compound(new VRI(Services.AMBIT_UNI_PLOVDIV.augment("compound","4")));
-       comp.downloadAsFile(f = new File("/Users/hampos/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
+       Compound comp = new Compound(new VRI(Services.IDEACONSULT.augment("compound","100")));
+       comp.downloadAsFile(f = new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
 
-       Compound c = Compound.publishFromFile(f, Media.CHEMICAL_SMILES.getMime(), null);
-       System.out.println(c.getUri().toString());
+       CompoundFactory factory = CompoundFactory.getInstance();
+       Task task = factory.publishFromFile(f, Media.CHEMICAL_MDLSDF.getMime(), (AuthenticationToken)null);
+       System.out.println(task.getResultUri());
+    }
+
+    //@Test
+    public void testPublishFromRDF() throws ToxOtisException {
+       Compound comp = new Compound(null);
+       comp.getMeta().setTitle("My compound");
+       Task tsk = comp.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("compound"),null);
+       System.out.println(tsk);
     }
 
 }

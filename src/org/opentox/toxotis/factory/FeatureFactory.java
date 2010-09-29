@@ -52,7 +52,7 @@ public class FeatureFactory {
      * you can refer to the various ECHA enpoitns using the class {@link OTEchaEndpoints }.
      *
      *
-     * @param uri
+     * @param service
      *       URI of an OpenTox feature service. Feature service URI comply with the pattern
      *      <code>http://someserver.com/feature/id</code> which formally, in terms of
      *      regular expression matches the pattern <code>.+/(?i)feature(s||)/([^/]+/$|[^/]+)$</code>.
