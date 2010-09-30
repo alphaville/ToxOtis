@@ -320,7 +320,6 @@ public class Compound extends OTPublishable<Compound> {
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
-        System.out.println(617);
         /** Handle provided token */
         if (token != null) {
             // Replace existing token with the new one
