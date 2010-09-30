@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.Feature;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
@@ -32,7 +33,7 @@ public class FeatureSpider extends Tarantula<Feature> {
         super();
         this.uri = uri;
         GetClient client = new GetClient();
-        client.setMediaType("application/rdf+xml");
+        client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
         client.setUri(uri);
         model = client.getResponseOntModel();
         resource = model.getResource(uri.toString());

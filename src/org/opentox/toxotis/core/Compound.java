@@ -9,8 +9,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +16,6 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,10 +28,8 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
-import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.spiders.CompoundSpider;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
@@ -117,7 +112,7 @@ public class Compound extends OTPublishable<Compound> {
     public Set<Conformer> listConformers(AuthenticationToken token) throws ToxOtisException {
         VRI newUri = new VRI(uri).augment("conformer");
         if (token != null) {
-            newUri.addUrlParameter("tokenid", token.stringValue());
+            newUri.appendToken(token);
         }
         GetClient client = new GetClient(newUri);
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
@@ -154,7 +149,7 @@ public class Compound extends OTPublishable<Compound> {
     public void downloadAsFile(File destination, String fileType, AuthenticationToken token) throws ToxOtisException {
         VRI newUri = new VRI(getUri());
         if (token != null) {
-            newUri.addUrlParameter("tokenid", token.stringValue());
+            newUri.appendToken(token);
         }
         GetClient client = new GetClient(newUri);
         client.setMediaType(fileType);
@@ -243,7 +238,7 @@ public class Compound extends OTPublishable<Compound> {
          */
         VRI dsUri = new VRI(getUri()).addUrlParameter("feature_uris[]", feature.getUri().toString());
         if (token != null) {
-            dsUri.addUrlParameter("tokenid", token.stringValue());
+            dsUri.appendToken(token);
         }
         GetClient client = new GetClient();
         client.setUri(dsUri);
@@ -281,7 +276,7 @@ public class Compound extends OTPublishable<Compound> {
             dsUri.addUrlParameter("feature_uris[]", featureUri.toString());
         }
         if (token != null) {
-            dsUri.addUrlParameter("tokenid", token.stringValue());
+            dsUri.appendToken(token);
         }
         GetClient client = new GetClient();
         client.setUri(dsUri);
@@ -300,9 +295,24 @@ public class Compound extends OTPublishable<Compound> {
     @Override
     public Individual asIndividual(OntModel model) {
         String compoundUri = getUri() != null ? getUri().getStringNoQuery() : null;
-        return model.createIndividual(compoundUri, OTClasses.Compound().inModel(model));
+        Individual indiv = model.createIndividual(compoundUri, OTClasses.Compound().inModel(model));
+        getMeta().attachTo(indiv, model);
+        return indiv;
     }
 
+    /**
+     * This method is not implemented yet!
+     * @param vri
+     *      Identifier of the location from where the RDF document should be downloaded from
+     *      and parsed into a Compound object.
+     * @return
+     *      Parsed instance of the component into an instance of Compound.
+     * @throws ToxOtisException
+     *      A ToxOtisException is thrown in case the remote resource is unreachable,
+     *      the service responds with an unexpected or error status code (500, 503, 400 etc)
+     *      or other potent communication error occur during the connection or the
+     *      transaction of data.
+     */
     @Override
     protected Compound loadFromRemote(VRI uri) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -314,7 +324,7 @@ public class Compound extends OTPublishable<Compound> {
         /** Handle provided token */
         if (token != null) {
             // Replace existing token with the new one
-            vri.removeUrlParameter("tokenid").addUrlParameter("tokenid", token.stringValue());
+            vri.clearToken().appendToken(token);
         }
         PostClient client = new PostClient(vri);
         client.setContentType(Media.APPLICATION_RDF_XML.getMime());

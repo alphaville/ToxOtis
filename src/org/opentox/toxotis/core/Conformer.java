@@ -7,11 +7,13 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
- * WARNING: This is utterly under developement!!!!!
- * WARNING: This is utterly under developement!!!!!
- * WARNING: This is utterly under developement!!!!!
- * WARNING: This is utterly under developement!!!!!
- * 
+ * <p>
+ * WARNING: This is utterly under developement!!!!!<br/>
+ * WARNING: This is utterly under developement!!!!!<br/>
+ * WARNING: This is utterly under developement!!!!!<br/>
+ * WARNING: This is utterly under developement!!!!!<br/>
+ * <br/>
+ * </p>
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

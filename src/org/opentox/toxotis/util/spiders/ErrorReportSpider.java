@@ -8,8 +8,6 @@ import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.ErrorReport;
@@ -34,7 +32,11 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
      * Create a new Error Spider that searches in a data model of an error
      * report for a node that has a specified actor.
      * @param uri
+     *      URI of the <b>actor</b> of the Error Report; this is not the URI of
+     *      the error report itself but the URI of the peer that produced the
+     *      report.
      * @param model
+     *      Ontological model of the error report.
      */
     ErrorReportSpider(VRI uri, OntModel model) {
         this.model = model;

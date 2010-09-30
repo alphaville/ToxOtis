@@ -20,6 +20,7 @@ public abstract class OTComponent<T extends OTComponent> {
     protected VRI uri;
     /** Meta information (including DC and OT meta) about the component */
     protected MetaInfo meta = new MetaInfoImpl();
+    protected static final String tokenid = "tokenid";
 
     /**
      * Constructor for an empty OpenTox Component
