@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
@@ -126,13 +127,13 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
     public void download(String destination, Media media, AuthenticationToken token) throws ToxOtisException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         download(stream, media, token);
-        destination += stream.toString();
+        
+
         try {
             stream.close();
         } catch (IOException ex) {
             throw new ToxOtisException(ex);
         }
-        System.out.println(destination);
     }
 
     /**
