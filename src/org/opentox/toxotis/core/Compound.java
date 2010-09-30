@@ -6,25 +6,35 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
@@ -128,7 +138,61 @@ public class Compound extends OTPublishable<Compound> {
         }
         return conformers;
     }
-    
+
+    /**
+     * Downloads a certain representation of the compound in a specified MIME
+     * type.
+     * @param destination
+     *      String where the data should be stored.
+     * @param fileType
+     *      Content type of the downloaded representation
+     * @param token
+     *      Token used for authenticating the client against the remote compound
+     *      service (You can set it to <code>null</code>).
+     * @throws ToxOtisException
+     *      In case an authentication error occurs or the remote service responds
+     *      with an error code like 500 or 503 or the submitted representation is
+     *      syntactically or semantically wrong (status 400).
+     * @see Media Collection of MIMEs
+     */
+    public Compound download(String destination, Media media, AuthenticationToken token) throws ToxOtisException {       
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        download(stream, media, token);
+        destination = stream.toString();
+        try {
+            stream.close();
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        }
+        return this;
+    }
+
+    /**
+     * Downloads a certain representation of the compound in a specified MIME
+     * type.
+     * @param destination
+     *      Stream where the data should be streamed.
+     * @param fileType
+     *      Content type of the downloaded representation
+     * @param token
+     *      Token used for authenticating the client against the remote compound
+     *      service (You can set it to <code>null</code>).
+     * @throws ToxOtisException
+     *      In case an authentication error occurs or the remote service responds
+     *      with an error code like 500 or 503 or the submitted representation is
+     *      syntactically or semantically wrong (status 400).
+     * @see Media Collection of MIMEs
+     */
+    public Compound download(OutputStream destination, Media media, AuthenticationToken token) throws ToxOtisException {
+        OutputStreamWriter writer = new OutputStreamWriter(destination);
+        download(writer, media, token);
+        try {
+            writer.close();
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        }
+        return this;
+    }
 
     /**
      * Downloads a certain representation of the compound in a specified MIME
@@ -146,26 +210,89 @@ public class Compound extends OTPublishable<Compound> {
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public void downloadAsFile(File destination, String fileType, AuthenticationToken token) throws ToxOtisException {
+    public Compound download(File destination, Media media, AuthenticationToken token) throws ToxOtisException {
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(destination);
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        }
+        download(writer, media, token);
+        try {
+            writer.close();
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        }
+        return this;
+    }
+
+    /**
+     * Downloads a certain representation of the compound in a specified MIME
+     * type.
+     * @param destination
+     *      Writer where the data should be written.
+     * @param fileType
+     *      Content type of the downloaded representation
+     * @param token
+     *      Token used for authenticating the client against the remote compound
+     *      service (You can set it to <code>null</code>).
+     * @throws ToxOtisException
+     *      In case an authentication error occurs or the remote service responds
+     *      with an error code like 500 or 503 or the submitted representation is
+     *      syntactically or semantically wrong (status 400).
+     * @see Media Collection of MIMEs
+     */
+    public void download(Writer destination, Media media, AuthenticationToken token) throws ToxOtisException {
         VRI newUri = new VRI(getUri());
         if (token != null) {
-            newUri.appendToken(token);
+            newUri.clearToken().appendToken(token);
         }
         GetClient client = new GetClient(newUri);
-        client.setMediaType(fileType);
+        client.setMediaType(media.getMime());
+
         try {
             /* REMOTE STREAM */
             InputStream remote = client.getRemoteStream();
             InputStreamReader isr = new InputStreamReader(remote);
             BufferedReader remoteReader = new BufferedReader(isr);
-            /* FILE STREAM */
-            FileWriter fileWriter = new FileWriter(destination);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            /* LOCAL STREAM */
+            BufferedWriter bufferedWriter = new BufferedWriter(destination);
             String line = null;
             while ((line = remoteReader.readLine()) != null) {
                 bufferedWriter.write(line);
                 bufferedWriter.newLine();
             }
+
+            int responseStatus;
+            try {
+                responseStatus = client.getResponseCode();
+            } catch (IOException ex) {
+                throw new ToxOtisException(ex);
+            }
+            if (responseStatus == 200) {
+                List<String> featureUris = client.getResponseUriList();
+                Set<VRI> features = new HashSet<VRI>();
+                for (String featureUri : featureUris) {
+                    try {
+                        features.add(new VRI(featureUri));
+                    } catch (URISyntaxException ex) {
+                        throw new ToxOtisException(ex);
+                    }
+                }
+
+            } else if (responseStatus == 403) {
+                throw new ToxOtisException(ErrorCause.AuthenticationFailed,
+                        "Client failed to authenticate itself against the SSO service due to "
+                        + "incorrect credentials or due to invalid token");
+            } else if (responseStatus == 401) {
+                throw new ToxOtisException(ErrorCause.UnauthorizedUser,
+                        "The client is authenticated but not authorized to perform this operation");
+            } else {
+                throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
+                        "The remote service returned the unexpected status : " + responseStatus);
+            }
+
             Throwable failure = null;
             if (remote != null) {
                 try {
@@ -203,6 +330,9 @@ public class Compound extends OTPublishable<Compound> {
                     throw new RuntimeException(failure);
                 }
             }
+
+
+
         } catch (IOException ex) {
             throw new ToxOtisException("Remote stream from '" + newUri.getStringNoQuery() + "' is not readable!", ex);
         }
@@ -378,5 +508,19 @@ public class Compound extends OTPublishable<Compound> {
             }
         }
         return availableUris;
+    }
+
+    public ImageIcon getDepictionFromRemote() throws ToxOtisException {
+        ImageIcon depiction;
+        try {
+            // TypedValue smiles = getProperty(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/20086"), null);
+            String smiles = new String();
+            download(smiles, Media.CHEMICAL_MDLMOL, null);
+            System.out.println(smiles);
+            depiction = new ImageIcon(new URL(Services.IDEACONSULT_CDK_IMAGE.addUrlParameter("query", smiles).toString()));
+        } catch (MalformedURLException ex) {
+            throw new ToxOtisException(ex);
+        }
+        return depiction;
     }
 }
