@@ -40,10 +40,10 @@ public class CompoundTest {
     public void tearDown() {
     }
 
-    //@Test
+    @Test
     public void testDownload() throws ToxOtisException {
         Compound c =new Compound(Services.IDEACONSULT.augment("compound","4"));
-        c.download(new File("/Users/hampos/Desktop/b.txt"), Media.CHEMICAL_SMILES, null);
+        c.download(new File("/home/chung/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
     }
 
    // @Test
@@ -65,12 +65,10 @@ public class CompoundTest {
        System.out.println(tsk);
     }
 
-    @Test
+    //@Test
     public void testGetDepictionFromRemote() throws ToxOtisException {
         Compound comp = new Compound(new VRI(Services.IDEACONSULT.augment("compound","10")));
-
         ImageIcon icon = comp.getDepictionFromRemote();
-
         System.out.println(icon);
     }
 }
