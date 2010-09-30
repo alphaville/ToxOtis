@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,7 +48,7 @@ public class BibTeXTest {
         bib.asOntModel().write(System.out);
     }
 
-    @Test
+    //@Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException {
         /**
          * This is my BibTeX object.....
@@ -65,7 +66,24 @@ public class BibTeXTest {
         Task t = bib.publishOnline(new VRI("http://localhost:3000/bibtex"), null);
         System.out.println(t.getResultUri());
         //assertEquals(BibTeX.class, t.getResultUri().getOpenToxType());
+    }
 
+    @Test
+    public void testParseString() throws ToxOtisException {
+        BibTeX b = new BibTeX();
+        b.readString("@Article{http://bibtex/xx,\n"
+                + "author=\"me\",\n"
+                + "edition = \"1\",\n"
+                + "year=\"2008\",\n"
+                + "copyright=\"NTUA, 2010\"\n"
+                + "\"}\"");
+        System.out.println(b);
+    }
 
+    @Test
+    public void testParseFile() throws ToxOtisException {
+        BibTeX b = new BibTeX();
+        b.readString(new File("/home/chung/Desktop/my.bib"));
+        System.out.println(b);
     }
 }

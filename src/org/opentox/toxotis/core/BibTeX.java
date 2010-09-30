@@ -5,8 +5,12 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.DC;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
@@ -24,9 +28,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
-import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import weka.core.Instances;
 
 /**
  * <p align=justify>
@@ -130,6 +132,11 @@ public class BibTeX extends OTPublishable<BibTeX> {
         Phdthesis,
         Entry;
     }
+    /*
+     * WARNING: DO NOT MODIFY THE NAMES OF THE FOLLOWING FIELDS
+     * BECAUSE SOME METHODS IN BIBTEX USE REFLECTIVE LOOKUPS AND COMPARISONS
+     * BASED ON THE NAME OF THE FIELD.
+     */
     private String m_abstract;
     private String m_author;
     private String m_title;
@@ -487,8 +494,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
 
         for (Field f : this.getClass().getDeclaredFields()) {
             try {
-                if (!f.getName().equals("m_id")
-                        && !f.getName().equals("m_author")
+                if (!f.getName().equals("m_author")
                         && !f.getName().equals("m_bib_type")
                         && f.get(this) != null) {
                     result.append(",\n");
@@ -523,7 +529,55 @@ public class BibTeX extends OTPublishable<BibTeX> {
      */
     public BibTeX readString(String string) throws ToxOtisException {
         StringReader sr = new StringReader(string);
-        BufferedReader br = new BufferedReader(sr);
+        this.readString(sr);
+        sr.close();
+        return this;
+
+    }
+
+    /**
+     * Create a new BibTeX resource from its String representation. Parses the
+     * String representation of a BibTeX into an instance of BibTeX. Then you can
+     * use the methods defined in {@link BibTeX } to publish the BibTeX in some
+     * BibTeX service or create an RDF rerpesentation of it (using the Knouf ontology).
+     * @param iStream
+     *      Input stream from which the string is read. Such an input stream might
+     *      be pointing to a file or some remote locate (i.e. to a URL). Be warned
+     *      that this method will not close the provided input stream which has to
+     *      be closed from the outside.
+     * @return
+     *      Updated instance of BibTeX
+     * @throws ToxOtisException
+     *      In case the provided string representation is not valid.
+     */
+    public BibTeX readString(InputStream iStream) throws ToxOtisException {
+        InputStreamReader isr = new InputStreamReader(iStream);
+        readString(isr);
+        try {
+            isr.close();
+        } catch (final IOException ex) {
+            throw new ToxOtisException("Error while trying to close InputStreamReader", ex);
+        }
+        return this;
+    }
+
+    /**
+     * Create a new BibTeX resource from its String representation. Parses the
+     * String representation of a BibTeX into an instance of BibTeX. Then you can
+     * use the methods defined in {@link BibTeX } to publish the BibTeX in some
+     * BibTeX service or create an RDF rerpesentation of it (using the Knouf ontology).
+     * 
+     * @param string
+     *     Reader used to acquire the String representation of the BibTeX. The method
+     *     will not close the reader so users have to close is when needed.
+     * @return
+     *      Updated instance of BibTeX
+     * @throws ToxOtisException
+     *      In case the provided string representation is not valid.
+     */
+    public BibTeX readString(Reader reader) throws ToxOtisException {
+        //TODO: Would be better if the procedure was based on splitting the string on commas instead of newlines!
+        BufferedReader br = new BufferedReader(reader);
         String line;
         try {
             /*
@@ -561,53 +615,75 @@ public class BibTeX extends OTPublishable<BibTeX> {
             Set<Field> setOfFields = new HashSet<Field>();
             java.util.Collections.addAll(setOfFields, fields);
             try {
-                setOfFields.remove(this.getClass().getField("m_id"));       // ..__ Already parsed!
-                setOfFields.remove(this.getClass().getField("m_author"));   // ..__ Already parsed!
-                setOfFields.remove(this.getClass().getField("m_bib_type")); // ..__  Already parsed!
-            } catch (NoSuchFieldException ex) {
-                Logger.getLogger(BibTeX.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                Logger.getLogger(BibTeX.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex){
-                Logger.getLogger(BibTeX.class.getName()).log(Level.SEVERE, null, ex);
+                setOfFields.remove(this.getClass().getDeclaredField("m_bib_type")); // ..__  Already parsed!
+            } catch (final NoSuchFieldException ex) {
+                throw new RuntimeException(ex);
+            } catch (final SecurityException ex) {
+                throw new RuntimeException(ex);
+            } catch (final IllegalArgumentException ex) {
+                throw new RuntimeException(ex);
             }
 
             while ((line = br.readLine()) != null) {
                 line = line.trim();
-                if (line.equals("}") || line.endsWith("}")){
+                if (line.equals("}") || line.endsWith("}")) {
                     break;
                 }
                 String[] nameValueFragments = line.split(Pattern.quote("="));
-                if (nameValueFragments.length == 2){
-                    String paramName = nameValueFragments[0];
-                    String paramCal = nameValueFragments[1];
-                    for (Field f : setOfFields){
-                        
+                if (nameValueFragments.length == 2) {
+                    String paramName = nameValueFragments[0].trim();
+                    String paramVal = nameValueFragments[1].trim().replaceAll("\",", "").replaceAll("\"", "");
+                    Field foundField = null;
+                    for (Field f : setOfFields) {
+                        if (f.getName().equalsIgnoreCase("m_" + paramName)) {
+                            foundField = f;
+                            try {
+                                f.set(this, paramVal);
+                            } catch (final IllegalArgumentException ex) {
+                                throw new RuntimeException(ex);
+                            } catch (final IllegalAccessException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    }
+                    if (foundField != null) {
+                        setOfFields.remove(foundField);
                     }
                 }
             }
 
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new RuntimeException("Error while reading String! Utterly unexpected!", ex);
+        } finally {
+
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException("IOException caught while trying to close a buffered reader", ex);
+                }
+            }
         }
         return this;
     }
 
-    public BibTeX readString(InputStream string) {
-        return this;
-    }
-
-    public BibTeX readString(Reader string) {
-        return this;
-    }
-
-    public static void main(String... art) throws URISyntaxException, ToxOtisException {
-        BibTeX b = new BibTeX();
-        b.readString("@Article{http://bibtex/xx,\n"
-                + "author = \"me\",\n"
-                + "edition = \"1\"\n"
-                + "\"}\"");
-        System.out.println(b);
-
+    public BibTeX readString(File bibFile) throws ToxOtisException {
+        if (bibFile==null){
+            throw new NullPointerException("BibFile cannot be null!");
+        }
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(bibFile);
+            this.readString(fis);
+            return this;
+        } catch (FileNotFoundException ex) {
+            throw new ToxOtisException("File not found at " + bibFile.getName(), ex);
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException ex) {
+                Logger.getLogger(BibTeX.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
