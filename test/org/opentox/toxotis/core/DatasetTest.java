@@ -40,7 +40,7 @@ public class DatasetTest {
 
         int datasetId = 9;
         System.out.println("Test on dataset : http://apps.ideaconsult.net:8080/ambit2/dataset/" + datasetId);
-        for (int i = 450; i < 1000; i += 50) {
+        for (int i = 1000; i <= 1000; i += 50) {
             for (int j = 0; j < 8; j++) {
                 VRI vri = new VRI(Services.IDEACONSULT);
                 vri.augment("dataset", Integer.toString(datasetId)).removeUrlParameter("max").addUrlParameter("max", i);
