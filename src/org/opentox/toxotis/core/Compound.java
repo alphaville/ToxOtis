@@ -35,10 +35,12 @@ import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.factory.FeatureFactory;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
@@ -139,9 +141,13 @@ public class Compound extends OTPublishable<Compound> {
         return conformers;
     }
     
-
+//TODO: It doesn't work oddly
     public Dataset getProperties(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
-        return null;
+        Set<VRI> features = FeatureFactory.lookupSameAs(OTEchaEndpoints.Mutagenicity(), token);
+        for(VRI vri : features){
+            System.out.println(vri.toString());
+        }
+        return getProperties(token, (VRI[]) features.toArray());
     }
 
     public TypedValue<?> getAssayProperty(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
