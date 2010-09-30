@@ -270,12 +270,22 @@ public class VRI { // Well tested!
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(VRI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        for (Pair<String, String> pair : urlParams){
+        ArrayList<Pair<String, String>> urlParamsClone = new ArrayList<Pair<String, String>>(urlParams);
+        for (Pair<String, String> pair : urlParamsClone){
            if (encodedParamName.equals(pair.getKey())){
                urlParams.remove(pair);
            }
         }
         return this;
+    }
+
+    /**
+     * Clears any tokens that might be contained in the URI
+     * @return
+     *      Updated URI without tokens.
+     */
+    public VRI clearToken(){        
+        return removeUrlParameter(TOKENID);
     }
 
     /**
