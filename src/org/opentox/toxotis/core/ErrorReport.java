@@ -1,9 +1,17 @@
 package org.opentox.toxotis.core;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
+import org.opentox.toxotis.util.spiders.ErrorReportSpider;
 
 /**
  * Error Reports are part of the OpenTox API since version 1.1. Error Reports define a
@@ -15,7 +23,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class ErrorReport extends OTOnlineResource<ErrorReport> {
+public class ErrorReport extends OTComponent<ErrorReport> {
 
     /** The HTTP status that accompanied the Error Report */
     private int httpStatus;
@@ -83,11 +91,53 @@ public class ErrorReport extends OTOnlineResource<ErrorReport> {
 
     @Override
     public Individual asIndividual(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    protected ErrorReport loadFromRemote(VRI uri) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (getUri() == null) {
+            try {
+                long hc = (long) hashCode();
+                long sgn = (long) Math.signum((double) hc);
+                sgn = (sgn == 1L) ? 1L : 2L;
+                hc *= sgn;
+                hc = Math.abs(hc);
+                String URI = "http://opentox.org/errorReport/#" + hc;
+                setUri(new VRI(URI));
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(ErrorReport.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);
+            }
+        }
+        Individual indiv = model.createIndividual(getUri() != null ? getUri().getStringNoQuery()
+                : null, OTClasses.ErrorReport().inModel(model));
+        if (getMeta() == null) {
+            setMeta(new MetaInfoImpl());
+        }
+        if (getMeta().getIdentifier() == null) {
+            getMeta().setIdentifier(getUri() != null ? getUri().toString() : null);
+        }
+        if (getMeta().getTitle() == null) {
+            getMeta().setTitle("Error report produced by '" + getActor() + "'");
+        }
+        getMeta().attachTo(indiv, model);
+        if (message != null) {
+            indiv.addLiteral(OTDatatypeProperties.message().asDatatypeProperty(model),
+                    model.createTypedLiteral(message, XSDDatatype.XSDstring));
+        }
+        if (details != null) {
+            indiv.addLiteral(OTDatatypeProperties.details().asDatatypeProperty(model),
+                    model.createTypedLiteral(details, XSDDatatype.XSDstring));
+        }
+        if (actor != null) {
+            indiv.addLiteral(OTDatatypeProperties.actor().asDatatypeProperty(model),
+                    model.createTypedLiteral(actor, XSDDatatype.XSDstring));
+        }
+        if (errorCode != null) {
+            indiv.addLiteral(OTDatatypeProperties.errorCode().asDatatypeProperty(model),
+                    model.createTypedLiteral(errorCode, XSDDatatype.XSDstring));
+        }
+        if (httpStatus != 0) {
+            indiv.addLiteral(OTDatatypeProperties.httpStatus().asDatatypeProperty(model),
+                    model.createTypedLiteral(httpStatus, XSDDatatype.XSDint));
+        }
+        return indiv;
     }
 
     @Override
