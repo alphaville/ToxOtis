@@ -1,6 +1,7 @@
 package org.opentox.toxotis.core;
 
 import java.io.File;
+import javax.swing.ImageIcon;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,17 +40,17 @@ public class CompoundTest {
     public void tearDown() {
     }
 
-  //  @Test
-    public void testSomeMethod() throws ToxOtisException {
-        Compound c =new Compound(Services.IDEACONSULT.augment("compound","100"));
-        c.downloadAsFile(new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
+    //@Test
+    public void testDownload() throws ToxOtisException {
+        Compound c =new Compound(Services.IDEACONSULT.augment("compound","4"));
+        c.download(new File("/Users/hampos/Desktop/b.txt"), Media.CHEMICAL_SMILES, null);
     }
 
-    @Test
+   // @Test
     public void testPublishFromFile() throws ToxOtisException {
        File f;
        Compound comp = new Compound(new VRI(Services.IDEACONSULT.augment("compound","100")));
-       comp.downloadAsFile(f = new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
+       comp.download(f = new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF, null);
 
        CompoundFactory factory = CompoundFactory.getInstance();
        Task task = factory.publishFromFile(f, Media.CHEMICAL_MDLSDF.getMime(), (AuthenticationToken)null);
@@ -64,4 +65,12 @@ public class CompoundTest {
        System.out.println(tsk);
     }
 
+    @Test
+    public void testGetDepictionFromRemote() throws ToxOtisException {
+        Compound comp = new Compound(new VRI(Services.IDEACONSULT.augment("compound","10")));
+
+        ImageIcon icon = comp.getDepictionFromRemote();
+
+        System.out.println(icon);
+    }
 }

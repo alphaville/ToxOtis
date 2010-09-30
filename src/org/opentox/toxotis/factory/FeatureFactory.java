@@ -10,6 +10,7 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -21,8 +22,6 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  */
 public class FeatureFactory {
 
-    //TODO: If the user does not provide a URI for a lookup service,
-    // then the Ontology service should be used.
     private static FeatureFactory factory = null;
 
     /**
@@ -45,7 +44,7 @@ public class FeatureFactory {
     }
 
     /**
-     * Retrieve a collection of features that are <code>same as</code> a certain
+     * Retrieve a collection of Feature URIs that are <code>same as</code> a certain
      * ECHA endpoint as these are formalized using the OpenTox ontology. This ontology
      * can be downloaded from the <a href="http://www.opentox.org/data/documents/development/
      * RDF files/Endpoints/">OpenTox repository</a> for RDF files. Within ToxOtis,
@@ -64,9 +63,11 @@ public class FeatureFactory {
      *      Auththentication token provided by the user to authenticate against the service in case
      *      it has restricted access.
      *
-     * @return a Set of Features that are <code>same as</code> the ECHA endpoint provided.
+     * @return a Set of Feature URIs that are <code>same as</code> the ECHA endpoint provided.
      */
-    public Set<VRI> lookupSameAs(VRI service, OntologicalClass echaEndpoint, AuthenticationToken token) throws ToxOtisException {
+    public Set<VRI> lookupSameAs(
+            VRI service, OntologicalClass echaEndpoint, AuthenticationToken token)
+            throws ToxOtisException {
         GetClient client = new GetClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
         final int responseStatus;
@@ -97,7 +98,29 @@ public class FeatureFactory {
             throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
                     "The remote service returned the unexpected status : " + responseStatus);
         }
+    }
 
-
+    /**
+     * Retrieve a collection of Feature URIs by querying a default Feature Service,
+     * that are <code>same as</code> a certain
+     * ECHA endpoint as these are formalized using the OpenTox ontology. This ontology
+     * can be downloaded from the <a href="http://www.opentox.org/data/documents/development/
+     * RDF files/Endpoints/">OpenTox repository</a> for RDF files. Within ToxOtis,
+     * you can refer to the various ECHA enpoitns using the class {@link OTEchaEndpoints }.
+     *
+     *
+     * @param echaEndpoint
+     *      An ECHA enpoint as an Ontological Class. You may obtain a list of some default
+     *      endpoint classes from {@link OTEchaEndpoints }.
+     * @param token
+     *      Auththentication token provided by the user to authenticate against the service in case
+     *      it has restricted access.
+     *
+     * @return a Set of Feature URIs that are <code>same as</code> the ECHA endpoint provided.
+     */
+    public Set<VRI> lookupSameAs(
+            OntologicalClass echaEndpoint, AuthenticationToken token)
+            throws ToxOtisException {
+        return lookupSameAs(Services.IDEACONSULT.augment("feature"), echaEndpoint, token);
     }
 }

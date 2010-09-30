@@ -11,6 +11,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.Feature;
 import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
+import org.opentox.toxotis.ontology.collection.OTFeatures;
 import static org.junit.Assert.*;
 
 /**
@@ -38,11 +39,21 @@ public class FeatureFactoryTest {
     public void tearDown() {
     }
 
-    @Test
+ //   @Test
     public void testLookUpSameAs() throws ToxOtisException {
         FeatureFactory ff = FeatureFactory.getInstance();
         Set<VRI> features = ff.lookupSameAs(Services.IDEACONSULT.augment("feature"),
                 OTEchaEndpoints.Mutagenicity(), null);
+        for(VRI f : features){
+            System.out.println(f.toString());
+        }
+
+    }
+
+    @Test
+    public void testLookUpSameAsNoService() throws ToxOtisException, InterruptedException {
+        FeatureFactory ff = FeatureFactory.getInstance();
+        Set<VRI> features = ff.lookupSameAs(OTFeatures.SMILES(), null);
         for(VRI f : features){
             System.out.println(f.toString());
         }
