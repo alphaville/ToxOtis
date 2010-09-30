@@ -159,15 +159,16 @@ public class Compound extends OTPublishable<Compound> {
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public Compound download(String destination, Media media, AuthenticationToken token) throws ToxOtisException {       
+    public Compound download(String destination, Media media, AuthenticationToken token) throws ToxOtisException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         download(stream, media, token);
-        destination = stream.toString();
+        destination += stream.toString();
         try {
             stream.close();
         } catch (IOException ex) {
             throw new ToxOtisException(ex);
         }
+        System.out.println(destination);
         return this;
     }
 
@@ -255,19 +256,6 @@ public class Compound extends OTPublishable<Compound> {
         client.setMediaType(media.getMime());
 
         try {
-            /* REMOTE STREAM */
-            InputStream remote = client.getRemoteStream();
-            InputStreamReader isr = new InputStreamReader(remote);
-            BufferedReader remoteReader = new BufferedReader(isr);
-
-            /* LOCAL STREAM */
-            BufferedWriter bufferedWriter = new BufferedWriter(destination);
-            String line = null;
-            while ((line = remoteReader.readLine()) != null) {
-                bufferedWriter.write(line);
-                bufferedWriter.newLine();
-            }
-
             int responseStatus;
             try {
                 responseStatus = client.getResponseCode();
@@ -275,13 +263,54 @@ public class Compound extends OTPublishable<Compound> {
                 throw new ToxOtisException(ex);
             }
             if (responseStatus == 200) {
-                List<String> featureUris = client.getResponseUriList();
-                Set<VRI> features = new HashSet<VRI>();
-                for (String featureUri : featureUris) {
+                /* REMOTE STREAM */
+                InputStream remote = client.getRemoteStream();
+                InputStreamReader isr = new InputStreamReader(remote);
+                BufferedReader remoteReader = new BufferedReader(isr);
+
+                /* LOCAL STREAM */
+                BufferedWriter bufferedWriter = new BufferedWriter(destination);
+                String line = null;
+                while ((line = remoteReader.readLine()) != null) {
+                    bufferedWriter.write(line);
+                    bufferedWriter.newLine();
+                }
+
+                Throwable failure = null;
+                if (remote != null) {
                     try {
-                        features.add(new VRI(featureUri));
-                    } catch (URISyntaxException ex) {
-                        throw new ToxOtisException(ex);
+                        remote.close();
+                    } catch (Throwable th) {
+                        failure = th;
+                    }
+                }
+                if (isr != null) {
+                    try {
+                        isr.close();
+                    } catch (Throwable th) {
+                        failure = th;
+                    }
+                }
+                if (remoteReader != null) {
+                    try {
+                        remoteReader.close();
+                    } catch (Throwable th) {
+                        failure = th;
+                    }
+                }
+                if (bufferedWriter != null) {
+                    try {
+                        bufferedWriter.flush();
+                        bufferedWriter.close();
+                    } catch (Throwable th) {
+                        failure = th;
+                    }
+                }
+                if (failure != null) {
+                    if (failure instanceof IOException) {
+                        throw new ToxOtisException(ErrorCause.StreamCouldNotClose, failure);
+                    } else {
+                        throw new RuntimeException(failure);
                     }
                 }
 
@@ -296,46 +325,6 @@ public class Compound extends OTPublishable<Compound> {
                 throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
                         "The remote service returned the unexpected status : " + responseStatus);
             }
-
-            Throwable failure = null;
-            if (remote != null) {
-                try {
-                    remote.close();
-                } catch (Throwable th) {
-                    failure = th;
-                }
-            }
-            if (isr != null) {
-                try {
-                    isr.close();
-                } catch (Throwable th) {
-                    failure = th;
-                }
-            }
-            if (remoteReader != null) {
-                try {
-                    remoteReader.close();
-                } catch (Throwable th) {
-                    failure = th;
-                }
-            }
-            if (bufferedWriter != null) {
-                try {
-                    bufferedWriter.flush();
-                    bufferedWriter.close();
-                } catch (Throwable th) {
-                    failure = th;
-                }
-            }
-            if (failure != null) {
-                if (failure instanceof IOException) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, failure);
-                } else {
-                    throw new RuntimeException(failure);
-                }
-            }
-
-
 
         } catch (IOException ex) {
             throw new ToxOtisException("Remote stream from '" + newUri.getStringNoQuery() + "' is not readable!", ex);
@@ -502,10 +491,9 @@ public class Compound extends OTPublishable<Compound> {
 
     public ImageIcon getDepictionFromRemote() throws ToxOtisException {
         ImageIcon depiction;
-        try {
-            // TypedValue smiles = getProperty(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/20086"), null);
-            String smiles = new String();
-            download(smiles, Media.CHEMICAL_MDLMOL, null);
+        try {           
+            String smiles = "";
+            download(smiles, Media.CHEMICAL_SMILES, null);
             System.out.println(smiles);
             depiction = new ImageIcon(new URL(Services.IDEACONSULT_CDK_IMAGE.addUrlParameter("query", smiles).toString()));
         } catch (MalformedURLException ex) {
