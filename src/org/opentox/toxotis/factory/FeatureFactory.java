@@ -96,7 +96,7 @@ public class FeatureFactory {
                     "The client is authenticated but not authorized to perform this operation");
         } else {
             throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
-                    "The remote service returned the unexpected status : " + responseStatus);
+                    "The remote service at "+service+"returned the unexpected status : " + responseStatus);
         }
     }
 

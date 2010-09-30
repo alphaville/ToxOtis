@@ -13,6 +13,7 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.factory.CompoundFactory;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.spiders.TypedValue;
 import static org.junit.Assert.*;
 
 /**
@@ -41,9 +42,14 @@ public class CompoundTest {
     }
 
     @Test
-    public void testDownload() throws ToxOtisException {
+    public void testDownload() throws Exception {
         Compound c =new Compound(Services.IDEACONSULT.augment("compound","4"));
         c.download(new File("/home/chung/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
+        TypedValue val = c.getProperty(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"),null);
+        System.out.println(val);
+        Dataset ds = c.getProperties(null,new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"),
+                new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/2"));
+        System.out.println(ds.getInstances());
     }
 
    // @Test
