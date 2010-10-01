@@ -163,11 +163,11 @@ Task t = new Task(vri).loadFromRemote();
 
 h3. 3.6. Compounds
 
-Compounds, as these are represented in OpenTox, do not provide much information that could be parsed from their RDF representation, so the API for Compounds is formulated in a way that meaningful information would be returned to the user. First of all, users can obtain the Set of conformers (if any) that it groups and delegates. In cases where 3D characteristics of the compound are not taken into account, conformers do not play a particular role, otherwise the exact conformer has to be determined. The set of these conformers is available using the method <code>Set<Conformer> listConformers(AuthenticationToken token) throws ToxOtisException</code>. What is more, one can download the compound and store it in some supported chemical media type like <code>sdf</code> or <code>mol</code>. Here is an example:
+Compounds, as these are represented in OpenTox, do not provide much information that could be parsed from their RDF representation, so the API for Compounds is formulated in a way that meaningful information would be returned to the user. First of all, users can obtain the Set of conformers (if any) that it groups and delegates. In cases where 3D characteristics of the compound are not taken into account, conformers do not play a particular role, otherwise the exact conformer has to be determined. The set of these conformers is available using the method <code>Set<Conformer> listConformers(AuthenticationToken token) throws ToxOtisException</code>. What is more, one can download the compound and store it in some supported chemical media type like <code>sdf</code> or <code>mol</code> as it was explained in the previous section. Here is an example of downloading the SD file of a given compound:
 
 <pre>
 Compound c =new Compound(Services.IDEACONSULT.augment("compound","100"));
-c.downloadAsFile(new File("/path/to/file.sdf"), Media.CHEMICAL_MDLSDF.getMime(), null);
+c.download(new File("/path/to/file.sdf"), Media.CHEMICAL_MDLSDF, null);
 </pre>
 
 The compound and conformer APIs in ToxOtis are taking just their first steps so there is not much functionality in there yet.
