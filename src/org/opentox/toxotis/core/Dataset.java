@@ -36,6 +36,9 @@ import weka.core.Instances;
 public class Dataset extends OTPublishable<Dataset> {
 
     private static final String compound_uri = "compound_uri";
+    private long timeInstancesConversion = -1;
+    private long timeDownload = -1;
+    private long timeParse = -1;
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
@@ -138,6 +141,9 @@ public class Dataset extends OTPublishable<Dataset> {
         setDataEntries(ds.getDataEntries());
         setUri(ds.getUri());
         setMeta(ds.getMeta());
+        spider.close();
+        timeParse = spider.getParseTime();
+        timeDownload = spider.getReadRemoteTime();
         return this;
     }
 
@@ -169,6 +175,7 @@ public class Dataset extends OTPublishable<Dataset> {
      *      Weka Instances from the data contained in this Dataset.
      */
     public Instances getInstances() {
+        long timeFlag = System.currentTimeMillis();
         // GET THE ATTRIBUTES FOR THE DATASET:
         FastVector attributes = new FastVector();
         Set<Feature> features = getContainedFeatures();
@@ -245,6 +252,7 @@ public class Dataset extends OTPublishable<Dataset> {
                         + valuesInstance + " is not compatible with the dataset!");
             }
         }
+        timeInstancesConversion = System.currentTimeMillis() - timeFlag;
         return data;
     }
 
@@ -254,6 +262,18 @@ public class Dataset extends OTPublishable<Dataset> {
 
     public int countFeatures(){
         throw new UnsupportedOperationException();
+    }
+
+    public long getTimeDownload() {
+        return timeDownload;
+    }
+
+    public long getTimeInstancesConversion() {
+        return timeInstancesConversion;
+    }
+
+    public long getTimeParse() {
+        return timeParse;
     }
 
     

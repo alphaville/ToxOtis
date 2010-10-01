@@ -33,6 +33,8 @@ public abstract class Tarantula<Result> implements Closeable {
 
     protected Resource resource;
     protected OntModel model;
+    protected long readRemoteTime = -1;
+    protected long parseTime = -1;
 
     public Tarantula(Resource resource, OntModel model) {
         this.resource = resource;
@@ -121,7 +123,7 @@ public abstract class Tarantula<Result> implements Closeable {
         Set<OntClass> ontClassSet = new HashSet<OntClass>();
         while (classIt.hasNext()) {
             OntClass tempClass = null;
-            tempClass = classIt.nextStatement().getObject().as(OntClass.class); 
+            tempClass = classIt.nextStatement().getObject().as(OntClass.class);
             if (tempClass != null && OTClasses.NS.equals(tempClass.getNameSpace())) {
                 ontClassSet.add(tempClass);
                 ontClassSet = getSuperTypes(ontClassSet);
@@ -160,5 +162,33 @@ public abstract class Tarantula<Result> implements Closeable {
 
     public OntModel getOntModel() {
         return model;
+    }
+
+    /**
+     * Get the time needed to parse the Ontological Model into
+     * an in-house component of ToxOtis. This time does not include the time
+     * needed to download the Ontological Model from the remote location.
+     *
+     * @return
+     *      Parsing time. The method will return <code>-1</code> in case the method
+     *      {@link Tarantula#parse() parse} has not been invoked.
+     */
+    public long getParseTime() {
+        return parseTime;
+    }
+
+    /**
+     * Get the time needed to download the Ontological Model and cast it as an
+     * Ontological model (instance of <code>com.hp.hpl.jena.ontology.OntModel</code>).
+     *
+     * @return
+     *      Download time plus the time needed by the method <code>read(InputStream, String)</code>
+     *      in <code>com.hp.hpl.jena.ontology.OntModel</code> to convert the representation
+     *      into an Ontological Model. The method returns <code>-1</code> if the underlying
+     *      Spider (subclass of Tarantula) was not properly initialized or the model was not
+     *      loaded from a remote location.
+     */
+    public long getReadRemoteTime() {
+        return readRemoteTime;
     }
 }

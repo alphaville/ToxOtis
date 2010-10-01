@@ -145,7 +145,11 @@ public abstract class AbstractClient {
     public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ToxOtisException {
         try {
             com.hp.hpl.jena.ontology.OntModel om = new SimpleOntModelImpl();
-            om.read(getRemoteStream(), null);
+            InputStream is = getRemoteStream();
+            om.read(is, null);
+            if (is != null) {
+                is.close();
+            }
             return om;
         } catch (final Exception ex) {
             throw new ToxOtisException("Cannot read OntModel from " + vri.toString(), ex);
@@ -166,7 +170,7 @@ public abstract class AbstractClient {
      *      Accepted mediatype
      *
      * @see RequestHeaders#ACCEPT
-     
+
      */
     public AbstractClient setMediaType(String mediaType) {
         this.acceptMediaType = mediaType;

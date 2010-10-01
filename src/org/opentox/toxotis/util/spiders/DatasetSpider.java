@@ -25,6 +25,7 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 public class DatasetSpider extends Tarantula<Dataset> {
 
     VRI datasetUri;
+    
 
     public DatasetSpider(VRI uri) throws ToxOtisException {
         super();
@@ -32,7 +33,9 @@ public class DatasetSpider extends Tarantula<Dataset> {
         GetClient client = new GetClient();
         client.setMediaType("application/rdf+xml");
         client.setUri(uri);
+        long timeFlag = System.currentTimeMillis();
         model = client.getResponseOntModel();
+        readRemoteTime = System.currentTimeMillis() - timeFlag;
         resource = model.getResource(uri.getStringNoQuery());
     }
 
@@ -58,6 +61,7 @@ public class DatasetSpider extends Tarantula<Dataset> {
 
     @Override
     public Dataset parse() throws ToxOtisException {
+        long timeFlag = System.currentTimeMillis();
         Dataset dataset = new Dataset();
         dataset.setUri(datasetUri);
         /**
@@ -85,6 +89,8 @@ public class DatasetSpider extends Tarantula<Dataset> {
             dataEntries.add(dataEntrySpider.parse());
         }
         dataset.setDataEntries(dataEntries);
+        parseTime = System.currentTimeMillis()-timeFlag;
         return dataset;
     }
+
 }
