@@ -1,6 +1,8 @@
 package org.opentox.toxotis.client.collection;
 
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 
 /**
@@ -18,57 +20,124 @@ public class Services {
     private static final String _SSO_IDENTITY = "https://" + SSO_HOST + "/auth/%s";
     private static final String _SSO_POLICY = "https://" + SSO_HOST + "/pol";
 
-    /*
-     * General Services
-     */
-    public static final VRI NTUA;
-    public static final VRI AMBIT_UNI_PLOVDIV;
-    public static final VRI IDEACONSULT;
-    public static final VRI TUM_DEV;
-    public static final VRI SSO;
-    /*
-     * Authentication Services
-     */
-    public static final VRI SSO_IDENTITY;
-    public static final VRI SSO_AUTHENTICATE;
-    public static final VRI SSO_POLICY;
-    public static final VRI SSO_TOKEN_VALIDATE;
-    public static final VRI SSO_TOKEN_INVALIDATE;
-    public static final VRI SSO_ATTRIBUTES;
-    /*
-     * Image Services
-     */
-    public static final VRI AMBIT_CDK_IMAGE;
-    public static final VRI AMBIT_DAYLIGHT_IMAGE;
-    public static final VRI AMBIT_CACTVS_IMAGE;
-    public static final VRI IDEACONSULT_CDK_IMAGE;
-    public static final VRI IDEACONSULT_DAYLIGHT_IMAGE;
-    public static final VRI IDEACONSULT_CACTVS_IMAGE;
-
-    static {
+    public static VRI ntua() {
         try {
-            NTUA = new VRI(String.format(_NTUA_SERVICES, ""));
-            AMBIT_UNI_PLOVDIV = new VRI(String.format(_AMBIT_PLOVDIV, ""));
-            IDEACONSULT = new VRI(String.format(_IDEACONSULT, ""));
-            TUM_DEV = new VRI("http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev");
-            SSO = new VRI(_SSO_SERVER);
-            SSO_IDENTITY = new VRI(String.format(_SSO_IDENTITY, ""));
-            SSO_AUTHENTICATE = new VRI(String.format(_SSO_IDENTITY, "authenticate?uri=service=openldap"));
-            SSO_TOKEN_VALIDATE = new VRI(String.format(_SSO_IDENTITY, "isTokenValid"));
-            SSO_TOKEN_INVALIDATE = new VRI(String.format(_SSO_IDENTITY, "logout"));
-            SSO_ATTRIBUTES = new VRI(String.format(_SSO_IDENTITY, "attributes"));
-            SSO_POLICY = new VRI(String.format(_SSO_POLICY, ""));
-
-            AMBIT_CDK_IMAGE = new VRI(AMBIT_UNI_PLOVDIV).augment("depict","cdk");
-            AMBIT_DAYLIGHT_IMAGE = new VRI(AMBIT_UNI_PLOVDIV).augment("depict","daylight");
-            AMBIT_CACTVS_IMAGE = new VRI(AMBIT_UNI_PLOVDIV).augment("depict","cactvs");
-
-            IDEACONSULT_CDK_IMAGE = new VRI(IDEACONSULT).augment("depict","cdk");
-            IDEACONSULT_DAYLIGHT_IMAGE = new VRI(IDEACONSULT).augment("depict","daylight");
-            IDEACONSULT_CACTVS_IMAGE = new VRI(IDEACONSULT).augment("depict","cactvs");
-
+            return new VRI(_NTUA_SERVICES);
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
     }
+
+    public static VRI ideaconsult() {
+        try {
+            return new VRI(String.format(_IDEACONSULT,""));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static VRI ambitUniPlovdiv() {
+        try {
+            return new VRI(_AMBIT_PLOVDIV);
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static VRI tumDev() {
+        try {
+            return new VRI("http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev");
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static VRI sso() {
+        try {
+            return new VRI(_SSO_SERVER);
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static VRI ambitCdkImage() {
+        try {
+            return new VRI(_AMBIT_PLOVDIV).augment("depict", "cdk");
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static VRI ambitDaylightImage() {
+        try {
+            return new VRI(_AMBIT_PLOVDIV).augment("depict", "daylight");
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static VRI ambitCactvsImage() {
+        try {
+            return new VRI(_AMBIT_PLOVDIV).augment("depict", "cactvs");
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static VRI ideaCdkImage() {
+            return ideaconsult().augment("depict", "cdk");
+    }
+
+    public static VRI ideaDaylightImage() {
+        return ideaconsult().augment("depict", "daylight");
+    }
+
+    public static VRI ideaCactvsImage() {
+        return ideaconsult().augment("depict","cactvs");
+    }
+
+    public static VRI ssoIdentity(){
+        try {
+            return new VRI(String.format(_SSO_IDENTITY, ""));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    public static VRI ssoAuthenticate(){
+        try {
+            return new VRI(String.format(_SSO_IDENTITY, "authenticate?uri=service=openldap"));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    public static VRI ssoPolicy(){
+        try {
+            return new VRI(String.format(_SSO_POLICY, ""));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static VRI ssoAttributes(){
+        try {
+            return new VRI(String.format(_SSO_IDENTITY, "attributes"));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    public static VRI ssoValidate(){
+        try {
+            return new VRI(String.format(_SSO_IDENTITY, "isTokenValid"));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    public static VRI ssoInvalidate(){
+        try {
+            return new VRI(String.format(_SSO_IDENTITY, "logout"));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
 }

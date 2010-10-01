@@ -5,11 +5,30 @@ h2. 1. Introduction
 p<>. Using ToxOtis one can parse remote OpenTox entities providing their URI or even OpenTox resources that are stored in some local file. Behind the scenes, ToxOtis downloads and parses an <a href="http://www.w3.org/RDF/">RDF</a> representation of the resource and parses it into some instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a>. For this purpose, the user is endowed with two tools: The abstract method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/OTOnlineResource.java">OTOnlineResource</a> and a set of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/spiders/">spiders</a> which are more powerful tools but also require a higher level of acquaintance with RDF and <a href="http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download">Jena</a> (a library for parsing and editing RDF documents in Java). The ToxOtis API for downloading and parsing OpenTox resources is intertwined with the OpenTox A&A API, so in many cases users will need to provide their <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_01_Login.textile">authentication token</a>.
 
 
-h2. 2. Examples
+h2. 2. Download a Component
+
+All subclasses of <code>OTOnlineResource</code> in ToxOtis, like Compounds, Features, Algorithms and Models can be downloaded from a remote location into some local resource such as a file or a variable (e.g. a String), or in general be directed to some output stream or written to some generic destination using a <code>Write</code>. The prototype methods are:
+
+<pre>
+void download(String destination, Media media, AuthenticationToken token) throws ToxOtisException;
+void download(OutputStream destination, Media media, AuthenticationToken token) throws ToxOtisException;
+void download(File destination, Media media, AuthenticationToken token) throws ToxOtisException;
+void download(Writer destination, Media media, AuthenticationToken token) throws ToxOtisException
+</pre>
+
+This way, one can download the MOL representation of a compound and write it into a file. Here is an example of use:
+
+<pre>
+Compound comp = new Compound(new VRI(Services.IDEACONSULT).augment("compound","10"));
+File destination = new File("/path/to/file.mol");
+comp.download(destination, Media.CHEMICAL_MDLMOL, (AuthenticationToken)null);
+</pre>
+
+h2. 3. Parsing Components
 
 p<>. Before proceeding to the next sections, users are adviced to take a look at the <a href="http://github.com/alphaville/ToxOtis/blob/master/doc/Doc_00_Components.textile">documentation</a> about the implementation of OpenTox components in ToxOtis.
 
-h3. 2.1. Algorithms
+h3. 3.1. Algorithms
 
 p<>. A predefined collection of OpenTox algorithms is available within the class <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/collection/OpenToxAlgorithms.java">OpenToxAlgorithms</a>. You can load the algorithm data from the remote location using the method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Algorithm.java">Algorithm</a>. Here is an example:
 
@@ -41,7 +60,7 @@ If the algorithm is a protected resource you will have to authenticate yourself 
 </pre>
 
 
-h3. 2.2. Datasets
+h3. 3.2. Datasets
 
 The following example illustates how to use a Dataset Spider to download and parse a dataset from a remote server:
 
@@ -80,7 +99,7 @@ ds.loadFromRemote();
 
 This will parse into the object <code>ds</code> the data downloaded from the URI: <a href="http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/9">ambit.uni-plovdiv.bg:8080/ambit2/dataset/9</a>.
 
-h3. 2.3. Error Reports
+h3. 3.3. Error Reports
 
 Error Reports are part of the OpenTox API since version 1.1. Error Reports define a formal way to handle exceptional situations while invoking a service or during inter-service communication thus facilitating debugging. They are sufficiently documented online at <a href="http://opentox.org/dev/apis/api-1.1/Error%20Reports">opentox.org/dev/apis/api-1.1/Error Reports</a>. The parsing of Error Reports is carried out quite the same way as the entities mentioned above. The only difference with Error Reports is the the URL that hosts the error report differs from the IRI that describes the report in the RDF graph returned. So, if you choose to use a spider for parsing an Error Report you have to be careful with the initialization: The standard constructor for a spider <code>ErrorReportSpider(Resource resource, Model model)</code> will probably throw an error if you provide the wrong resource. This is why, you should prefer the constructor <code>ErrorReportSpider(URI actorUri, Model ontModel)</code> where you provide the URI of the actor of the exception and not the RDF node straightforward! Here is an example to obfuscate any misunderstanding:
 
@@ -113,7 +132,7 @@ Code   : AuthenticationFailed
 Status : 403
 </pre>
 
-h3. 2.4. Models
+h3. 3.4. Models
 
 This is an example of how a user can download and parse an OpenTox model from a remote location:
 
@@ -132,7 +151,7 @@ m.loadFromRemote();
 </pre>
 
 
-h3. 2.5. Tasks
+h3. 3.5. Tasks
 
 A Task is parsed as simply as any other OpenTox component. You simply have to provide its URI and invoke the method <code>loadFromRemote()</code> or, in case authentication is needed, <code>loadFromRemote(AuthenticationToken)</code>. Here is an example of use:
 
@@ -142,7 +161,7 @@ Task t = new Task(vri).loadFromRemote();
 </pre>
 
 
-h3. 2.6. Compounds
+h3. 3.6. Compounds
 
 Compounds, as these are represented in OpenTox, do not provide much information that could be parsed from their RDF representation, so the API for Compounds is formulated in a way that meaningful information would be returned to the user. First of all, users can obtain the Set of conformers (if any) that it groups and delegates. In cases where 3D characteristics of the compound are not taken into account, conformers do not play a particular role, otherwise the exact conformer has to be determined. The set of these conformers is available using the method <code>Set<Conformer> listConformers(AuthenticationToken token) throws ToxOtisException</code>. What is more, one can download the compound and store it in some supported chemical media type like <code>sdf</code> or <code>mol</code>. Here is an example:
 

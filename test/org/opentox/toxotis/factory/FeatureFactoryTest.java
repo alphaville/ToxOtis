@@ -43,7 +43,7 @@ public class FeatureFactoryTest {
     @Test
     public void testLookUpSameAs() throws ToxOtisException {
         Set<VRI> features = FeatureFactory.lookupSameAs(
-                new VRI(Services.IDEACONSULT).
+                new VRI(Services.ideaconsult()).
                 augment("feature"), OTEchaEndpoints.Gastrointestinal_absorption(), null);
         for (VRI f : features) {
             System.out.println(f.toString());

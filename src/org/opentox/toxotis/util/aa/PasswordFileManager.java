@@ -14,7 +14,6 @@ import java.security.SecureRandom;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -503,7 +502,7 @@ public class PasswordFileManager extends Observable {
             @Override
             public void run() {
                 try {
-                    PasswordFileManager.CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/master.key", 1000);
+                    PasswordFileManager.CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", 1000);
                 } catch (IOException ex) {
                     Logger.getLogger(PasswordFileManager.class.getName()).log(Level.SEVERE, null, ex);
                 }

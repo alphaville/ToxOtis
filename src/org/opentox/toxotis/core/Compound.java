@@ -325,7 +325,7 @@ public class Compound extends OTPublishable<Compound> {
             download(writer, Media.CHEMICAL_SMILES, null);
             String smiles = writer.toString();
             System.out.println(smiles);
-            depiction = new ImageIcon(new URL(Services.IDEACONSULT_CDK_IMAGE.addUrlParameter("query", smiles).toString()));
+            depiction = new ImageIcon(new URL(Services.ideaCdkImage().addUrlParameter("query", smiles).toString()));
         } catch (MalformedURLException ex) {
             throw new ToxOtisException(ex);
         }

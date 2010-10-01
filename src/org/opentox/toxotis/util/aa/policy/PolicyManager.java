@@ -26,7 +26,7 @@ public class PolicyManager {
      * NOTE: Only admins are allowed to create/modify policies.
      */
     private Policy policy;
-    private String policyServiceUrl = Services.SSO_POLICY.toString();
+    private String policyServiceUrl = Services.ssoPolicy().toString();
     private AuthenticationToken token;
     private static final String subjectIdHeader = "subjectid";
 

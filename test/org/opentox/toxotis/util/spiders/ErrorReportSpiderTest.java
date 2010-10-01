@@ -45,7 +45,7 @@ public class ErrorReportSpiderTest {
          * Ask for an algorithm from NTUA without providing an authentication 
          * token or credentials. This will throw an error!
          */
-        VRI uri = new VRI(Services.NTUA.augment("algorithm", "mlr"));
+        VRI uri = new VRI(Services.ntua().augment("algorithm", "mlr"));
         GetClient client = new GetClient();
         client.setUri(uri);
         OntModel model = client.getResponseOntModel();
@@ -56,7 +56,7 @@ public class ErrorReportSpiderTest {
 
     @Test
     public void testUnauthorizedAlgorithm() throws URISyntaxException, ToxOtisException {
-        VRI uri = new VRI(Services.NTUA.augment("algorithm", "mlr"));
+        VRI uri = new VRI(Services.ntua().augment("algorithm", "mlr"));
         try {
             new AlgorithmSpider(uri);
         } catch (ToxOtisException tox) {

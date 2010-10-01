@@ -39,7 +39,7 @@ public class ModelSpiderTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException {
-        VRI vri = new VRI(Services.TUM_DEV.augment("model","TUMOpenToxModel_j48_7"));
+        VRI vri = new VRI(Services.tumDev().augment("model","TUMOpenToxModel_j48_7"));
 //        ModelSpider mSpider = new ModelSpider(vri);
 //        Model m = mSpider.parse();
 

@@ -121,6 +121,6 @@ public class FeatureFactory {
     public static Set<VRI> lookupSameAs(
             OntologicalClass echaEndpoint, AuthenticationToken token)
             throws ToxOtisException {
-        return lookupSameAs(Services.IDEACONSULT.augment("feature"), echaEndpoint, token);
+        return lookupSameAs(Services.ideaconsult().augment("feature"), echaEndpoint, token);
     }
 }

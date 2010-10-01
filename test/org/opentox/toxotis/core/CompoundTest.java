@@ -43,8 +43,8 @@ public class CompoundTest {
 
     @Test
     public void testDownload() throws Exception {
-        Compound c =new Compound(Services.IDEACONSULT.augment("compound","4"));
-        c.download(new File("/home/chung/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
+        Compound c =new Compound(Services.ideaconsult().augment("compound","4"));
+        c.download(new File(System.getProperty("user.home")+"/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
         TypedValue val = c.getProperty(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"),null);
         System.out.println(val);
         Dataset ds = c.getProperties(null,new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"),
@@ -55,7 +55,7 @@ public class CompoundTest {
    // @Test
     public void testPublishFromFile() throws ToxOtisException {
        File f;
-       Compound comp = new Compound(new VRI(Services.IDEACONSULT.augment("compound","100")));
+       Compound comp = new Compound(new VRI(Services.ideaconsult().augment("compound","100")));
        comp.download(f = new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF, null);
 
        CompoundFactory factory = CompoundFactory.getInstance();
@@ -67,13 +67,13 @@ public class CompoundTest {
     public void testPublishFromRDF() throws ToxOtisException {
        Compound comp = new Compound(null);
        comp.getMeta().setTitle("My compound");
-       Task tsk = comp.publishOnline(Services.AMBIT_UNI_PLOVDIV.augment("compound"),null);
+       Task tsk = comp.publishOnline(Services.ambitUniPlovdiv().augment("compound"),null);
        System.out.println(tsk);
     }
 
-    //@Test
+    @Test
     public void testGetDepictionFromRemote() throws ToxOtisException {
-        Compound comp = new Compound(new VRI(Services.IDEACONSULT.augment("compound","10")));
+        Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound","10"));
         ImageIcon icon = comp.getDepictionFromRemote();
         System.out.println(icon);
     }

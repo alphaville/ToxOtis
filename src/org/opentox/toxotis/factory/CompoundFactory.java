@@ -67,7 +67,7 @@ public class CompoundFactory {
      */
     public Task publishFromFile(File sourceFile, String fileType, AuthenticationToken token)
             throws ToxOtisException {
-        return publishFromFile(sourceFile, fileType, token, Services.IDEACONSULT.augment("compound").toString());
+        return publishFromFile(sourceFile, fileType, token, Services.ideaconsult().augment("compound").toString());
     }
 
     /**
