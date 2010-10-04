@@ -72,11 +72,11 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
 
             public VRI call() throws Exception {
                 Task t = publishOnline(vri, token);
-                while (t.getHasStatus().equals(Task.Status.RUNNING)) {
+                while (t.getStatus().equals(Task.Status.RUNNING)) {
                     t.loadFromRemote();
                     Thread.sleep(100);
                 }
-                if (!Task.Status.COMPLETED.equals(t.getHasStatus())) {
+                if (!Task.Status.COMPLETED.equals(t.getStatus())) {
                     throw new ToxOtisException("Task failed! This entity was not published online "
                             + "due to some unexpected error. Error Report : " + t.getErrorReport());
                 }

@@ -71,6 +71,31 @@ public class CompoundFactory {
     }
 
     /**
+     * POSTs a file to a default compound service using a specified Content-type header
+     * in order to create a new Compound. The created compound is returned
+     * to the user.
+     * @param sourceFile
+     *      File where information about the compound are stored. Can be a <code>mol</code>
+     *      file, a <code>CML</code> one, an <code>SD</code> file or other file
+     *      format that is accepted by the compound service.
+     * @param token
+     *      Token used for authenticating the client against the remote compound
+     *      service (You can set it to <code>null</code>).
+     * @param fileType
+     *      The Content-type of the file to be posted.
+     * @return
+     *      The compound created by the Service.
+     * @throws ToxOtisException
+     *      In case an authentication error occurs or the remote service responds
+     *      with an error code like 500 or 503 or the submitted representation is
+     *      syntactically or semantically wrong (status 400).
+     */
+    public Task publishFromFile(File sourceFile, Media fileType, AuthenticationToken token)
+            throws ToxOtisException {
+        return publishFromFile(sourceFile, fileType.getMime(), token, Services.ideaconsult().augment("compound").toString());
+    }
+
+    /**
      * POSTs a file to a specified compound service using a specified Content-type header
      * in order to create a new Compound. The created compound is returned
      * to the user.
@@ -115,7 +140,7 @@ public class CompoundFactory {
             } else if (responseStatus == 200) {
                 Task t = new Task();
                 t.setResultUri(newVRI);
-                t.setHasStatus(Task.Status.COMPLETED);
+                t.seStatus(Task.Status.COMPLETED);
                 return t;
             } else {
                 throw new ToxOtisException("HTTP Status : " + responseStatus);
@@ -125,4 +150,32 @@ public class CompoundFactory {
         }
     }
 
+
+    /**
+     * POSTs a file to a specified compound service using a specified Content-type header
+     * in order to create a new Compound. The created compound is returned
+     * to the user.
+     * @param sourceFile
+     *      File where information about the compound are stored. Can be a <code>mol</code>
+     *      file, a <code>CML</code> one, an <code>SD</code> file or other file
+     *      format that is accepted by the compound service.
+     * @param token
+     *      Token used for authenticating the client against the remote compound
+     *      service (You can set it to <code>null</code>).
+     * @param fileType
+     *      The Content-type of the file to be posted as an element from {@link Media }.
+     * @param service
+     *      The URI of the service on which the new Compound will be posted.
+     * @return
+     *      The compound created by the Service.
+     * @throws ToxOtisException
+     *      In case an authentication error occurs or the remote service responds
+     *      with an error code like 500 or 503 or the submitted representation is
+     *      syntactically or semantically wrong (status 400).
+     */
+    public Task publishFromFile(
+            File sourceFile, Media fileType, AuthenticationToken token, String service)
+            throws ToxOtisException {
+        return publishFromFile(sourceFile, fileType.getMime(), token, service);
+    }
 }

@@ -96,7 +96,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
                 try {
                     // BibTeX returned
                     task.setResultUri(new VRI(pc.getResponseText()));
-                    task.setHasStatus(Task.Status.COMPLETED);
+                    task.seStatus(Task.Status.COMPLETED);
                     task.setPercentageCompleted(100);
                     return task;
                 } catch (URISyntaxException ex) {

@@ -172,7 +172,7 @@ public class Feature extends OTPublishable<Feature> {
             if (status == 200) {
                 Task readyTask = new Task();
                 readyTask.setPercentageCompleted(100);
-                readyTask.setHasStatus(Task.Status.COMPLETED);
+                readyTask.seStatus(Task.Status.COMPLETED);
                 try {
                     readyTask.setResultUri(new VRI(client.getResponseText()));
                     return readyTask;

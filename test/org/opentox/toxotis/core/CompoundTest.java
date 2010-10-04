@@ -1,6 +1,7 @@
 package org.opentox.toxotis.core;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import javax.swing.ImageIcon;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -41,7 +42,7 @@ public class CompoundTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
     public void testDownload() throws Exception {
         Compound c =new Compound(Services.ideaconsult().augment("compound","4"));
         c.download(new File(System.getProperty("user.home")+"/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
@@ -59,7 +60,7 @@ public class CompoundTest {
        comp.download(f = new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF, null);
 
        CompoundFactory factory = CompoundFactory.getInstance();
-       Task task = factory.publishFromFile(f, Media.CHEMICAL_MDLSDF.getMime(), (AuthenticationToken)null);
+       Task task = factory.publishFromFile(f, Media.CHEMICAL_MDLSDF, (AuthenticationToken)null);
        System.out.println(task.getResultUri());
     }
 
@@ -71,10 +72,23 @@ public class CompoundTest {
        System.out.println(tsk);
     }
 
-    @Test
+    //@Test
     public void testGetDepictionFromRemote() throws ToxOtisException {
         Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound","10"));
-        ImageIcon icon = comp.getDepictionFromRemote();
+        ImageIcon icon = comp.getDepictionFromRemote(null);
         System.out.println(icon);
+    }
+
+    //@Test
+    public void testWrapAsDataset() throws Exception {
+        Compound c = new Compound(new VRI("somewhere.com/compound/1"));
+        c.wrapInDataset(new VRI("myserver.com/dataset/1")).asOntModel().write(System.out);
+    }
+
+    @Test
+    public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException{
+        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145419"));
+        Task t = c.calculateDescriptors(Services.tumDev().augment("algorithm","CDKPhysChem"), null);
+        t.getResultUri();
     }
 }

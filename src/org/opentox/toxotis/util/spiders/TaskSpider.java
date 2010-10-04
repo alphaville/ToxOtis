@@ -70,7 +70,7 @@ public class TaskSpider extends Tarantula<Task> {
             Literal hasStatus = hasStatusProp.getObject().as(Literal.class);
 
             if (hasStatus != null) {
-                task.setHasStatus(Task.Status.valueOf(hasStatus.getString().toUpperCase()));
+                task.seStatus(Task.Status.valueOf(hasStatus.getString().toUpperCase()));
             }
         }
 

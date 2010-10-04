@@ -6,29 +6,18 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.PostClient;
@@ -140,13 +129,10 @@ public class Compound extends OTPublishable<Compound> {
         }
         return conformers;
     }
-    
+
 //TODO: It doesn't work oddly
     public Dataset getProperties(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
         Set<VRI> features = FeatureFactory.lookupSameAs(OTEchaEndpoints.Mutagenicity(), token);
-        for(VRI vri : features){
-            System.out.println(vri.toString());
-        }
         return getProperties(token, (VRI[]) features.toArray());
     }
 
@@ -274,7 +260,7 @@ public class Compound extends OTPublishable<Compound> {
             if (status == 200) {
                 Task readyTask = new Task();
                 readyTask.setPercentageCompleted(100);
-                readyTask.setHasStatus(Task.Status.COMPLETED);
+                readyTask.seStatus(Task.Status.COMPLETED);
                 try {
                     readyTask.setResultUri(new VRI(client.getResponseText()));
                     return readyTask;
@@ -303,10 +289,22 @@ public class Compound extends OTPublishable<Compound> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Performs a <code>GET</code> operation on <code>/compound/{id}/feature</code> and
+     * obtains the set of available features for this compound. Afterwards, users can
+     * invoke the method {@link Compound#getProperty(org.opentox.toxotis.client.VRI,
+     * org.opentox.toxotis.util.aa.AuthenticationToken) getProperty} to get the value
+     * of a feature on this compound.
+     *
+     * @return
+     *      A set of the URIs of all available features.
+     * 
+     * @throws ToxOtisException
+     *      In case the remote service responds with an error status code.
+     */
     public Set<VRI> listAvailableFeatures() throws ToxOtisException {
         VRI featuresUri = new VRI(uri).augment("feature");
-        GetClient client = new GetClient();
-        client.setUri(featuresUri);
+        GetClient client = new GetClient(featuresUri);
         Set<VRI> availableUris = new HashSet<VRI>();
         for (String fUri : client.getResponseUriList()) {
             try {
@@ -318,17 +316,87 @@ public class Compound extends OTPublishable<Compound> {
         return availableUris;
     }
 
-    public ImageIcon getDepictionFromRemote() throws ToxOtisException {
+    /**
+     * Get the <b>depiction</b> of the compound using some depiction service. The
+     * service generates the depiction of the chemical compound based on its SMILES
+     * string. By default this method performs a GET HTTP request on the remote
+     * location identified by the URI of the compound and acquires with Header
+     * <code>Accept: chemical/x-daylight-smiles</code> and acquires the SMILES
+     * representation of the chemical structure. Afterwards, this is POSTed to the
+     * default depiction service at <code>http://apps.ideaconsult.net:8080/ambit2/
+     * depict/cdk?query={smiles}</code> and the result is cast as an instance of
+     * <code>javax.swing.ImageIcon</code>.
+     * @param token
+     *      Authentication token used to be granted access to the compound and
+     *      depiction services
+     * @return
+     *      Returns the depiction of the chemical compound as an ImageIcon.
+     * @throws ToxOtisException
+     *      In case the authentication fails or the user is not authorized to perform some
+     *      request (e.g. access the compound or depiction service) or the coumpound or
+     *      depiction services respond in an unexpected manner (e.g. return an error
+     *      status code like 500 or 503).
+     *
+     */
+    public ImageIcon getDepictionFromRemote(AuthenticationToken token) throws ToxOtisException {
         ImageIcon depiction;
-        try {           
+        try {
             StringWriter writer = new StringWriter();
-            download(writer, Media.CHEMICAL_SMILES, null);
+            download(writer, Media.CHEMICAL_SMILES, token);
             String smiles = writer.toString();
             System.out.println(smiles);
-            depiction = new ImageIcon(new URL(Services.ideaCdkImage().addUrlParameter("query", smiles).toString()));
+            depiction = new ImageIcon(new URL(Services.ideaCdkImage().
+                    addUrlParameter("query", smiles).appendToken(token).toString()));
         } catch (MalformedURLException ex) {
             throw new ToxOtisException(ex);
         }
         return depiction;
+    }
+
+    /**
+     * Wraps the compound in a dataset object. The URI of the dataset can be specified
+     * by the input argument of this method.
+     *
+     * @param datasetUri
+     *      The identifier (URI) of the dataset which acts as a wrapper to the compound.
+     *      If set to <code>null</code>, an anonymous node will be created for the dataset
+     *      resource.
+     * 
+     * @return
+     *      A dataset object that wraps the compound.
+     *
+     * @throws ToxOtisException
+     *      In case the provided URI is not a valid dataset URI (does not comply
+     *      with the OpenTox standards).
+     */
+    public Dataset wrapInDataset(VRI datasetUri) throws ToxOtisException {
+        Dataset ds = new Dataset(datasetUri);
+        ds.getDataEntries().add(new DataEntry(this, new ArrayList<FeatureValue>()));
+        return ds;
+    }
+
+    /**
+     * Calculates all availab
+     * @param descriptorCalculationAlgorithm
+     * @return
+     * @throws ToxOtisException
+     */
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
+        PostClient client = new PostClient(descriptorCalculationAlgorithm);
+        client.setMediaType(Media.APPLICATION_RDF_XML);
+        descriptorCalculationAlgorithm.clearToken().appendToken(token);
+        PostClient pc = new PostClient(descriptorCalculationAlgorithm);
+        pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={compound_uri}
+        pc.addPostParameter("ALL", "true");
+        pc.setMediaType(Media.TEXT_URI_LIST);
+        pc.post();
+        String taskUri = pc.getResponseText();
+        try {
+            TaskSpider taskSpider = new TaskSpider(new VRI(taskUri));
+            return taskSpider.parse();
+        } catch (URISyntaxException ex) {
+            throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
+                    + " returned an invalid task URI : " + taskUri, ex);
+        }
     }
 }

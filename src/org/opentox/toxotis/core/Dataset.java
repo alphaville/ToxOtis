@@ -7,6 +7,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,6 +65,15 @@ public class Dataset extends OTPublishable<Dataset> {
                 throw new RuntimeException(ex);
             }
             dsUpload.loadFromRemote();
+        }else if (status == 200) {
+            dsUpload.setPercentageCompleted(100);
+            dsUpload.seStatus(Task.Status.COMPLETED);
+            try {
+                dsUpload.setUri(new VRI(remoteResult));
+                dsUpload.setResultUri(new VRI(remoteResult));
+            } catch (URISyntaxException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return dsUpload;
     }
@@ -92,8 +102,16 @@ public class Dataset extends OTPublishable<Dataset> {
             }
         }
     }
-    private List<DataEntry> dataEntries;
+    private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
 
+    /**
+     * Constructor for a Dataset object providing its URI.
+     * @param uri
+     *      The URI of the created Dataset
+     * @throws ToxOtisException
+     *      In case the provided URI is not a valid dataset URI according to the
+     *      OpenTox specifications.
+     */
     public Dataset(VRI uri) throws ToxOtisException {
         super(uri);
         if (uri != null) {
@@ -209,7 +227,7 @@ public class Dataset extends OTPublishable<Dataset> {
                 vals[i] = Instance.missingValue();
             }
 
-            Conformer conformer = dataEntry.getConformer();
+            Compound conformer = dataEntry.getConformer();
 
             vals[data.attribute(compound_uri).index()] =
                     data.attribute(compound_uri).addStringValue(conformer.getUri().getStringNoQuery());

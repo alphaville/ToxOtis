@@ -42,7 +42,7 @@ public class TaskSpiderTest {
         TaskSpider ts = new TaskSpider(vri);
         Task t = ts.parse();
         System.out.println(t.getResultUri());
-        System.out.println(t.getHasStatus());
+        System.out.println(t.getStatus());
         System.out.println(t.getMeta());
     }
 

@@ -1,9 +1,15 @@
 package org.opentox.toxotis.core;
 
+import com.hp.hpl.jena.datatypes.BaseDatatype;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
@@ -13,12 +19,12 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  */
 public class Task extends OTOnlineResource<Task> {
 
-    protected  Task loadFromRemote(VRI uri) throws ToxOtisException {
+    protected Task loadFromRemote(VRI uri) throws ToxOtisException {
         TaskSpider tSpider = new TaskSpider(uri);
         Task downloadedTask = tSpider.parse();
         setMeta(downloadedTask.getMeta());
         setErrorReport(downloadedTask.getErrorReport());
-        setHasStatus(downloadedTask.getHasStatus());
+        seStatus(downloadedTask.getStatus());
         setPercentageCompleted(downloadedTask.getPercentageCompleted());
         setResultUri(downloadedTask.getResultUri());
         return this;
@@ -33,8 +39,9 @@ public class Task extends OTOnlineResource<Task> {
     }
     private VRI resultUri;
     private Status hasStatus;
-    private float percentageCompleted;
+    private float percentageCompleted = -1;
     private ErrorReport errorReport;
+    private float httpStatus = -1;
 
     public Task() {
         super();
@@ -44,13 +51,23 @@ public class Task extends OTOnlineResource<Task> {
         super(uri);
     }
 
-
-
-    public Status getHasStatus() {
+    /**
+     * The status of the task as an element of the enumeration {@link Status }.
+     * A task can either be <code>RUNNING</code>, <code>COMPLETED</code>, <code>
+     * CANCELLED</code> and <code>ERROR</code>.
+     * @return
+     *      The status of the task.
+     */
+    public Status getStatus() {
         return hasStatus;
     }
 
-    public void setHasStatus(Status hasStatus) {
+    /**
+     * Set the status of a task.
+     * @param hasStatus
+     *      The new value for the status of the task.
+     */
+    public void seStatus(Status hasStatus) {
         this.hasStatus = hasStatus;
     }
 
@@ -78,9 +95,37 @@ public class Task extends OTOnlineResource<Task> {
         this.errorReport = errorReport;
     }
 
+    public float getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(float httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
     @Override
     public Individual asIndividual(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Individual indiv = model.createIndividual(getUri() != null ? getUri().getStringNoQuery() : null, OTClasses.Task().inModel(model));
+        getMeta().attachTo(indiv, model);
+        if (hasStatus != null) {
+            indiv.addLiteral(OTDatatypeProperties.hasStatus().asDatatypeProperty(model),
+                    model.createTypedLiteral(hasStatus, XSDDatatype.XSDstring));
+        }
+        if (percentageCompleted != -1) {
+            indiv.addLiteral(OTDatatypeProperties.percentageCompleted().asDatatypeProperty(model),
+                    model.createTypedLiteral(percentageCompleted, XSDDatatype.XSDfloat));
+        }
+        if (httpStatus != -1) {
+            indiv.addLiteral(OTDatatypeProperties.httpStatus().asDatatypeProperty(model),
+                    model.createTypedLiteral(httpStatus, XSDDatatype.XSDfloat));
+        }
+        if (resultUri != null) {
+            indiv.addLiteral(OTDatatypeProperties.resultURI().asDatatypeProperty(model),
+                    model.createTypedLiteral(resultUri.clearToken().toString(), XSDDatatype.XSDanyURI));
+        }
+        if (errorReport != null) {
+            indiv.addProperty(OTObjectProperties.errorReport().asObjectProperty(model), errorReport.asIndividual(model));
+        }
+        return indiv;
     }
-  
 }

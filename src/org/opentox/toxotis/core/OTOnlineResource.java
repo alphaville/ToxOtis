@@ -280,13 +280,13 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
             } else if (responseStatus == 403) {
                 throw new ToxOtisException(ErrorCause.AuthenticationFailed,
                         "Client failed to authenticate itself against the SSO service due to "
-                        + "incorrect credentials or due to invalid token");
+                        + "incorrect credentials or due to invalid token. Error thrown by "+newUri);
             } else if (responseStatus == 401) {
                 throw new ToxOtisException(ErrorCause.UnauthorizedUser,
-                        "The client is authenticated but not authorized to perform this operation");
+                        "The client is authenticated but not authorized to perform this operation at "+newUri);
             } else {
                 throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
-                        "The remote service returned the unexpected status : " + responseStatus);
+                        "The remote service at "+newUri+" returned the unexpected status : " + responseStatus);
             }
 
         } catch (IOException ex) {

@@ -44,8 +44,8 @@ public class TaskTest {
                 new VRI("http://opentox.ntua.gr:3000/task/0fc060a0-f69b-4a81-bb2e-b9b32c8a04b3")).loadFromRemote(
                 PasswordFileManager.CRYPTO.authFromFile("./secret/my.key")
                 );
-        assertNotNull(t.getHasStatus());
-        assertEquals(Status.COMPLETED, t.getHasStatus());
+        assertNotNull(t.getStatus());
+        assertEquals(Status.COMPLETED, t.getStatus());
 
     }
 }

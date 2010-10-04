@@ -14,18 +14,20 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class DataEntry extends OTComponent<DataEntry> {
 
-    private Conformer conformer;
+    private Compound conformer;
     private List<FeatureValue> featureValues;
 
     public DataEntry() {
     }
 
-    public DataEntry(Conformer compound, List<FeatureValue> featureValues) {
+    public DataEntry(Compound compound, List<FeatureValue> featureValues) {
         this.conformer = compound;
         this.featureValues = featureValues;
     }
 
-    public Conformer getConformer() {
+
+
+    public Compound getConformer() {
         return conformer;
     }
 
