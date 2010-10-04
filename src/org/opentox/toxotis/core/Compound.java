@@ -376,18 +376,28 @@ public class Compound extends OTPublishable<Compound> {
     }
 
     /**
-     * Calculates all availab
+     * Calculates
      * @param descriptorCalculationAlgorithm
+     *      A descriptor calculation algorithm.
+     * @param token
+     *      Token used to authenticate the client and grant it access to the
+     *      various OpenTox resources. 
+     * @param serviceConfiguration
+     *      A string array (<code>String[]</code>) used for fine tuning of the
+     *      remote service. Successive pairs of values act as a parameter name -
+     *      parameter value pair which is posted to the remote service.
      * @return
      * @throws ToxOtisException
      */
-    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
         PostClient client = new PostClient(descriptorCalculationAlgorithm);
         client.setMediaType(Media.APPLICATION_RDF_XML);
         descriptorCalculationAlgorithm.clearToken().appendToken(token);
         PostClient pc = new PostClient(descriptorCalculationAlgorithm);
         pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={compound_uri}
-        pc.addPostParameter("ALL", "true");
+        if (serviceConfiguration!=null){
+
+        }
         pc.setMediaType(Media.TEXT_URI_LIST);
         pc.post();
         String taskUri = pc.getResponseText();
@@ -398,5 +408,16 @@ public class Compound extends OTPublishable<Compound> {
             throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
                     + " returned an invalid task URI : " + taskUri, ex);
         }
+    }
+
+    /**
+     * Calculates all available descriptors using a remote descriptor calculation
+     * service.
+     * @param descriptorCalculationAlgorithm
+     * @return
+     * @throws ToxOtisException
+     */
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
+        return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL","true");
     }
 }

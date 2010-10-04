@@ -22,6 +22,7 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
+import org.opentox.toxotis.util.spiders.TaskSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -293,5 +294,24 @@ public class Dataset extends OTPublishable<Dataset> {
 
     public long getTimeParse() {
         return timeParse;
+    }
+
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
+        PostClient client = new PostClient(descriptorCalculationAlgorithm);
+        client.setMediaType(Media.APPLICATION_RDF_XML);
+        descriptorCalculationAlgorithm.clearToken().appendToken(token);
+        PostClient pc = new PostClient(descriptorCalculationAlgorithm);
+        pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={dataset_uri}
+        pc.addPostParameter("ALL", "true");
+        pc.setMediaType(Media.TEXT_URI_LIST);
+        pc.post();
+        String taskUri = pc.getResponseText();
+        try {
+            TaskSpider taskSpider = new TaskSpider(new VRI(taskUri));
+            return taskSpider.parse();
+        } catch (URISyntaxException ex) {
+            throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
+                    + " returned an invalid task URI : " + taskUri, ex);
+        }
     }
 }

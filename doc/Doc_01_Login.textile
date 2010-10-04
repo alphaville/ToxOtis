@@ -164,3 +164,6 @@ Pass  : {SSHA}FZLdpBMyrOO8SCYU7TeQY1JWAleotAVi7482
 Users are suggested to invalidate their tokens if they don't need them anymore in other A&A sessions. What is more, if you need to create a new token, make sure you have invalidated your old one.
 
 
+h3. 2.5. Managing your Tokens: Token Pool
+
+Obtaining a new token each time authentication/authorization is required is not good practise both in terms of performance and security. (To be continued...) 
