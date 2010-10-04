@@ -28,7 +28,8 @@ public class Task extends OTOnlineResource<Task> {
 
         RUNNING,
         COMPLETED,
-        CANCELLED;
+        CANCELLED,
+        ERROR;
     }
     private VRI resultUri;
     private Status hasStatus;

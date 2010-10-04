@@ -16,6 +16,7 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -43,16 +44,16 @@ public class Dataset extends OTPublishable<Dataset> {
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
         PostClient client = new PostClient(vri);
-        client.setContentType("application/rdf+xml");
-        client.setMediaType("text/uri-list");
+        client.setContentType(Media.APPLICATION_RDF_XML);
+        client.setMediaType(Media.TEXT_URI_LIST);
         client.setPostable(asOntModel());
         client.post();
         int status;
         try {
             status = client.getResponseCode();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new ToxOtisException(ErrorCause.CommunicationError,
-                    "Could not read the stream from '" + vri.getStringNoQuery() + "'");
+                    "Could not read the stream from '" + vri.getStringNoQuery() + "'", ex);
         }
         Task dsUpload = new Task();
         String remoteResult = client.getResponseText();
@@ -256,11 +257,11 @@ public class Dataset extends OTPublishable<Dataset> {
         return data;
     }
 
-    public int countCompounds(){
+    public int countCompounds() {
         throw new UnsupportedOperationException();
     }
 
-    public int countFeatures(){
+    public int countFeatures() {
         throw new UnsupportedOperationException();
     }
 
@@ -275,6 +276,4 @@ public class Dataset extends OTPublishable<Dataset> {
     public long getTimeParse() {
         return timeParse;
     }
-
-    
 }

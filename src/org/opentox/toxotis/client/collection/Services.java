@@ -38,7 +38,7 @@ public class Services {
 
     public static VRI ambitUniPlovdiv() {
         try {
-            return new VRI(_AMBIT_PLOVDIV);
+            return new VRI(String.format(_AMBIT_PLOVDIV,""));
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }

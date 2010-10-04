@@ -26,6 +26,7 @@ public abstract class AbstractClient {
     protected static final String URL_ENCODING = "UTF-8";
     /** Size of a buffer used to download the data from the remote server */
     protected static final int bufferSize = 4194304;
+
     /** Accepted mediatype  */
     protected String acceptMediaType = null;
     /** A mapping from parameter names to their corresponding values */
@@ -174,6 +175,11 @@ public abstract class AbstractClient {
      */
     public AbstractClient setMediaType(String mediaType) {
         this.acceptMediaType = mediaType;
+        return this;
+    }
+
+    public AbstractClient setMediaType(Media mediaType) {
+        this.acceptMediaType = mediaType.getMime();
         return this;
     }
 

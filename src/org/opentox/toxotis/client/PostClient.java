@@ -52,6 +52,11 @@ public class PostClient extends AbstractClient {
         return this;
     }
 
+    public PostClient setContentType(Media media) {
+        this.contentType = media.getMime();
+        return this;
+    }
+
     /**
      * Set an ontological data model which is to be posted to the remote location
      * as application/rdf+xml. Invokations of this method set automatically the content-type

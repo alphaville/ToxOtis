@@ -1,5 +1,9 @@
 package org.opentox.toxotis.core;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -63,6 +67,30 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      */
     public abstract Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException;
 
+    public Future<VRI> publish(final VRI vri, final AuthenticationToken token, ExecutorService executor) throws ToxOtisException {
+        Callable<VRI> backgroundJob = new Callable<VRI>() {
+
+            public VRI call() throws Exception {
+                Task t = publishOnline(vri, token);
+                while (t.getHasStatus().equals(Task.Status.RUNNING)) {
+                    t.loadFromRemote();
+                    Thread.sleep(100);
+                }
+                if (!Task.Status.COMPLETED.equals(t.getHasStatus())) {
+                    throw new ToxOtisException("Task failed! This entity was not published online "
+                            + "due to some unexpected error. Error Report : " + t.getErrorReport());
+                }
+                return t.getResultUri();
+            }
+        };
+        return executor.submit(backgroundJob);
+    }
+
+    public Future<VRI> publish(final VRI vri, final AuthenticationToken token) throws ToxOtisException {
+        return publish(vri, token, Executors.newSingleThreadExecutor());
+    }
+
+
     /**
      * Publish the component to a standard server. The resource will be posted to the
      * server in RDF format (application/rdf+xml). If you want to specify at which
@@ -92,6 +120,4 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      * @see OTPublishable#publishOnline(org.opentox.toxotis.client.VRI, org.opentox.toxotis.util.aa.AuthenticationToken) alternative method
      */
     public abstract Task publishOnline(AuthenticationToken token) throws ToxOtisException;
-
-    
 }

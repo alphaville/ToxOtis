@@ -160,6 +160,12 @@ public abstract class Tarantula<Result> implements Closeable {
         }
     }
 
+    /**
+     * Returns the ontological model held by this parser.
+     * 
+     * @return
+     *      Ontological Model of the processed resource.
+     */
     public OntModel getOntModel() {
         return model;
     }

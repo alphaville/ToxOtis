@@ -95,7 +95,30 @@ while (t.getHasStatus().equals(Task.Status.RUNNING)) {
 System.out.println(t.getResultUri());
 </pre>
 
-The above example will POST the dataset as application/rdf+xml to the dataset server at "ambit.uni-plovdiv.bg":http://ambit.uni-plovdiv.bg:8080/ambit2/dataset and monitor the returned task. The dataset "http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/64":http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/64 has been created by running the above example code.
+The above example will POST the dataset as application/rdf+xml to the dataset server at "ambit.uni-plovdiv.bg":http://ambit.uni-plovdiv.bg:8080/ambit2/dataset and monitor the returned task. The dataset "http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/64":http://ambit.uni-plovdiv.bg:8080/ambit2/dataset/64 has been created by running the above example code. 
+
+In some cases it might be more convenient to get the background job as a <code>Future<VRI></code> instead of as a <code>Task</code> or even assign the background job to a certain <code>ExecutorService</code> of Java. So, ToxOtis provides the method <code>publish(VRI, AuthenticationToken): Future<VRI></code> that returns a Feature&lt;VRI&gt; for a Callable that runs on Single Thread Executor. Here is an example:
+
+<pre>
+VRI vri = new VRI(Services.ideaconsult().augment("dataset", "54").addUrlParameter("max", "5"));
+Dataset ds = new Dataset(vri).loadFromRemote();        
+Future<VRI> t = ds.publish(Services.ambitUniPlovdiv().augment("dataset"),(AuthenticationToken)null);
+System.out.println(t.get());
+</pre>
+
+As already metntioned, users can assign the task to a certain ExecutorService:
+
+<pre>
+ExecutorService myExecutor = Executors.newFixedThreadPool(10);
+VRI vri = new VRI(Services.ideaconsult().augment("dataset", "54").addUrlParameter("max", "5"));
+Dataset ds = new Dataset(vri).loadFromRemote();
+Future<VRI> t = ds.publish(Services.ambitUniPlovdiv().augment("dataset"),
+                     (AuthenticationToken)null, myExecutor);
+while (!t.isDone()){
+  // Do something while waiting for the result
+}
+vri result = t.get();
+</pre>
 
 
 h3. 2.4. Publish a compound

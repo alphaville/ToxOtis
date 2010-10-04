@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.DataEntry;
 import org.opentox.toxotis.core.Dataset;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -25,13 +26,12 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 public class DatasetSpider extends Tarantula<Dataset> {
 
     VRI datasetUri;
-    
 
     public DatasetSpider(VRI uri) throws ToxOtisException {
         super();
         this.datasetUri = uri;
         GetClient client = new GetClient();
-        client.setMediaType("application/rdf+xml");
+        client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
         client.setUri(uri);
         long timeFlag = System.currentTimeMillis();
         model = client.getResponseOntModel();
@@ -75,13 +75,12 @@ public class DatasetSpider extends Tarantula<Dataset> {
         OTClasses.NominalFeature().inModel(model);
         OTClasses.NumericFeature().inModel(model);
         OTClasses.StringFeature().inModel(model);
-        /** END */
+        /** END **
+         */
         dataset.setMeta(new MetaInfoSpider(resource, model).parse());
-
         StmtIterator entryIt = model.listStatements(
                 new SimpleSelector(resource, OTObjectProperties.dataEntry().asObjectProperty(model),
                 (RDFNode) null));
-
         ArrayList<DataEntry> dataEntries = new ArrayList<DataEntry>();
         while (entryIt.hasNext()) {
             Resource entryResource = entryIt.nextStatement().getObject().as(Resource.class);
@@ -89,8 +88,7 @@ public class DatasetSpider extends Tarantula<Dataset> {
             dataEntries.add(dataEntrySpider.parse());
         }
         dataset.setDataEntries(dataEntries);
-        parseTime = System.currentTimeMillis()-timeFlag;
+        parseTime = System.currentTimeMillis() - timeFlag;
         return dataset;
     }
-
 }
