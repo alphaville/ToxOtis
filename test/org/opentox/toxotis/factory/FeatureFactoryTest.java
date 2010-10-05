@@ -40,7 +40,7 @@ public class FeatureFactoryTest {
     public void tearDown() {
     }
 
-    @Test
+   // @Test
     public void testLookUpSameAs() throws ToxOtisException {
         Set<VRI> features = FeatureFactory.lookupSameAs(
                 new VRI(Services.ideaconsult()).

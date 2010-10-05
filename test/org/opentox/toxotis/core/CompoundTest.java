@@ -13,6 +13,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.factory.CompoundFactory;
+import org.opentox.toxotis.ontology.collection.OTFeatures;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import static org.junit.Assert.*;
@@ -44,37 +45,37 @@ public class CompoundTest {
 
     //@Test
     public void testDownload() throws Exception {
-        Compound c =new Compound(Services.ideaconsult().augment("compound","4"));
-        c.download(new File(System.getProperty("user.home")+"/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
-        TypedValue val = c.getProperty(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"),null);
+        Compound c = new Compound(Services.ideaconsult().augment("compound", "4"));
+        c.download(new File(System.getProperty("user.home") + "/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
+        TypedValue val = c.getProperty(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"), null);
         System.out.println(val);
-        Dataset ds = c.getProperties(null,new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"),
+        Dataset ds = c.getProperties(null, new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"),
                 new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/2"));
         System.out.println(ds.getInstances());
     }
 
-   // @Test
+    // @Test
     public void testPublishFromFile() throws ToxOtisException {
-       File f;
-       Compound comp = new Compound(new VRI(Services.ideaconsult().augment("compound","100")));
-       comp.download(f = new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF, null);
+        File f;
+        Compound comp = new Compound(new VRI(Services.ideaconsult().augment("compound", "100")));
+        comp.download(f = new File("/home/chung/Desktop/b.sdf"), Media.CHEMICAL_MDLSDF, null);
 
-       CompoundFactory factory = CompoundFactory.getInstance();
-       Task task = factory.publishFromFile(f, Media.CHEMICAL_MDLSDF, (AuthenticationToken)null);
-       System.out.println(task.getResultUri());
+        CompoundFactory factory = CompoundFactory.getInstance();
+        Task task = factory.publishFromFile(f, Media.CHEMICAL_MDLSDF, (AuthenticationToken) null);
+        System.out.println(task.getResultUri());
     }
 
     //@Test
     public void testPublishFromRDF() throws ToxOtisException {
-       Compound comp = new Compound(null);
-       comp.getMeta().setTitle("My compound");
-       Task tsk = comp.publishOnline(Services.ambitUniPlovdiv().augment("compound"),null);
-       System.out.println(tsk);
+        Compound comp = new Compound(null);
+        comp.getMeta().setTitle("My compound");
+        Task tsk = comp.publishOnline(Services.ambitUniPlovdiv().augment("compound"), null);
+        System.out.println(tsk);
     }
 
-    //@Test
+    // @Test
     public void testGetDepictionFromRemote() throws ToxOtisException {
-        Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound","10"));
+        Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound", "10"));
         ImageIcon icon = comp.getDepictionFromRemote(null);
         System.out.println(icon);
     }
@@ -86,15 +87,23 @@ public class CompoundTest {
     }
 
     @Test
-    public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException{
+    public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException {
+
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145419"));
-        Task t = c.calculateDescriptors(Services.tumDev().augment("algorithm","CDKPhysChem"), null);
-        while (!Task.Status.COMPLETED.equals(t.getStatus())){
+        Task t = c.calculateDescriptors(Services.tumDev().augment("algorithm", "CDKPhysChem"), null);
+        while (!Task.Status.COMPLETED.equals(t.getStatus())) {
             Thread.sleep(2000);
-            System.out.println("Reloading... "+t.getUri());
+            System.out.println("Reloading... " + t.getUri());
             t.loadFromRemote();
             System.out.println(t);
         }
         System.out.println(t.getResultUri());
+    }
+
+    @Test
+    public void testGetProperties() throws URISyntaxException, ToxOtisException {
+        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/1"));
+        Dataset ds = c.getPropertiesByOnt(OTFeatures.ChemicalName(), null);
+        System.out.println(ds.getDataEntries().get(0).getFeatureValues().size());
     }
 }

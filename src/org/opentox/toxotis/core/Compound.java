@@ -131,9 +131,9 @@ public class Compound extends OTPublishable<Compound> {
     }
 
 //TODO: It doesn't work oddly
-    public Dataset getProperties(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
-        Set<VRI> features = FeatureFactory.lookupSameAs(OTEchaEndpoints.Mutagenicity(), token);
-        return getProperties(token, (VRI[]) features.toArray());
+    public Dataset getPropertiesByOnt(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
+        Set<VRI> features = FeatureFactory.lookupSameAs(featurePrototype, token);
+        return getProperties(token, (VRI[]) features.toArray(new VRI[features.size()]));
     }
 
     public TypedValue<?> getAssayProperty(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
@@ -196,12 +196,14 @@ public class Compound extends OTPublishable<Compound> {
 
     public Dataset getProperties(AuthenticationToken token, VRI... featureUris) throws ToxOtisException {
         VRI dsUri = new VRI(getUri());
-        for (VRI featureUri : featureUris) {
+        for (VRI featureUri : featureUris) {            
             dsUri.addUrlParameter("feature_uris[]", featureUri.toString());
         }
+
         if (token != null) {
-            dsUri.appendToken(token);
+            dsUri.clearToken().appendToken(token);
         }
+        System.out.println(dsUri);
         GetClient client = new GetClient();
         client.setUri(dsUri);
         client.setMediaType("application/rdf+xml");
@@ -395,8 +397,7 @@ public class Compound extends OTPublishable<Compound> {
         descriptorCalculationAlgorithm.clearToken().appendToken(token);
         PostClient pc = new PostClient(descriptorCalculationAlgorithm);
         pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={compound_uri}
-        if (serviceConfiguration!=null){
-
+        if (serviceConfiguration != null) {
         }
         pc.setMediaType(Media.TEXT_URI_LIST);
         pc.post();
@@ -418,6 +419,6 @@ public class Compound extends OTPublishable<Compound> {
      * @throws ToxOtisException
      */
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
-        return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL","true");
+        return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL", "true");
     }
 }
