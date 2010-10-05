@@ -43,6 +43,12 @@ public class DatasetFactory {
             Instance instance = (Instance) instancesEnum.nextElement();
             ds.getDataEntries().add(createDataEntry(instance));
         }
+        try {
+            ds.setUri(new VRI(instances.relationName()));
+        } catch (URISyntaxException ex) {
+            throw new ToxOtisException("The relation name '"+instances.relationName()+"' is not" +
+                    "a valid dataset URI!",ex);
+        }
         return ds;
     }
 
