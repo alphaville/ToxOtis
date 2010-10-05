@@ -19,7 +19,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTAlgorithmTypes;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -196,5 +198,20 @@ public abstract class Tarantula<Result> implements Closeable {
      */
     public long getReadRemoteTime() {
         return readRemoteTime;
+    }
+
+    protected void assessHttpStatus(int status, VRI actionUri) throws ToxOtisException {
+        if (status == 403) {
+            throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + actionUri + "'");
+        }
+        if (status == 401) {
+            throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + actionUri + "'");
+        }
+        if (status == 404) {
+            throw new ToxOtisException(ErrorCause.TaskNotFoundError, "The following task was not found : '" + actionUri + "'");
+        }
+        if (status != 200 && status != 202 && status != 201) {
+            throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + actionUri + "'. status = " + status);
+        }
     }
 }

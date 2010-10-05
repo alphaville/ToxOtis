@@ -6,11 +6,13 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
@@ -33,10 +35,26 @@ public class FeatureSpider extends Tarantula<Feature> {
         super();
         this.uri = uri;
         GetClient client = new GetClient();
-        client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
-        client.setUri(uri);
-        model = client.getResponseOntModel();
-        resource = model.getResource(uri.toString());
+        try {
+            client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
+            client.setUri(uri);
+            final int status = client.getResponseCode();
+            assessHttpStatus(status, uri);
+            model = client.getResponseOntModel();
+            resource = model.getResource(uri.toString());
+        } catch (final IOException ex) {
+            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
+                            "Error while trying to close the stream "
+                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                }
+            }
+        }
     }
 
     public FeatureSpider(Resource resource, OntModel model) {

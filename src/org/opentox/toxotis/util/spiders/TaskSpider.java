@@ -37,21 +37,21 @@ public class TaskSpider extends Tarantula<Task> {
         client.setUri(vri);
         try {
             final int status = client.getResponseCode();
-            if (status == 403) {
-                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + vri + "'");
-            }
-            if (status == 401) {
-                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + vri + "'");
-            }
-            if (status == 404) {
-                throw new ToxOtisException(ErrorCause.TaskNotFoundError, "The following task was not found : '" + vri + "'");
-            }
-            if (status != 200 && status != 202 && status != 201) {
-                throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + vri + "'. status = " + status);
-            }
+            assessHttpStatus(status, vri);
             httpStatus = status;
         } catch (IOException ex) {
             throw new ToxOtisException("Communication Error with the remote service at :" + vri, ex);
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
+                            "Error while trying to close the stream "
+                            + "with the remote location at :'" + ((vri != null) ?
+                                vri.clearToken().toString() : null) + "'", ex);
+                }
+            }
         }
         model = client.getResponseOntModel();
         resource = model.getResource(vri.getStringNoQuery());
