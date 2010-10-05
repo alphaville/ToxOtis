@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
@@ -14,6 +16,7 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.TokenPool;
 
 /**
  *
@@ -21,8 +24,6 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Charalampos Chomenides
  */
 public class FeatureFactory {
-
-
 
     /**
      * Retrieve a collection of Feature URIs that are <code>same as</code> a certain
@@ -58,26 +59,22 @@ public class FeatureFactory {
             throw new ToxOtisException(ex);
         }
         if (responseStatus == 200) {
-            List<String> featureUris = client.getResponseUriList();
+            Set<VRI> featureUris = client.getResponseUriList();
             Set<VRI> features = new HashSet<VRI>();
-            for (String featureUri : featureUris) {
-                try {
-                    features.add(new VRI(featureUri));
-                } catch (URISyntaxException ex) {
-                    throw new ToxOtisException(ex);
-                }
+            for (VRI featureUri : featureUris) {
+                features.add(new VRI(featureUri));
             }
             return features;
         } else if (responseStatus == 403) {
             throw new ToxOtisException(ErrorCause.AuthenticationFailed,
-                    "Client failed to authenticate itself against the SSO service due to " +
-                    "incorrect credentials or due to invalid token");
+                    "Client failed to authenticate itself against the SSO service due to "
+                    + "incorrect credentials or due to invalid token");
         } else if (responseStatus == 401) {
             throw new ToxOtisException(ErrorCause.UnauthorizedUser,
                     "The client is authenticated but not authorized to perform this operation");
         } else {
             throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
-                    "The remote service at "+service+"returned the unexpected status : " + responseStatus);
+                    "The remote service at " + service + "returned the unexpected status : " + responseStatus);
         }
     }
 
@@ -103,5 +100,53 @@ public class FeatureFactory {
             OntologicalClass echaEndpoint, AuthenticationToken token)
             throws ToxOtisException {
         return lookupSameAs(Services.ideaconsult().augment("feature"), echaEndpoint, token);
+    }
+
+    /**
+     * Lists all features available from a feature service providing also an authentication
+     * token.
+     * @param featureService
+     *      The URI of a feature service
+     * @param max
+     *      The maximum number of feature URIs to be returned from the feature
+     *      service. This is supported by the web services at <code>apps.ideaconsult.net</code>
+     *      and <code>ambit.uni-plovdiv.bg</code> but is not part of the official API
+     *      (version 1.1) so it might not be supported by other OpenTox feature services. if set
+     *      to <code>-1</code> the method returns all available features on the
+     *      remote server. If the provided URI has already a directive for the
+     *      maximum number of features using the URL query <code>?max={max}</code>,
+     *      it will be overridden.
+     * @param token
+     *      An authentication token which can be obtained from the singleton class
+     *      {@link TokenPool } that manages multiple logged in users.
+     * @return
+     *      Set of all URIs available from the feature service
+     * @throws ToxOtisException
+     *
+     */
+    public static Set<VRI> listAllFeatures(VRI featureService, int max, AuthenticationToken token) throws ToxOtisException {
+        try {
+            VRI featureServiceWithToken = new VRI(featureService).clearToken().appendToken(token).removeUrlParameter("max");
+            if (max > 0) {
+                featureServiceWithToken.addUrlParameter("max", max);
+            }
+            GetClient client = new GetClient(featureServiceWithToken);
+            final int httpStatus = client.getResponseCode();
+            if (httpStatus != 200) {
+                throw new ToxOtisException("Service returned status code :" + httpStatus);
+            }
+            client.setMediaType(Media.TEXT_URI_LIST);
+            Set<VRI> result = client.getResponseUriList();
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
+            }
+            return result;
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        }
     }
 }

@@ -117,15 +117,10 @@ public class Compound extends OTPublishable<Compound> {
         }
         GetClient client = new GetClient(newUri);
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
-        List<String> uriList = client.getResponseUriList();
+        Set<VRI> uriList = client.getResponseUriList();
         Set<Conformer> conformers = new HashSet<Conformer>();
-        for (String confUri : uriList) {
-            try {
-                conformers.add(new Conformer(new VRI(confUri)));
-            } catch (URISyntaxException ex) {
-                throw new ToxOtisException("Remote service at '" + uri.getStringNoQuery() + "' returned a uri list "
-                        + "that contains the invalid URI '" + confUri + "'", ex);
-            }
+        for (VRI confUri : uriList) {
+            conformers.add(new Conformer(new VRI(confUri)));
         }
         return conformers;
     }
@@ -196,7 +191,7 @@ public class Compound extends OTPublishable<Compound> {
 
     public Dataset getProperties(AuthenticationToken token, VRI... featureUris) throws ToxOtisException {
         VRI dsUri = new VRI(getUri());
-        for (VRI featureUri : featureUris) {            
+        for (VRI featureUri : featureUris) {
             dsUri.addUrlParameter("feature_uris[]", featureUri.toString());
         }
 
@@ -308,12 +303,8 @@ public class Compound extends OTPublishable<Compound> {
         VRI featuresUri = new VRI(uri).augment("feature");
         GetClient client = new GetClient(featuresUri);
         Set<VRI> availableUris = new HashSet<VRI>();
-        for (String fUri : client.getResponseUriList()) {
-            try {
-                availableUris.add(new VRI(fUri));
-            } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
-            }
+        for (VRI fUri : client.getResponseUriList()) {
+            availableUris.add(new VRI(fUri));
         }
         return availableUris;
     }

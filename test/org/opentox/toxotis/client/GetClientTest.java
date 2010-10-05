@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -51,9 +52,9 @@ public class GetClientTest {
         System.out.println("--. Testing GetClient#getUriList()");
         GetClient client = new GetClient();
         client.setUri(new VRI("http://opentox.ntua.gr:3000/algorithm")).setMediaType("will be ignored");
-        List<String> algorithms = client.getResponseUriList();
+        Set<VRI> algorithms = client.getResponseUriList();
         assertEquals(4, algorithms.size());
-        assertTrue(algorithms.contains("http://opentox.ntua.gr:3000/algorithm/svm"));
+        assertTrue(algorithms.contains(new VRI("http://opentox.ntua.gr:3000/algorithm/svm")));
         assertEquals("text/uri-list", client.getMediaType());
         assertEquals(200, client.getResponseCode());
     }

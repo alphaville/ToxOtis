@@ -1,10 +1,13 @@
 package org.opentox.toxotis.client;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.collection.Media;
 
 /**
  * A client that performs GET requests.
@@ -35,7 +38,7 @@ public class GetClient extends AbstractClient {
             if (acceptMediaType != null) {
                 con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
             }
-            if (headerValues!=null && !headerValues.isEmpty()) {
+            if (headerValues != null && !headerValues.isEmpty()) {
                 for (Map.Entry<String, String> e : headerValues.entrySet()) {
                     con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
@@ -47,9 +50,9 @@ public class GetClient extends AbstractClient {
     }
 
     /** Get the result as a URI list */
-    public java.util.List<String> getResponseUriList() throws ToxOtisException {
-        setMediaType("text/uri-list");// Set the mediatype to text/uri-list
-        java.util.List<String> list = new java.util.ArrayList<String>();
+    public java.util.Set<VRI> getResponseUriList() throws ToxOtisException {
+        setMediaType(Media.TEXT_URI_LIST);// Set the mediatype to text/uri-list
+        java.util.Set<VRI> setOfUris = new java.util.HashSet<VRI>();
         java.io.InputStreamReader isr = null;
         java.io.InputStream is = null;
         java.io.BufferedReader reader = null;
@@ -62,7 +65,12 @@ public class GetClient extends AbstractClient {
             reader = new java.io.BufferedReader(isr);
             String line;
             while ((line = reader.readLine()) != null) {
-                list.add(line);
+                try {
+                    setOfUris.add(new VRI(line));
+                } catch (URISyntaxException ex) {
+                    throw new ToxOtisException("The server returned an invalid URI : '"
+                            + line + "'", ex);
+                }
             }
         } catch (ToxOtisException cl) {
             throw cl;
@@ -91,7 +99,7 @@ public class GetClient extends AbstractClient {
                 }
             }
         }
-        return list;
+        return setOfUris;
     }
 }
 
