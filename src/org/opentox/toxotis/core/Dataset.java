@@ -38,7 +38,7 @@ import weka.core.Instances;
  */
 public class Dataset extends OTPublishable<Dataset> {
 
-    private static final String compound_uri = "compound_uri";
+    public static final String compound_uri = "compound_uri";
     private long timeInstancesConversion = -1;
     private long timeDownload = -1;
     private long timeParse = -1;
