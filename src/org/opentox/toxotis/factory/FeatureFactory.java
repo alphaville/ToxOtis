@@ -22,26 +22,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  */
 public class FeatureFactory {
 
-//    private static FeatureFactory factory = null;
-//
-//    /**
-//     * Returns the FeatureFactory object associated with the current Java application.
-//     * All factories in ToxOtis are singletons and have a single access point.
-//     *
-//     * @return
-//     *      The FeatureFactory object associated with the current Java application.
-//     */
-//    public static FeatureFactory getInstance() {
-//        if (factory == null) {
-//            factory = new FeatureFactory();
-//        }
-//        return factory;
-//    }
-//
-//    /** dummy constructor */
-//    private FeatureFactory() {
-//        super();
-//    }
+
 
     /**
      * Retrieve a collection of Feature URIs that are <code>same as</code> a certain

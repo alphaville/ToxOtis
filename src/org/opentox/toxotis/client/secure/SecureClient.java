@@ -1,6 +1,7 @@
 package org.opentox.toxotis.client.secure;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,7 +19,7 @@ import org.opentox.toxotis.util.aa.SSLConfiguration;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class SecureClient {
+public abstract class SecureClient implements Closeable {
 
     /** Target secure URI */
     protected VRI vri = null;
@@ -179,6 +180,12 @@ public abstract class SecureClient {
             return con.getResponseCode();
         } catch (IOException ex) {
             throw new ToxOtisException(ErrorCause.CommunicationError, ex);
+        }
+    }
+
+    public void close() throws IOException {
+        if (con != null) {
+            con.disconnect();
         }
     }
 }

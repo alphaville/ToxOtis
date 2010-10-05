@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.secure.SecurePostClient;
 import org.opentox.toxotis.client.collection.Services;
 
@@ -92,22 +92,33 @@ public class AuthenticationToken {
     public AuthenticationToken(String username, String password) throws ToxOtisException {
         this();
         SecurePostClient poster = new SecurePostClient(Services.ssoAuthenticate());
-        poster.addParameter("username", username);
-        poster.addParameter("password", password);
-        username = null;
-        password = null;
-        poster.postParameters();
-        int status = poster.getResponseCode();
-        if (status >= 400) {
-            throw new ToxOtisException("Remote Server Error " + poster.getUri() + ". Status code : " + status);
+        try {
+            poster.addParameter("username", username);
+            poster.addParameter("password", password);
+            username = null;
+            password = null;
+            poster.postParameters();
+            int status = poster.getResponseCode();
+            if (status >= 400) {
+                throw new ToxOtisException("Remote Server Error " + poster.getUri() + ". Status code : " + status);
+            }
+
+            String response = poster.getResponseText();
+            if (response.contains("token.id=")) {
+                response = response.replaceAll("token.id=", "");
+            }
+            this.token = response;
+            this.tokenCreationTimestamp = System.currentTimeMillis();
+        } finally {
+            if (poster != null) {
+                try {
+                    poster.close();
+                } catch (final IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
+            }
         }
 
-        String response = poster.getResponseText();
-        if (response.contains("token.id=")) {
-            response = response.replaceAll("token.id=", "");
-        }
-        this.token = response;
-        this.tokenCreationTimestamp = System.currentTimeMillis();
     }
 
     /**
@@ -222,6 +233,7 @@ public class AuthenticationToken {
     /**
      * Returns the token as a URL encoded String.
      * @return
+     *      Token encoded using the UTF-8 encoding.
      */
     public String getTokenUrlEncoded() {
         try {
@@ -265,25 +277,36 @@ public class AuthenticationToken {
         if (token == null || (token != null && token.isEmpty())) {
             return false;
         }
-        SecurePostClient poster = new SecurePostClient(Services.ssoValidate());
-        poster.addParameter("tokenid", stringValue());
-        poster.postParameters();
-        final int status = poster.getResponseCode();
-        final String message = (poster.getResponseText()).trim();
-        if (status != 200 && status != 401) {
-            throw new ToxOtisException("Status code " + status + " received from " + Services.ssoValidate());
-        } else if (status == 401) {
-            if (!message.equals("boolean=false")) {
-                return false;
-            } else {
+        SecurePostClient poster = null;
+        try {
+            poster = new SecurePostClient(Services.ssoValidate());
+            poster.addParameter("tokenid", stringValue());
+            poster.postParameters();
+            final int status = poster.getResponseCode();
+            final String message = (poster.getResponseText()).trim();
+            if (status != 200 && status != 401) {
                 throw new ToxOtisException("Status code " + status + " received from " + Services.ssoValidate());
+            } else if (status == 401) {
+                if (!message.equals("boolean=false")) {
+                    return false;
+                } else {
+                    throw new ToxOtisException("Status code " + status + " received from " + Services.ssoValidate());
+                }
             }
-        }
 
-        if (message.equals("boolean=true")) {
-            return true;
-        } else {
-            return false;
+            if (message.equals("boolean=true")) {
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            if (poster != null) {
+                try {
+                    poster.close();
+                } catch (final IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
+            }
         }
     }
 
@@ -300,12 +323,23 @@ public class AuthenticationToken {
         if (token == null || (token != null && token.isEmpty())) {
             return; // Nothing to invalidate!
         }
-        SecurePostClient poster = new SecurePostClient(Services.ssoInvalidate());
-        poster.addParameter("subjectid", stringValue());
-        poster.postParameters();
-        int status = poster.getResponseCode();
-        if (status != 200) {
-            throw new ToxOtisException("Status code " + status + " received from " + Services.ssoInvalidate());
+        SecurePostClient poster = null;
+        try {
+            poster = new SecurePostClient(Services.ssoInvalidate());
+            poster.addParameter("subjectid", stringValue());
+            poster.postParameters();
+            int status = poster.getResponseCode();
+            if (status != 200) {
+                throw new ToxOtisException("Status code " + status + " received from " + Services.ssoInvalidate());
+            }
+        } finally {
+            if (poster != null) {
+                try {
+                    poster.close();
+                } catch (final IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
+            }
         }
     }
 
@@ -373,20 +407,27 @@ public class AuthenticationToken {
                     }
                 }
             }
-        } catch (IOException io) {
+        } catch (final IOException io) {
             throw new ToxOtisException(io);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     throw new ToxOtisException(ex);
                 }
             }
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
+                    throw new ToxOtisException(ex);
+                }
+            }
+            if (poster!=null){
+                try {
+                    poster.close();
+                } catch (final IOException ex) {
                     throw new ToxOtisException(ex);
                 }
             }
