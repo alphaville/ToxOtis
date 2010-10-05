@@ -60,13 +60,13 @@ public class Compound extends OTPublishable<Compound> {
      */
     public Compound(VRI uri) throws ToxOtisException {
         super(uri);
-        if (uri != null) {
-            //TODO: What happens if one provides a Conformer URI?
-            if (!Compound.class.equals(uri.getOpenToxType())) {
-                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
-                        + "' is not a valid Compound uri according to the OpenTox specifications.");
-            }
-        }
+//        if (uri != null) {
+//            //TODO: What happens if one provides a Conformer URI?
+//            if (!Compound.class.equals(uri.getOpenToxType())) {
+//                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
+//                        + "' is not a valid Compound uri according to the OpenTox specifications.");
+//            }
+//        }
     }
 
     /**

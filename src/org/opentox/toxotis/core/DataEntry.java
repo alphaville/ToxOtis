@@ -3,6 +3,7 @@ package org.opentox.toxotis.core;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.util.ArrayList;
 import java.util.List;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -18,6 +19,8 @@ public class DataEntry extends OTComponent<DataEntry> {
     private List<FeatureValue> featureValues;
 
     public DataEntry() {
+        featureValues = new ArrayList<FeatureValue>();
+        conformer = new Compound();
     }
 
     public DataEntry(Compound compound, List<FeatureValue> featureValues) {
@@ -31,7 +34,7 @@ public class DataEntry extends OTComponent<DataEntry> {
         return conformer;
     }
 
-    public void setConformer(Conformer compound) {
+    public void setConformer(Compound compound) {
         this.conformer = compound;
     }
 
