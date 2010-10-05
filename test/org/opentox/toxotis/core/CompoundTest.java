@@ -86,9 +86,15 @@ public class CompoundTest {
     }
 
     @Test
-    public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException{
+    public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException{
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145419"));
         Task t = c.calculateDescriptors(Services.tumDev().augment("algorithm","CDKPhysChem"), null);
-        t.getResultUri();
+        while (!Task.Status.COMPLETED.equals(t.getStatus())){
+            Thread.sleep(2000);
+            System.out.println("Reloading... "+t.getUri());
+            t.loadFromRemote();
+            System.out.println(t);
+        }
+        System.out.println(t.getResultUri());
     }
 }

@@ -91,22 +91,30 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                 ErrorReport er = ersp.parse();
 
                 if (status == 403) {
-                    throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + uri + "'",er);
+                    throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + uri + "'", er);
                 }
                 if (status == 401) {
-                    throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + uri + "'",er);
+                    throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + uri + "'", er);
                 }
                 if (status == 404) {
-                    throw new ToxOtisException(ErrorCause.AlgorithmNotFound, "The following algorithm was not found : '" + uri + "'",er);
+                    throw new ToxOtisException(ErrorCause.AlgorithmNotFound, "The following algorithm was not found : '" + uri + "'", er);
                 } else {
-                    throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + uri + "'",er);
+                    throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + uri + "'", er);
                 }
             }
+            model = client.getResponseOntModel();
+            resource = model.getResource(uri.getStringNoQuery());
         } catch (IOException ex) {
             throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
+        } finally { // Have to close the client (disconnect)
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(AlgorithmSpider.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
-        model = client.getResponseOntModel();
-        resource = model.getResource(uri.getStringNoQuery());
     }
 
     @Override

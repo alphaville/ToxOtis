@@ -27,4 +27,6 @@ public interface OTProperty extends OTResource, java.io.Serializable {
     Property getProperty(OntModel model);
 
     void setDomain(Collection<OntologicalClass> domain);
+
+    Property asProperty(OntModel model);
 }

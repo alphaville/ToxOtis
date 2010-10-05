@@ -46,11 +46,10 @@ public class AlgorithmSpiderTest {
     @Test
     public void testAlgorithm() throws ToxOtisException, URISyntaxException, IOException {
         AlgorithmSpider spider = null;
-        AuthenticationToken tok = PasswordFileManager.CRYPTO.authFromFile("./secret/my.key");
-
+        AuthenticationToken tok = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
         spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.NTUA_MLR.getServiceUri()), tok); // << Authentication/Authorization using token
-        Algorithm a = spider.parse();        
-
+        Algorithm a = spider.parse();
+        spider.close();
         System.out.println(a.getMeta());
         Iterator<Parameter> param = a.getParameters().iterator();
         while (param.hasNext()) {

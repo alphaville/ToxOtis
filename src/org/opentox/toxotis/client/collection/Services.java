@@ -22,7 +22,7 @@ public class Services {
 
     public static VRI ntua() {
         try {
-            return new VRI(_NTUA_SERVICES);
+            return new VRI(String.format(_NTUA_SERVICES,""));
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }

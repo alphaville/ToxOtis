@@ -128,4 +128,26 @@ public class Task extends OTOnlineResource<Task> {
         }
         return indiv;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Task {");
+        sb.append(getUri());
+        sb.append("\n");
+        sb.append("HTTP Status : ");
+        sb.append(httpStatus);
+        sb.append("\n");
+        sb.append("Status      : ");
+        sb.append(hasStatus);
+        sb.append("\n");
+        if (resultUri!=null){
+            sb.append("Result URI  : ");
+        sb.append(resultUri);
+        sb.append("\n");
+        }
+        return new String(sb);
+    }
+
+
 }

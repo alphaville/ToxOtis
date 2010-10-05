@@ -33,6 +33,7 @@ public class OTDatatypePropertyImpl
         this.domain = range;
     }
 
+
     @Override
     public DatatypeProperty asDatatypeProperty(OntModel model) {
         DatatypeProperty property = null;

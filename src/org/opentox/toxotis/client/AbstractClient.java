@@ -1,6 +1,7 @@
 package org.opentox.toxotis.client;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,7 +16,7 @@ import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class AbstractClient {
+public abstract class AbstractClient implements Closeable{
 
     /** Target URI */
     protected VRI vri = null;
@@ -202,4 +203,12 @@ public abstract class AbstractClient {
         this.vri = new VRI(uri);
         return this;
     }
+
+    public void close() throws IOException {
+        if (con!=null){
+            con.disconnect();
+        }
+    }
+
+
 }
