@@ -126,15 +126,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @see Media Collection of MIMEs
      */
     public void download(String destination, Media media, AuthenticationToken token) throws ToxOtisException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        download(stream, media, token);
-
-
-        try {
-            stream.close();
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
-        }
+        download(new File(destination), media, token);
     }
 
     /**

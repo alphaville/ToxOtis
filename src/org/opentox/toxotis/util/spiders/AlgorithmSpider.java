@@ -77,9 +77,8 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
     public AlgorithmSpider(VRI uri) throws ToxOtisException {
         super();
         this.uri = uri;
-        GetClient client = new GetClient();
+        GetClient client = new GetClient(uri);
         client.setMediaType("application/rdf+xml");
-        client.setUri(uri);
         try {
             /*
              * Handle excpetional events caused during the server-client communiation.
@@ -91,15 +90,19 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                 ErrorReport er = ersp.parse();
 
                 if (status == 403) {
-                    throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + uri + "'", er);
+                    throw new ToxOtisException(ErrorCause.AuthenticationFailed,
+                            "Access denied to : '" + uri + "'", er);
                 }
                 if (status == 401) {
-                    throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + uri + "'", er);
+                    throw new ToxOtisException(ErrorCause.UnauthorizedUser,
+                            "User is not authorized to access : '" + uri + "'", er);
                 }
                 if (status == 404) {
-                    throw new ToxOtisException(ErrorCause.AlgorithmNotFound, "The following algorithm was not found : '" + uri + "'", er);
+                    throw new ToxOtisException(ErrorCause.AlgorithmNotFound,
+                            "The following algorithm was not found : '" + uri + "'", er);
                 } else {
-                    throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + uri + "'", er);
+                    throw new ToxOtisException(ErrorCause.CommunicationError,
+                            "Communication Error with : '" + uri + "'", er);
                 }
             }
             model = client.getResponseOntModel();
@@ -111,7 +114,9 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(AlgorithmSpider.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
+                            "Error while trying to close the stream "
+                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
                 }
             }
         }

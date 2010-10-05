@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.Compound;
 import static org.junit.Assert.*;
 
@@ -39,7 +40,7 @@ public class CompoundSpiderTest {
     @Test
     public void testCompound() throws URISyntaxException, ToxOtisException {
         CompoundSpider spider = new CompoundSpider(
-                new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/5"));
+                Services.ideaconsult().augment("compound", "5"));
         Compound c = spider.parse();
         System.out.println(c.getUri());
 

@@ -5,10 +5,12 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
@@ -29,14 +31,30 @@ public class DatasetSpider extends Tarantula<Dataset> {
 
     public DatasetSpider(VRI uri) throws ToxOtisException {
         super();
+        long timeFlag = System.currentTimeMillis();
         this.datasetUri = uri;
         GetClient client = new GetClient();
-        client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
-        client.setUri(uri);
-        long timeFlag = System.currentTimeMillis();
-        model = client.getResponseOntModel();
-        readRemoteTime = System.currentTimeMillis() - timeFlag;
-        resource = model.getResource(uri.getStringNoQuery());
+        try {
+            client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
+            client.setUri(uri);
+            final int status = client.getResponseCode();
+            assessHttpStatus(status, uri);
+            model = client.getResponseOntModel();
+            resource = model.getResource(uri.getStringNoQuery());
+            readRemoteTime = System.currentTimeMillis() - timeFlag;
+        } catch (final IOException ex) {
+            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
+                            "Error while trying to close the stream "
+                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                }
+            }
+        }
     }
 
     public DatasetSpider(Resource resource, OntModel model) {

@@ -5,10 +5,12 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
@@ -22,7 +24,7 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
-public class ModelSpider extends Tarantula<Model>{
+public class ModelSpider extends Tarantula<Model> {
 
     VRI uri;
 
@@ -30,10 +32,26 @@ public class ModelSpider extends Tarantula<Model>{
         super();
         this.uri = uri;
         GetClient client = new GetClient();
-        client.setMediaType("application/rdf+xml");
-        client.setUri(uri);
-        model = client.getResponseOntModel();
-        resource = model.getResource(uri.toString());
+        try {
+            client.setMediaType("application/rdf+xml");
+            client.setUri(uri);
+            final int status = client.getResponseCode();
+            assessHttpStatus(status, uri);
+            model = client.getResponseOntModel();
+            resource = model.getResource(uri.toString());
+        } catch (final IOException ex) {
+            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
+                            "Error while trying to close the stream "
+                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                }
+            }
+        }
     }
 
     public ModelSpider(Resource resource, OntModel model) {
@@ -115,8 +133,8 @@ public class ModelSpider extends Tarantula<Model>{
         if (itAlgorithm.hasNext()) {
             AlgorithmSpider aspider;
 //            try {
-                aspider = new AlgorithmSpider(itAlgorithm.nextStatement().getObject().as(Resource.class),model);
-                m.setAlgorithm(aspider.parse());
+            aspider = new AlgorithmSpider(itAlgorithm.nextStatement().getObject().as(Resource.class), model);
+            m.setAlgorithm(aspider.parse());
 //            } catch (URISyntaxException ex) {
 //                Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
 //            }
@@ -134,9 +152,8 @@ public class ModelSpider extends Tarantula<Model>{
             parameters.add(paramSpider.parse());
         }
         m.setParameters(parameters);
-        
+
 
         return m;
     }
-
 }

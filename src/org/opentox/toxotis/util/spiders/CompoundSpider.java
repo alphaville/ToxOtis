@@ -7,10 +7,12 @@ import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
@@ -19,6 +21,7 @@ import org.opentox.toxotis.core.Compound;
 import org.opentox.toxotis.core.Conformer;
 import org.opentox.toxotis.core.DataEntry;
 import org.opentox.toxotis.core.Dataset;
+import org.opentox.toxotis.core.ErrorReport;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
@@ -27,7 +30,7 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
-public class CompoundSpider extends Tarantula<Compound>{
+public class CompoundSpider extends Tarantula<Compound> {
 
     VRI uri;
 
@@ -35,10 +38,26 @@ public class CompoundSpider extends Tarantula<Compound>{
         super();
         this.uri = uri;
         GetClient client = new GetClient();
-        client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
-        client.setUri(uri);
-        model = client.getResponseOntModel();
-        resource = model.getResource(uri.toString());
+        try {
+            client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
+            client.setUri(uri);
+            final int status = client.getResponseCode();
+            assessHttpStatus(status, uri);
+            model = client.getResponseOntModel();
+            resource = model.getResource(uri.toString());
+        } catch (IOException ex) {
+            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
+        } finally { // Have to close the client (disconnect)
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
+                            "Error while trying to close the stream "
+                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                }
+            }
+        }
     }
 
     public CompoundSpider(Resource resource, OntModel model) {
@@ -67,5 +86,4 @@ public class CompoundSpider extends Tarantula<Compound>{
         compound.setMeta(new MetaInfoSpider(resource, model).parse());
         return compound;
     }
-
 }
