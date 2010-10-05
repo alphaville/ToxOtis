@@ -13,6 +13,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.factory.CompoundFactory;
+import org.opentox.toxotis.ontology.collection.OTFeatures;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import static org.junit.Assert.*;
@@ -72,7 +73,7 @@ public class CompoundTest {
        System.out.println(tsk);
     }
 
-    //@Test
+   // @Test
     public void testGetDepictionFromRemote() throws ToxOtisException {
         Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound","10"));
         ImageIcon icon = comp.getDepictionFromRemote(null);
@@ -85,10 +86,17 @@ public class CompoundTest {
         c.wrapInDataset(new VRI("myserver.com/dataset/1")).asOntModel().write(System.out);
     }
 
-    @Test
+   // @Test
     public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException{
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145419"));
         Task t = c.calculateDescriptors(Services.tumDev().augment("algorithm","CDKPhysChem"), null);
         t.getResultUri();
+    }
+
+    @Test
+    public void testGetProperties() throws URISyntaxException, ToxOtisException {
+        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/1"));
+        Dataset ds = c.getPropertiesByOnt(OTFeatures.ChemicalName(), null);
+        System.out.println(ds.getDataEntries().get(0).getFeatureValues().size());
     }
 }
