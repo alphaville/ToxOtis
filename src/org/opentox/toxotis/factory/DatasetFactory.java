@@ -1,8 +1,13 @@
 package org.opentox.toxotis.factory;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
@@ -34,39 +39,41 @@ public class DatasetFactory {
     public static Dataset createFromArff(Instances instances) throws ToxOtisException {
         Dataset ds = new Dataset();
         Enumeration instancesEnum = instances.enumerateInstances();
-        while(instancesEnum.hasMoreElements()){
+        while (instancesEnum.hasMoreElements()) {
             Instance instance = (Instance) instancesEnum.nextElement();
             ds.getDataEntries().add(createDataEntry(instance));
         }
         return ds;
     }
 
-    public static Dataset createFromArff(File file) {
-        return null;
+    public static Dataset createFromArff(File file) throws ToxOtisException {
+        try {
+            return createFromArff(new FileReader(file));
+        } catch (FileNotFoundException ex) {
+            throw new ToxOtisException(ex);
+        }
     }
 
-    public static Dataset createFromArff(InputStream stream) {
-        return null;
+    public static Dataset createFromArff(InputStream stream) throws ToxOtisException {
+        return createFromArff(new InputStreamReader(stream));
     }
 
-    public static Dataset createFromArff(Reader reader) {
-        return null;
+    public static Dataset createFromArff(Reader reader) throws ToxOtisException {
+        try {
+            return createFromArff(new Instances(reader));
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        }
     }
 
     public static DataEntry createDataEntry(Instance instance) throws ToxOtisException {
         Enumeration attributes = instance.enumerateAttributes();
-
         DataEntry de = new DataEntry();
-
-
         try {
             while (attributes.hasMoreElements()) {
                 Attribute attribute = (Attribute) attributes.nextElement();
-
                 if (attribute.name().equals(Dataset.compound_uri)) {
-
                     de.setConformer(new Compound(new VRI(instance.stringValue(attribute))));
-
                 } else {
                     FeatureValue fv = new FeatureValue();
                     Feature feature = new Feature(new VRI(attribute.name()));
@@ -74,12 +81,12 @@ public class DatasetFactory {
                     TypedValue value = null;
                     if (attribute.isNumeric()) {
                         value = new TypedValue<Double>(instance.value(attribute), XSDDatatype.XSDdouble);
-                    }else if(attribute.isString() || attribute.isDate()){
+                    } else if (attribute.isString() || attribute.isDate()) {
                         value = new TypedValue<String>(instance.stringValue(attribute), XSDDatatype.XSDstring);
-                    }else if(attribute.isNominal()){
+                    } else if (attribute.isNominal()) {
                         value = new TypedValue<String>(instance.stringValue(attribute), XSDDatatype.XSDstring);
                         Enumeration nominalValues = attribute.enumerateValues();
-                        while(nominalValues.hasMoreElements()){
+                        while (nominalValues.hasMoreElements()) {
                             String nomValue = (String) nominalValues.nextElement();
                             feature.getAdmissibleValue().add(new TypedValue<String>(nomValue, XSDDatatype.XSDstring));
                         }
