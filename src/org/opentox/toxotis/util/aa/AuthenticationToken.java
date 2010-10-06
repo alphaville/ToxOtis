@@ -100,7 +100,7 @@ public class AuthenticationToken {
             poster.postParameters();
             int status = poster.getResponseCode();
             if (status >= 400) {
-                throw new ToxOtisException("Remote Server Error " + poster.getUri() + ". Status code : " + status);
+                throw new ToxOtisException("Error while authenticating user at " + poster.getUri() + ". Status code : " + status);
             }
 
             String response = poster.getResponseText();
@@ -319,6 +319,9 @@ public class AuthenticationToken {
      *      is some communication problem.
      */
     public void invalidate() throws ToxOtisException {
+        if (TokenStatus.INACTIVE.equals(getStatus())) {
+            return;
+        }
         this.logOut = true;
         if (token == null || (token != null && token.isEmpty())) {
             return; // Nothing to invalidate!
@@ -424,7 +427,7 @@ public class AuthenticationToken {
                     throw new ToxOtisException(ex);
                 }
             }
-            if (poster!=null){
+            if (poster != null) {
                 try {
                     poster.close();
                 } catch (final IOException ex) {

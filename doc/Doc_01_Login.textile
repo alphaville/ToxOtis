@@ -28,6 +28,22 @@ File passwordFile = new File("/path/to/my_sercret.key");
 AuthenticationToken at = new AuthenticationToken(passwordFile);
 </pre>
 
+For security reasons, every token has a certain lifetime after which is invalid, so even if someone malvolently obtains your token, will not have access to any OpenTox web service after a certain time. For the same reason, it is considered good practise to invalidate your tokens (i.e. log out) in case you do not intend to use them any more. It is advisable that you "add a shutdown hook":http://download.oracle.com/javase/1.4.2/docs/api/java/lang/Runtime.html#addShutdownHook%28java.lang.Thread%29 in your application which will invalidate all tokens before exiting the application. According to the OpenTox specifications, it is up to the client to monitor and manage tokens according to their life time. A collection of methods is available in <code>AuthenticationToken</code> that return the creation timestamp of the token as well as its status. A token is characterized as <code>ACTIVE</code>, <code>INACTIVE</code> or <code>DEAD</code>. A token should be used only if it is ACTIVE. A token is INACTIVE if it has either expired or it has been invalidated and DEAD if it has not yet been initialized (the user was not authenticated). So output of the follwing code:
+
+<pre>
+AuthenticationToken token = new AuthenticationToken("JohnSmith","mysecretPass111");
+TokenStatus statusBefore = token.getStatus();
+token.invalidate();
+TokenStatus statusAfter = token.getStatus();
+System.out.println(statusBefore + ", " +  statusAfter);
+</pre>
+
+will be:
+
+<pre>
+ACTIVE, INACTIVE
+</pre>
+
 h3. 2.2. Advanced Security Issues
 
 In general, it is not good practise to store unencrypted passwords in your program or in your database. However, if you need to have your username and password stored so that you can easily use them, ToxOtis offers an encryption utility: <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/PasswordFileManager.java">PasswordFileManager</a>. First of all, you have to create a (private) master key and store it in a file. You should make this file hidden and modify its permissions so that only your application will have access to it. The file should look like this:
@@ -166,4 +182,14 @@ Users are suggested to invalidate their tokens if they don't need them anymore i
 
 h3. 2.5. Managing your Tokens: Token Pool
 
-Obtaining a new token each time authentication/authorization is required is not good practise both in terms of performance and security. (To be continued...) 
+Obtaining a new token each time authentication/authorization is required is not good practise both in terms of performance and security. ToxOtis comes with a "token management utility":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/TokenPool.java that allows for multiple login of different users but restricts a single user from obtaining multiple tokens. Once a user logs in, its token is stored in the pool. In case he/she attepts to login again and the stored token has not expired, then no new token is obtained but the existing one is returned from the method. Here is an example:
+
+<pre>
+TokenPool tokenPool = TokenPool.getInstance();
+for (int i =0; i < 10; i++){
+   tokenPool.login("/path/to/my.key");
+}
+System.out.println(tokenPool.size());
+</pre>
+
+The method will output 1 and not 10!
