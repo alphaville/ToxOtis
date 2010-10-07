@@ -1,8 +1,10 @@
 h1. ToxOtis and Weka
 
-h2. Converting a Dataset into a weka.core.Instances object
+h2. 1. Converting a Dataset into a weka.core.Instances object
 
-p<>. ToxOtis can be used in combintation with "Weka":http://www.cs.waikato.ac.nz/ml/weka/ (version 3.6.2), a well known open source machine learning package for Java. Using ToxOtis you can convert your "datasets":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Dataset.java into instances of "weka.core.Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html which in turn can be used in some filtering, training or other data processing procedure. Here is an example of downloading a dataset and creating a corresponding "weka.core.Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html object. 
+h3. 1.1. Source Code Example
+
+<p align="justify">ToxOtis can be used in combintation with "Weka":http://www.cs.waikato.ac.nz/ml/weka/ (stable version 3.6.2), a well known open source machine learning package for Java. Using ToxOtis you can convert your "datasets":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Dataset.java into instances of "weka.core.Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html which in turn can be used in some filtering, training or other data processing procedure. Here is an example of downloading a dataset and creating a corresponding "weka.core.Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html object.</p>
 
 <pre>
 VRI vri = new VRI(Services.IDEACONSULT.augment("dataset","9"));
@@ -34,6 +36,46 @@ http://apps.ideaconsult.net:8080/ambit2/compound/116508/conformer/419581,...
 </pre>
 
 As you can notice, the Instances object has a structure that retains the links (URIs) to the dataset from which it was created and the feature URIs. Unfortunately, "Instances":http://nlp.stanford.edu/nlp/javadoc/weka-3-2/weka.core.Instances.html objects are just data wrappers and were not designed to serve as data models so all meta information about the dataset and its contained features and compounds will not be found in this object. 
+
+h3. 1.2. Benchmarking
+
+In the following table, the computational times needed to convert a Dataset object into an instance of weka.core.Instaces are summarized. These results are based on 10 successive measurements. The measurements were carried out on a Linux machine (2.6.31-22-generic kernel, x86_64 GNU/Linux) with 3.8GB of RAM and an Intel Core 2 Duo CPU P8700 @2.53GHz. The SDK ToxOtis was used to perform the measurements (version 0.1.1.13) which includes Weka version 3.6.2 (latest stable version) and Jena version 2.6.2. These libraries run on a Sun™ JVM, version 1.6.0.20 with Java™ SE Runtime Environment (build 1.6.0.20-b02).
+
+Table 1. Measurements on fragments of the dataset created from "http://apps.ideaconsult.net:8080/ambit2/dataset/9":http://apps.ideaconsult.net:8080/ambit2/dataset/9 with 21 features and up to 1000 chemical compounds.
+
+|_. #Compounds |_. Average Time (ms) |
+| 100 | 2670 |
+| 200 | 4896 |
+| 500 | 10959 |
+| 800 | 18661 |
+| 1000 | 21132 |
+
+Table 2. Measurements on fragments of the dataset created from "http://apps.ideaconsult.net:8080/ambit2/dataset/10":http://apps.ideaconsult.net:8080/ambit2/dataset/10 with 60 features and up to 1000 chemical compounds. 
+
+|_. #Compounds |_. Average Time (ms) |
+| 100 | 5607 |
+| 200 | 8622 |
+| 500 | 19714 |
+| 800 | 31511 |
+| 1000 | 41513 |
+
+
+
+h2. Creating a Dataset from a Weka object or File
+
+ The reverse process of converting a Weka entity (either an ARFF file or an Instances object) into a ToxOtis Dataset component is accomplished using the static methods of the class "DatasetFactory":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/factory/DatasetFactory.java. It takes just one line of source code; here is an example:
+
+<pre>
+Instance myInstances = ...;// This is your object
+Dataset myDataset = DatasetFactory.createFromArff(myInstances);
+</pre>
+
+You can also use "DatasetFactory":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/factory/DatasetFactory.java to construct a Dataset object from an ARFF file or some ARFF InputStream (might be also an Input Stream from a remote location). Here is an example:
+
+<pre>
+File myFile = new File("/path/to/my.arff");
+Dataset ds = DatasetFactory.createFromArff(myFile);
+</pre>
 
 h2. References
 
