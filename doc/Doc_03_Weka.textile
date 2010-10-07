@@ -42,6 +42,7 @@ h3. 1.2. Benchmarking
 In the following table, the computational times needed to convert a Dataset object into an instance of weka.core.Instaces are summarized. These results are based on 10 successive measurements. The measurements were carried out on a Linux machine (2.6.31-22-generic kernel, x86_64 GNU/Linux) with 3.8GB of RAM and an Intel Core 2 Duo CPU P8700 @2.53GHz. The SDK ToxOtis was used to perform the measurements (version 0.1.1.13) which includes Weka version 3.6.2 (latest stable version) and Jena version 2.6.2. These libraries run on a Sun™ JVM, version 1.6.0.20 with Java™ SE Runtime Environment (build 1.6.0.20-b02).
 
 Table 1. Measurements on fragments of the dataset created from "http://apps.ideaconsult.net:8080/ambit2/dataset/9":http://apps.ideaconsult.net:8080/ambit2/dataset/9 with 21 features and up to 1000 chemical compounds.
+
 |_. #Compounds |_. Average Time (ms) |
 | 100 | 2670 |
 | 200 | 4896 |
@@ -49,7 +50,8 @@ Table 1. Measurements on fragments of the dataset created from "http://apps.idea
 | 800 | 18661 |
 | 1000 | 21132 |
 
-Table 2. Measurements on fragments of the dataset created from "http://apps.ideaconsult.net:8080/ambit2/dataset/10":http://apps.ideaconsult.net:8080/ambit2/dataset/10 with 60 features and up to 1000 chemical compounds.
+Table 2. Measurements on fragments of the dataset created from "http://apps.ideaconsult.net:8080/ambit2/dataset/10":http://apps.ideaconsult.net:8080/ambit2/dataset/10 with 60 features and up to 1000 chemical compounds. 
+
 |_. #Compounds |_. Average Time (ms) |
 | 100 | 5607 |
 | 200 | 8622 |
