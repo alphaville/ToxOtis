@@ -17,7 +17,8 @@ public enum Media {
     WEKA_ARFF("text/x-arff"),
     TEXT_YAML("text/x-yaml"),
     APPLICATION_YAML("application/x-yaml"),
-    TEXT_URI_LIST("text/uri-list");
+    TEXT_URI_LIST("text/uri-list"),
+    TEXT_N_TRIPLES("text/n-triples");
 
     ;
     private String mime;

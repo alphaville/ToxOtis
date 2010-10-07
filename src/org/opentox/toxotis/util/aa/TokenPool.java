@@ -43,6 +43,21 @@ public class TokenPool {
         PasswordFileManager.CRYPTO.setMasterPasswordFile(masterPasswordFile);
     }
 
+    /**
+     * Returns the token for a certain user by searching in the pool. If no such
+     * token is found, <code>null</code> is returned.
+     * @param username
+     *      Username for which the token is to be lookep up for.
+     * @return
+     *      Authentication token for the specified user and <code>null</code> if
+     *      no such user is found in the pool.
+     */
+    public AuthenticationToken getToken(String username) {
+        if (username!=null){
+        return this.pool.get(username);
+        } return null;
+    }
+
     public AuthenticationToken login(String username, String password) throws ToxOtisException {
         if (pool.containsKey(username)) {
             AuthenticationToken tokenInPool = pool.get(username);

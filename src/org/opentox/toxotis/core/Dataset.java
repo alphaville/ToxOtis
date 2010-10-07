@@ -5,6 +5,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.stream.XMLStreamException;
+import org.codehaus.stax2.XMLOutputFactory2;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
@@ -42,6 +45,68 @@ public class Dataset extends OTPublishable<Dataset> {
     private long timeInstancesConversion = -1;
     private long timeDownload = -1;
     private long timeParse = -1;
+    private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
+
+    /**
+     * Constructor for a Dataset object providing its URI.
+     * @param uri
+     *      The URI of the created Dataset
+     * @throws ToxOtisException
+     *      In case the provided URI is not a valid dataset URI according to the
+     *      OpenTox specifications.
+     */
+    public Dataset(VRI uri) throws ToxOtisException {
+        super(uri);
+        if (uri != null) {
+            if (!Dataset.class.equals(uri.getOpenToxType())) {
+                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
+                        + "' is not a valid Dataset uri according to the OpenTox specifications.");
+            }
+        }
+    }
+
+    public Dataset() {
+    }
+
+    public Dataset(List<DataEntry> dataEntries) {
+        this.dataEntries = dataEntries;
+    }
+
+    /**
+     * Serializes the Dataset object into an RDF/XML document and writes it to
+     * a given output stream.
+     * @param output
+     *      OutputStream where the output should be written.
+     */
+    public void writeRdf(OutputStream output) {
+        javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
+        try {
+            javax.xml.stream.XMLStreamWriter writer = factory.createXMLStreamWriter(output, "UTF-8");
+            writeRdf(writer);
+        } catch (XMLStreamException ex) {
+            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
+        }
+    }
+
+    public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartDocument();
+
+        writer.setPrefix("c", "http://c");
+        writer.setDefaultNamespace("http://c");
+
+        writer.writeStartElement("http://c", "a");
+        writer.writeAttribute("b", "blah");
+        writer.writeNamespace("c", "http://c");
+        writer.writeDefaultNamespace("http://c");
+        writer.setPrefix("d", "http://c");
+        writer.writeEmptyElement("http://c", "d");
+        writer.writeAttribute("http://c", "chris", "fry");
+        writer.writeNamespace("d", "http://c");
+        writer.writeCharacters("Jean Arp");
+        writer.writeEndElement();
+
+        writer.flush();
+    }
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
@@ -66,7 +131,7 @@ public class Dataset extends OTPublishable<Dataset> {
                 throw new RuntimeException(ex);
             }
             dsUpload.loadFromRemote();
-        }else if (status == 200) {
+        } else if (status == 200) {
             dsUpload.setPercentageCompleted(100);
             dsUpload.seStatus(Task.Status.COMPLETED);
             try {
@@ -102,32 +167,6 @@ public class Dataset extends OTPublishable<Dataset> {
                 return string;
             }
         }
-    }
-    private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
-
-    /**
-     * Constructor for a Dataset object providing its URI.
-     * @param uri
-     *      The URI of the created Dataset
-     * @throws ToxOtisException
-     *      In case the provided URI is not a valid dataset URI according to the
-     *      OpenTox specifications.
-     */
-    public Dataset(VRI uri) throws ToxOtisException {
-        super(uri);
-        if (uri != null) {
-            if (!Dataset.class.equals(uri.getOpenToxType())) {
-                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
-                        + "' is not a valid Dataset uri according to the OpenTox specifications.");
-            }
-        }
-    }
-
-    public Dataset() {
-    }
-
-    public Dataset(List<DataEntry> dataEntries) {
-        this.dataEntries = dataEntries;
     }
 
     public List<DataEntry> getDataEntries() {

@@ -137,6 +137,7 @@ public abstract class AbstractClient implements Closeable{
      * that the {@link RequestHeaders#ACCEPT Accept} Header of the request has value
      * <code>application/rdf+xml</code> or at least some other rdf-related MIME (like for
      * example <code>application/x-turtle</code>.
+     *
      * @return
      *      The ontological model from the response body.
      * @throws ToxOtisException
@@ -145,10 +146,32 @@ public abstract class AbstractClient implements Closeable{
      *      error will arise.
      */
     public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ToxOtisException {
+        return getResponseOntModel("RDF/XML");
+    }
+
+    /**
+     * If possible, get the ontological model provided in the response. This assumes
+     * that the {@link RequestHeaders#ACCEPT Accept} Header of the request has value
+     * <code>application/rdf+xml</code> or at least some other rdf-related MIME (like for
+     * example <code>application/x-turtle</code>.
+     * @param specification
+     *      the langauge of the serialization; <code>null</code> selects the default, that
+     *      is "RDF/XML". Also available: "TTL", "N-TRIPLE" and "N3".
+     * @return
+     *      The ontological model from the response body.
+     * @throws ToxOtisException
+     *      A ToxOtisException is thrown in case the server did not provide a valid
+     *      (syntactically correct) ontological model, or in case some communication
+     *      error will arise.
+     */
+    public com.hp.hpl.jena.ontology.OntModel getResponseOntModel(String specification) throws ToxOtisException {
+        if (specification==null){
+            specification = "RDF/XML";
+        }
         try {
             com.hp.hpl.jena.ontology.OntModel om = new SimpleOntModelImpl();
             InputStream is = getRemoteStream();
-            om.read(is, null);
+            om.read(is, null,specification);
             if (is != null) {
                 is.close();
             }

@@ -35,11 +35,11 @@ public class DatasetSpider extends Tarantula<Dataset> {
         this.datasetUri = uri;
         GetClient client = new GetClient();
         try {
-            client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
+            client.setMediaType(Media.TEXT_N_TRIPLES.getMime());
             client.setUri(uri);
             final int status = client.getResponseCode();
             assessHttpStatus(status, uri);
-            model = client.getResponseOntModel();
+            model = client.getResponseOntModel("N-TRIPLE");
             resource = model.getResource(uri.getStringNoQuery());
             readRemoteTime = System.currentTimeMillis() - timeFlag;
         } catch (final IOException ex) {
