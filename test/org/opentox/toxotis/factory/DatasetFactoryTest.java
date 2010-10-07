@@ -41,8 +41,10 @@ public class DatasetFactoryTest {
 
     @Test
     public void testCreateFromArff() throws URISyntaxException , ToxOtisException{
-        Dataset ds = new DatasetSpider(Services.ideaconsult().augment("dataset","6").addUrlParameter("max", "1")).parse();
+        
+        Dataset ds = new DatasetSpider(Services.ideaconsult().augment("dataset","9").addUrlParameter("max", "1")).parse();
         Instances instances = ds.getInstances();
+        System.out.println(ds.getInstances());
         Dataset newds = DatasetFactory.createFromArff(instances);
         System.out.println(newds.getInstances());
 
