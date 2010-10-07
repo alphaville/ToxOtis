@@ -4,6 +4,10 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
@@ -15,13 +19,16 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
-import org.codehaus.stax2.XMLOutputFactory2;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.ontology.OTDatatypeProperty;
+import org.opentox.toxotis.ontology.OTObjectProperty;
+import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
@@ -88,23 +95,106 @@ public class Dataset extends OTPublishable<Dataset> {
         }
     }
 
+    private void writeClass(javax.xml.stream.XMLStreamWriter writer, OntologicalClass clazz) throws XMLStreamException {
+        writer.writeEmptyElement(OWL.NS, "Class");//1
+        writer.writeAttribute("rdf:about", clazz.getUri());
+    }
+
+    private void writeObjectProperty(javax.xml.stream.XMLStreamWriter writer, OTObjectProperty property) throws XMLStreamException {
+        writer.writeEmptyElement(OWL.NS, "ObjectProperty");//1
+        writer.writeAttribute("rdf:about", property.getUri());
+    }
+
+    private void writeDatatypeProperty(javax.xml.stream.XMLStreamWriter writer, OTDatatypeProperty property) throws XMLStreamException {
+        writer.writeEmptyElement(OWL.NS, "DatatypeProperty");//1
+        writer.writeAttribute("rdf:about", property.getUri());
+    }
+
+    private void writeAnnotationProperty(javax.xml.stream.XMLStreamWriter writer, String annotationPropertyUri) throws XMLStreamException {
+        writer.writeEmptyElement(OWL.NS, "AnnotationProperty");//1
+        writer.writeAttribute("rdf:about", annotationPropertyUri);
+    }
+
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartDocument();
 
-        writer.setPrefix("c", "http://c");
-        writer.setDefaultNamespace("http://c");
+        writer.writeStartElement("rdf:RDF");
+        writer.writeNamespace("ot", OTClasses.NS);
+        writer.writeNamespace("rdfs", RDFS.getURI());
+        writer.writeNamespace("rdf", RDF.getURI());
+        writer.writeNamespace("dc", DC.NS);
+        writer.writeNamespace("owl", OWL.NS);
 
-        writer.writeStartElement("http://c", "a");
-        writer.writeAttribute("b", "blah");
-        writer.writeNamespace("c", "http://c");
-        writer.writeDefaultNamespace("http://c");
-        writer.setPrefix("d", "http://c");
-        writer.writeEmptyElement("http://c", "d");
-        writer.writeAttribute("http://c", "chris", "fry");
-        writer.writeNamespace("d", "http://c");
-        writer.writeCharacters("Jean Arp");
+        writer.setPrefix("ot", OTClasses.NS);
+        writer.setPrefix("rdfs", RDFS.getURI());
+        writer.setPrefix("rdf", RDF.getURI());
+        writer.setPrefix("dc", DC.NS);
+        writer.setPrefix("owl", OWL.NS);
+
+
+        writeClass(writer, OTClasses.Dataset());
+        writeClass(writer, OTClasses.Compound());
+        writeClass(writer, OTClasses.Feature());
+        writeClass(writer, OTClasses.FeatureValue());
+
+        /*
+         * Append Object Properties
+         */
+        writeObjectProperty(writer, OTObjectProperties.compound());
+        writeObjectProperty(writer, OTObjectProperties.dataEntry());
+        writeObjectProperty(writer, OTObjectProperties.values());
+        writeObjectProperty(writer, OTObjectProperties.feature());
+        writeObjectProperty(writer, OTObjectProperties.hasSource());
+
+        /*
+         * Append Annotation Properties (DC and RDFS)
+         */
+        writeAnnotationProperty(writer, DC.contributor.getURI());
+        writeAnnotationProperty(writer, DC.creator.getURI());
+        writeAnnotationProperty(writer, DC.date.getURI());
+        writeAnnotationProperty(writer, DC.description.getURI());
+        writeAnnotationProperty(writer, DC.title.getURI());
+        writeAnnotationProperty(writer, DC.subject.getURI());
+        writeAnnotationProperty(writer, RDFS.comment.getURI());
+        writeAnnotationProperty(writer, DC.identifier.getURI());
+
+        /**
+         * Append Datatype Properties
+         */
+        writeDatatypeProperty(writer, OTDatatypeProperties.acceptValue());
+        writeDatatypeProperty(writer, OTDatatypeProperties.value());
+
+        writer.writeStartElement("ot:Dataset");// #X101: Start Central Dataset Node
+        writer.writeAttribute("rdf:about", getUri().clearToken().toString());
+        for (DataEntry dataEntry : getDataEntries()) {
+            writer.writeStartElement("ot:dataEntry");// #X102
+                writer.writeStartElement("ot:DataEntry");// #X103
+                /* Feature values in Data Entry*/
+                for (FeatureValue featureValue : dataEntry.getFeatureValues()){
+                    writer.writeStartElement("ot:values");// #X106
+                        writer.writeStartElement("ot:FeatureValue");// #X107
+                            writer.writeEmptyElement("ot:feature");// #X108
+                            writer.writeAttribute("rdf:resource", featureValue.getFeature().getUri().clearToken().toString());
+                            writer.writeStartElement("ot:value");// #X108
+                            writer.writeAttribute("rdf:datatype", featureValue.getValue().getType().getURI());
+                            writer.writeCharacters(featureValue.getValue().getValue().toString());
+                            writer.writeEndElement();// #X108
+                        writer.writeEndElement();// #X107
+                    writer.writeEndElement();// #X106
+                }
+                    writer.writeStartElement("ot:compound");// #X104
+                        /* Compound in Data Entry... */
+                        writer.writeStartElement("ot:Compound");// #X105
+                        writer.writeAttribute("rdf:about", dataEntry.getConformer().getUri().clearToken().toString());
+                        writer.writeEndElement();// #X105
+                    writer.writeEndElement();// #X104
+                writer.writeEndElement();// #X103
+            writer.writeEndElement();// #X102
+        }
+
+        writer.writeEndElement();// #X101: End Centrl Dataset Node
+
         writer.writeEndElement();
-
         writer.flush();
     }
 

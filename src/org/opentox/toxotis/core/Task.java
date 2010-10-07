@@ -27,6 +27,7 @@ public class Task extends OTOnlineResource<Task> {
         seStatus(downloadedTask.getStatus());
         setPercentageCompleted(downloadedTask.getPercentageCompleted());
         setResultUri(downloadedTask.getResultUri());
+        setHttpStatus(downloadedTask.getHttpStatus());
         return this;
     }
 
@@ -136,7 +137,7 @@ public class Task extends OTOnlineResource<Task> {
         sb.append(getUri());
         sb.append("\n");
         sb.append("HTTP Status : ");
-        sb.append(httpStatus);
+        sb.append(getHttpStatus());
         sb.append("\n");
         sb.append("Status      : ");
         sb.append(hasStatus);
