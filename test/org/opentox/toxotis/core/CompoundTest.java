@@ -89,10 +89,10 @@ public class CompoundTest {
     @Test
     public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException {
 
-        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145419"));
+        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145418"));
         Task t = c.calculateDescriptors(Services.tumDev().augment("algorithm", "CDKPhysChem"), null);
         while (!Task.Status.COMPLETED.equals(t.getStatus())) {
-            Thread.sleep(2000);
+            Thread.sleep(200);
             System.out.println("Reloading... " + t.getUri());
             t.loadFromRemote();
             System.out.println(t);
@@ -100,7 +100,7 @@ public class CompoundTest {
         System.out.println(t.getResultUri());
     }
 
-    @Test
+    //@Test
     public void testGetProperties() throws URISyntaxException, ToxOtisException {
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/1"));
         Dataset ds = c.getPropertiesByOnt(OTFeatures.ChemicalName(), null);

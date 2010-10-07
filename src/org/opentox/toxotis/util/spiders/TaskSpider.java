@@ -39,6 +39,8 @@ public class TaskSpider extends Tarantula<Task> {
             final int status = client.getResponseCode();
             assessHttpStatus(status, vri);
             httpStatus = status;
+            model = client.getResponseOntModel();
+            resource = model.getResource(vri.getStringNoQuery());
         } catch (IOException ex) {
             throw new ToxOtisException("Communication Error with the remote service at :" + vri, ex);
         } finally {
@@ -48,13 +50,11 @@ public class TaskSpider extends Tarantula<Task> {
                 } catch (IOException ex) {
                     throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
                             "Error while trying to close the stream "
-                            + "with the remote location at :'" + ((vri != null) ?
-                                vri.clearToken().toString() : null) + "'", ex);
+                            + "with the remote location at :'" + ((vri != null)
+                            ? vri.clearToken().toString() : null) + "'", ex);
                 }
             }
         }
-        model = client.getResponseOntModel();
-        resource = model.getResource(vri.getStringNoQuery());
     }
 
     public TaskSpider(Resource resource, OntModel model) {

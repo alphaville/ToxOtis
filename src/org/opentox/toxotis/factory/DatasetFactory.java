@@ -1,22 +1,18 @@
 package org.opentox.toxotis.factory;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.InputStreamReader;   
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.Compound;
-import org.opentox.toxotis.core.Conformer;
 import org.opentox.toxotis.core.DataEntry;
 import org.opentox.toxotis.core.Dataset;
 import org.opentox.toxotis.core.Feature;

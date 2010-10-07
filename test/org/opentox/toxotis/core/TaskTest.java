@@ -41,11 +41,9 @@ public class TaskTest {
     public void testSomeMethod() throws Exception {
         Task t =
                 new Task(
-                new VRI("http://opentox.ntua.gr:3000/task/0fc060a0-f69b-4a81-bb2e-b9b32c8a04b3")).loadFromRemote(
-                PasswordFileManager.CRYPTO.authFromFile("./secret/my.key")
+                new VRI("http://apps.ideaconsult.net:8080/ambit2/task/1509006f-725b-4862-a04f-4804e37d569f")).loadFromRemote(
                 );
-        assertNotNull(t.getStatus());
-        assertEquals(Status.COMPLETED, t.getStatus());
+        System.out.println(t    );
 
     }
 }
