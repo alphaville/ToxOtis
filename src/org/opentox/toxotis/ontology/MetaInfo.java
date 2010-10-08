@@ -199,4 +199,47 @@ public interface MetaInfo extends java.io.Serializable {
      *      The updated resource with the metadata.
      */
     Resource attachTo(Resource resource, OntModel model);
+
+    /**
+     * Write the meta information in RDF/XML format using an XML Stream Writer. The
+     * data are written at the current position of the cursor of the writer. The method
+     * appends meta information about the underlying resource that is described in the
+     * RDF/XML document. Note that the writter should include at least the following
+     * namespaces before the invokation of this method:
+     *
+     * <pre>
+     * ot   : http://www.opentox.org/api/1.1#
+     * rdfs : http://www.w3.org/2000/01/rdf-schema#
+     * rdf  : http://www.w3.org/1999/02/22-rdf-syntax-ns#
+     * dc   : http://purl.org/dc/elements/1.1/
+     * </pre>
+     *
+     * The following code can be used to declare the above namespaces:
+     *
+     * <pre>
+     * writer.writeNamespace("ot", OTClasses.NS);
+     * writer.writeNamespace("rdfs", RDFS.getURI());
+     * writer.writeNamespace("rdf", RDF.getURI());
+     * writer.writeNamespace("dc", DC.NS);
+     * writer.writeNamespace("owl", OWL.NS);
+     * </pre>
+     *
+     * Additionally you can declare the above as a set of predixes:
+     *
+     * <pre>
+     * writer.setPrefix("ot", OTClasses.NS);
+     * writer.setPrefix("rdfs", RDFS.getURI());
+     * writer.setPrefix("rdf", RDF.getURI());
+     * writer.setPrefix("dc", DC.NS);
+     * writer.setPrefix("owl", OWL.NS);
+     * </pre>
+     * 
+     * @param writer
+     *      Writer used to write XML data to an Output Stream
+     * @throws javax.xml.stream.XMLStreamException
+     *      In case there the data that try to be written are not consisent. For example
+     *      such an exception is thrown if you forget to close a non-empty element
+     *      in the XML.
+     */
+    void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException;
 }

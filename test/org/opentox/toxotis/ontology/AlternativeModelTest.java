@@ -3,7 +3,6 @@ package org.opentox.toxotis.ontology;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.ReificationStyle;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

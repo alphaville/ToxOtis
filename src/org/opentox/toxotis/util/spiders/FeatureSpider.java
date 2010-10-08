@@ -87,6 +87,7 @@ public class FeatureSpider extends Tarantula<Feature> {
         if (unitsStatement != null) {
             feature.setUnits(unitsStatement.getString());
         }
+
         if (feature.getOntologies() != null && feature.getOntologies().contains(OTClasses.NominalFeature())) {
             // Gather 'accept' values from the RDF and add them to the feature
             Set<TypedValue> admissibleValues = new HashSet<TypedValue>();
@@ -99,6 +100,7 @@ public class FeatureSpider extends Tarantula<Feature> {
             }
             feature.setAdmissibleValue(admissibleValues);
         }
+
         return feature;
     }
 }

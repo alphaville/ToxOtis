@@ -79,22 +79,6 @@ public class Dataset extends OTPublishable<Dataset> {
         this.dataEntries = dataEntries;
     }
 
-    /**
-     * Serializes the Dataset object into an RDF/XML document and writes it to
-     * a given output stream.
-     * @param output
-     *      OutputStream where the output should be written.
-     */
-    public void writeRdf(OutputStream output) {
-        javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
-        try {
-            javax.xml.stream.XMLStreamWriter writer = factory.createXMLStreamWriter(output, "UTF-8");
-            writeRdf(writer);
-        } catch (XMLStreamException ex) {
-            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
-        }
-    }
-
     private void writeClass(javax.xml.stream.XMLStreamWriter writer, OntologicalClass clazz) throws XMLStreamException {
         writer.writeEmptyElement(OWL.NS, "Class");//1
         writer.writeAttribute("rdf:about", clazz.getUri());
@@ -115,10 +99,31 @@ public class Dataset extends OTPublishable<Dataset> {
         writer.writeAttribute("rdf:about", annotationPropertyUri);
     }
 
+    /**
+     * Serializes the Dataset object into an RDF/XML document and writes it to
+     * a given output stream.
+     * @param output
+     *      OutputStream where the output should be written.
+     */
+    public void writeRdf(OutputStream output) {
+        javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
+        try {
+            javax.xml.stream.XMLStreamWriter writer = factory.createXMLStreamWriter(output, "UTF-8");
+            writeRdf(writer);
+        } catch (XMLStreamException ex) {
+            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
+        }
+    }
+
+    /**
+     * Due to the large size of some dataset objects
+     * @param writer
+     * @throws XMLStreamException
+     */
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartDocument();
 
-        writer.writeStartElement("rdf:RDF");
+        writer.writeStartElement("rdf:RDF"); // #NODE_rdf:RDF_CORE_ELEMENT
         writer.writeNamespace("ot", OTClasses.NS);
         writer.writeNamespace("rdfs", RDFS.getURI());
         writer.writeNamespace("rdf", RDF.getURI());
@@ -133,9 +138,13 @@ public class Dataset extends OTPublishable<Dataset> {
 
 
         writeClass(writer, OTClasses.Dataset());
+        writeClass(writer, OTClasses.DataEntry());
         writeClass(writer, OTClasses.Compound());
         writeClass(writer, OTClasses.Feature());
         writeClass(writer, OTClasses.FeatureValue());
+        writeClass(writer, OTClasses.NominalFeature());
+        writeClass(writer, OTClasses.NumericFeature());
+        writeClass(writer, OTClasses.StringFeature());
 
         /*
          * Append Object Properties
@@ -158,43 +167,106 @@ public class Dataset extends OTPublishable<Dataset> {
         writeAnnotationProperty(writer, RDFS.comment.getURI());
         writeAnnotationProperty(writer, DC.identifier.getURI());
 
+
         /**
          * Append Datatype Properties
          */
         writeDatatypeProperty(writer, OTDatatypeProperties.acceptValue());
         writeDatatypeProperty(writer, OTDatatypeProperties.value());
+        writeDatatypeProperty(writer, OTDatatypeProperties.units());
 
-        writer.writeStartElement("ot:Dataset");// #X101: Start Central Dataset Node
-        writer.writeAttribute("rdf:about", getUri().clearToken().toString());
+        writer.writeStartElement("ot:Dataset");// #NODE_BASE: Start Base Dataset Node
+        writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_BASE
         for (DataEntry dataEntry : getDataEntries()) {
-            writer.writeStartElement("ot:dataEntry");// #X102
-                writer.writeStartElement("ot:DataEntry");// #X103
+            writer.writeStartElement("ot:dataEntry");// #NODE_HAS_DATAENTRY_PROP
+            writer.writeStartElement("ot:DataEntry");// #NODE_DE
                 /* Feature values in Data Entry*/
-                for (FeatureValue featureValue : dataEntry.getFeatureValues()){
-                    writer.writeStartElement("ot:values");// #X106
-                        writer.writeStartElement("ot:FeatureValue");// #X107
-                            writer.writeEmptyElement("ot:feature");// #X108
-                            writer.writeAttribute("rdf:resource", featureValue.getFeature().getUri().clearToken().toString());
-                            writer.writeStartElement("ot:value");// #X108
-                            writer.writeAttribute("rdf:datatype", featureValue.getValue().getType().getURI());
-                            writer.writeCharacters(featureValue.getValue().getValue().toString());
-                            writer.writeEndElement();// #X108
-                        writer.writeEndElement();// #X107
-                    writer.writeEndElement();// #X106
-                }
-                    writer.writeStartElement("ot:compound");// #X104
+            for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
+                writer.writeStartElement("ot:values");// #NODE_VALUES_PROP
+                writer.writeStartElement("ot:FeatureValue");// #NODE_VALUES_HAS_FV_PROP
+                writer.writeEmptyElement("ot:feature");// #ENODE_VALUES_HAS_FEAT_PROP
+                writer.writeAttribute("rdf:resource", featureValue.getFeature().getUri().clearToken().toString()); // REFERS TO #ENODE_VALUES_HAS_FEAT_PROP
+                writer.writeStartElement("ot:value");// #NODE_VALUE_PROP
+                writer.writeAttribute("rdf:datatype", featureValue.getValue().getType().getURI()); // REFERS TO #NODE_VALUE_PROP
+                writer.writeCharacters(featureValue.getValue().getValue().toString());// REFERS TO #NODE_VALUE_PROP
+                writer.writeEndElement();// #__NODE_VALUE_PROP
+                writer.writeEndElement();// #__NODE_VALUES_HAS_FV_PROP
+                writer.writeEndElement();// #__NODE_VALUES_PROP
+            }
+            writer.writeStartElement("ot:compound");// #NODE_HAS_COMPOUND_PROP
                         /* Compound in Data Entry... */
-                        writer.writeStartElement("ot:Compound");// #X105
-                        writer.writeAttribute("rdf:about", dataEntry.getConformer().getUri().clearToken().toString());
-                        writer.writeEndElement();// #X105
-                    writer.writeEndElement();// #X104
-                writer.writeEndElement();// #X103
-            writer.writeEndElement();// #X102
+            writer.writeStartElement("ot:Compound");// #NODE_COMPOUND
+            writer.writeAttribute("rdf:about", dataEntry.getConformer().getUri().clearToken().toString()); // REFERS TO #NODE_COMPOUND
+            writer.writeEndElement();// #__NODE_COMPOUND
+            writer.writeEndElement();// #__NODE_HAS_COMPOUND_PROP
+            writer.writeEndElement();// // #__NODE_DE
+            writer.writeEndElement();// // #__NODE_HAS_DATAENTRY_PROP
+        }
+        writer.writeEndElement();// #NODE_BASE: End Base Dataset Node
+
+        Set<Feature> containedFeatures = getContainedFeatures();
+        Set<OntologicalClass> featureOntologies = null;
+        Set<String> sameAsFeatures = new HashSet<String>();
+        for (Feature f : containedFeatures) {
+            writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
+            writer.writeAttribute("rdf:about", f.getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
+            writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
+            featureOntologies = f.getOntologies();
+            boolean explicitTypeDeclaration = false;
+            if (featureOntologies != null && !featureOntologies.isEmpty()) {
+                if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
+                    explicitTypeDeclaration = true;
+                    writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                    for (TypedValue admissibleVal : f.getAdmissibleValue()) {
+                        writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
+                        // TODO: Include also the XSD datatype of the value...
+                        writer.writeCharacters(admissibleVal.getValue().toString());// REFERS TO #NODE_ACCEPT_VALUE
+                        writer.writeEndElement();// #__NODE_ACCEPT_VALUE
+                    }
+                }
+                if (featureOntologies.contains(OTClasses.NumericFeature()) || featureOntologies.contains(OTClasses.Numeric())) {
+                    explicitTypeDeclaration = true;
+                    writer.writeAttribute("rdf:resource", OTClasses.NumericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                }
+                if (featureOntologies.contains(OTClasses.StringFeature()) || featureOntologies.contains(OTClasses.String())) {
+                    explicitTypeDeclaration = true;
+                    writer.writeAttribute("rdf:resource", OTClasses.StringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                }
+            }
+            if (!explicitTypeDeclaration) { // Declare as Feature
+                writer.writeAttribute("rdf:resource", OTClasses.Feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+            }
+            /* Units of the feature*/
+            if (f.getUnits() != null) {
+                if (f.getUnits().isEmpty()) {
+                    writer.writeEmptyElement("ot:units");
+                } else {
+                    writer.writeStartElement("ot:units");// #NODE_UNITS_VALUE
+                    writer.writeCharacters(f.getUnits());// REFERS TO #NODE_UNITS_VALUE
+                    writer.writeEndElement();// #__NODE_UNITS_VALUE
+                }
+            }
+            /* Feature Meta Data*/
+            if (f.getMeta() != null) {
+                f.getMeta().writeToStAX(writer);
+                if (f.getMeta().getSameAs() != null && f.getMeta().getSameAs().getValue() != null) {
+                    String featureUri = f.getMeta().getSameAs().getValue().toString();
+                    if (!featureUri.contains("http")){
+                        featureUri = OTClasses.NS+featureUri;
+                    }
+                    sameAsFeatures.add(featureUri);
+                }
+            }
+            writer.writeEndElement();// #__NODE_FEATURE_DECLARATION
         }
 
-        writer.writeEndElement();// #X101: End Centrl Dataset Node
+        for (String sameAsFeatureUri : sameAsFeatures){
+            writer.writeStartElement("ot:Feature"); // #NODE_ADDITIONAL_FEATURE
+            writer.writeAttribute("rdf:about", sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE
+            writer.writeEndElement();
+        }
 
-        writer.writeEndElement();
+        writer.writeEndElement();// #__NODE_rdf:RDF_CORE_ELEMENT
         writer.flush();
     }
 

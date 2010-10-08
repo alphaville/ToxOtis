@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import javax.xml.stream.XMLStreamException;
 import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.spiders.TypedValue;
@@ -162,7 +164,10 @@ public class MetaInfoImpl implements MetaInfo {
             resource.addLiteral(OWL.versionInfo.inModel(model).as(Property.class),
                     model.createTypedLiteral(versionInfo.getValue()));
         }
-
+        if (date != null) {
+            resource.addLiteral(DC.date.inModel(model).as(Property.class),
+                    model.createTypedLiteral(comment.getValue(), XSDDatatype.XSDstring));
+        }
         AnnotationProperty contributorProperty = model.createAnnotationProperty(DC.contributor.getURI());
         if (contributors != null && !contributors.isEmpty()) {
             Iterator<TypedValue<String>> contrIt = contributors.iterator();
@@ -376,5 +381,41 @@ public class MetaInfoImpl implements MetaInfo {
     public MetaInfo setSubject(TypedValue<String> subject) {
         this.subject = subject;
         return this;
+    }
+
+    private void writeMetaDatumResourceToStAX(String metaDatumNS, String metaDatumName, TypedValue<?> value, javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
+        if (value != null && value.getValue()!=null && !value.getValue().toString().isEmpty()) {
+            String stringVal = value.getValue().toString();
+            if (!stringVal.contains("http")){
+                stringVal = OTClasses.NS + stringVal;
+            }
+            writer.writeEmptyElement(metaDatumNS+":"+metaDatumName);
+            writer.writeAttribute("rdf:resource", value.getValue().toString());
+        }
+    }
+    private void writeMetaDatumToStAX(String metaDatumNS, String metaDatumName, TypedValue<?> value, javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
+        if (value != null) {
+            String propertyTag = metaDatumNS + ":" + metaDatumName;
+            if (value.getValue().toString().isEmpty()) {
+                writer.writeEmptyElement(propertyTag);
+            }
+            writer.writeStartElement(propertyTag);
+            writer.writeCharacters(value.getValue().toString());
+            writer.writeEndElement();
+        }
+    }
+
+    public void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
+        writeMetaDatumToStAX("dc", "identifier", identifier, writer);
+        writeMetaDatumToStAX("rdfs", "comment", comment, writer);
+        writeMetaDatumToStAX("dc", "date", date, writer);
+        writeMetaDatumToStAX("dc", "description", description, writer);
+        writeMetaDatumToStAX("ot", "hasSource", hasSource, writer);
+        writeMetaDatumToStAX("dc", "publisher", publisher, writer);
+        writeMetaDatumResourceToStAX("owl", "sameAs", sameAs, writer);
+        writeMetaDatumToStAX("rdfs", "seeAlso", seeAlso, writer);
+        writeMetaDatumToStAX("dc", "subject", subject, writer);
+        writeMetaDatumToStAX("dc", "title", title, writer);
+        writeMetaDatumToStAX("owl", "versionInfo", versionInfo, writer);
     }
 }

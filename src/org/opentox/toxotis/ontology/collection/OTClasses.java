@@ -77,7 +77,7 @@ public class OTClasses {
      * @return
      *      Universal class <code>owl:Thing</code>.
      */
-    private static OntologicalClass Thing() {
+    public static OntologicalClass Thing() {
         if (ms_Thing == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Thing");
             clazz.setNameSpace(OWL.NS);

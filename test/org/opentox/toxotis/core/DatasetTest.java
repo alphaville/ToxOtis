@@ -123,11 +123,12 @@ public class DatasetTest {
 
     @Test
     public void testAWriteRdf() throws URISyntaxException, ToxOtisException, InterruptedException, FileNotFoundException {
-        int datasetId = 10;
+        int datasetId = 1;
         VRI vri = Services.ideaconsult();
         vri.augment("dataset", Integer.toString(datasetId));
-        vri.removeUrlParameter("max").addUrlParameter("max", 10);
+        vri.removeUrlParameter("max").addUrlParameter("max", 2);
         Dataset ds = new Dataset(vri).loadFromRemote();
         ds.writeRdf(System.out);
+
     }
 }
