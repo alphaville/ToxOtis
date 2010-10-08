@@ -61,7 +61,7 @@ public class MetaInfoImplTest {
         OntModel model = fSpider.getOntModel();
         Resource resouce = model.getResource(featureUri);
         resouce = mi.attachTo(resouce, model);
-        FeatureSpider fS = new FeatureSpider(model, featureUri);
+        FeatureSpider fS = new FeatureSpider((OntModel)model, featureUri);
         Feature parsedFeature = fS.parse();        
     }
 }
