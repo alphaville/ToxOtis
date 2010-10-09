@@ -2,8 +2,18 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.ontology.OTDatatypeProperty;
+import org.opentox.toxotis.ontology.OTObjectProperty;
+import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
@@ -106,6 +116,75 @@ public abstract class OTComponent<T extends OTComponent> {
         return (T) this;
     }
 
+    /**
+     * Serializes the Dataset object into an RDF/XML document and writes it to
+     * a given output stream.
+     * @param output
+     *      OutputStream where the output should be written.
+     */
+    public void writeRdf(java.io.OutputStream output) {
+        javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
+        try {
+            javax.xml.stream.XMLStreamWriter writer = factory.createXMLStreamWriter(output, "UTF-8");
+            writeRdf(writer);
+        } catch (javax.xml.stream.XMLStreamException ex) {
+            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
+        }
+    }
+
+    /**
+     * Due to the large size of some objects like datasets, it is advisable to use this method
+     * for serializing large objects to RDF/XML rather than the method <code>OntModel#write(OutputStream)</code>.
+     * In the case of Datasets, it has been shown that this method performs much faster (about 7,5 times faster on a
+     * dataset of 21 features and 1000 compounds).
+     * 
+     * @param writer
+     *      XML Stream Writer used for the serialization of the dataset object.
+     * @throws XMLStreamException
+     *      In case the serialization is not possible due to syntax errors.
+     */
+    abstract void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException;
+
+    protected void initRdfWriter(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
+        writer.writeStartElement("rdf:RDF"); // #NODE_rdf:RDF_CORE_ELEMENT
+        writer.writeNamespace("ot", OTClasses.NS);
+        writer.writeNamespace("rdfs", RDFS.getURI());
+        writer.writeNamespace("rdf", RDF.getURI());
+        writer.writeNamespace("dc", DC.NS);
+        writer.writeNamespace("owl", OWL.NS);
+        writer.setPrefix("ot", OTClasses.NS);
+        writer.setPrefix("rdfs", RDFS.getURI());
+        writer.setPrefix("rdf", RDF.getURI());
+        writer.setPrefix("dc", DC.NS);
+        writer.setPrefix("owl", OWL.NS);
+    }
+
+    protected void endRdfWriter(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
+        writer.writeEndElement();// #__NODE_rdf:RDF_CORE_ELEMENT
+        writer.writeEndDocument();// # .....1......
+        writer.flush();
+    }
+
+    protected void writeClass(javax.xml.stream.XMLStreamWriter writer, OntologicalClass clazz) throws javax.xml.stream.XMLStreamException {
+        writer.writeEmptyElement(OWL.NS, "Class");//1
+        writer.writeAttribute("rdf:about", clazz.getUri());
+    }
+
+    protected void writeObjectProperty(javax.xml.stream.XMLStreamWriter writer, OTObjectProperty property) throws javax.xml.stream.XMLStreamException {
+        writer.writeEmptyElement(OWL.NS, "ObjectProperty");//1
+        writer.writeAttribute("rdf:about", property.getUri());
+    }
+
+    protected void writeDatatypeProperty(javax.xml.stream.XMLStreamWriter writer, OTDatatypeProperty property) throws javax.xml.stream.XMLStreamException {
+        writer.writeEmptyElement(OWL.NS, "DatatypeProperty");//1
+        writer.writeAttribute("rdf:about", property.getUri());
+    }
+
+    protected void writeAnnotationProperty(javax.xml.stream.XMLStreamWriter writer, String annotationPropertyUri) throws javax.xml.stream.XMLStreamException {
+        writer.writeEmptyElement(OWL.NS, "AnnotationProperty");//1
+        writer.writeAttribute("rdf:about", annotationPropertyUri);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -127,6 +206,4 @@ public abstract class OTComponent<T extends OTComponent> {
         hash = 79 * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
     }
-   
-    
 }

@@ -21,6 +21,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
@@ -144,6 +146,11 @@ public class BibTeX extends OTPublishable<BibTeX> {
             bibTexService.appendToken(token);
         }
         return publishOnline(bibTexService, token);
+    }
+
+    @Override
+    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**

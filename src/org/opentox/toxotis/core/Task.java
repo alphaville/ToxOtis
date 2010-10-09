@@ -5,6 +5,8 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -29,6 +31,11 @@ public class Task extends OTOnlineResource<Task> {
         setResultUri(downloadedTask.getResultUri());
         setHttpStatus(downloadedTask.getHttpStatus());
         return this;
+    }
+
+    @Override
+    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public enum Status {

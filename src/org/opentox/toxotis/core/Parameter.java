@@ -3,6 +3,8 @@ package org.opentox.toxotis.core;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
@@ -14,6 +16,11 @@ import org.opentox.toxotis.util.spiders.TypedValue;
  * @author Charalampos Chomenides
  */
 public class Parameter<T> extends OTComponent<Parameter<T>> {
+
+    @Override
+    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     public enum ParameterScope {
 

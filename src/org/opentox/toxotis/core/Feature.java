@@ -5,6 +5,8 @@ import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
@@ -18,6 +20,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.FeatureSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
@@ -190,5 +193,92 @@ public class Feature extends OTPublishable<Feature> {
     @Override
     public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
+        initRdfWriter(writer);
+       
+        writeClass(writer, OTClasses.Feature());
+        writeClass(writer, OTClasses.FeatureValue());
+        writeClass(writer, OTClasses.NominalFeature());
+        writeClass(writer, OTClasses.NumericFeature());
+        writeClass(writer, OTClasses.StringFeature());
+        /*
+         * Append Object Properties
+         */
+        writeObjectProperty(writer, OTObjectProperties.hasSource());
+
+        /*
+         * Append Annotation Properties (DC and RDFS)
+         */
+        writeAnnotationProperty(writer, DC.contributor.getURI());
+        writeAnnotationProperty(writer, DC.creator.getURI());
+        writeAnnotationProperty(writer, DC.date.getURI());
+        writeAnnotationProperty(writer, DC.description.getURI());
+        writeAnnotationProperty(writer, DC.title.getURI());
+        writeAnnotationProperty(writer, DC.subject.getURI());
+        writeAnnotationProperty(writer, RDFS.comment.getURI());
+        writeAnnotationProperty(writer, DC.identifier.getURI());
+
+
+        /**
+         * Append Datatype Properties
+         */
+        writeDatatypeProperty(writer, OTDatatypeProperties.acceptValue());
+        writeDatatypeProperty(writer, OTDatatypeProperties.units());
+
+        Set<OntologicalClass> featureOntologies = null;
+        Set<String> sameAsFeatures = new HashSet<String>();
+        writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
+        writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
+        writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
+        featureOntologies = getOntologies();
+        boolean explicitTypeDeclaration = false;
+        if (featureOntologies != null && !featureOntologies.isEmpty()) {
+            if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
+                explicitTypeDeclaration = true;
+                writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                for (TypedValue admissibleVal : getAdmissibleValue()) {
+                    writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
+                    // TODO: Include also the XSD datatype of the value...
+                    writer.writeCharacters(admissibleVal.getValue().toString());// REFERS TO #NODE_ACCEPT_VALUE
+                    writer.writeEndElement();// #__NODE_ACCEPT_VALUE
+                }
+            }
+            if (featureOntologies.contains(OTClasses.NumericFeature()) || featureOntologies.contains(OTClasses.Numeric())) {
+                explicitTypeDeclaration = true;
+                writer.writeAttribute("rdf:resource", OTClasses.NumericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+            }
+            if (featureOntologies.contains(OTClasses.StringFeature()) || featureOntologies.contains(OTClasses.String())) {
+                explicitTypeDeclaration = true;
+                writer.writeAttribute("rdf:resource", OTClasses.StringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+            }
+        }
+        if (!explicitTypeDeclaration) { // Declare as Feature
+            writer.writeAttribute("rdf:resource", OTClasses.Feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+        }
+        /* Units of the feature*/
+        if (getUnits() != null) {
+            if (getUnits().isEmpty()) {
+                writer.writeEmptyElement("ot:units");
+            } else {
+                writer.writeStartElement("ot:units");// #NODE_UNITS_VALUE
+                writer.writeCharacters(getUnits());// REFERS TO #NODE_UNITS_VALUE
+                writer.writeEndElement();// #__NODE_UNITS_VALUE
+            }
+        }
+        /* Feature Meta Data*/
+        if (getMeta() != null) {
+            getMeta().writeToStAX(writer);
+            if (getMeta().getSameAs() != null && getMeta().getSameAs().getValue() != null) {
+                String featureUri = getMeta().getSameAs().getValue().toString();
+                if (!featureUri.contains("http")) {
+                    featureUri = OTClasses.NS + featureUri;
+                }
+                sameAsFeatures.add(featureUri);
+            }
+        }
+        writer.writeEndElement();// #__NODE_FEATURE_DECLARATION
+        endRdfWriter(writer);
     }
 }

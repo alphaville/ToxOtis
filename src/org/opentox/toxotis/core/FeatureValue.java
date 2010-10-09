@@ -2,6 +2,8 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -53,5 +55,10 @@ public class FeatureValue extends OTComponent<FeatureValue> {
             meta.attachTo(indiv, model);
         }
         return indiv;
+    }
+
+    @Override
+    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

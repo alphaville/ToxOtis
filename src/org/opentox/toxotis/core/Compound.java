@@ -18,6 +18,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.PostClient;
@@ -411,5 +413,10 @@ public class Compound extends OTPublishable<Compound> {
      */
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
         return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL", "true");
+    }
+
+    @Override
+    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

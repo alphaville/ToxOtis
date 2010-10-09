@@ -153,6 +153,8 @@ public class MetaInfoImpl implements MetaInfo {
                  */
                 resource.addProperty(sameProp, model.createResource(hasSource.getValue(), OTClasses.OpenToxResource().inModel(model)));
             } catch (IRIException ex) {
+                // In this case the hasSource property is not assigned to the
+                // corresponding node because it cannot be cast as an IRI.
                 System.err.println("[WARNING] Cannot create a resource with identifier : '" + hasSource.getValue() + "'. Not a valid IRI!");
             }
         }

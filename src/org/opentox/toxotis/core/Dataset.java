@@ -77,65 +77,22 @@ public class Dataset extends OTPublishable<Dataset> {
 
     public Dataset(List<DataEntry> dataEntries) {
         this.dataEntries = dataEntries;
-    }
+    }    
 
-    private void writeClass(javax.xml.stream.XMLStreamWriter writer, OntologicalClass clazz) throws XMLStreamException {
-        writer.writeEmptyElement(OWL.NS, "Class");//1
-        writer.writeAttribute("rdf:about", clazz.getUri());
-    }
-
-    private void writeObjectProperty(javax.xml.stream.XMLStreamWriter writer, OTObjectProperty property) throws XMLStreamException {
-        writer.writeEmptyElement(OWL.NS, "ObjectProperty");//1
-        writer.writeAttribute("rdf:about", property.getUri());
-    }
-
-    private void writeDatatypeProperty(javax.xml.stream.XMLStreamWriter writer, OTDatatypeProperty property) throws XMLStreamException {
-        writer.writeEmptyElement(OWL.NS, "DatatypeProperty");//1
-        writer.writeAttribute("rdf:about", property.getUri());
-    }
-
-    private void writeAnnotationProperty(javax.xml.stream.XMLStreamWriter writer, String annotationPropertyUri) throws XMLStreamException {
-        writer.writeEmptyElement(OWL.NS, "AnnotationProperty");//1
-        writer.writeAttribute("rdf:about", annotationPropertyUri);
-    }
+    
 
     /**
-     * Serializes the Dataset object into an RDF/XML document and writes it to
-     * a given output stream.
-     * @param output
-     *      OutputStream where the output should be written.
-     */
-    public void writeRdf(OutputStream output) {
-        javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
-        try {
-            javax.xml.stream.XMLStreamWriter writer = factory.createXMLStreamWriter(output, "UTF-8");
-            writeRdf(writer);
-        } catch (XMLStreamException ex) {
-            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
-        }
-    }
-
-    /**
-     * Due to the large size of some dataset objects
+     * Due to the large size of some dataset objects, it is advisable to use this method
+     * for serializing dataset objects to RDF/XML rather than the method <code>OntModel#write(OutputStream)</code>.
+     * It has been shown that this method performs much faster (about 7,5 times faster on a
+     * dataset of 21 features and 1000 compounds).
      * @param writer
+     *      XML Stream Writer used for the serialization of the dataset object.
      * @throws XMLStreamException
+     *      In case the serialization is not possible due to syntax errors.
      */
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartDocument();
-
-        writer.writeStartElement("rdf:RDF"); // #NODE_rdf:RDF_CORE_ELEMENT
-        writer.writeNamespace("ot", OTClasses.NS);
-        writer.writeNamespace("rdfs", RDFS.getURI());
-        writer.writeNamespace("rdf", RDF.getURI());
-        writer.writeNamespace("dc", DC.NS);
-        writer.writeNamespace("owl", OWL.NS);
-
-        writer.setPrefix("ot", OTClasses.NS);
-        writer.setPrefix("rdfs", RDFS.getURI());
-        writer.setPrefix("rdf", RDF.getURI());
-        writer.setPrefix("dc", DC.NS);
-        writer.setPrefix("owl", OWL.NS);
-
+        initRdfWriter(writer);          
 
         writeClass(writer, OTClasses.Dataset());
         writeClass(writer, OTClasses.DataEntry());
@@ -177,6 +134,10 @@ public class Dataset extends OTPublishable<Dataset> {
 
         writer.writeStartElement("ot:Dataset");// #NODE_BASE: Start Base Dataset Node
         writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_BASE
+        /* Meta-information about the dataset */
+        if (getMeta()!=null){
+            getMeta().writeToStAX(writer);
+        }
         for (DataEntry dataEntry : getDataEntries()) {
             writer.writeStartElement("ot:dataEntry");// #NODE_HAS_DATAENTRY_PROP
             writer.writeStartElement("ot:DataEntry");// #NODE_DE
@@ -210,14 +171,16 @@ public class Dataset extends OTPublishable<Dataset> {
         for (Feature f : containedFeatures) {
             writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
             writer.writeAttribute("rdf:about", f.getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
-            writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
+
+            
             featureOntologies = f.getOntologies();
             boolean explicitTypeDeclaration = false;
             if (featureOntologies != null && !featureOntologies.isEmpty()) {
                 if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
+                    writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
-                    for (TypedValue admissibleVal : f.getAdmissibleValue()) {
+                    for (TypedValue admissibleVal : f.getAdmissibleValue()) {                        
                         writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                         // TODO: Include also the XSD datatype of the value...
                         writer.writeCharacters(admissibleVal.getValue().toString());// REFERS TO #NODE_ACCEPT_VALUE
@@ -225,15 +188,18 @@ public class Dataset extends OTPublishable<Dataset> {
                     }
                 }
                 if (featureOntologies.contains(OTClasses.NumericFeature()) || featureOntologies.contains(OTClasses.Numeric())) {
+                    writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute("rdf:resource", OTClasses.NumericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 }
                 if (featureOntologies.contains(OTClasses.StringFeature()) || featureOntologies.contains(OTClasses.String())) {
+                    writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute("rdf:resource", OTClasses.StringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 }
             }
             if (!explicitTypeDeclaration) { // Declare as Feature
+                writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                 writer.writeAttribute("rdf:resource", OTClasses.Feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
             }
             /* Units of the feature*/
@@ -251,8 +217,8 @@ public class Dataset extends OTPublishable<Dataset> {
                 f.getMeta().writeToStAX(writer);
                 if (f.getMeta().getSameAs() != null && f.getMeta().getSameAs().getValue() != null) {
                     String featureUri = f.getMeta().getSameAs().getValue().toString();
-                    if (!featureUri.contains("http")){
-                        featureUri = OTClasses.NS+featureUri;
+                    if (!featureUri.contains("http")) {
+                        featureUri = OTClasses.NS + featureUri;
                     }
                     sameAsFeatures.add(featureUri);
                 }
@@ -260,7 +226,7 @@ public class Dataset extends OTPublishable<Dataset> {
             writer.writeEndElement();// #__NODE_FEATURE_DECLARATION
         }
 
-        for (String sameAsFeatureUri : sameAsFeatures){
+        for (String sameAsFeatureUri : sameAsFeatures) {
             writer.writeStartElement("ot:Feature"); // #NODE_ADDITIONAL_FEATURE
             writer.writeAttribute("rdf:about", sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE
             writer.writeEndElement();

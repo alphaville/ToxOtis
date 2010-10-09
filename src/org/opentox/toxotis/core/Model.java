@@ -4,6 +4,8 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.ArrayList;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
@@ -130,5 +132,10 @@ public class Model extends OTOnlineResource<Model> {
         setParameters(m.getParameters());
         setPredictedFeature(m.getPredictedFeature());
         return this;
+    }
+
+    @Override
+    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

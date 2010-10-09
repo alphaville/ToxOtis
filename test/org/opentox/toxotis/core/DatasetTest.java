@@ -1,6 +1,8 @@
 package org.opentox.toxotis.core;
 
+import com.hp.hpl.jena.ontology.OntModel;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.lang.management.ManagementFactory;
 import java.net.URISyntaxException;
@@ -123,12 +125,11 @@ public class DatasetTest {
 
     @Test
     public void testAWriteRdf() throws URISyntaxException, ToxOtisException, InterruptedException, FileNotFoundException {
-        int datasetId = 1;
+        int datasetId = 9;
         VRI vri = Services.ideaconsult();
         vri.augment("dataset", Integer.toString(datasetId));
         vri.removeUrlParameter("max").addUrlParameter("max", 2);
         Dataset ds = new Dataset(vri).loadFromRemote();
         ds.writeRdf(System.out);
-
     }
 }
