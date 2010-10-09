@@ -15,7 +15,7 @@ h2. 2. ToxOtis Authentication and Authorization
 
 h3. 2.1. Acquire an Authentication Token
 
-Once you provide your credentials to the SSO server, you acquire an authentication token. This will be used to authenticate yourself against any web service in OpenTox (if needed) and get permission to perform an operation. This is easily accomplished in ToxOtis. You simply provide your credentials to the <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/AuthenticationToken.java"></a>AuthenticationToken</a>:
+Once you provide your credentials to the SSO server, you acquire an authentication token. This will be used to authenticate yourself against any web service in OpenTox (if needed) and get permission to perform an operation. This is easily accomplished in ToxOtis. You simply provide your credentials to the <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/AuthenticationToken.java"></a>AuthenticationToken</a> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/aa/AuthenticationToken.html : 
 
 <pre>
 AuthenticationToken at = new AuthenticationToken("JohnSmith","mysecretPass111");
@@ -46,7 +46,7 @@ ACTIVE, INACTIVE
 
 h3. 2.2. Advanced Security Issues
 
-In general, it is not good practise to store unencrypted passwords in your program or in your database. However, if you need to have your username and password stored so that you can easily use them, ToxOtis offers an encryption utility: <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/PasswordFileManager.java">PasswordFileManager</a>. First of all, you have to create a (private) master key and store it in a file. You should make this file hidden and modify its permissions so that only your application will have access to it. The file should look like this:
+In general, it is not good practise to store unencrypted passwords in your program or in your database. However, if you need to have your username and password stored so that you can easily use them, ToxOtis offers an encryption utility: <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/PasswordFileManager.java">PasswordFileManager</a> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/aa/PasswordFileManager.html. First of all, you have to create a (private) master key and store it in a file. You should make this file hidden and modify its permissions so that only your application will have access to it. The file should look like this:
 
 <pre>
 --- START MASTER KEY ---
@@ -60,7 +60,7 @@ x3Mt6591855xKP65vQWn730jY889w47h9Fm0h6zYS04
 --- END MASTER KEY ---
 </pre>
 
-You should use the password generator of ToxOtis to create a good and <em>valid</em> master key. Here is an example of using <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/PasswordFileManager.java">PasswordFileManager</a> for this purpose:
+You should use the password generator of ToxOtis to create a good and <em>valid</em> master key. Here is an example of using <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/PasswordFileManager.java">PasswordFileManager</a> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/aa/PasswordFileManager.html for this purpose:
 
 <pre>
 Thread createPasswordFile = new Thread() {
@@ -86,7 +86,7 @@ Password file           : /home/chung/toxotisKeys/master.key
 Password Stength        : EXCELENT
 </pre>
 
-The class <code>PasswordFileManager</code> is <code>Observable</code>, so you can monitor the progress of the password generation (That is why we wrap the execution of the master password file cretion in a Thread). This process might take long especially if you choose a good random number generator such as <code>/dev/random</code> on Linux. In case you do not provide a random number source (<code>null</code>), <code>java.security.SecureRandom</code> will be used instead (This is an RNG implementation by Java). In that case the method will print:
+The class <code>PasswordFileManager</code> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/aa/PasswordFileManager.html is <code>Observable</code> "(doc)":http://download.oracle.com/javase/1.4.2/docs/api/java/util/Observable.html so you can monitor the progress of the password generation (That is why we wrap the execution of the master password file cretion in a Thread). This process might take long especially if you choose a good random number generator such as <code>/dev/random</code> on Linux. In case you do not provide a random number source (<code>null</code>), <code>java.security.SecureRandom</code> will be used instead (This is an RNG implementation by Java). In that case the method will print:
 
 <pre>
 ----- ToxOtis Pasword Generator -----

@@ -1,0 +1,63 @@
+h1. Factories
+
+In this section we present the functionalities provided by the methods of the factory classes of ToxOtis that reside in the package <code>org.opentox.toxotis.factory</code>. They contain static methods that either create OTComponent objects or (for the sake of simplicity and performance) just return a URI or a collection of such. Note that for the same reason, these classes don't follow to the letter the "Factory Design Pattern":http://en.wikipedia.org/wiki/Factory_method_pattern but in some cases return just pointers to the objects they create (i.e. in our case, their URLs/URIs). In the next sections we will go through each factory providing examples of use:
+
+h2. 1. Overview
+
+The package "org.opentox.toxotis.factory":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/factory/package-summary.html includes 3 factory classes:
+
+* "CompoundFactory":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/factory/CompoundFactory.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/factory/CompoundFactory.html : Provides methods for publishing compounds using local representations from a file (e.g. SDF).
+* "DatasetFactory":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/factory/DatasetFactory.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/factory/DatasetFactory.html : Provides methods for creating a Dataset object using weka objects (Instance, Instances) or ARFF files.
+* "FeatureFactory":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/factory/FeatureFactory.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/factory/FeatureFactory.html : Provides remote database lookup methods
+
+h2. 2. Examples
+
+h3. 2.1. FeatureFactory
+
+h4. 2.1.1. List all features stored in a remote feature service
+
+The method <code>listAllFeatures</code> in FeatureFactory returns all features stored in a specified remote feature service. The method returns a list of "URIs":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/client/VRI.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/client/VRI.html of the features. Users can subsequently use there URIs to download and parse some of these features if necessary. The maximum number of returned URIs can be prespecified to avoid huge lists of URIs. Here is a simple example:
+
+<pre>
+Set<VRI> featureUris = FeatureFactory.listAllFeatures(Services.ambitUniPlovdiv().augment("feature"), 10, null);
+</pre>
+
+The above method will return a list of a maximum length equal to 10. If one needs all features, it suffices to set the <code>max</code> parameter to <code>-1</code>, that is:
+
+<pre>
+Set<VRI> allFeatureUris = FeatureFactory.listAllFeatures(Services.ambitUniPlovdiv().augment("feature"), -1, null);
+</pre>
+
+If paging is supported by the remote service, then you can specify the page length and page index while getting the list of features:
+
+<pre>
+Set<VRI> featureUris = FeatureFactory.listAllFeatures(Services.ambitUniPlovdiv().augment("feature"), 3, 10, null);
+</pre>
+
+The above code means that you request for the 3rd page of length 10. Here is a possible list of features:
+
+<pre>
+http://apps.ideaconsult.net:8080/ambit2/feature/20089
+http://apps.ideaconsult.net:8080/ambit2/feature/20088
+http://apps.ideaconsult.net:8080/ambit2/feature/20087
+http://apps.ideaconsult.net:8080/ambit2/feature/20086
+http://apps.ideaconsult.net:8080/ambit2/feature/20085
+http://apps.ideaconsult.net:8080/ambit2/feature/20084
+http://apps.ideaconsult.net:8080/ambit2/feature/20091
+http://apps.ideaconsult.net:8080/ambit2/feature/20090
+http://apps.ideaconsult.net:8080/ambit2/feature/20093
+http://apps.ideaconsult.net:8080/ambit2/feature/20092
+</pre>
+
+h4. 2.1.2. Search for a feature using the OT feature ontology based on the ECHA specifications (namespace: http://www.opentox.org/echaEndpoints.owl#) you can perform a database lookup on a remote feature service. For example, say you need to get a list of all features that are <em>sameAs</em> the dissociation constant pKa (otee:Dissociation_constant_pKa). Then using the method <code>lookupSameAs</code>, one has:
+
+<pre>
+Set<VRI> features = FeatureFactory.lookupSameAs(OTEchaEndpoints.DissociationConstantPKa(), null);
+for (VRI f : features) {
+    System.out.println(f.toString());
+}
+</pre>
+
+A list of all ECHA endpoints is provided from "OTEchaEndpoints":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/ontology/collection/OTEchaEndpoints.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/ontology/collection/OTEchaEndpoints.html and a collection of some common features is available through "OTFeatures":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/ontology/collection/OTFeatures.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/ontology/collection/OTFeatures.html .
+
+h3. 2.2. DatasetFactory
