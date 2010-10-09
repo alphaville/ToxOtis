@@ -86,7 +86,7 @@ Password file           : /home/chung/toxotisKeys/master.key
 Password Stength        : EXCELENT
 </pre>
 
-The class <code>PasswordFileManager</code> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/aa/PasswordFileManager.html is <code>Observable</code> "(doc)":http://download.oracle.com/javase/1.4.2/docs/api/java/util/Observable.html so you can monitor the progress of the password generation (That is why we wrap the execution of the master password file cretion in a Thread). This process might take long especially if you choose a good random number generator such as <code>/dev/random</code> on Linux. In case you do not provide a random number source (<code>null</code>), <code>java.security.SecureRandom</code> will be used instead (This is an RNG implementation by Java). In that case the method will print:
+The class <code>PasswordFileManager</code> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/aa/PasswordFileManager.html is <code>Observable</code> "(doc)":http://download.oracle.com/javase/1.4.2/docs/api/java/util/Observable.html so you can monitor the progress of the password generation (That is why we wrap the execution of the master password file cretion in a Thread). This process might take long especially if you choose a good random number generator such as <code>/dev/random</code> on Linux. In case you do not provide a random number source (<code>null</code>), <code>java.security.SecureRandom</code> "(doc)":http://download.oracle.com/javase/1.4.2/docs/api/java/security/SecureRandom.html will be used instead (This is an RNG implementation by Java). In that case the method will print:
 
 <pre>
 ----- ToxOtis Pasword Generator -----
@@ -160,7 +160,7 @@ boolean isValid = at.validate(); // isvalid is false
 
 h3. 2.4. Retrieve user information from a token
 
-You can use a token to obtain information about the user that created it providing its username and password. These information will be returned as an instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/User.java">User</a>. Here is an example:
+You can use a token to obtain information about the user that created it providing its username and password. These information will be returned as an instance of <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/User.java">User</a> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/aa/User.html. Here is an example:
 
 <pre>
 AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/john/.hidpass/.my.key");
@@ -182,7 +182,7 @@ Users are suggested to invalidate their tokens if they don't need them anymore i
 
 h3. 2.5. Managing your Tokens: Token Pool
 
-Obtaining a new token each time authentication/authorization is required is not good practise both in terms of performance and security. ToxOtis comes with a "token management utility":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/TokenPool.java that allows for multiple login of different users but restricts a single user from obtaining multiple tokens. Once a user logs in, its token is stored in the pool. In case he/she attepts to login again and the stored token has not expired, then no new token is obtained but the existing one is returned from the method. Here is an example:
+Obtaining a new token each time authentication/authorization is required is not good practise both in terms of performance and security. ToxOtis comes with a "token management utility":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/util/aa/TokenPool.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/aa/TokenPool.html that allows for multiple login of different users but restricts a single user from obtaining multiple tokens. Once a user logs in, its token is stored in the pool. In case he/she attepts to login again and the stored token has not expired, then no new token is obtained but the existing one is returned from the method. Here is an example:
 
 <pre>
 TokenPool tokenPool = TokenPool.getInstance();
