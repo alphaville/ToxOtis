@@ -195,6 +195,15 @@ public class Feature extends OTPublishable<Feature> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * This method is still under development, so maybe the created RDF/XML representation
+     * is not fully compliant to the OpenTox API.
+     * 
+     * @param writer
+     *      XML Stream Writer used for the serialization of the dataset object.
+     * @throws javax.xml.stream.XMLStreamException
+     *     In case the serialization is not possible due to syntax errors.
+     */
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         initRdfWriter(writer);
        

@@ -1,12 +1,8 @@
 package org.opentox.toxotis.factory;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
@@ -19,6 +15,8 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.TokenPool;
 
 /**
+ * A factory-like class that provides methods for looking up features in remote
+ * databases through the OpenTox REST API.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -122,20 +120,47 @@ public class FeatureFactory {
      * @return
      *      Set of all URIs available from the feature service
      * @throws ToxOtisException
-     *
+     *      In case a non-success HTTP status code is returned by the remote service,
+     *      either due to authentication/authorization failure of due to other unexpected
+     *      conditions (e.g. error 500 or 503).
      */
     public static Set<VRI> listAllFeatures(VRI featureService, int max, AuthenticationToken token) throws ToxOtisException {
+        return listAllFeatures(featureService, 1, max, token);
+    }
+
+    /**
+     * Lists all features available from a feature service providing also an authentication
+     * token.
+     * @param featureService
+     *      The URI of a feature service
+     * @param page
+     *
+     * @param token
+     *      An authentication token which can be obtained from the singleton class
+     *      {@link TokenPool } that manages multiple logged in users.
+     * @return
+     *      Set of all URIs available from the feature service
+     * @throws ToxOtisException
+     *      In case a non-success HTTP status code is returned by the remote service,
+     *      either due to authentication/authorization failure of due to other unexpected
+     *      conditions (e.g. error 500 or 503).
+     */
+    public static Set<VRI> listAllFeatures(VRI featureService, int page, int pagesize, AuthenticationToken token) throws ToxOtisException {
         try {
-            VRI featureServiceWithToken = new VRI(featureService).clearToken().appendToken(token).removeUrlParameter("max");
-            if (max > 0) {
-                featureServiceWithToken.addUrlParameter("max", max);
+            VRI featureServiceWithToken = new VRI(featureService).clearToken().
+                    appendToken(token).removeUrlParameter("page").removeUrlParameter("pagesize");
+            if (page > 0) {
+                featureServiceWithToken.addUrlParameter("page", page);
+            }
+            if (pagesize > 0) {
+                featureServiceWithToken.addUrlParameter("pagesize", pagesize);
             }
             GetClient client = new GetClient(featureServiceWithToken);
+            client.setMediaType(Media.TEXT_URI_LIST);
             final int httpStatus = client.getResponseCode();
             if (httpStatus != 200) {
                 throw new ToxOtisException("Service returned status code :" + httpStatus);
-            }
-            client.setMediaType(Media.TEXT_URI_LIST);
+            }            
             Set<VRI> result = client.getResponseUriList();
             if (client != null) {
                 try {

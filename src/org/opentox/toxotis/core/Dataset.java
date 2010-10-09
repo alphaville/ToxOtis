@@ -5,11 +5,8 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -24,8 +21,6 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.ontology.OTDatatypeProperty;
-import org.opentox.toxotis.ontology.OTObjectProperty;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
@@ -72,9 +67,16 @@ public class Dataset extends OTPublishable<Dataset> {
         }
     }
 
+    /**
+     * Dummy constructor for a dataset. Creates an empty dataset.
+     */
     public Dataset() {
     }
 
+    /**
+     * Create a new Dataset object providing a list of data entries.
+     * @param dataEntries
+     */
     public Dataset(List<DataEntry> dataEntries) {
         this.dataEntries = dataEntries;
     }    
@@ -110,20 +112,8 @@ public class Dataset extends OTPublishable<Dataset> {
         writeObjectProperty(writer, OTObjectProperties.dataEntry());
         writeObjectProperty(writer, OTObjectProperties.values());
         writeObjectProperty(writer, OTObjectProperties.feature());
-        writeObjectProperty(writer, OTObjectProperties.hasSource());
 
-        /*
-         * Append Annotation Properties (DC and RDFS)
-         */
-        writeAnnotationProperty(writer, DC.contributor.getURI());
-        writeAnnotationProperty(writer, DC.creator.getURI());
-        writeAnnotationProperty(writer, DC.date.getURI());
-        writeAnnotationProperty(writer, DC.description.getURI());
-        writeAnnotationProperty(writer, DC.title.getURI());
-        writeAnnotationProperty(writer, DC.subject.getURI());
-        writeAnnotationProperty(writer, RDFS.comment.getURI());
-        writeAnnotationProperty(writer, DC.identifier.getURI());
-
+        writeMetaDataProperties(writer);
 
         /**
          * Append Datatype Properties

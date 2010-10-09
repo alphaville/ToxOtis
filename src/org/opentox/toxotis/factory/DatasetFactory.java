@@ -25,7 +25,7 @@ import weka.core.Instances;
 
 /**
  * DatasetFactory provides methods for creating Datasets from
- * various sources. Main functionality features parsing an .arff file
+ * various sources. Main functionality features parsing an <code>.arff</code> file
  * or a weka Instances object to create a Dataset.
  *
  * @author Charalampos Chomenides
@@ -33,6 +33,26 @@ import weka.core.Instances;
  */
 public class DatasetFactory {
 
+    /**
+     * Create a dataset using a <code>weka.core.Instances</code> object (based on
+     * Weka, version 3.6.2). Since datasets structurally differ from Instances
+     * object for they store the information in a more expanded way including meta
+     * data and nodes that do not appear in Instances object (or ARFF files), the
+     * provided object has to possess a certain structure: The first attribute of
+     * it has to be always named <code>compound_uri</code> and be of type <code>string</code>.
+     * This attribute stores the URIs of the compounds of the dataset. Secondd, the rest
+     * attributes have to be of type <code>string</code> or <code>numeric</code> or
+     * <code>nominal</code> and their name should be an acceptable feature uri (for
+     * example <code>http://someserver.com:1234/opentox/feature/54234</code>).
+     *
+     * @param instances
+     *      Instances object to be converted into a Dataset.
+     * @return
+     *      The dataset that is created from the provided Instances object.
+     * @throws ToxOtisException
+     *      In case the conversion is not possible due to structural inconsistencies
+     *      of the provided Instances object.
+     */
     public static Dataset createFromArff(Instances instances) throws ToxOtisException {
         Dataset ds = new Dataset();
         Enumeration instancesEnum = instances.enumerateInstances();
@@ -49,6 +69,25 @@ public class DatasetFactory {
         return ds;
     }
 
+    /**
+     * Create a dataset using an ARFF file at a given location. Since datasets structurally
+     * differ from Instances object for they store the information in a more expanded way including meta
+     * data and nodes that do not appear in Instances object (or ARFF files), the
+     * provided ARFF file has to possess a certain structure: The first attribute of
+     * it has to be always named <code>compound_uri</code> and be of type <code>string</code>.
+     * This attribute stores the URIs of the compounds of the dataset. Secondd, the rest
+     * attributes have to be of type <code>string</code> or <code>numeric</code> or
+     * <code>nominal</code> and their name should be an acceptable feature uri (for
+     * example <code>http://someserver.com:1234/opentox/feature/54234</code>).
+     *
+     * @param file
+     *      Pointer to an ARFF file
+     * @return
+     *      The dataset that is created from the provided ARFF file.
+     * @throws ToxOtisException
+     *      In case the conversion is not possible due to structural inconsistencies
+     *      of the provided Instances object or the file is not found.
+     */
     public static Dataset createFromArff(File file) throws ToxOtisException {
         try {
             return createFromArff(new FileReader(file));
@@ -69,6 +108,13 @@ public class DatasetFactory {
         }
     }
 
+    /**
+     * Create a {@link DataEntry data entry} from a single instance.
+     * @param instance
+     * @return
+     *      A Data Entry that corresponds to the provided instance.
+     * @throws ToxOtisException
+     */
     public static DataEntry createDataEntry(Instance instance) throws ToxOtisException {
         Enumeration attributes = instance.enumerateAttributes();
         DataEntry de = new DataEntry();

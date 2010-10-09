@@ -14,6 +14,7 @@ import org.opentox.toxotis.ontology.OTDatatypeProperty;
 import org.opentox.toxotis.ontology.OTObjectProperty;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
@@ -144,6 +145,34 @@ public abstract class OTComponent<T extends OTComponent> {
      *      In case the serialization is not possible due to syntax errors.
      */
     abstract void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException;
+
+    /**
+     * Appends declarations for all metadata properties at the current cursor
+     * position of the writer.
+     *
+     * @param writer
+     *      XML Stream Writer used for the serialization of the dataset object.
+     * @throws javax.xml.stream.XMLStreamException
+     *      In case the serialization is not possible due to syntax errors.
+     */
+    protected void writeMetaDataProperties(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
+        /*
+         * Object Properties
+         */
+        writeObjectProperty(writer, OTObjectProperties.hasSource());
+
+        /*
+         * Append Annotation Properties (DC and RDFS)
+         */
+        writeAnnotationProperty(writer, DC.contributor.getURI());
+        writeAnnotationProperty(writer, DC.creator.getURI());
+        writeAnnotationProperty(writer, DC.date.getURI());
+        writeAnnotationProperty(writer, DC.description.getURI());
+        writeAnnotationProperty(writer, DC.title.getURI());
+        writeAnnotationProperty(writer, DC.subject.getURI());
+        writeAnnotationProperty(writer, RDFS.comment.getURI());
+        writeAnnotationProperty(writer, DC.identifier.getURI());
+    }
 
     protected void initRdfWriter(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         writer.writeStartElement("rdf:RDF"); // #NODE_rdf:RDF_CORE_ELEMENT
