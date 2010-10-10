@@ -172,8 +172,11 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    
     @Override
-    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+    public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+
 }

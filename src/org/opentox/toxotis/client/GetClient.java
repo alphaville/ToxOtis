@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Media;
 
@@ -49,7 +50,16 @@ public class GetClient extends AbstractClient {
         }
     }
 
-    /** Get the result as a URI list */
+    /**
+     * Get the response of the remote service as a Set of URIs. The media type of
+     * the request, as specified by the <code>Accept</code> header is set to
+     * <code>text/uri-list</code>.
+     * @return
+     *      Set of URIs returned by the remote service.
+     * @throws ToxOtisException
+     *      In case some I/O communication error inhibits the transimittance of
+     *      data between the client and the server or a some stream cannot close.
+     */
     public java.util.Set<VRI> getResponseUriList() throws ToxOtisException {
         setMediaType(Media.TEXT_URI_LIST);// Set the mediatype to text/uri-list
         java.util.Set<VRI> setOfUris = new java.util.HashSet<VRI>();
@@ -68,34 +78,34 @@ public class GetClient extends AbstractClient {
                 try {
                     setOfUris.add(new VRI(line));
                 } catch (URISyntaxException ex) {
-                    throw new ToxOtisException("The server returned an invalid URI : '"
-                            + line + "'", ex);
+                    throw new ToxOtisException(ErrorCause.InvalidUriReturnedFromRemote,
+                            "The server returned an invalid URI : '" + line + "'", ex);
                 }
             }
-        } catch (ToxOtisException cl) {
+        } catch (final ToxOtisException cl) {
             throw cl;
         } catch (IOException io) {
-            throw new ToxOtisException(io);
+            throw new ToxOtisException(ErrorCause.CommunicationError, io);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
                 }
             }
             if (isr != null) {
                 try {
                     isr.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
                 }
             }
         }

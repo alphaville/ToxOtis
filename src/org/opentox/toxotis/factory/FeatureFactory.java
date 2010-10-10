@@ -134,7 +134,13 @@ public class FeatureFactory {
      * @param featureService
      *      The URI of a feature service
      * @param page
-     *
+     *      When paging of results is supported, <code>page</code> stands fort the index
+     *      of that page. If set to <code>-1</code> it will have no effect on the URI
+     *      and the request so all pages will be returned.
+     * @param pagesize
+     *      Size of the page of results to be returned. If set to <code>-1</code> it
+     *      will have no effect on the URI and the request so all pages will be returned,
+     *      i.e. all features contained in the remote database.
      * @param token
      *      An authentication token which can be obtained from the singleton class
      *      {@link TokenPool } that manages multiple logged in users.
@@ -145,7 +151,8 @@ public class FeatureFactory {
      *      either due to authentication/authorization failure of due to other unexpected
      *      conditions (e.g. error 500 or 503).
      */
-    public static Set<VRI> listAllFeatures(VRI featureService, int page, int pagesize, AuthenticationToken token) throws ToxOtisException {
+    public static Set<VRI> listAllFeatures(VRI featureService, int page, int pagesize, AuthenticationToken token)
+            throws ToxOtisException {
         try {
             VRI featureServiceWithToken = new VRI(featureService).clearToken().
                     appendToken(token).removeUrlParameter("page").removeUrlParameter("pagesize");

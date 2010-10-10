@@ -28,6 +28,7 @@ public enum ErrorCause implements java.io.Serializable{
     InvalidFeatureURI,
     InvalidServiceURI,
     InvalidTaskURI,
+    InvalidUriReturnedFromRemote,
     InvalidToken,
     KnoufBibTexClassNotFound,
     KnoufDatatypePropertyNotFound,
@@ -44,18 +45,5 @@ public enum ErrorCause implements java.io.Serializable{
     TrainingError,
     TaskNotFoundError,
     UnauthorizedUser,
-    UnknownCauseOfException,
-    UpdateFailed,
-            
-    // CONFIG:
-    XA1, XA2, XA3,
-
-    //BATCH PROCESSOR:
-    XBP1, XBP2, XBP3, XBP7,
-    // PARALLEL PROCESSOR:
-    XPP1, XPP2, XPP3, XPP7,
-
-    // PIPELINE
-    XPIP1001,                 
-    Xtime11735;            
+    UnknownCauseOfException;
 }

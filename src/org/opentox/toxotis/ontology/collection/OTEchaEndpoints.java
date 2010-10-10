@@ -4,7 +4,8 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
- *
+ * Collection of ECHA endpoints.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

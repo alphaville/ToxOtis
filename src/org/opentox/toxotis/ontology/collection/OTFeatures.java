@@ -5,6 +5,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
+ * Collection of all features defined in the OpenTox ontology.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides

@@ -514,6 +514,7 @@ public class VRI { // Well tested!
     /**
      * Returns the base URI of the service.
      * @return
+     *      The base URI of the service.
      */
     public VRI getServiceBaseUri() {
         String noQuery = getStringNoQuery();

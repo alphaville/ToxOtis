@@ -14,7 +14,7 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
-public class MetaInfoSpider extends Tarantula {
+public class MetaInfoSpider extends Tarantula<MetaInfo> {
 
     public MetaInfoSpider(OntModel model, String uri) {
         super();
@@ -54,7 +54,7 @@ public class MetaInfoSpider extends Tarantula {
         /* contributors */
         temp = retrieveProp(org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(model));
         dcmeta.setHasSource(temp != null ? temp.getValue() : null);
-        dcmeta.getContributors().addAll(retrieveProps(DC.contributor));
+        dcmeta.getContributors().addAll(retrieveTypedProps(DC.contributor));
         /* sameAs */
         temp = retrieveProp(OWL.sameAs);
         dcmeta.setSameAs(temp != null ? temp.getValue() : null);

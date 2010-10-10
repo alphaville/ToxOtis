@@ -9,7 +9,8 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
- *
+ * Collection of all Ontological Classes defined in OpenTox.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

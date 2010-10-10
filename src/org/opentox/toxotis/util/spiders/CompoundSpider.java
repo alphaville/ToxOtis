@@ -1,15 +1,9 @@
 package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.SimpleSelector;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
@@ -18,12 +12,6 @@ import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.Compound;
-import org.opentox.toxotis.core.Conformer;
-import org.opentox.toxotis.core.DataEntry;
-import org.opentox.toxotis.core.Dataset;
-import org.opentox.toxotis.core.ErrorReport;
-import org.opentox.toxotis.ontology.collection.OTClasses;
-import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
  *

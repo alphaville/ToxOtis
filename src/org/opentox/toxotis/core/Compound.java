@@ -416,7 +416,7 @@ public class Compound extends OTPublishable<Compound> {
     }
 
     @Override
-    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+    public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

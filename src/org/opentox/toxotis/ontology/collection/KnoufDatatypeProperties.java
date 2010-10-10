@@ -11,7 +11,8 @@ import org.opentox.toxotis.ontology.OTDatatypeProperty;
 import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
 
 /**
- *
+ * A collection of all ontological datatype properties specified by the Knouf
+ * BibTeX ontology.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

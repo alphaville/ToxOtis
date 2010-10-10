@@ -18,7 +18,7 @@ import org.opentox.toxotis.util.spiders.TypedValue;
 public class Parameter<T> extends OTComponent<Parameter<T>> {
 
     @Override
-    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+    public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

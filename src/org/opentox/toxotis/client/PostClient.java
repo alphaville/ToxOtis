@@ -4,7 +4,6 @@ import com.hp.hpl.jena.ontology.OntModel;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,11 +11,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.core.IStAXWritable;
+import org.opentox.toxotis.core.OTComponent;
 
 /**
- *
+ * A client used to perform POST operations. It is used to perform POST requests in
+ * a configurable way allowing users to specify the POSTed object and the various
+ * header parameters.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -31,8 +36,14 @@ public class PostClient extends AbstractClient {
     private OntModel model;
     /** Arbitrary object to be posted to the remote server s*/
     private File fileContentToPost = null;
-    /** */
+    /** A simple string to be posted to the remote service */
     private String stringToPost;
+    /** A StAX component that implements the interface {@link IStAXWritable }
+    that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
+    write(OutputStream)} that writes the component to an outputstream pointing to the
+    remote stream
+     */
+    private IStAXWritable staxComponent;
 
     public PostClient() {
         super();
@@ -62,10 +73,25 @@ public class PostClient extends AbstractClient {
      * as application/rdf+xml. Invokations of this method set automatically the content-type
      * to application/rdf+xml though it can be overriden afterwards.
      * @param model
+     *      Ontological Model to be posted
      * @return
+     *      The PostClient with the updated Ontological Model.
      */
     public PostClient setPostable(OntModel model) {
         this.model = model;
+        return this;
+    }
+
+    /**
+     * Set a StAX-writeable component to be posted to the remote location
+     * @param staxWritable. A StAX component that implements the interface {@link IStAXWritable }
+     * that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
+     * write(OutputStream)} that writes the component to an outputstream pointing to the remote stream
+     * @return
+     *      The PostClient with the updated writeable component.
+     */
+    public PostClient setPostable(IStAXWritable staxWritable) {
+        this.staxComponent = staxWritable;
         return this;
     }
 
@@ -232,33 +258,41 @@ public class PostClient extends AbstractClient {
                 wr.writeBytes(getParametersAsQuery());// POST the parameters
             } else if (model != null) {
                 model.write(wr);
+            } else if (staxComponent != null) {
+                staxComponent.writeRdf(wr);
             } else if (stringToPost != null) {
                 wr.writeChars(stringToPost);
             } else if (fileContentToPost != null) {
-                FileReader fr = new FileReader(fileContentToPost);
-                BufferedReader br = new BufferedReader(fr);
-                String line;
-                while ((line = br.readLine()) != null) {
-                    wr.writeBytes(line);
-                    wr.writeChars("\n");
-                }
-                Throwable thr = null;
-                if (br != null) {
-                    try {
-                        br.close();
-                    } catch (final IOException ex) {
-                        thr = ex;
+                FileReader fr = null;
+                BufferedReader br = null;
+                try {
+                    fr = new FileReader(fileContentToPost);
+                    br = new BufferedReader(fr);
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        wr.writeBytes(line);
+                        wr.writeChars("\n");
                     }
-                }
-                if (fr != null) {
-                    try {
-                        fr.close();
-                    } catch (final IOException ex) {
-                        thr = ex;
+                } catch (IOException ex) {
+                } finally {
+                    Throwable thr = null;
+                    if (br != null) {
+                        try {
+                            br.close();
+                        } catch (final IOException ex) {
+                            thr = ex;
+                        }
                     }
-                }
-                if (thr != null) {
-                    throw new ToxOtisException(thr);
+                    if (fr != null) {
+                        try {
+                            fr.close();
+                        } catch (final IOException ex) {
+                            thr = ex;
+                        }
+                    }
+                    if (thr != null) {
+                        throw new ToxOtisException(ErrorCause.StreamCouldNotClose, thr);
+                    }
                 }
             }
             wr.flush();

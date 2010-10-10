@@ -41,12 +41,12 @@ public class AlgorithmTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException, IOException {
-        Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceVri());
+        Algorithm a = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceVri());
         AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
-        a.loadFromRemote();
+        a.loadFromRemote(at);
         System.out.println(a.getMeta());
         WonderWebValidator wwv = new WonderWebValidator(a.asOntModel());
-        System.out.println(wwv.post()?"HORRRAAAAYYY!!":"SHIT!");
+        System.out.println(wwv.validate(WonderWebValidator.OWL_SPECIFICATION.DL)?"HORRRAAAAYYY!!":"SHIT!");
     }
 
 
@@ -55,6 +55,6 @@ public class AlgorithmTest {
         Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceUri());
         a.loadFromRemote();
         System.out.println(a.getMeta());
-//        a.asOntModel().write(System.out);
+        a.asOntModel().write(System.out);
     }
 }

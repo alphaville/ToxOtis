@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core;
 
+import com.hp.hpl.jena.vocabulary.OWLTest;
 import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -7,11 +8,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.ontology.collection.OTClasses;
-import org.opentox.toxotis.util.spiders.TypedValue;
-import static org.junit.Assert.*;
+import org.opentox.toxotis.ontology.WonderWebValidator;
 
 /**
  *
@@ -43,8 +41,13 @@ public class FeatureTest {
         Feature f = new Feature(Services.ideaconsult().augment("feature","22200"));
         f.loadFromRemote();
         System.out.println(f.getMeta());
-            f.writeRdf(System.out);
-        
+        f.writeRdf(System.out);
+        WonderWebValidator wwv = new WonderWebValidator(f);
+        System.out.println(
+                wwv.validate(WonderWebValidator.OWL_SPECIFICATION.DL)
+                );
+
     }
+
 
 }

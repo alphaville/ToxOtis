@@ -22,22 +22,50 @@ import java.util.Set;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTAlgorithmTypes;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
- *
+ * A generic parser for OpenTox components.
+ * @param <Result>
+ *      The expected result or parsed object from the method {@link Tarantula#parse() parse()} in this class.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
 public abstract class Tarantula<Result> implements Closeable {
 
+    /**
+     * The core resource that is to be parsed out of the
+     * datamodel into an OpenTox component object.
+     */
     protected Resource resource;
+    /**
+     * The data model which is used in the parsing procedure
+     * and also hold the {@link Tarantula#resource base resource}
+     */
     protected OntModel model;
+    /**
+     * Time in ms that was needed for the reading the data model from
+     * the remote location identified by the URI of the parsed entity.
+     */
     protected long readRemoteTime = -1;
+    /**
+     * Computational time needed for the parsing of the data model. Does not include the
+     * time needed for the entity to be downloaded and/or converted into a
+     * datamodel (OntModel of Jena).
+     */
     protected long parseTime = -1;
 
+    /**
+     * Constructor of a generic parsing processor with a given data model and
+     * a base resource which is the target of the parsing processor.
+     * @param resource
+     *      The base resource which is to the parsed by the method
+     *      {@link Tarantula#parse() }
+     * @param model
+     */
     public Tarantula(Resource resource, OntModel model) {
         this.resource = resource;
         this.model = model;
@@ -46,6 +74,14 @@ public abstract class Tarantula<Result> implements Closeable {
     public Tarantula() {
     }
 
+    /**
+     * Parse the data model of an OpenTox entity and create an ToxOtis object
+     * according to the data content of the data model.
+     *
+     * @return
+     *      The parsed object.
+     * @throws ToxOtisException
+     */
     public abstract Result parse() throws ToxOtisException;
 
     protected TypedValue retrieveProp(Property prop) {
@@ -92,6 +128,21 @@ public abstract class Tarantula<Result> implements Closeable {
         while (it.hasNext()) {
             try {
                 props.add(it.nextStatement().getObject().as(Literal.class).getString());
+            } finally {
+                it.close();
+            }
+        }
+        return props;
+    }
+
+    protected ArrayList<TypedValue<String>> retrieveTypedProps(Property prop) {
+        ArrayList<TypedValue<String>> props = new ArrayList<TypedValue<String>>();
+
+        StmtIterator it = model.listStatements(
+                new SimpleSelector(resource, prop, (Literal) null));
+        while (it.hasNext()) {
+            try {
+                props.add(new TypedValue(it.nextStatement().getObject().as(Literal.class).getString()));
             } finally {
                 it.close();
             }
@@ -202,13 +253,13 @@ public abstract class Tarantula<Result> implements Closeable {
 
     protected void assessHttpStatus(int status, VRI actionUri) throws ToxOtisException {
         if (status == 403) {
-            throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + actionUri + "'");
+            throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + actionUri + "' (status 403)");
         }
         if (status == 401) {
-            throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + actionUri + "'");
+            throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + actionUri + "' (status 401)");
         }
         if (status == 404) {
-            throw new ToxOtisException(ErrorCause.TaskNotFoundError, "The following task was not found : '" + actionUri + "'");
+            throw new ToxOtisException(ErrorCause.TaskNotFoundError, "The following task was not found : '" + actionUri + "' (status 404)");
         }
         if (status != 200 && status != 202 && status != 201) {
             throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + actionUri + "'. status = " + status);

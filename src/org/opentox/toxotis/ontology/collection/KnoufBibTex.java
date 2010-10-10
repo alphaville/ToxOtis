@@ -11,7 +11,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
- *
+ * A collection of all ontological classes defined by the Knouf BibTeX ontology.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

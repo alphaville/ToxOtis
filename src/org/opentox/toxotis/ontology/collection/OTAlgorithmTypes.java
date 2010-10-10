@@ -9,7 +9,10 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
- *
+ * A collection of all algorithm types specified in OpenTox. The namespace for these
+ * algorithms is <code>http://www.opentox.org/algorithmTypes.owl/</code> and is usually
+ * abbreviated as <code><ota</code>.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

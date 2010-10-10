@@ -8,7 +8,9 @@ import org.opentox.toxotis.util.spiders.TypedValue;
 
 /**
  * <p align=justify width=80%>
- * MetaInfo provides access to a set of meta-information about
+ * The term metadata is usually used to describe <em>data about data</em> that include 
+ * a definition, description and other auxiliary information about the underlying resource. 
+ * The interface MetaInfo provides access to a set of such metadata about
  * a resource. Such are the identifier, the title and other related meta. Formally
  * these are included in the Dublin Core ontology for modeling meta-data and partially
  * in the OpenTox ontology (e.g. hasSource) for modeling some OT-specific properties.

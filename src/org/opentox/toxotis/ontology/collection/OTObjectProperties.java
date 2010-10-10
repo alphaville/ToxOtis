@@ -7,6 +7,12 @@ import java.util.Map;
 import org.opentox.toxotis.ontology.OTObjectProperty;
 import org.opentox.toxotis.ontology.impl.OTObjectPropertyImpl;
 
+/**
+ * Collection of all object propertied used in OpenTox (API version 1.1).
+ * 
+ * @author Pantelis Sopasakis
+ * @author Charalampos Chomenides
+ */
 public class OTObjectProperties {
 
     private OTObjectProperties() {

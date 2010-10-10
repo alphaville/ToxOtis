@@ -23,6 +23,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
+ * A parser for data models of OpenTox algorithms.
  *
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
@@ -42,8 +43,8 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      * @param uri
      *      The URI of the algorithm to be downloaded and parsed into an {@link
      *      Algorithm } object. You can pick an algorithm URI from the list inside
-     *      {@link OpenToxAlgorithms }; for example {@link OpenToxAlgorithms#NTUA_MLR MLR}
-     *      from the {@link Services#NTUA_SERVICES NTUA} server.
+     *      {@link OpenToxAlgorithms }; for example {@link OpenToxAlgorithms#NTUA_MLR NTUA MLR}
+     *      from the {@link Services#ntua() NTUA SERVICES} server.
      * @param token
      *      An authentication token that will grant the client access to the resource.
      * @throws ToxOtisException
@@ -56,6 +57,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
     public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
         this(uri.addUrlParameter("tokenid", token.stringValue()));
     }
+
 
     public AlgorithmSpider(Resource resource, OntModel model) throws ToxOtisException {
         super(resource, model);

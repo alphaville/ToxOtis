@@ -21,7 +21,7 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
- *
+ * A parser for RDF representations of OpenTox datasets.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

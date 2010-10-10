@@ -167,8 +167,9 @@ public class MetaInfoImpl implements MetaInfo {
                     model.createTypedLiteral(versionInfo.getValue()));
         }
         if (date != null) {
-            resource.addLiteral(DC.date.inModel(model).as(Property.class),
-                    model.createTypedLiteral(comment.getValue(), XSDDatatype.XSDstring));
+            AnnotationProperty dateProperty = model.createAnnotationProperty(DC.date.getURI());
+            resource.addLiteral(dateProperty,
+                    model.createTypedLiteral(date.getValue(), XSDDatatype.XSDstring));
         }
         AnnotationProperty contributorProperty = model.createAnnotationProperty(DC.contributor.getURI());
         if (contributors != null && !contributors.isEmpty()) {
@@ -386,15 +387,18 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     private void writeMetaDatumResourceToStAX(String metaDatumNS, String metaDatumName, TypedValue<?> value, javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
-        if (value != null && value.getValue()!=null && !value.getValue().toString().isEmpty()) {
+        if (value != null && value.getValue() != null && !value.getValue().toString().isEmpty()) {
             String stringVal = value.getValue().toString();
-            if (!stringVal.contains("http")){
+            try {
+                IRIFactory.semanticWebImplementation().construct(stringVal);
+            } catch (IRIException iriEx) {
                 stringVal = OTClasses.NS + stringVal;
             }
-            writer.writeEmptyElement(metaDatumNS+":"+metaDatumName);
-            writer.writeAttribute("rdf:resource", value.getValue().toString());
+            writer.writeEmptyElement(metaDatumNS + ":" + metaDatumName);
+            writer.writeAttribute("rdf:resource", stringVal);
         }
     }
+
     private void writeMetaDatumToStAX(String metaDatumNS, String metaDatumName, TypedValue<?> value, javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
         if (value != null) {
             String propertyTag = metaDatumNS + ":" + metaDatumName;
@@ -412,7 +416,7 @@ public class MetaInfoImpl implements MetaInfo {
         writeMetaDatumToStAX("rdfs", "comment", comment, writer);
         writeMetaDatumToStAX("dc", "date", date, writer);
         writeMetaDatumToStAX("dc", "description", description, writer);
-        writeMetaDatumToStAX("ot", "hasSource", hasSource, writer);
+        writeMetaDatumResourceToStAX("ot", "hasSource", hasSource, writer);
         writeMetaDatumToStAX("dc", "publisher", publisher, writer);
         writeMetaDatumResourceToStAX("owl", "sameAs", sameAs, writer);
         writeMetaDatumToStAX("rdfs", "seeAlso", seeAlso, writer);

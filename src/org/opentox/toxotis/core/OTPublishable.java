@@ -92,7 +92,7 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
 
 
     /**
-     * Publish the component to a standard server. The resource will be posted to the
+     * Publish the component to a standard (default) server. The resource will be posted to the
      * server in RDF format (application/rdf+xml). If you want to specify at which
      * server the resource should be posted, use the {@link
      * OTPublishable#publishOnline(org.opentox.toxotis.client.VRI, org.opentox.toxotis.util.aa.AuthenticationToken) other method}.

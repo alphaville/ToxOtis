@@ -78,6 +78,7 @@ public class TokenPool {
      * @param credentialsFile
      *      Encrypted file with your credentials (username and password) that have
      * @return
+     *      The authentication token that results from the login/authentication operation.
      * @throws IOException
      * @throws ToxOtisException
      */
@@ -150,7 +151,4 @@ public class TokenPool {
         pool = new HashMap<String, AuthenticationToken>();
     }
 
-    public static void main(String... args) throws ToxOtisException, IOException {
-        TokenPool pool = TokenPool.getInstance();
-    }
 }

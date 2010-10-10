@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
@@ -192,7 +193,7 @@ public class Feature extends OTPublishable<Feature> {
 
     @Override
     public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return publishOnline(Services.ideaconsult().augment("feature"), token);
     }
 
     /**
@@ -206,9 +207,8 @@ public class Feature extends OTPublishable<Feature> {
      */
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         initRdfWriter(writer);
-       
+
         writeClass(writer, OTClasses.Feature());
-        writeClass(writer, OTClasses.FeatureValue());
         writeClass(writer, OTClasses.NominalFeature());
         writeClass(writer, OTClasses.NumericFeature());
         writeClass(writer, OTClasses.StringFeature());
@@ -276,18 +276,27 @@ public class Feature extends OTPublishable<Feature> {
                 writer.writeEndElement();// #__NODE_UNITS_VALUE
             }
         }
+
         /* Feature Meta Data*/
+        String sameAsFeatureUri = null;
         if (getMeta() != null) {
             getMeta().writeToStAX(writer);
             if (getMeta().getSameAs() != null && getMeta().getSameAs().getValue() != null) {
-                String featureUri = getMeta().getSameAs().getValue().toString();
-                if (!featureUri.contains("http")) {
-                    featureUri = OTClasses.NS + featureUri;
+                sameAsFeatureUri = getMeta().getSameAs().getValue().toString();
+                if (!sameAsFeatureUri.contains("http")) {
+                    sameAsFeatureUri = OTClasses.NS + sameAsFeatureUri;
                 }
-                sameAsFeatures.add(featureUri);
             }
         }
+
+
         writer.writeEndElement();// #__NODE_FEATURE_DECLARATION
+
+        if (sameAsFeatureUri != null) {
+            writer.writeStartElement("ot:Feature");// #NODE_ADDITIONAL_FEATURE
+            writer.writeAttribute("rdf:about", sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE
+            writer.writeEndElement();// #__NODE_ADDITIONAL_FEATURE
+        }
         endRdfWriter(writer);
     }
 }

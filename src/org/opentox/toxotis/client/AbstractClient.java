@@ -7,16 +7,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**
- *
+ * An abstract class providing necessary methods for the implementation of a
+ * HTTP client. 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class AbstractClient implements Closeable{
+public abstract class AbstractClient implements Closeable {
 
     /** Target URI */
     protected VRI vri = null;
@@ -27,7 +29,6 @@ public abstract class AbstractClient implements Closeable{
     protected static final String URL_ENCODING = "UTF-8";
     /** Size of a buffer used to download the data from the remote server */
     protected static final int bufferSize = 4194304;
-
     /** Accepted mediatype  */
     protected String acceptMediaType = null;
     /** A mapping from parameter names to their corresponding values */
@@ -41,6 +42,12 @@ public abstract class AbstractClient implements Closeable{
         return vri;
     }
 
+    /**
+     * Retrieve the specified media type which is the value for the <code>Accept</code>
+     * HTTP Header.
+     * @return
+     *      The accepted media type.
+     */
     public String getMediaType() {
         return acceptMediaType;
     }
@@ -73,17 +80,39 @@ public abstract class AbstractClient implements Closeable{
         return this;
     }
 
+    /**
+     * Initiate a connection to the remote location identified by the provided URI and
+     * using the already specified header parameters.
+     * @param uri
+     *      The location to which the HTTP connection should be made.
+     * @return
+     *      An instance of HttpURLConnection that is used to perform the remote
+     *      HTTP request.
+     * @throws ToxOtisException
+     *      In case an error status code is received from the remote service or
+     *      an I/O exception is thrown due to communication problems with the remote
+     *      server.
+     */
     protected abstract java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException;
 
-    /** Get the normal stream of the response (body) */
+    /**
+     * Get the body of the HTTP response as InputStream.
+     * @return
+     *      InputStream for the remote HTTP response
+     * @throws ToxOtisException
+     *      In case an error status code is received from the remote location.
+     * @throws java.io.IOException
+     *      In case some communication error occurs during the transmission
+     *      of the data.
+     */
     public java.io.InputStream getRemoteStream() throws ToxOtisException, java.io.IOException {
         if (con == null) {
             con = initializeConnection(vri.toURI());
         }
         if (con == null) {
-            throw new ToxOtisException("Comminucation Error with the remote");
+            throw new ToxOtisException(ErrorCause.CommunicationError, "Comminucation Error with the remote");
         }
-        if (con.getResponseCode() == 200 || con.getResponseCode() == 202) {
+        if (con.getResponseCode() == 200 || con.getResponseCode() == 202 || con.getResponseCode() == 201) {
             return new java.io.BufferedInputStream(con.getInputStream(), bufferSize);
         } else {
             return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);
@@ -91,9 +120,13 @@ public abstract class AbstractClient implements Closeable{
     }
 
     /**
-     * Get the response body in plain text format.
+     * Get the response body as a String in the format specified in the Accept header
+     * of the request.
+     *
      * @return
-     *      String consisting of the response body.
+     *      String consisting of the response body (in a MediaType which results
+     *      from content negotiation, taking into account the Accept header of the
+     *      request)
      * @throws ToxOtisException
      *      In case some communication, server or request error occurs.
      */
@@ -165,23 +198,36 @@ public abstract class AbstractClient implements Closeable{
      *      error will arise.
      */
     public com.hp.hpl.jena.ontology.OntModel getResponseOntModel(String specification) throws ToxOtisException {
-        if (specification==null){
+        if (specification == null) {
             specification = "RDF/XML";
         }
         try {
             com.hp.hpl.jena.ontology.OntModel om = new SimpleOntModelImpl();
             InputStream is = getRemoteStream();
-            om.read(is, null,specification);
+            om.read(is, null, specification);
             if (is != null) {
                 is.close();
             }
             return om;
         } catch (final Exception ex) {
-            throw new ToxOtisException("Cannot read OntModel from " + vri.toString(), ex);
+            throw new ToxOtisException(ErrorCause.CommunicationError, 
+                    "Cannot read OntModel from " + vri.toString() + "due to communication" +
+                    "error with the remote service.", ex);
         }
     }
 
-    /** Get the response status */
+    /**
+     * Get the HTTP status of the response
+     * @return
+     *      Response status code.
+     * @throws ToxOtisException
+     *      In case the connection cannot be established because a {@link ToxOtisException }
+     *      is thrown from the method {@link AbstractClient#initializeConnection(java.net.URI)
+     *      initializeConnection(URI)}.
+     * @throws java.io.IOException
+     *      In case some communication error with the remote location occurs during
+     *      the transaction of data.
+     */
     public int getResponseCode() throws ToxOtisException, java.io.IOException {
         if (con == null) {
             con = initializeConnection(vri.toURI());
@@ -195,13 +241,19 @@ public abstract class AbstractClient implements Closeable{
      *      Accepted mediatype
      *
      * @see RequestHeaders#ACCEPT
-
      */
     public AbstractClient setMediaType(String mediaType) {
         this.acceptMediaType = mediaType;
         return this;
     }
 
+    /**
+     * Specify the mediatype to be used in the <tt>Accept</tt> header providing
+     * an instance of {@link Media }.
+     * @param mediaType
+     *      Accepted mediatype
+     * @see RequestHeaders#ACCEPT
+     */
     public AbstractClient setMediaType(Media mediaType) {
         this.acceptMediaType = mediaType.getMime();
         return this;
@@ -210,6 +262,7 @@ public abstract class AbstractClient implements Closeable{
     /**
      * Set the URI on which the GET method is applied.
      * @param vri
+     *      The URI that will be used by the client to perform the remote connection.
      */
     public AbstractClient setUri(VRI vri) {
         this.vri = vri;
@@ -227,11 +280,16 @@ public abstract class AbstractClient implements Closeable{
         return this;
     }
 
+    /**
+     * Closes this stream and releases any system resources associated
+     * with it. If the stream is already closed then invoking this
+     * method has no effect.
+     *
+     * @throws IOException if an I/O error occurs
+     */
     public void close() throws IOException {
-        if (con!=null){
+        if (con != null) {
             con.disconnect();
         }
     }
-
-
 }

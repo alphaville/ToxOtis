@@ -219,7 +219,7 @@ public class Dataset extends OTPublishable<Dataset> {
         for (String sameAsFeatureUri : sameAsFeatures) {
             writer.writeStartElement("ot:Feature"); // #NODE_ADDITIONAL_FEATURE
             writer.writeAttribute("rdf:about", sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE
-            writer.writeEndElement();
+            writer.writeEndElement();// #__NODE_ADDITIONAL_FEATURE
         }
 
         writer.writeEndElement();// #__NODE_rdf:RDF_CORE_ELEMENT

@@ -149,7 +149,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
     }
 
     @Override
-    void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+    public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

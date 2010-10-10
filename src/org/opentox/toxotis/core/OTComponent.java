@@ -8,6 +8,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OTDatatypeProperty;
@@ -25,7 +27,7 @@ import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class OTComponent<T extends OTComponent> {
+public abstract class OTComponent<T extends OTComponent> implements IStAXWritable {
 
     /** URI of the component */
     protected VRI uri;
@@ -117,34 +119,43 @@ public abstract class OTComponent<T extends OTComponent> {
         return (T) this;
     }
 
-    /**
-     * Serializes the Dataset object into an RDF/XML document and writes it to
-     * a given output stream.
-     * @param output
-     *      OutputStream where the output should be written.
-     */
-    public void writeRdf(java.io.OutputStream output) {
+    public void writeRdf(java.io.Writer writer) {
         javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
+        javax.xml.stream.XMLStreamWriter streamWriter = null;
         try {
-            javax.xml.stream.XMLStreamWriter writer = factory.createXMLStreamWriter(output, "UTF-8");
-            writeRdf(writer);
+            streamWriter = factory.createXMLStreamWriter(writer);
+            writeRdf(streamWriter);
         } catch (javax.xml.stream.XMLStreamException ex) {
             Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
+        } finally {
+            if (streamWriter!=null){
+                try {
+                    streamWriter.close();
+                } catch (XMLStreamException ex) {
+                    Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "StAX writer could not close!", ex);
+                }
+            }
         }
     }
 
-    /**
-     * Due to the large size of some objects like datasets, it is advisable to use this method
-     * for serializing large objects to RDF/XML rather than the method <code>OntModel#write(OutputStream)</code>.
-     * In the case of Datasets, it has been shown that this method performs much faster (about 7,5 times faster on a
-     * dataset of 21 features and 1000 compounds).
-     * 
-     * @param writer
-     *      XML Stream Writer used for the serialization of the dataset object.
-     * @throws XMLStreamException
-     *      In case the serialization is not possible due to syntax errors.
-     */
-    abstract void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException;
+    public void writeRdf(java.io.OutputStream output) {
+        javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
+        javax.xml.stream.XMLStreamWriter writer = null;
+        try {
+            writer = factory.createXMLStreamWriter(output, "UTF-8");
+            writeRdf(writer);
+        } catch (javax.xml.stream.XMLStreamException ex) {
+            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (XMLStreamException ex) {
+                    Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "StAX writer could not close!", ex);
+                }
+            }
+        }
+    }
 
     /**
      * Appends declarations for all metadata properties at the current cursor

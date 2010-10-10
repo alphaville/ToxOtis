@@ -49,7 +49,7 @@ public class WonderWebValidatorTest {
          */
         OntModel om = bib.asOntModel();
         WonderWebValidator vld = new WonderWebValidator(om);
-        assertTrue(vld.post());
+        assertTrue(vld.validate(WonderWebValidator.OWL_SPECIFICATION.DL));
 
     }
 }

@@ -40,7 +40,7 @@ public class FeatureFactoryTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
     public void testLookUpSameAs() throws ToxOtisException {
         Set<VRI> features = FeatureFactory.lookupSameAs(
                 new VRI(Services.ambitUniPlovdiv()).
@@ -53,15 +53,15 @@ public class FeatureFactoryTest {
 
     @Test
     public void testLookUpSameAsNoService() throws ToxOtisException, InterruptedException {
-        Set<VRI> features = FeatureFactory.lookupSameAs(OTFeatures.SMILES(), null);
+        Set<VRI> features = FeatureFactory.lookupSameAs(OTEchaEndpoints.DissociationConstantPKa(), null);
         for (VRI f : features) {
             System.out.println(f.toString());
         }
 
     }
-    @Test
+    //@Test
     public void testListFeatures() throws ToxOtisException, InterruptedException {
-        Set<VRI> features = FeatureFactory.listAllFeatures(Services.ambitUniPlovdiv().augment("feature"), 1,5, null);
+        Set<VRI> features = FeatureFactory.listAllFeatures(Services.ideaconsult().augment("feature"), 3,10, null);
         for (VRI f : features) {
             System.out.println(f.toString());
         }
