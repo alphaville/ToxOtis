@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core;
 
+import org.opentox.toxotis.core.component.Task;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,7 +84,9 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
                 return t.getResultUri();
             }
         };
-        return executor.submit(backgroundJob);
+        Future<VRI> future = executor.submit(backgroundJob);
+        executor.shutdown();
+        return future;
     }
 
     public Future<VRI> publish(final VRI vri, final AuthenticationToken token) throws ToxOtisException {

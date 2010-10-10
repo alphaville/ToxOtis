@@ -1,5 +1,8 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.component.Dataset;
+import org.opentox.toxotis.core.component.Compound;
+import org.opentox.toxotis.core.component.Task;
 import java.io.File;
 import java.net.URISyntaxException;
 import javax.swing.ImageIcon;

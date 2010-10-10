@@ -1,5 +1,6 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.*;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -600,7 +601,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
      * use the methods defined in {@link BibTeX } to publish the BibTeX in some
      * BibTeX service or create an RDF rerpesentation of it (using the Knouf ontology).
      * 
-     * @param string
+     * @param reader
      *     Reader used to acquire the String representation of the BibTeX. The method
      *     will not close the reader so users have to close is when needed.
      * @return

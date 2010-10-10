@@ -10,7 +10,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.net.URISyntaxException;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.ErrorReport;
+import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 

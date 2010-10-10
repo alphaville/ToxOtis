@@ -1,4 +1,4 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
 import java.net.URISyntaxException;
 import org.junit.After;
@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.Task.Status;
+import org.opentox.toxotis.core.component.Task.Status;
 import org.opentox.toxotis.util.aa.PasswordFileManager;
 import static org.junit.Assert.*;
 

@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core;
 
+import org.opentox.toxotis.core.component.Dataset;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.DC;

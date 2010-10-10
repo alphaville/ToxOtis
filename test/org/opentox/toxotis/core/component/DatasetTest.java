@@ -1,5 +1,6 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.component.Dataset;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -96,7 +97,7 @@ public class DatasetTest {
     public void testCompareNoDBQuery() throws URISyntaxException, ToxOtisException, InterruptedException, FileNotFoundException {
     }
 
-    //@Test
+    @Test
     public void testUploadTask() throws Exception {
         VRI vri = new VRI(Services.ideaconsult().augment("dataset", "54").addUrlParameter("max", "5"));
         Dataset ds = new Dataset(vri).loadFromRemote();
@@ -123,7 +124,7 @@ public class DatasetTest {
         }
     }
 
-    @Test
+//    @Test
     public void testAWriteRdf() throws URISyntaxException, ToxOtisException, InterruptedException, FileNotFoundException {
         int datasetId = 9;
         VRI vri = Services.ideaconsult();

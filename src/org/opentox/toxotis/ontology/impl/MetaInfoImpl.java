@@ -414,6 +414,13 @@ public class MetaInfoImpl implements MetaInfo {
     public void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         writeMetaDatumToStAX("dc", "identifier", identifier, writer);
         writeMetaDatumToStAX("rdfs", "comment", comment, writer);
+        writeMetaDatumToStAX("rdfs", "creator", creator, writer);
+        if (contributors != null) {
+            for (TypedValue contrib : contributors) {
+                writeMetaDatumToStAX("dc", "contributor", contrib, writer);
+            }
+        }
+        
         writeMetaDatumToStAX("dc", "date", date, writer);
         writeMetaDatumToStAX("dc", "description", description, writer);
         writeMetaDatumResourceToStAX("ot", "hasSource", hasSource, writer);

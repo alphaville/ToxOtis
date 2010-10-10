@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.core.Compound;
+import org.opentox.toxotis.core.component.Compound;
 import static org.junit.Assert.*;
 
 /**

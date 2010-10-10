@@ -73,7 +73,7 @@ public class AuthenticationToken {
 
     /**
      * <p align=justify>Create a new Authentication token providing your credentials.
-     * These credentials are posted to the {@link Services#SSO_AUTHENTICATE SSO} server
+     * These credentials are posted to the {@link Services#ssoAuthenticate() SSO AUTH} server
      * which (if they are valid) returns a token. This is used to construct a new
      * Authentication Token object. The timestamp of the method invokation is set as
      * the timestamp for the object construction. All data transactions take place
@@ -100,7 +100,8 @@ public class AuthenticationToken {
             poster.postParameters();
             int status = poster.getResponseCode();
             if (status >= 400) {
-                throw new ToxOtisException("Error while authenticating user at " + poster.getUri() + ". Status code : " + status);
+                throw new ToxOtisException("Error while authenticating user at " +
+                        poster.getUri() + ". Status code : " + status);
             }
 
             String response = poster.getResponseText();

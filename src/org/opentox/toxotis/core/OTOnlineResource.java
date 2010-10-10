@@ -114,7 +114,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * type.
      * @param destination
      *      String where the data should be stored.
-     * @param fileType
+     * @param media
      *      Content type of the downloaded representation
      * @param token
      *      Token used for authenticating the client against the remote compound
@@ -134,7 +134,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * type.
      * @param destination
      *      Stream where the data should be streamed.
-     * @param fileType
+     * @param media
      *      Content type of the downloaded representation
      * @param token
      *      Token used for authenticating the client against the remote compound
@@ -160,7 +160,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * type.
      * @param destination
      *      File where the data should be stored.
-     * @param fileType
+     * @param media
      *      Content type of the downloaded representation
      * @param token
      *      Token used for authenticating the client against the remote compound
@@ -191,7 +191,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * type.
      * @param destination
      *      Writer where the data should be written.
-     * @param fileType
+     * @param media
      *      Content type of the downloaded representation
      * @param token
      *      Token used for authenticating the client against the remote compound

@@ -1,5 +1,7 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.core.component.Algorithm;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -8,6 +10,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.OTOnlineResource;
+import org.opentox.toxotis.core.component.Algorithm;
+import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;

@@ -14,9 +14,9 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.Feature;
-import org.opentox.toxotis.core.Model;
-import org.opentox.toxotis.core.Parameter;
+import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.core.component.Model;
+import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**

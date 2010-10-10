@@ -9,9 +9,9 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.util.ArrayList;
 import java.util.List;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.core.Conformer;
-import org.opentox.toxotis.core.DataEntry;
-import org.opentox.toxotis.core.FeatureValue;
+import org.opentox.toxotis.core.component.Conformer;
+import org.opentox.toxotis.core.component.DataEntry;
+import org.opentox.toxotis.core.component.FeatureValue;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**

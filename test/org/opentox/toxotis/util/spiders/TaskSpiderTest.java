@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.Task;
+import org.opentox.toxotis.core.component.Task;
 import static org.junit.Assert.*;
 
 /**

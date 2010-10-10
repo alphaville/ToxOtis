@@ -8,8 +8,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.core.Compound;
-import org.opentox.toxotis.core.Dataset;
+import org.opentox.toxotis.core.component.Compound;
+import org.opentox.toxotis.core.component.Dataset;
 import static org.junit.Assert.*;
 
 /**

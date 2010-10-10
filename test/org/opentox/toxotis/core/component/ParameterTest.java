@@ -1,4 +1,4 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import java.net.URISyntaxException;
@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.Parameter.ParameterScope;
+import org.opentox.toxotis.core.component.Parameter.ParameterScope;
 import org.opentox.toxotis.util.spiders.ParameterSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import static org.junit.Assert.*;

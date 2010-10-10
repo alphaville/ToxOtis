@@ -84,9 +84,10 @@ public class PostClient extends AbstractClient {
 
     /**
      * Set a StAX-writeable component to be posted to the remote location
-     * @param staxWritable. A StAX component that implements the interface {@link IStAXWritable }
-     * that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
-     * write(OutputStream)} that writes the component to an outputstream pointing to the remote stream
+     * @param staxWritable
+     *      A StAX component that implements the interface {@link IStAXWritable }
+     *      that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
+     *      write(OutputStream)} that writes the component to an outputstream pointing to the remote stream
      * @return
      *      The PostClient with the updated writeable component.
      */

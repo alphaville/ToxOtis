@@ -1,4 +1,4 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
 import java.util.Set;
 import org.junit.After;

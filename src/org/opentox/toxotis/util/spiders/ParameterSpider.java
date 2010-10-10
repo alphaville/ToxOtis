@@ -2,7 +2,7 @@ package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
-import org.opentox.toxotis.core.Parameter;
+import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 

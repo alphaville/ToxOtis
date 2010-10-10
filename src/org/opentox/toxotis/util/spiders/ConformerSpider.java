@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.Conformer;
+import org.opentox.toxotis.core.component.Conformer;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 

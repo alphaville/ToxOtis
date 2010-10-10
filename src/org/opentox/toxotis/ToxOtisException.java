@@ -1,6 +1,6 @@
 package org.opentox.toxotis;
 
-import org.opentox.toxotis.core.ErrorReport;
+import org.opentox.toxotis.core.component.ErrorReport;
 
 /**
  *

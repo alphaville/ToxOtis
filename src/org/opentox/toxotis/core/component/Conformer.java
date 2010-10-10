@@ -1,4 +1,4 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;

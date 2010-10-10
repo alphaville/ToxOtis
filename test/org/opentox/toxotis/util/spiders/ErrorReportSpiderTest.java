@@ -11,7 +11,7 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.core.ErrorReport;
+import org.opentox.toxotis.core.component.ErrorReport;
 import static org.junit.Assert.*;
 
 /**

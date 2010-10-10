@@ -17,8 +17,8 @@ import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.OpenToxAlgorithms;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.core.Algorithm;
-import org.opentox.toxotis.core.ErrorReport;
+import org.opentox.toxotis.core.component.Algorithm;
+import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 

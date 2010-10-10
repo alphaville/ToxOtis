@@ -1,5 +1,6 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.component.Feature;
 import com.hp.hpl.jena.vocabulary.OWLTest;
 import java.net.URISyntaxException;
 import org.junit.After;

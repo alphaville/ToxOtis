@@ -1,13 +1,13 @@
 package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import org.opentox.toxotis.core.FeatureValue;
+import org.opentox.toxotis.core.component.FeatureValue;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.core.Feature;
+import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 

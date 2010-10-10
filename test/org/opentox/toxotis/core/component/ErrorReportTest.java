@@ -1,5 +1,6 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.component.ErrorReport;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

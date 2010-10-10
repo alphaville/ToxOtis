@@ -1,5 +1,6 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.component.Algorithm;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.After;
@@ -41,7 +42,7 @@ public class AlgorithmTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException, IOException {
-        Algorithm a = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceVri());
+        Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceVri());
         AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
         a.loadFromRemote(at);
         System.out.println(a.getMeta());

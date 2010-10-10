@@ -15,8 +15,8 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.core.DataEntry;
-import org.opentox.toxotis.core.Dataset;
+import org.opentox.toxotis.core.component.DataEntry;
+import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 

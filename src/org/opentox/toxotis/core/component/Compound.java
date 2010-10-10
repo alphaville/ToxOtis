@@ -1,5 +1,6 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.component.Task;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -26,6 +27,8 @@ import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.OTPublishable;
+import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.factory.FeatureFactory;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
@@ -414,6 +417,8 @@ public class Compound extends OTPublishable<Compound> {
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
         return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL", "true");
     }
+
+    
 
     @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {

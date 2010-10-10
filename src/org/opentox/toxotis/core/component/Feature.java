@@ -1,5 +1,6 @@
-package org.opentox.toxotis.core;
+package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.component.Task;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.Individual;
@@ -18,6 +19,8 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.OTPublishable;
+import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
@@ -237,7 +240,6 @@ public class Feature extends OTPublishable<Feature> {
         writeDatatypeProperty(writer, OTDatatypeProperties.units());
 
         Set<OntologicalClass> featureOntologies = null;
-        Set<String> sameAsFeatures = new HashSet<String>();
         writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
         writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
         writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
@@ -288,10 +290,9 @@ public class Feature extends OTPublishable<Feature> {
                 }
             }
         }
-
-
         writer.writeEndElement();// #__NODE_FEATURE_DECLARATION
 
+        /** sameAs feautre type declaration (declared alwayes as ot:Feature) */
         if (sameAsFeatureUri != null) {
             writer.writeStartElement("ot:Feature");// #NODE_ADDITIONAL_FEATURE
             writer.writeAttribute("rdf:about", sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE

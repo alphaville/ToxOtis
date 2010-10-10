@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.core.BibTeX;
+import org.opentox.toxotis.core.component.BibTeX;
 
 /**
  *
