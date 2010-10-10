@@ -30,7 +30,7 @@ p<>. Before proceeding to the next sections, users are adviced to take a look at
 
 h3. 3.1. Algorithms
 
-p<>. A predefined collection of OpenTox algorithms is available within the class <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/collection/OpenToxAlgorithms.java">OpenToxAlgorithms</a> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/client/collection/OpenToxAlgorithms.html. You can load the algorithm data from the remote location using the method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Algorithm.java">Algorithm</a> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/Algorithm.html. Here is an example:
+p<>. A predefined collection of OpenTox algorithms is available within the class <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/collection/OpenToxAlgorithms.java">OpenToxAlgorithms</a> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/client/collection/OpenToxAlgorithms.html. You can load the algorithm data from the remote location using the method <code>loadFromRemote</code> defined in <a href="http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Algorithm.java">Algorithm</a> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Algorithm.html. Here is an example:
 
 <pre>
  Algorithm myAlg = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceVri());
@@ -89,7 +89,7 @@ http://apps.ideaconsult.net:8080/ambit2/compound/2554/conformer/327497
 http://apps.ideaconsult.net:8080/ambit2/feature/20083 = 100-01-6^^string
 </pre>
 
-Alternatively you can of course use the implementation of the method <code>loadFromRemote()</code> in <code>Dataset</code> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/Dataset.html. Here is an example:
+Alternatively you can of course use the implementation of the method <code>loadFromRemote()</code> in <code>Dataset</code> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Dataset.html. Here is an example:
 
 <pre>
 VRI vri = new VRI(Services.AMBIT_UNI_PLOVDIV.augment("dataset","9"));
@@ -101,7 +101,7 @@ This will parse into the object <code>ds</code> the data downloaded from the URI
 
 h3. 3.3. Error Reports
 
-Error Reports "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/ErrorReport.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/ErrorReport.html are part of the OpenTox API since version 1.1. Error Reports define a formal way to handle exceptional situations while invoking a service or during inter-service communication thus facilitating debugging. They are sufficiently documented online at <a href="http://opentox.org/dev/apis/api-1.1/Error%20Reports">opentox.org/dev/apis/api-1.1/Error Reports</a>. The parsing of Error Reports is carried out quite the same way as the entities mentioned above. The only difference with Error Reports is the the URL that hosts the error report differs from the IRI that describes the report in the RDF graph returned. So, if you choose to use a spider for parsing an Error Report you have to be careful with the initialization: The standard constructor for a spider <code>ErrorReportSpider(Resource resource, Model model)</code> will probably throw an error if you provide the wrong resource. This is why, you should prefer the constructor <code>ErrorReportSpider(URI actorUri, Model ontModel)</code> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/spiders/ErrorReportSpider.html where you provide the URI of the actor of the exception and not the RDF node straightforward! Here is an example to obfuscate any misunderstanding:
+Error Reports "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/ErrorReport.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/ErrorReport.html are part of the OpenTox API since version 1.1. Error Reports define a formal way to handle exceptional situations while invoking a service or during inter-service communication thus facilitating debugging. They are sufficiently documented online at <a href="http://opentox.org/dev/apis/api-1.1/Error%20Reports">opentox.org/dev/apis/api-1.1/Error Reports</a>. The parsing of Error Reports is carried out quite the same way as the entities mentioned above. The only difference with Error Reports is the the URL that hosts the error report differs from the IRI that describes the report in the RDF graph returned. So, if you choose to use a spider for parsing an Error Report you have to be careful with the initialization: The standard constructor for a spider <code>ErrorReportSpider(Resource resource, Model model)</code> will probably throw an error if you provide the wrong resource. This is why, you should prefer the constructor <code>ErrorReportSpider(URI actorUri, Model ontModel)</code> "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/util/spiders/ErrorReportSpider.html where you provide the URI of the actor of the exception and not the RDF node straightforward! Here is an example to obfuscate any misunderstanding:
 
 <pre>
  VRI uri = new VRI(Services.NTUA.augment("algorithm", "mlr"));
@@ -134,7 +134,7 @@ Status : 403
 
 h3. 3.4. Models
 
-This is an example of how a user can download and parse an OpenTox Model "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Model.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/Model.html from a remote location:
+This is an example of how a user can download and parse an OpenTox Model "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Model.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Model.html from a remote location:
 
 <pre>
 VRI vri = new VRI(Services.NTUA.augment("model","f9a97443-6baf-4361-a55c-b08cf12c3e39"));
@@ -153,7 +153,7 @@ m.loadFromRemote();
 
 h3. 3.5. Tasks
 
-A Task "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Task.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/Task.html is parsed as simply as any other OpenTox component. You simply have to provide its URI and invoke the method <code>loadFromRemote()</code> or, in case authentication is needed, <code>loadFromRemote(AuthenticationToken)</code>. Here is an example of use:
+A Task "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Task.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Task.html is parsed as simply as any other OpenTox component. You simply have to provide its URI and invoke the method <code>loadFromRemote()</code> or, in case authentication is needed, <code>loadFromRemote(AuthenticationToken)</code>. Here is an example of use:
 
 <pre>
 VRI vri = new VRI("http://opentox.ntua.gr:3000/task/0fc060a0-f69b-4a81-bb2e-b9b32c8a04b3");
@@ -163,7 +163,7 @@ Task t = new Task(vri).loadFromRemote();
 
 h3. 3.6. Compounds
 
-Compounds "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/Compound.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/Compound.html, as these are represented in OpenTox, do not provide much information that could be parsed from their RDF representation, so the API for Compounds is formulated in a way that meaningful information would be returned to the user. First of all, users can obtain the Set of conformers (if any) that it groups and delegates. In cases where 3D characteristics of the compound are not taken into account, conformers do not play a particular role, otherwise the exact conformer has to be determined. The set of these conformers is available using the method <code>Set<Conformer> listConformers(AuthenticationToken token) throws ToxOtisException</code>. What is more, one can download the compound and store it in some supported chemical media type like <code>sdf</code> or <code>mol</code> as it was explained in the previous section. Here is an example of downloading the SD file of a given compound:
+Compounds "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Compound.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Compound.html, as these are represented in OpenTox, do not provide much information that could be parsed from their RDF representation, so the API for Compounds is formulated in a way that meaningful information would be returned to the user. First of all, users can obtain the Set of conformers (if any) that it groups and delegates. In cases where 3D characteristics of the compound are not taken into account, conformers do not play a particular role, otherwise the exact conformer has to be determined. The set of these conformers is available using the method <code>Set<Conformer> listConformers(AuthenticationToken token) throws ToxOtisException</code>. What is more, one can download the compound and store it in some supported chemical media type like <code>sdf</code> or <code>mol</code> as it was explained in the previous section. Here is an example of downloading the SD file of a given compound:
 
 <pre>
 Compound c =new Compound(Services.IDEACONSULT.augment("compound","100"));

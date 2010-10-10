@@ -65,7 +65,7 @@ This will print a "feature URI":http://ambit.uni-plovdiv.bg:8080/ambit2/feature/
 
 h3. 2.2. Publish a bibliographic reference
 
-We can publish a bibliographic reference as we did with features. Here is an example where a BibTeX object "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/BibTeX.html is created and published online:
+We can publish a bibliographic reference as we did with features. Here is an example where a BibTeX object "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/BibTeX.html is created and published online:
 
 <pre>
 BibTeX bib = new BibTeX(); // ...Create anonymous bibtex
