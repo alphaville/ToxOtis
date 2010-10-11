@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -33,6 +37,7 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.util.TaskRunner;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
@@ -408,12 +413,36 @@ public class Compound extends OTPublishable<Compound> {
     /**
      * Calculates all available descriptors using a remote descriptor calculation
      * service.
+     * 
      * @param descriptorCalculationAlgorithm
      * @return
      * @throws ToxOtisException
      */
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
         return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL", "true");
+    }
+
+    public Future<VRI> calculateDescriptorsDataset(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
+        Task t = calculateDescriptors(descriptorCalculationAlgorithm, token, serviceConfiguration);
+        final TaskRunner taskRunner = new TaskRunner(t);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        Future<VRI> future = executor.submit(new Callable<VRI>() {
+
+            public VRI call() throws Exception {
+                Task result = taskRunner.call();
+                VRI resultUri = null;
+                if (result != null) {
+                    resultUri = result.getResultUri();
+                }
+                return resultUri;
+            }
+        });
+        executor.shutdown();
+        return future;
+    }
+
+    public Future<VRI> calculateDescriptorsDataset(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
+        return calculateDescriptorsDataset(descriptorCalculationAlgorithm, token, "ALL", "true");
     }
 
     @Override
@@ -447,9 +476,9 @@ public class Compound extends OTPublishable<Compound> {
         /** Download the string representation of a */
         StringWriter smilesWriter = new StringWriter();
         download(smilesWriter, Media.CHEMICAL_SMILES, token);
-        String smiles = smilesWriter.toString().trim();        
+        String smiles = smilesWriter.toString().trim();
         VRI similarityService = new VRI(service);
-        similarityService.clearToken().appendToken(token).addUrlParameter("search", smiles).addUrlParameter("threshol", similarity);        
+        similarityService.clearToken().appendToken(token).addUrlParameter("search", smiles).addUrlParameter("threshol", similarity);
         GetClient client = null;
         Set<VRI> resultSet = null;
         try {
@@ -457,9 +486,9 @@ public class Compound extends OTPublishable<Compound> {
             client.setMediaType(Media.TEXT_URI_LIST);
             try {
                 final int status = client.getResponseCode();
-                if (status!=200){ // TODO: Tasks??? 201? 202?
-                    throw new ToxOtisException("Received a status code '"+status+"' from the service at" +
-                            similarityService.clearToken());
+                if (status != 200) { // TODO: Tasks??? 201? 202?
+                    throw new ToxOtisException("Received a status code '" + status + "' from the service at"
+                            + similarityService.clearToken());
                 }
             } catch (IOException ex) {
                 throw new ToxOtisException(ErrorCause.ConnectionException, ex);
@@ -480,6 +509,6 @@ public class Compound extends OTPublishable<Compound> {
     }
 
     public Set<VRI> getSimilar(double similarity, AuthenticationToken token) throws ToxOtisException {
-        return getSimilar(similarity, Services.ideaconsult().augment("query","similarity"),token);
+        return getSimilar(similarity, Services.ideaconsult().augment("query", "similarity"), token);
     }
 }

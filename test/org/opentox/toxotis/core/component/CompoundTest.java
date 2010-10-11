@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core.component;
 
+import java.util.concurrent.ExecutionException;
 import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.core.component.Task;
@@ -7,6 +8,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.Set;
+import java.util.concurrent.Future;
 import javax.swing.ImageIcon;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -59,8 +61,8 @@ public class CompoundTest {
         System.out.println(ds.getInstances());
     }
 
-    @Test
-    public void testDownloadString() throws Exception {
+    //@Test
+    public void testSimilarity() throws Exception {
         Compound c = new Compound(Services.ideaconsult().augment("compound", "480"));
         Set<VRI> similar = c.getSimilar(0.5, Services.ideaconsult().augment("query","similarity"), null);
         for (VRI v : similar){
@@ -100,18 +102,12 @@ public class CompoundTest {
         c.wrapInDataset(new VRI("myserver.com/dataset/1")).asOntModel().write(System.out);
     }
 
-//    @Test
-    public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException {
-
+    @Test
+    public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException, ExecutionException {
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145418"));
-        Task t = c.calculateDescriptors(Services.tumDev().augment("algorithm", "CDKPhysChem"), null);
-        while (!Task.Status.COMPLETED.equals(t.getStatus())) {
-            Thread.sleep(200);
-            System.out.println("Reloading... " + t.getUri());
-            t.loadFromRemote();
-            System.out.println(t);
-        }
-        System.out.println(t.getResultUri());
+        Future<VRI> t = c.calculateDescriptorsDataset(Services.tumDev().augment("algorithm", "CDKPhysChem"), null);
+        System.out.println("Waiting for result...");
+        System.out.println(t.get());
     }
 
     //@Test
