@@ -8,11 +8,7 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
  * <p>
- * WARNING: This is utterly under developement!!!!!<br/>
- * WARNING: This is utterly under developement!!!!!<br/>
- * WARNING: This is utterly under developement!!!!!<br/>
- * WARNING: This is utterly under developement!!!!!<br/>
- * <br/>
+ * WARNING: This is utterly under developement...!
  * </p>
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -30,10 +26,7 @@ public class Conformer extends Compound {
         setUri(uri);
     }
 
-    /**
-     *
-     * @return
-     */
+    
     public VRI getCompoundUri() {
         throw new UnsupportedOperationException();
     }

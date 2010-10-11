@@ -10,7 +10,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OTDatatypeProperty;

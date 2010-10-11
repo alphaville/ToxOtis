@@ -75,8 +75,8 @@ import org.opentox.toxotis.ToxOtisException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  *
- * @see PasswordFileManager#authFromFile(java.lang.String)
- * @see PasswordFileManager#createMasterPasswordFile(java.lang.String, java.lang.String, java.lang.String)
+ * @see PasswordFileManager#authFromFile(java.io.File)
+ * @see PasswordFileManager#createPasswordFile(java.lang.String, java.lang.String, java.lang.String) 
  */
 public class PasswordFileManager extends Observable {
 

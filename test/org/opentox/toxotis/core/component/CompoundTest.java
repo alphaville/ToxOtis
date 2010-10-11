@@ -4,7 +4,9 @@ import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.core.component.Task;
 import java.io.File;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
+import java.util.Set;
 import javax.swing.ImageIcon;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -57,6 +59,15 @@ public class CompoundTest {
         System.out.println(ds.getInstances());
     }
 
+    @Test
+    public void testDownloadString() throws Exception {
+        Compound c = new Compound(Services.ideaconsult().augment("compound", "480"));
+        Set<VRI> similar = c.getSimilar(0.5, Services.ideaconsult().augment("query","similarity"), null);
+        for (VRI v : similar){
+            System.out.println("similar to : "+v);
+        }
+    }
+
     // @Test
     public void testPublishFromFile() throws ToxOtisException {
         File f;
@@ -89,7 +100,7 @@ public class CompoundTest {
         c.wrapInDataset(new VRI("myserver.com/dataset/1")).asOntModel().write(System.out);
     }
 
-    @Test
+//    @Test
     public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException {
 
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145418"));

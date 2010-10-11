@@ -55,10 +55,11 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      *      A Task for monitoring the progress of your request. If the service
      *      returns the URI of the resource right away and does not return a task,
      *      then the object you will receive from this method will now have an identifier,
-     *      its status will be set to {@link Task.Status#COMPLETED }, its progress
+     *      its status will be set to {@link org.opentox.toxotis.core.component.Task.Status#COMPLETED Completed}, its progress
      *      will be set to <code>100%</code> and the URI of the created resource will
      *      be available applying the method {@link Task#getResultUri() } on the returned
-     *      task. In any case, the service's response will be wrapped in a {@link Task }
+     *      task. In any case, the service's response will be wrapped in a 
+     *      {@link org.opentox.toxotis.core.component.Task Task}
      *      object.
      * @throws ToxOtisException
      *      In case of invalid credentials, if the POSTed resource is not acceptable
@@ -110,7 +111,8 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      *      A Task for monitoring the progress of your request. If the service
      *      returns the URI of the resource right away and does not return a task,
      *      then the object you will receive from this method will now have an identifier,
-     *      its status will be set to {@link Task.Status#COMPLETED }, its progress
+     *      its status will be set to 
+     *      {@link org.opentox.toxotis.core.component.Task.Status#COMPLETED Completed}, its progress
      *      will be set to <code>100%</code> and the URI of the created resource will
      *      be available applying the method {@link Task#getResultUri() } on the returned
      *      task. In any case, the service's response will be wrapped in a {@link Task }

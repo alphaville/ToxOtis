@@ -265,7 +265,7 @@ public class VRI { // Well tested!
      * @return
      *      The updated VRI without the parameter.
      */
-    public VRI removeUrlParameter(String paramName){
+    public VRI removeUrlParameter(String paramName) {
         String encodedParamName = null;
         try {
             encodedParamName = URLEncoder.encode(paramName, URL_ENCODING);
@@ -273,10 +273,10 @@ public class VRI { // Well tested!
             Logger.getLogger(VRI.class.getName()).log(Level.SEVERE, null, ex);
         }
         ArrayList<Pair<String, String>> urlParamsClone = new ArrayList<Pair<String, String>>(urlParams);
-        for (Pair<String, String> pair : urlParamsClone){
-           if (encodedParamName.equals(pair.getKey())){
-               urlParams.remove(pair);
-           }
+        for (Pair<String, String> pair : urlParamsClone) {
+            if (encodedParamName.equals(pair.getKey())) {
+                urlParams.remove(pair);
+            }
         }
         return this;
     }
@@ -286,7 +286,7 @@ public class VRI { // Well tested!
      * @return
      *      Updated URI without tokens.
      */
-    public VRI clearToken(){        
+    public VRI clearToken() {
         return removeUrlParameter(TOKENID);
     }
 
@@ -304,6 +304,26 @@ public class VRI { // Well tested!
     public VRI addUrlParameter(String paramName, String paramValue) {
         try {
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(paramValue, URL_ENCODING)));
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex);
+        }
+        return this;
+    }
+
+    /**
+     * Add a double valued URL parameter. As soon as you provide the URL parameter and its value,
+     * these are encoded using the UTF-8 encoding so you do not need to encode them
+     * before submitting them.
+     * @param paramName
+     *      The name of the parameter
+     * @param paramValue
+     *      The value for the parameter (double)
+     * @return
+     *      The updated VRI on which the method is applied.
+     */
+    public VRI addUrlParameter(String paramName, double paramValue) {
+        try {
+            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(new Double(paramValue).toString(), URL_ENCODING)));
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }

@@ -12,7 +12,9 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
- *
+ * A DataEntry is a set a multiplicity consisting of a compounds and a set of
+ * feature-value pairs assigned to it.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

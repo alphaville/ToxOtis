@@ -1,6 +1,5 @@
 package org.opentox.toxotis.core.component;
 
-import org.opentox.toxotis.core.component.Task;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -21,6 +20,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.PostClient;
@@ -28,13 +28,11 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTPublishable;
-import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.factory.FeatureFactory;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TypedValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
-import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
@@ -60,18 +58,18 @@ public class Compound extends OTPublishable<Compound> {
      * @param uri
      *      The URI of the compound which should be a valid compound URI
      * @throws ToxOtisException
-     *      In case the provided URI is not a valid compound URI
+     *      In case the provided URI is not a valid compound or conformer URI.
      * @see VRI#getOntologicalClass() Identify the type of a URI
      */
     public Compound(VRI uri) throws ToxOtisException {
         super(uri);
-//        if (uri != null) {
-//            //TODO: What happens if one provides a Conformer URI?
-//            if (!Compound.class.equals(uri.getOpenToxType())) {
-//                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
-//                        + "' is not a valid Compound uri according to the OpenTox specifications.");
-//            }
-//        }
+        if (uri != null) {
+            // Compound and Conformer URIs are allowed
+            if (!Compound.class.equals(uri.getOpenToxType()) && !Conformer.class.equals(uri.getOpenToxType())) {
+                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
+                        + "' is not a valid Compound uri according to the OpenTox specifications.");
+            }
+        }
     }
 
     /**
@@ -166,7 +164,7 @@ public class Compound extends OTPublishable<Compound> {
         }
         GetClient client = new GetClient();
         client.setUri(dsUri);
-        client.setMediaType("application/rdf+xml");
+        client.setMediaType(Media.APPLICATION_RDF_XML);
         OntModel model = client.getResponseOntModel();
         RDF.type.inModel(model);
         StmtIterator dsIt = model.listStatements(null, RDF.type, (RDFNode) OTClasses.Dataset().inModel(model));
@@ -206,7 +204,7 @@ public class Compound extends OTPublishable<Compound> {
         System.out.println(dsUri);
         GetClient client = new GetClient();
         client.setUri(dsUri);
-        client.setMediaType("application/rdf+xml");
+        client.setMediaType(Media.APPLICATION_RDF_XML);
         OntModel model = client.getResponseOntModel();
         StmtIterator dsIt = model.listStatements(null, RDF.type, (RDFNode) OTClasses.Dataset().inModel(model));
         Resource baseResource = null;
@@ -418,10 +416,70 @@ public class Compound extends OTPublishable<Compound> {
         return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL", "true");
     }
 
-    
-
     @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Method for performing similarity search for this compound given a similarity
+     * measure which is usually a number between 0 and 1.
+     * @param similarity
+     *      Similarity Index. The smaller this index is, the larger the length of
+     *      the resulting set will be. Setting it equal to 1 will return just the submitted
+     *      compound.
+     * @param service
+     *      Remote similarity search service to be used for obtaining the list of
+     *      similar compounds as a URI list. The remote invokation is a GET method
+     *      applied on <code>service?search={smiles_string}&threshold={threshold}</code>
+     * @param token
+     *      Authentication token used to obtain the SMILES string of the token and
+     *      acquire access to the similarity service.
+     * @return
+     *      Set of URIs that are similar to the compound on which the method is
+     *      applied up to a certain threshold.
+     * @throws ToxOtisException
+     *      In case the remote service responds with a non-success status code
+     *      like 400 (bad request/bad smiles string) or 500 (internal error of
+     *      the server).
+     */
+    public Set<VRI> getSimilar(double similarity, VRI service, AuthenticationToken token) throws ToxOtisException {
+        /** Download the string representation of a */
+        StringWriter smilesWriter = new StringWriter();
+        download(smilesWriter, Media.CHEMICAL_SMILES, token);
+        String smiles = smilesWriter.toString().trim();        
+        VRI similarityService = new VRI(service);
+        similarityService.clearToken().appendToken(token).addUrlParameter("search", smiles).addUrlParameter("threshol", similarity);        
+        GetClient client = null;
+        Set<VRI> resultSet = null;
+        try {
+            client = new GetClient(similarityService);
+            client.setMediaType(Media.TEXT_URI_LIST);
+            try {
+                final int status = client.getResponseCode();
+                if (status!=200){ // TODO: Tasks??? 201? 202?
+                    throw new ToxOtisException("Received a status code '"+status+"' from the service at" +
+                            similarityService.clearToken());
+                }
+            } catch (IOException ex) {
+                throw new ToxOtisException(ErrorCause.ConnectionException, ex);
+            }
+            resultSet = client.getResponseUriList();
+        } catch (ToxOtisException ex) {
+            throw ex;
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                }
+            }
+        }
+        return resultSet;
+    }
+
+    public Set<VRI> getSimilar(double similarity, AuthenticationToken token) throws ToxOtisException {
+        return getSimilar(similarity, Services.ideaconsult().augment("query","similarity"),token);
     }
 }
