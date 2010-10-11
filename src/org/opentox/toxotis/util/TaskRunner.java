@@ -1,8 +1,6 @@
 package org.opentox.toxotis.util;
 
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.core.component.Task;
 

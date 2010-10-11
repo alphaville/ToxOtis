@@ -50,7 +50,7 @@ public class FeatureFactory {
             throws ToxOtisException {
         GetClient client = new GetClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
-        final int responseStatus;
+        int responseStatus;
         try {
             responseStatus = client.getResponseCode();
         } catch (IOException ex) {
@@ -164,7 +164,7 @@ public class FeatureFactory {
             }
             GetClient client = new GetClient(featureServiceWithToken);
             client.setMediaType(Media.TEXT_URI_LIST);
-            final int httpStatus = client.getResponseCode();
+            int httpStatus = client.getResponseCode();
             if (httpStatus != 200) {
                 throw new ToxOtisException("Service returned status code :" + httpStatus);
             }            

@@ -94,7 +94,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
         pc.post();
         Task task = new Task();
         try {
-            final int status = pc.getResponseCode();
+            int status = pc.getResponseCode();
             if (status == 200) {// BibTeX returned
                 try {
                     // BibTeX returned

@@ -32,9 +32,8 @@ public class TaskSpider extends Tarantula<Task> {
 
     public TaskSpider(VRI vri) throws ToxOtisException {
         this.vri = vri;
-        GetClient client = new GetClient();
+        GetClient client = new GetClient(vri);
         client.setMediaType(Media.APPLICATION_RDF_XML);
-        client.setUri(vri);
         try {
             final int status = client.getResponseCode();
             assessHttpStatus(status, vri);

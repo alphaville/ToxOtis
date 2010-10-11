@@ -35,7 +35,7 @@ public class ModelSpider extends Tarantula<Model> {
         try {
             client.setMediaType("application/rdf+xml");
             client.setUri(uri);
-            final int status = client.getResponseCode();
+            int status = client.getResponseCode();
             assessHttpStatus(status, uri);
             model = client.getResponseOntModel();
             resource = model.getResource(uri.toString());

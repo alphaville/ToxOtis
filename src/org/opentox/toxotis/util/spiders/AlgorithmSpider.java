@@ -85,7 +85,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
             /*
              * Handle excpetional events caused during the server-client communiation.
              */
-            final int status = client.getResponseCode();
+            int status = client.getResponseCode();
             if (status != 200) {
                 OntModel om = client.getResponseOntModel();
                 ErrorReportSpider ersp = new ErrorReportSpider(uri, om);

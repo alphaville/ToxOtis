@@ -37,7 +37,7 @@ public class DatasetSpider extends Tarantula<Dataset> {
         try {
             client.setMediaType(Media.APPLICATION_RDF_XML);
             client.setUri(uri);
-            final int status = client.getResponseCode();
+            int status = client.getResponseCode();
             assessHttpStatus(status, uri);
             model = client.getResponseOntModel();
             resource = model.getResource(uri.getStringNoQuery());

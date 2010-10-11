@@ -246,9 +246,7 @@ public class Policy {
         sgt = new SecureGetClient(policyService);
         sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
         List<String> policies = null;
-
-
-        final int responseStatus = sgt.getResponseCode();
+        int responseStatus = sgt.getResponseCode();
         if (responseStatus == 200) {
             policies = sgt.getResponseUriList();
             for (String s : policies) {

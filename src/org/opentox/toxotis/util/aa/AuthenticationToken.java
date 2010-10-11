@@ -283,8 +283,8 @@ public class AuthenticationToken {
             poster = new SecurePostClient(Services.ssoValidate());
             poster.addParameter("tokenid", stringValue());
             poster.postParameters();
-            final int status = poster.getResponseCode();
-            final String message = (poster.getResponseText()).trim();
+            int status = poster.getResponseCode();
+            String message = (poster.getResponseText()).trim();
             if (status != 200 && status != 401) {
                 throw new ToxOtisException("Status code " + status + " received from " + Services.ssoValidate());
             } else if (status == 401) {
@@ -363,7 +363,7 @@ public class AuthenticationToken {
 
         InputStream is = null;
         BufferedReader reader = null;
-        final int status = poster.getResponseCode();
+        int status = poster.getResponseCode();
         if (status != 200) {
             if (status == 401) {
                 throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access the resource at : '"

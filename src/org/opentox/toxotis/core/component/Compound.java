@@ -206,7 +206,6 @@ public class Compound extends OTPublishable<Compound> {
         if (token != null) {
             dsUri.clearToken().appendToken(token);
         }
-        System.out.println(dsUri);
         GetClient client = new GetClient();
         client.setUri(dsUri);
         client.setMediaType(Media.APPLICATION_RDF_XML);
@@ -345,7 +344,6 @@ public class Compound extends OTPublishable<Compound> {
             StringWriter writer = new StringWriter();
             download(writer, Media.CHEMICAL_SMILES, token);
             String smiles = writer.toString();
-            System.out.println(smiles);
             depiction = new ImageIcon(new URL(Services.ideaCdkImage().
                     addUrlParameter("query", smiles).appendToken(token).toString()));
         } catch (MalformedURLException ex) {
@@ -423,9 +421,39 @@ public class Compound extends OTPublishable<Compound> {
     }
 
     public Future<VRI> calculateDescriptorsDataset(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
+        return calculateDescriptorsDataset(descriptorCalculationAlgorithm, token, Executors.newSingleThreadExecutor(), serviceConfiguration);
+    }
+
+
+    /**
+     *
+     * @param descriptorCalculationAlgorithm
+     *      The URI of an OpenTox descriptor calculation algorithm. A compound or
+     *      a dataset is posted to a descriptor calculation algorithm and the expected
+     *      result is a dataset containing the submitted compound(s) and the calculated
+     *      descriptor values for each compound.
+     * @param token
+     *      Authentication token used for accessing the descriptor calculation
+     *      service.
+     * @param executor
+     *      An executor used to sumbit the thread in. Be aware that the executor
+     *      is not shutdown in this method so it is up to the user whether it should
+     *      be shutdown or not.
+     * @param serviceConfiguration
+     *      A string array (<code>String[]</code>) used for fine tuning of the
+     *      remote service. Successive pairs of values act as a parameter name -
+     *      parameter value pair which is posted to the remote service.
+     * @return
+     *      A <code>Future</code> waiting for the background job to complete and
+     *      and return the URI of a Dataset with the calculated descriptors for
+     *      this Compound.
+     * @throws ToxOtisException
+     *
+     */
+    public Future<VRI> calculateDescriptorsDataset(VRI descriptorCalculationAlgorithm,
+            AuthenticationToken token, ExecutorService executor, String... serviceConfiguration) throws ToxOtisException {
         Task t = calculateDescriptors(descriptorCalculationAlgorithm, token, serviceConfiguration);
         final TaskRunner taskRunner = new TaskRunner(t);
-        ExecutorService executor = Executors.newFixedThreadPool(1);
         Future<VRI> future = executor.submit(new Callable<VRI>() {
 
             public VRI call() throws Exception {
@@ -437,7 +465,6 @@ public class Compound extends OTPublishable<Compound> {
                 return resultUri;
             }
         });
-        executor.shutdown();
         return future;
     }
 
@@ -485,7 +512,7 @@ public class Compound extends OTPublishable<Compound> {
             client = new GetClient(similarityService);
             client.setMediaType(Media.TEXT_URI_LIST);
             try {
-                final int status = client.getResponseCode();
+                int status = client.getResponseCode();
                 if (status != 200) { // TODO: Tasks??? 201? 202?
                     throw new ToxOtisException("Received a status code '" + status + "' from the service at"
                             + similarityService.clearToken());
