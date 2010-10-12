@@ -3,6 +3,7 @@ package org.opentox.toxotis.factory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
@@ -150,7 +151,6 @@ public class CompoundFactory {
         }
     }
 
-
     /**
      * POSTs a file to a specified compound service using a specified Content-type header
      * in order to create a new Compound. The created compound is returned
@@ -177,5 +177,10 @@ public class CompoundFactory {
             File sourceFile, Media fileType, AuthenticationToken token, String service)
             throws ToxOtisException {
         return publishFromFile(sourceFile, fileType.getMime(), token, service);
+    }
+
+
+    public Set<VRI> lookUpComponent(VRI lookUpService, String keyword) {
+        throw new UnsupportedOperationException();
     }
 }
