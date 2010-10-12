@@ -19,6 +19,7 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.IDescriptorCalculation;
 import org.opentox.toxotis.factory.CompoundFactory;
 import org.opentox.toxotis.ontology.collection.OTFeatures;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -104,8 +105,8 @@ public class CompoundTest {
 
     @Test
     public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException, ExecutionException {
-        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145418"));
-        Future<VRI> t = c.calculateDescriptorsDataset(Services.tumDev().augment("algorithm", "CDKPhysChem"), null);
+        IDescriptorCalculation c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145418"));
+        Future<VRI> t = c.futureJoeLibDescriptors(null, Services.ambitUniPlovdiv().augment("dataset"));
         System.out.println("Waiting for result...");
         System.out.println(t.get());
     }

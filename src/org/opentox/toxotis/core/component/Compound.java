@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.IDescriptorCalculation;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -31,6 +32,7 @@ import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.DescriptorCaclulation;
 import org.opentox.toxotis.core.OTPublishable;
 import org.opentox.toxotis.factory.FeatureFactory;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -52,7 +54,7 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Compound extends OTPublishable<Compound> {
+public class Compound extends DescriptorCaclulation<Compound> {
 
     /**
      * Construct a new compound identified by its URI. You should provide a
@@ -344,7 +346,7 @@ public class Compound extends OTPublishable<Compound> {
             StringWriter writer = new StringWriter();
             download(writer, Media.CHEMICAL_SMILES, token);
             String smiles = writer.toString();
-            depiction = new ImageIcon(new URL(Services.ideaCdkImage().
+            depiction = new ImageIcon(new URL(Services.Depiction.ideaCdkImage().
                     addUrlParameter("query", smiles).appendToken(token).toString()));
         } catch (MalformedURLException ex) {
             throw new ToxOtisException(ex);
@@ -374,104 +376,6 @@ public class Compound extends OTPublishable<Compound> {
         return ds;
     }
 
-    /**
-     * Calculates
-     * @param descriptorCalculationAlgorithm
-     *      A descriptor calculation algorithm.
-     * @param token
-     *      Token used to authenticate the client and grant it access to the
-     *      various OpenTox resources. 
-     * @param serviceConfiguration
-     *      A string array (<code>String[]</code>) used for fine tuning of the
-     *      remote service. Successive pairs of values act as a parameter name -
-     *      parameter value pair which is posted to the remote service.
-     * @return
-     * @throws ToxOtisException
-     */
-    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
-        PostClient client = new PostClient(descriptorCalculationAlgorithm);
-        client.setMediaType(Media.APPLICATION_RDF_XML);
-        descriptorCalculationAlgorithm.clearToken().appendToken(token);
-        PostClient pc = new PostClient(descriptorCalculationAlgorithm);
-        pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={compound_uri}
-        if (serviceConfiguration != null) {
-        }
-        pc.setMediaType(Media.TEXT_URI_LIST);
-        pc.post();
-        String taskUri = pc.getResponseText();
-        try {
-            TaskSpider taskSpider = new TaskSpider(new VRI(taskUri));
-            return taskSpider.parse();
-        } catch (URISyntaxException ex) {
-            throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
-                    + " returned an invalid task URI : " + taskUri, ex);
-        }
-    }
-
-    /**
-     * Calculates all available descriptors using a remote descriptor calculation
-     * service.
-     * 
-     * @param descriptorCalculationAlgorithm
-     * @return
-     * @throws ToxOtisException
-     */
-    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
-        return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL", "true");
-    }
-
-    public Future<VRI> calculateDescriptorsDataset(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
-        return calculateDescriptorsDataset(descriptorCalculationAlgorithm, token, Executors.newSingleThreadExecutor(), serviceConfiguration);
-    }
-
-
-    /**
-     *
-     * @param descriptorCalculationAlgorithm
-     *      The URI of an OpenTox descriptor calculation algorithm. A compound or
-     *      a dataset is posted to a descriptor calculation algorithm and the expected
-     *      result is a dataset containing the submitted compound(s) and the calculated
-     *      descriptor values for each compound.
-     * @param token
-     *      Authentication token used for accessing the descriptor calculation
-     *      service.
-     * @param executor
-     *      An executor used to sumbit the thread in. Be aware that the executor
-     *      is not shutdown in this method so it is up to the user whether it should
-     *      be shutdown or not.
-     * @param serviceConfiguration
-     *      A string array (<code>String[]</code>) used for fine tuning of the
-     *      remote service. Successive pairs of values act as a parameter name -
-     *      parameter value pair which is posted to the remote service.
-     * @return
-     *      A <code>Future</code> waiting for the background job to complete and
-     *      and return the URI of a Dataset with the calculated descriptors for
-     *      this Compound.
-     * @throws ToxOtisException
-     *
-     */
-    public Future<VRI> calculateDescriptorsDataset(VRI descriptorCalculationAlgorithm,
-            AuthenticationToken token, ExecutorService executor, String... serviceConfiguration) throws ToxOtisException {
-        Task t = calculateDescriptors(descriptorCalculationAlgorithm, token, serviceConfiguration);
-        final TaskRunner taskRunner = new TaskRunner(t);
-        Future<VRI> future = executor.submit(new Callable<VRI>() {
-
-            public VRI call() throws Exception {
-                Task result = taskRunner.call();
-                VRI resultUri = null;
-                if (result != null) {
-                    resultUri = result.getResultUri();
-                }
-                return resultUri;
-            }
-        });
-        return future;
-    }
-
-    public Future<VRI> calculateDescriptorsDataset(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
-        return calculateDescriptorsDataset(descriptorCalculationAlgorithm, token, "ALL", "true");
-    }
-
     @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -497,7 +401,7 @@ public class Compound extends OTPublishable<Compound> {
      * @throws ToxOtisException
      *      In case the remote service responds with a non-success status code
      *      like 400 (bad request/bad smiles string) or 500 (internal error of
-     *      the server).
+     *      the server) or if authentication or authorization fails.
      */
     public Set<VRI> getSimilar(double similarity, VRI service, AuthenticationToken token) throws ToxOtisException {
         /** Download the string representation of a */
@@ -535,6 +439,23 @@ public class Compound extends OTPublishable<Compound> {
         return resultSet;
     }
 
+    /**
+     * Get a set of URIs for similar compounds using the default similarity search
+     * service at <code>http://apps.ideaconsut.net:8080/ambit2/query/similarity</code>
+     * which is based on the Tanimoto Distance between compounds.
+     * @param similarity
+     *      Similarity threshold; a number between 0 and 1.
+     * @param token
+     *      Authentication token used to obtain the SMILES string of the token and
+     *      acquire access to the similarity service.
+     * @return
+     *      Set of URIs that are similar to the compound on which the method is
+     *      applied up to a certain threshold.
+     * @throws ToxOtisException
+     *      In case the remote service responds with a non-success status code
+     *      like 400 (bad request/bad smiles string) or 500 (internal error of
+     *      the server) or if authentication or authorization fails.
+     */
     public Set<VRI> getSimilar(double similarity, AuthenticationToken token) throws ToxOtisException {
         return getSimilar(similarity, Services.ideaconsult().augment("query", "similarity"), token);
     }

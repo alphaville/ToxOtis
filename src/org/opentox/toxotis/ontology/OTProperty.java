@@ -25,12 +25,49 @@ public interface OTProperty extends OTResource, java.io.Serializable {
      */
     MetaInfo getMetaInfo();
 
+    /**
+     * Provide meta-information about the property
+     * @param metaInfo
+     *      Meta information about the property.
+     */
     void setMetaInfo(MetaInfo metaInfo);
 
+    /**
+     * Get a collection of the super-properties of this ontological property
+     * declared using <code>rdfs:subPropertyOf</code>.
+     * @return
+     *      Collection of super-properties.
+     */
     Collection<OTProperty> getSuperProperties();
 
+    /**
+     *
+     * @param superProperties
+     *      Collection of super-properties.
+     * @see OTProperty#getSuperProperties() getSuperProperties
+     */
     void setSuperProperties(Collection<OTProperty> superProperties);
 
+    /**
+     * We quote an excperpt of the documentation about the property <code>rdfs:domain</code>
+     * found at <a href="http://www.w3.org/TR/2004/REC-owl-features-20040210/#domain">
+     * W3C</a> online reference:
+     * 
+     * <blockquote align="justify">
+     * A domain of a property limits the individuals to which the property can be applied.
+     * If a property relates an individual to another individual, and the property has a
+     * class as one of its domains, then the individual must belong to the class. For example,
+     * the property hasChild may be stated to have the domain of Mammal. From this a
+     * reasoner can deduce that if Frank hasChild Anna, then Frank must be a Mammal.
+     * Note that rdfs:domain is called a global restriction since the restriction is stated on the
+     * property and not just on the property when it is associated with a particular class.
+     * See the discussion below on property restrictions for more information.
+     * </blockquote>
+     *
+     * @return
+     *      A collection of the ontological classes that constitute the domain of the
+     *      ontological property.
+     */
     Collection<OntologicalClass> getDomain();
 
     /**
@@ -54,6 +91,8 @@ public interface OTProperty extends OTResource, java.io.Serializable {
      * </code> axiom asserts that the subjects of such property statements must belong to the
      * class extension of the indicated class description.
      * @param domain
+     *      A collection of the ontological classes that constitute the domain of the
+     *      ontological property.
      */
     void setDomain(Collection<OntologicalClass> domain);
 

@@ -91,7 +91,7 @@ public class AuthenticationToken {
      */
     public AuthenticationToken(String username, String password) throws ToxOtisException {
         this();
-        SecurePostClient poster = new SecurePostClient(Services.ssoAuthenticate());
+        SecurePostClient poster = new SecurePostClient(Services.SingleSignOn.ssoAuthenticate());
         try {
             poster.addParameter("username", username);
             poster.addParameter("password", password);
@@ -280,18 +280,18 @@ public class AuthenticationToken {
         }
         SecurePostClient poster = null;
         try {
-            poster = new SecurePostClient(Services.ssoValidate());
+            poster = new SecurePostClient(Services.SingleSignOn.ssoValidate());
             poster.addParameter("tokenid", stringValue());
             poster.postParameters();
             int status = poster.getResponseCode();
             String message = (poster.getResponseText()).trim();
             if (status != 200 && status != 401) {
-                throw new ToxOtisException("Status code " + status + " received from " + Services.ssoValidate());
+                throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoValidate());
             } else if (status == 401) {
                 if (!message.equals("boolean=false")) {
                     return false;
                 } else {
-                    throw new ToxOtisException("Status code " + status + " received from " + Services.ssoValidate());
+                    throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoValidate());
                 }
             }
 
@@ -329,12 +329,12 @@ public class AuthenticationToken {
         }
         SecurePostClient poster = null;
         try {
-            poster = new SecurePostClient(Services.ssoInvalidate());
+            poster = new SecurePostClient(Services.SingleSignOn.ssoInvalidate());
             poster.addParameter("subjectid", stringValue());
             poster.postParameters();
             int status = poster.getResponseCode();
             if (status != 200) {
-                throw new ToxOtisException("Status code " + status + " received from " + Services.ssoInvalidate());
+                throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
             }
         } finally {
             if (poster != null) {
@@ -357,7 +357,7 @@ public class AuthenticationToken {
      */
     public User getUser() throws ToxOtisException {
         User u = new User();
-        SecurePostClient poster = new SecurePostClient(Services.ssoAttributes());
+        SecurePostClient poster = new SecurePostClient(Services.SingleSignOn.ssoAttributes());
         poster.addParameter("subjectid", stringValue());
         poster.postParameters();
 

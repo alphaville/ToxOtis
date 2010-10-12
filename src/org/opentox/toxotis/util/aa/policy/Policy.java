@@ -215,7 +215,7 @@ public class Policy {
      */
     public VRI publishPolicy(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
         if (policyServer == null) {
-            policyServer = Services.ssoPolicy();
+            policyServer = Services.SingleSignOn.ssoPolicy();
         }
         SecurePostClient spc = new SecurePostClient(policyServer);
         spc.addHeaderParameter(subjectid, token.stringValue());
@@ -241,7 +241,7 @@ public class Policy {
     public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ToxOtisException {
         SecureGetClient sgt = null;
         if (policyService == null) {
-            policyService = Services.ssoPolicy();
+            policyService = Services.SingleSignOn.ssoPolicy();
         }
         sgt = new SecureGetClient(policyService);
         sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());

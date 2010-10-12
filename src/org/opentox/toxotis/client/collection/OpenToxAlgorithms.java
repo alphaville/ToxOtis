@@ -10,6 +10,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
+@Deprecated
 public enum OpenToxAlgorithms {
 
     NTUA_MLR(Services.ntua().augment("algorithm","mlr")),
@@ -18,6 +19,8 @@ public enum OpenToxAlgorithms {
     NTUA_FILTER(Services.ntua().augment("algorithm","filter")),
     AMBIT_LR(Services.ambitUniPlovdiv().augment("algorithm","LR")),
     TUM_KNN_CLASSIFICATION(Services.tumDev().augment("algorithm","kNNclassification"));
+
+
     private static final Date LAST_UPDATE;
 
     static {
