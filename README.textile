@@ -34,6 +34,8 @@ This project depends on the following libraries (Should be downloaded and added 
 
 * "Weka, version 3.6.2":http://sourceforge.net/projects/weka/files/weka-3-6/3.6.2/weka-3-6-2.zip/download : Download weka and add weka.jar in your classpath.
 
+* "JFreeChart 1.0.13":http://sourceforge.net/projects/jfreechart/files/1.%20JFreeChart/1.0.13/jfreechart-1.0.13.tar.gz/download : Download JFreeChart and enjoy free charts.
+
 
 h2. Stay Tuned
 
