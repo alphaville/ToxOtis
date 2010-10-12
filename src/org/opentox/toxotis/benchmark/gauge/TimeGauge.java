@@ -8,16 +8,25 @@ package org.opentox.toxotis.benchmark.gauge;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
-public interface TimeGauge {
+public abstract class TimeGauge extends Gauge{
+
+    public TimeGauge() {
+        super();
+    }
+
+    public TimeGauge(String title) {
+        super(title);
+    }
+
 
     /**
      * By invoking this method one starts the gauge's inner timer.
      */
-    public void start();
+    public abstract void start();
 
     /**
      * By invoking this method one stops the gauge's inner timer and
      * stores the timing result.
      */
-    public void stop();
+    public abstract void stop();
 }

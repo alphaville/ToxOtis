@@ -11,9 +11,12 @@ package org.opentox.toxotis.benchmark.gauge;
 public abstract class Gauge implements Cloneable{
 
     private String title;
-
     private Number measurement;
     private Number stdev;
+
+    protected Gauge(){
+        
+    }
 
     public Gauge(String title) {
         this.title = title;
@@ -49,27 +52,5 @@ public abstract class Gauge implements Cloneable{
         newGauge.setTitle(this.title);        
         return newGauge;
     }
-//
-//    @Override
-//    public boolean equals (Object obj) {
-//        if(!(obj instanceof Gauge)){
-//            return false;
-//        }
-//        Gauge other = (Gauge)obj;
-//        if(this.getTitle().equals(other.getTitle())){
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int hash = 7;
-//        hash = 89 * hash + (this.title != null ? this.title.hashCode() : 0);
-//        return hash;
-//    }
-
-    
-    
 
 }

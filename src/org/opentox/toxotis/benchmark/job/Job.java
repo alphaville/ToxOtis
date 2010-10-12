@@ -1,7 +1,5 @@
 package org.opentox.toxotis.benchmark.job;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.benchmark.gauge.Gauge;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,7 @@ public abstract class Job implements Runnable, Cloneable {
 
     private Comparable title;
     protected Comparable parameter;
-    private int accuracy;
+    private int iterations;
     private List<Gauge> counters;
 
     public abstract void work() throws Exception;
@@ -24,7 +22,7 @@ public abstract class Job implements Runnable, Cloneable {
     public Job(Comparable title, Comparable parameter) {
         this.title = title;
         this.parameter = parameter;
-        this.accuracy = 1;
+        this.iterations = 1;
         this.counters = new ArrayList<Gauge>();
     }
 
@@ -35,7 +33,7 @@ public abstract class Job implements Runnable, Cloneable {
              */
             ArrayList<ArrayList<Number>> allValues = new ArrayList<ArrayList<Number>>(counters.size());
             for (int i = 0; i < counters.size(); i++) {
-                allValues.add(i,new ArrayList<Number>(accuracy));
+                allValues.add(i, new ArrayList<Number>(iterations));
             }
 
 
@@ -44,7 +42,7 @@ public abstract class Job implements Runnable, Cloneable {
              * and saving all results in the Two-Dimensinal List.
              */
             work(); //Ignoring first run
-            for (int i = 0; i < accuracy; i++) {
+            for (int i = 0; i < iterations; i++) {
                 work();
                 for (int y = 0; y < counters.size(); y++) {
                     allValues.get(y).add(i, counters.get(y).getMeasurement());
@@ -72,15 +70,24 @@ public abstract class Job implements Runnable, Cloneable {
         }
     }
 
+    public Gauge getGaugeForName(String name) {
+        for (Gauge g : counters) {
+            if (name.equals(g.getTitle())) {
+                return g;
+            }
+        }
+        return null;
+    }
+
     public boolean addGauge(Gauge e) {
         return counters.add(e);
     }
 
-    public List<Gauge> getCounters() {
+    public List<Gauge> getGauges() {
         return counters;
     }
 
-    public void setCounters(List<Gauge> counters) {
+    public void setGauges(List<Gauge> counters) {
         this.counters = counters;
     }
 
@@ -100,29 +107,29 @@ public abstract class Job implements Runnable, Cloneable {
         this.title = title;
     }
 
-    public int getAccuracy() {
-        return accuracy;
+    public int getNumberIterations() {
+        return iterations;
     }
 
-    public void setAccuracy(int accuracy) {
-        this.accuracy = accuracy;
+    public void setNumberIterations(int accuracy) {
+        this.iterations = accuracy;
     }
 
     @Override
     public Job clone() throws CloneNotSupportedException {
         Job newJob = (Job) super.clone();
-        newJob.setCounters(new ArrayList<Gauge>());
-        for(Gauge gauge : this.getCounters()){
+        newJob.setGauges(new ArrayList<Gauge>());
+        for (Gauge gauge : this.getGauges()) {
             try {
                 System.out.println(gauge.getTitle());
-                newJob.getCounters().add(gauge.clone());
+                newJob.getGauges().add(gauge.clone());
             } catch (CloneNotSupportedException ex) {
                 throw new RuntimeException(ex);
             }
         }
         newJob.title = this.getTitle();
         newJob.parameter = this.getParameter();
-        newJob.accuracy = this.getAccuracy();
+        newJob.iterations = this.getNumberIterations();
         return newJob;
     }
 

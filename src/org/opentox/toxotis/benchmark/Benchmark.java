@@ -4,32 +4,20 @@ import org.opentox.toxotis.benchmark.job.Job;
 import org.opentox.toxotis.benchmark.gauge.Gauge;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.StatisticalBarRenderer;
 import org.jfree.chart.renderer.category.StatisticalLineAndShapeRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.statistics.DefaultStatisticalCategoryDataset;
-import org.jfree.data.statistics.StatisticalCategoryDataset;
-import org.jfree.data.statistics.Statistics;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -43,6 +31,24 @@ public class Benchmark {
     private ExecutorService executor;
     private Status status;
     private List<Job> jobs;
+    private String horizontalAxisTitle = "parameter";
+    private String verticalAxisTitle = "benchmarked measure";
+
+    public String getHorizontalAxisTitle() {
+        return horizontalAxisTitle;
+    }
+
+    public void setHorizontalAxisTitle(String horizontalAxisTitle) {
+        this.horizontalAxisTitle = horizontalAxisTitle;
+    }
+
+    public String getVerticalAxisTitle() {
+        return verticalAxisTitle;
+    }
+
+    public void setVerticalAxisTitle(String verticalAxisTitle) {
+        this.verticalAxisTitle = verticalAxisTitle;
+    }
 
     public enum Status {
 
@@ -69,7 +75,9 @@ public class Benchmark {
         this.jobs = jobs;
     }
 
-    
+    public void addJobs(List<Job> jobs){
+        this.jobs.addAll(jobs);
+    }
 
     public void start() throws ToxOtisException {
         if (!status.equals(Status.IDLE)) {
@@ -100,22 +108,48 @@ public class Benchmark {
         return getChart(new StatisticalBarRenderer(), counters);
     }
 
+    public JFreeChart getBarChart(String... counters) {
+        return getChart(new StatisticalBarRenderer(), counters);
+    }
+
     public JFreeChart getLineChart(Class<? extends Gauge>... counters) {
         return getChart(new StatisticalLineAndShapeRenderer(true, true), counters);
     }
 
-    private JFreeChart getChart( CategoryItemRenderer renderer,Class<? extends Gauge>... counters) {
+    public JFreeChart getLineChart(String... counters) {
+        return getChart(new StatisticalLineAndShapeRenderer(true, true), counters);
+    }
+
+    private JFreeChart getChart(CategoryItemRenderer renderer, Class<? extends Gauge>... counters) {
         List<Class<? extends Gauge>> gaugesToInclude = Arrays.asList(counters);
         DefaultStatisticalCategoryDataset dataset = new DefaultStatisticalCategoryDataset();
         for (Job job : jobs) {
-            for (Gauge g : job.getCounters()) {
+            for (Gauge g : job.getGauges()) {
                 if (gaugesToInclude.contains(g.getClass())) {
                     dataset.add(g.getMeasurement(), g.getStdev(), g.getTitle(), job.getParameter());
                 }
             }
-        }       
-        CategoryAxis categoryAxis = new CategoryAxis("ambit datasets");
-        ValueAxis valueAxis = new NumberAxis("time");
+        }
+        CategoryAxis categoryAxis = new CategoryAxis(horizontalAxisTitle);
+        ValueAxis valueAxis = new NumberAxis(verticalAxisTitle);
+        CategoryPlot plot = new CategoryPlot(dataset, categoryAxis, valueAxis, renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        JFreeChart c = new JFreeChart(title, plot);
+        return c;
+    }
+
+    private JFreeChart getChart(CategoryItemRenderer renderer, String... counters) {
+        List<String> gaugesToInclude = Arrays.asList(counters);
+        DefaultStatisticalCategoryDataset dataset = new DefaultStatisticalCategoryDataset();
+        for (Job job : jobs) {
+            for (Gauge g : job.getGauges()) {
+                if (gaugesToInclude.contains(g.getTitle())) {
+                    dataset.add(g.getMeasurement(), g.getStdev(), g.getTitle(), job.getParameter());
+                }
+            }
+        }
+        CategoryAxis categoryAxis = new CategoryAxis(horizontalAxisTitle);
+        ValueAxis valueAxis = new NumberAxis(verticalAxisTitle);
         CategoryPlot plot = new CategoryPlot(dataset, categoryAxis, valueAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart c = new JFreeChart(title, plot);
