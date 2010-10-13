@@ -38,7 +38,7 @@ public class BenchmarkTest {
     @Test
     public void testSomeMethod() throws CloneNotSupportedException, ToxOtisException, InterruptedException, Exception {
 
-        final Benchmark benchmark = new Benchmark("My benchmark title");// Diagram Title
+        final Benchmark benchmark = new Benchmark("Remote Datasets to Local OntModel objects");// Diagram Title
 
         /*
          * Names/Annotations for the different lines
@@ -49,34 +49,33 @@ public class BenchmarkTest {
         String ds10GaugeName = "dataset/10";
 
         // Number for iterations for each measurement
-        int nIter1 = 5;
-        int nIter2 = 5;
+        int nIter1 = 20;
+        int nIter2 = 20;
         int nIter3 = 5;
 
 
         benchmark.addJobs(JobFactory.createDownloadOntModelJobs(
-                "J1", 50, 500, 50000,
-                Services.ambitUniPlovdiv().augment("dataset", "4").toString() + "?max=%s", nIter1,
+                "J1", 50, 300, 50,
+                Services.ideaconsult().augment("dataset", "4").toString() + "?max=%s", nIter1,
                 ds4GaugeName));
 
         benchmark.addJobs(JobFactory.createDownloadOntModelJobs(
                 "J2", 100, 500, 50,
-                Services.ambitUniPlovdiv().augment("dataset", "9").toString() + "?max=%s", nIter1,
+                Services.ideaconsult().augment("dataset", "9").toString() + "?max=%s", nIter2,
                 ds9GaugeName));
 
 
-        benchmark.addJobs(JobFactory.createDownloadOntModelJobs(
-                "J3", 400, 600, 100,
-                Services.ambitUniPlovdiv().augment("dataset", "10").toString() + "?max=%s", nIter2,
-                ds10GaugeName));
+//        benchmark.addJobs(JobFactory.createDownloadOntModelJobs(
+//                "J3", 400, 600, 100,
+//                Services.ideaconsult().augment("dataset", "10").toString() + "?max=%s", nIter3,
+//                ds10GaugeName));
 
         benchmark.setHorizontalAxisTitle("#Compounds");// x-axis name
-        benchmark.setVerticalAxisTitle("Download time");// y-axis name
-
+        benchmark.setVerticalAxisTitle("Computational time (ms)");// y-axis name
 
         benchmark.start();
 
-        final ChartFrame frame2 = new ChartFrame("Title of our benchmarking test", // Window title
+        final ChartFrame frame2 = new ChartFrame("OntModel Test #1", // Window title
                 benchmark.getLineChart(ds4GaugeName, ds9GaugeName, ds10GaugeName));
 
 

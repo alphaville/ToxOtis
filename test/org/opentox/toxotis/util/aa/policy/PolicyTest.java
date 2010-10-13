@@ -41,9 +41,9 @@ public class PolicyTest {
     public void testSomeMethod() throws ToxOtisException, IOException {
         AuthenticationToken at = PasswordFileManager.CRYPTO.
                 authFromFile("/home/chung/toxotisKeys/my.key");
-        System.out.println(at.getTokenUrlEncoded());
-        at.invalidate();
-        Policy.listPolicyUris(null,at);
+        System.out.println(at.getTokenUrlEncoded());       
+        //Policy.listPolicyUris(null,at);
+        Policy.parsePolicy("myPolicy_15", null, at);
     }
 
 }

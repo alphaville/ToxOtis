@@ -43,6 +43,7 @@ public class DownloadOntModelJob extends Job {
         TimeGauge timeGauge = (TimeGauge) getGaugeForName(milliTimeGaugeName);
         timeGauge.start();
         VRI uri = new VRI(String.format(templatedUri, parameter.toString()));
+        System.out.println(uri);
         GetClient client = new GetClient(uri);
         client.getResponseOntModel();
         client.close();
