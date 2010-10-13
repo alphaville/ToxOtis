@@ -97,7 +97,7 @@ public class DatasetTest {
     public void testCompareNoDBQuery() throws URISyntaxException, ToxOtisException, InterruptedException, FileNotFoundException {
     }
 
-    @Test
+    //@Test
     public void testUploadTask() throws Exception {
         VRI vri = new VRI(Services.ideaconsult().augment("dataset", "54").addUrlParameter("max", "5"));
         Dataset ds = new Dataset(vri).loadFromRemote();
@@ -109,13 +109,14 @@ public class DatasetTest {
 
     }
 
-//    @Test
+    @Test
     public void testParse() throws URISyntaxException, ToxOtisException, InterruptedException, FileNotFoundException {
-        int datasetId = 10;
+        int datasetId = 4;
         VRI vri = Services.ideaconsult();
         vri.augment("dataset", Integer.toString(datasetId));
         System.out.println("Test on dataset : http://apps.ideaconsult.net:8080/ambit2/dataset/" + datasetId);
-        for (int i = 100; i <= 100; i += 50) {
+        for (int i = 1; i <= 100; i += 50) {
+            System.out.println("--"+i);
             for (int j = 0; j < 10; j++) {
                 vri.removeUrlParameter("max").addUrlParameter("max", i == 0 ? 1 : i);
                 Dataset ds = new Dataset(vri).loadFromRemote();

@@ -3,7 +3,7 @@ package org.opentox.toxotis.benchmark.gauge;
 /**
  * A Gauge is used to provide a desired measurement in any Job.
  * This class must be extended for beauty purposes. The setMeasurement() method
- * must be used in any implementation in order for the gauge to store a measurement.
+ * must be invoked in any implementation in order for the gauge to store a measurement.
  *
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis

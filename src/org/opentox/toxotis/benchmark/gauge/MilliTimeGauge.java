@@ -8,6 +8,7 @@ package org.opentox.toxotis.benchmark.gauge;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
+@Deprecated
 public class MilliTimeGauge extends  TimeGauge {
 
     public static final String DEFAULT_GAUGE_NAME = "MilliTime Gauge";

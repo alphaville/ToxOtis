@@ -15,7 +15,7 @@ public abstract class Job implements Runnable, Cloneable {
     private Comparable title;
     protected Comparable parameter;
     private int iterations;
-    private List<Gauge> counters;
+    private List<Gauge> gauges;
 
     public abstract void work() throws Exception;
 
@@ -23,7 +23,7 @@ public abstract class Job implements Runnable, Cloneable {
         this.title = title;
         this.parameter = parameter;
         this.iterations = 1;
-        this.counters = new ArrayList<Gauge>();
+        this.gauges = new ArrayList<Gauge>();
     }
 
     public void run() {
@@ -31,8 +31,8 @@ public abstract class Job implements Runnable, Cloneable {
             /* Constructs Two-Dimensinal List that will hold all measurements from all Gauges
              * and initializes it with the correct sizes.
              */
-            ArrayList<ArrayList<Number>> allValues = new ArrayList<ArrayList<Number>>(counters.size());
-            for (int i = 0; i < counters.size(); i++) {
+            ArrayList<ArrayList<Number>> allValues = new ArrayList<ArrayList<Number>>(gauges.size());
+            for (int i = 0; i < gauges.size(); i++) {
                 allValues.add(i, new ArrayList<Number>(iterations));
             }
 
@@ -44,8 +44,8 @@ public abstract class Job implements Runnable, Cloneable {
             work(); //Ignoring first run
             for (int i = 0; i < iterations; i++) {
                 work();
-                for (int y = 0; y < counters.size(); y++) {
-                    allValues.get(y).add(i, counters.get(y).getMeasurement());
+                for (int y = 0; y < gauges.size(); y++) {
+                    allValues.get(y).add(i, gauges.get(y).getMeasurement());
                 }
             }
 
@@ -55,14 +55,14 @@ public abstract class Job implements Runnable, Cloneable {
              * don't really need to hold all values from all cycles, just the
              * statistic results.
              */
-            for (int i = 0; i < counters.size(); i++) {
+            for (int i = 0; i < gauges.size(); i++) {
                 System.out.println(allValues.get(i));
                 double mean = Statistics.calculateMean(allValues.get(i));
                 double stdev = Statistics.getStdDev(
                         allValues.get(i).toArray(
                         new Number[allValues.get(i).size()]));
-                counters.get(i).setMeasurement(mean);
-                counters.get(i).setStdev(stdev);
+                gauges.get(i).setMeasurement(mean);
+                gauges.get(i).setStdev(stdev);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -71,7 +71,7 @@ public abstract class Job implements Runnable, Cloneable {
     }
 
     public Gauge getGaugeForName(String name) {
-        for (Gauge g : counters) {
+        for (Gauge g : gauges) {
             if (name.equals(g.getTitle())) {
                 return g;
             }
@@ -80,15 +80,15 @@ public abstract class Job implements Runnable, Cloneable {
     }
 
     public boolean addGauge(Gauge e) {
-        return counters.add(e);
+        return gauges.add(e);
     }
 
     public List<Gauge> getGauges() {
-        return counters;
+        return gauges;
     }
 
     public void setGauges(List<Gauge> counters) {
-        this.counters = counters;
+        this.gauges = counters;
     }
 
     public Comparable getParameter() {

@@ -210,9 +210,9 @@ public abstract class AbstractClient implements Closeable {
             }
             return om;
         } catch (final Exception ex) {
-            throw new ToxOtisException(ErrorCause.CommunicationError, 
-                    "Cannot read OntModel from " + vri.toString() + "due to communication" +
-                    "error with the remote service.", ex);
+            throw new ToxOtisException(ErrorCause.CommunicationError,
+                    "Cannot read OntModel from " + vri.toString() + "due to communication"
+                    + "error with the remote service.", ex);
         }
     }
 

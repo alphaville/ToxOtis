@@ -5,8 +5,10 @@ import org.opentox.toxotis.benchmark.gauge.Gauge;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -28,9 +30,8 @@ import org.opentox.toxotis.ToxOtisException;
 public class Benchmark {
 
     private String title;
-    private ExecutorService executor;
     private Status status;
-    private List<Job> jobs;
+    private List<Job> jobs = new ArrayList<Job>();
     private String horizontalAxisTitle = "parameter";
     private String verticalAxisTitle = "benchmarked measure";
 
@@ -58,7 +59,6 @@ public class Benchmark {
     }
 
     public Benchmark(String title) {
-        executor = Executors.newSingleThreadExecutor();
         jobs = new ArrayList<Job>();
         status = Status.IDLE;
         this.title = title;
@@ -75,17 +75,26 @@ public class Benchmark {
         this.jobs = jobs;
     }
 
-    public void addJobs(List<Job> jobs){
+    public void addJobs(List<Job> jobs) {
         this.jobs.addAll(jobs);
     }
 
+
+    public void start(int coreThreadPoolSize, int maxThreadPoolSize, long keepAliveTime, TimeUnit keepAliveUnits, int queueSize) throws ToxOtisException {
+        start(new ThreadPoolExecutor(coreThreadPoolSize, maxThreadPoolSize, keepAliveTime, keepAliveUnits, new ArrayBlockingQueue<Runnable>(queueSize)));
+    }
+
     public void start() throws ToxOtisException {
+        start(Executors.newSingleThreadExecutor());
+    }
+
+    public void start(ExecutorService executor) throws ToxOtisException {
         if (!status.equals(Status.IDLE)) {
             throw new ToxOtisException("Benchmark:" + title + " is not in IDLE state and cannot be executed");
         }
         status = Status.RUNNING;
         for (Job job : jobs) {
-            executor.submit(job);
+            job.run();
         }
         try {
             executor.shutdown();
@@ -143,7 +152,7 @@ public class Benchmark {
         DefaultStatisticalCategoryDataset dataset = new DefaultStatisticalCategoryDataset();
         for (Job job : jobs) {
             for (Gauge g : job.getGauges()) {
-                if (gaugesToInclude.contains(g.getTitle())) {
+                if (gaugesToInclude.contains(g.getTitle())) {                    
                     dataset.add(g.getMeasurement(), g.getStdev(), g.getTitle(), job.getParameter());
                 }
             }
@@ -155,4 +164,6 @@ public class Benchmark {
         JFreeChart c = new JFreeChart(title, plot);
         return c;
     }
+
+
 }

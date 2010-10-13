@@ -5,6 +5,7 @@ package org.opentox.toxotis.benchmark.gauge;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
+@Deprecated
 public class NanoTimeGauge extends TimeGauge {
 
     public NanoTimeGauge() {

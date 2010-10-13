@@ -1,11 +1,10 @@
-package org.opentox.toxotis.benchmark.job;
+package org.opentox.toxotis.benchmark.job.impl;
 
-import com.hp.hpl.jena.ontology.OntModel;
-import org.opentox.toxotis.benchmark.gauge.MilliTimeGauge;
+import org.opentox.toxotis.benchmark.gauge.GaugeFactory;
 import org.opentox.toxotis.benchmark.gauge.TimeGauge;
+import org.opentox.toxotis.benchmark.job.Job;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.client.collection.Media;
 
 /**
  *
@@ -28,14 +27,14 @@ public class DownloadOntModelJob extends Job {
 
     public DownloadOntModelJob(Comparable title, Comparable parameter) {
         super(title, parameter);
-        MilliTimeGauge gauge = new MilliTimeGauge(milliTimeGaugeName);
+        TimeGauge gauge = GaugeFactory.milliTimeGauge(milliTimeGaugeName);
         addGauge(gauge);
     }
 
-    public DownloadOntModelJob(Comparable title, Comparable parameter, String milliTimeGaugeName) {        
+    public DownloadOntModelJob(Comparable title, Comparable parameter, String milliTimeGaugeName) {
         super(title, parameter);
         this.milliTimeGaugeName = milliTimeGaugeName;
-        MilliTimeGauge gauge = new MilliTimeGauge(milliTimeGaugeName);
+        TimeGauge gauge = GaugeFactory.milliTimeGauge(milliTimeGaugeName);
         addGauge(gauge);
     }
 
@@ -43,9 +42,10 @@ public class DownloadOntModelJob extends Job {
     public void work() throws Exception {
         TimeGauge timeGauge = (TimeGauge) getGaugeForName(milliTimeGaugeName);
         timeGauge.start();
-        GetClient client = new GetClient();
-        client.setUri(String.format(templatedUri, parameter.toString())).setMediaType(Media.APPLICATION_RDF_XML);
+        VRI uri = new VRI(String.format(templatedUri, parameter.toString()));
+        GetClient client = new GetClient(uri);
         client.getResponseOntModel();
+        client.close();
         timeGauge.stop();
     }
 }
