@@ -45,7 +45,9 @@ public class MetaInfoImplTest {
         MetaInfo mi = new MetaInfoImpl();
         mi.addContributor("Hampos Chomenides");
         mi.addContributor("Pantelis Sopasakis");
-        mi.setComment("Just a comment");
+        mi.addComment("Just a comment");
+        mi.addComment("Just another comment");
+        mi.addComment("Third comment!!!");
         mi.setCreator("YAQP web services");
         mi.setDescription("Brief Description");
         mi.setHasSource("http://someserver.com/service/1/model/24875");
@@ -55,6 +57,7 @@ public class MetaInfoImplTest {
         mi.setSeeAlso("http://opentox.org");
         mi.setTitle("My Resource");
         mi.setVersionInfo("1.1");
+        System.out.println(mi);
         String featureUri = "http://apps.ideaconsult.net:8080/ambit2/feature/22204";
         FeatureSpider fSpider = new FeatureSpider(new VRI(featureUri));
         fSpider.parse();
@@ -62,6 +65,7 @@ public class MetaInfoImplTest {
         Resource resouce = model.getResource(featureUri);
         resouce = mi.attachTo(resouce, model);
         FeatureSpider fS = new FeatureSpider((OntModel)model, featureUri);
-        Feature parsedFeature = fS.parse();        
+        Feature parsedFeature = fS.parse();
+        parsedFeature.asOntModel().write(System.out);
     }
 }

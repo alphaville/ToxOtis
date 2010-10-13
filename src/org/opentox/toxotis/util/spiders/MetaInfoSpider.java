@@ -5,6 +5,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import java.util.ArrayList;
 import java.util.Date;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
@@ -46,8 +47,10 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
         temp = retrieveProp(DC.publisher);
         dcmeta.setPublisher(temp != null ? temp.getValue() : null);
         /* comment */
-        temp = retrieveProp(RDFS.comment);
-        dcmeta.setComment(temp != null ? temp.getValue() : null);
+        ArrayList<String> temps = retrieveProps(RDFS.comment);
+        for (String comment : temps){
+            dcmeta.addComment(comment != null ? comment : null);
+        }
         /* version info */
         temp = retrieveProp(OWL.versionInfo);
         dcmeta.setVersionInfo(temp != null ? temp.getValue() : null);

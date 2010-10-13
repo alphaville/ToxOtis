@@ -86,7 +86,7 @@ public class KnoufDatatypeProperties {
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getMetaInfo().setTitle("has Abstract");
-            property.getMetaInfo().setComment("An abstract of the work.");
+            property.getMetaInfo().addComment("An abstract of the work.");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasAbstract = property;
         }

@@ -96,7 +96,7 @@ public class OTClasses {
     public static OntologicalClass OpenToxResource() {
         if (ms_OpenToxResource == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OpenToxResource");
-            clazz.getMetaInfo().setComment("Generic OpenTox Resource");
+            clazz.getMetaInfo().addComment("Generic OpenTox Resource");
             clazz.getSuperClasses().add(Thing());
             ms_OpenToxResource = clazz;
         }
@@ -110,7 +110,7 @@ public class OTClasses {
     public static OntologicalClass Algorithm() {
         if (ms_Algorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Algorithm");
-            clazz.getMetaInfo().setComment("Provides access to OpenTox algorithms");
+            clazz.getMetaInfo().addComment("Provides access to OpenTox algorithms");
             clazz.getMetaInfo().setVersionInfo("1.1");
             clazz.getSuperClasses().add(OpenToxResource());
             ms_Algorithm = clazz;
@@ -121,7 +121,7 @@ public class OTClasses {
     public static OntologicalClass Compound() {
         if (ms_Compound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Compound");
-            clazz.getMetaInfo().setComment("API for OpenTox compound webservices");
+            clazz.getMetaInfo().addComment("API for OpenTox compound webservices");
             clazz.getSuperClasses().add(OpenToxResource());
             ms_Compound = clazz;
         }
@@ -131,7 +131,7 @@ public class OTClasses {
     public static OntologicalClass Conformer() {
         if (ms_Conformer == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Conformer");
-            clazz.getMetaInfo().setComment("API for OpenTox conformer webservices");
+            clazz.getMetaInfo().addComment("API for OpenTox conformer webservices");
             clazz.getSuperClasses().add(Compound());
             ms_Conformer = clazz;
         }
@@ -175,7 +175,7 @@ public class OTClasses {
     public static OntologicalClass Dataset() {
         if (ms_Dataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Dataset");
-            clazz.getMetaInfo().setComment("Provides access to chemical compounds "
+            clazz.getMetaInfo().addComment("Provides access to chemical compounds "
                     + "and their features (e.g. structural, physical-chemical, "
                     + "biological, toxicological properties)");
             clazz.getSuperClasses().add(OpenToxResource());

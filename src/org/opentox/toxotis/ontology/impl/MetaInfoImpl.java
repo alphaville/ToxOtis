@@ -29,7 +29,7 @@ public class MetaInfoImpl implements MetaInfo {
     private TypedValue<String> title;
     private TypedValue<String> description;
     private TypedValue<String> identifier;
-    private TypedValue<String> comment;
+    private Collection<TypedValue<String>> comment = new ArrayList<TypedValue<String>>();
     private TypedValue<String> sameAs;
     private TypedValue<String> seeAlso;
     private TypedValue<String> versionInfo;
@@ -74,8 +74,11 @@ public class MetaInfoImpl implements MetaInfo {
         if (hasSource != null) {
             builder.append("has source  : " + hasSource + "\n");
         }
-        if (comment != null) {
-            builder.append("comment     : " + comment + "\n");
+        if (comment != null && !comment.isEmpty()) {
+            Iterator<TypedValue<String>> commentIterator = comment.iterator();
+            while (commentIterator.hasNext()) {
+                builder.append("comment     : " + commentIterator.next() + "\n");
+            }
         }
         if (versionInfo != null) {
             builder.append("version info: " + versionInfo + "\n");
@@ -158,9 +161,12 @@ public class MetaInfoImpl implements MetaInfo {
                 System.err.println("[WARNING] Cannot create a resource with identifier : '" + hasSource.getValue() + "'. Not a valid IRI!");
             }
         }
-        if (comment != null) {
-            resource.addLiteral(RDFS.comment.inModel(model).as(Property.class),
-                    model.createTypedLiteral(comment.getValue(), XSDDatatype.XSDstring));
+        if (comment != null && !comment.isEmpty()) {
+            Iterator<TypedValue<String>> commentIterator = comment.iterator();
+            while (commentIterator.hasNext()) {
+                resource.addLiteral(RDFS.comment.inModel(model).as(Property.class),
+                        model.createTypedLiteral(commentIterator.next().getValue(), XSDDatatype.XSDstring));
+            }
         }
         if (versionInfo != null) {
             resource.addLiteral(OWL.versionInfo.inModel(model).as(Property.class),
@@ -181,7 +187,7 @@ public class MetaInfoImpl implements MetaInfo {
         return resource;
     }
 
-    public TypedValue<String> getComment() {
+    public Collection<TypedValue<String>> getComment() {
         return comment;
     }
 
@@ -229,13 +235,13 @@ public class MetaInfoImpl implements MetaInfo {
         return audiences;
     }
 
-    public MetaInfo setComment(String comment) {
-        this.comment = comment != null ? new TypedValue<String>(comment) : null;
+    public MetaInfo addComment(String comment) {
+        this.comment.add(comment != null ? new TypedValue<String>(comment) : null);
         return this;
     }
 
-    public MetaInfo setComment(TypedValue<String> comment) {
-        this.comment = comment;
+    public MetaInfo addComment(TypedValue<String> comment) {
+        this.comment.add(comment);
         return this;
     }
 
@@ -300,7 +306,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo setPublisher(String publisher) {
-        this.comment = publisher != null ? new TypedValue<String>(publisher) : null;
+        this.publisher = publisher != null ? new TypedValue<String>(publisher) : null;
         return this;
     }
 
@@ -413,14 +419,20 @@ public class MetaInfoImpl implements MetaInfo {
 
     public void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         writeMetaDatumToStAX("dc", "identifier", identifier, writer);
-        writeMetaDatumToStAX("rdfs", "comment", comment, writer);
+        if (comment != null && !comment.isEmpty()) {
+            Iterator<TypedValue<String>> commentIterator = comment.iterator();
+            while (commentIterator.hasNext()) {
+                writeMetaDatumToStAX("rdfs", "comment", commentIterator.next(), writer);
+            }
+        }
+
         writeMetaDatumToStAX("rdfs", "creator", creator, writer);
         if (contributors != null) {
             for (TypedValue contrib : contributors) {
                 writeMetaDatumToStAX("dc", "contributor", contrib, writer);
             }
         }
-        
+
         writeMetaDatumToStAX("dc", "date", date, writer);
         writeMetaDatumToStAX("dc", "description", description, writer);
         writeMetaDatumResourceToStAX("ot", "hasSource", hasSource, writer);

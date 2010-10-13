@@ -103,28 +103,7 @@ public abstract class OTPropertyImpl implements OTProperty {
 
         MetaInfo meta = getMetaInfo();
         if (meta != null) {
-            String title = meta.getTitle() != null ? meta.getTitle().getValue() : null;
-            if (title != null) {
-                property.addLiteral(model.createAnnotationProperty(DC.title.getURI()),
-                        model.createTypedLiteral(title, XSDDatatype.XSDstring));
-            }
-
-            String description = meta.getDescription() != null ? meta.getDescription().getValue() : null;
-            if (description != null) {
-                property.addLiteral(model.createAnnotationProperty(DC.description.getURI()),
-                        model.createTypedLiteral(description, XSDDatatype.XSDstring));
-            }
-
-            String comment = meta.getComment() != null ? meta.getComment().getValue() : null;
-            if (comment != null) {
-                property.addLiteral(RDFS.comment, model.createTypedLiteral(comment, XSDDatatype.XSDstring));
-            }
-
-            String identifier = meta.getIdentifier() != null ? meta.getIdentifier().getValue() : null;
-            if (identifier != null) {
-                property.addLiteral(model.createAnnotationProperty(DC.identifier.getURI()),
-                        model.createTypedLiteral(identifier, XSDDatatype.XSDanyURI));
-            }
+            meta.attachTo(property, model);
         }
         return property;
     }

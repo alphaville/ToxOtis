@@ -208,7 +208,7 @@ public class OTDatatypeProperties {
             property.getDomain().add(OTClasses.ErrorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getMetaInfo().setDescription("Datatype property applied on an error report.");
-            property.getMetaInfo().setComment("This is a generic property. Subproperties usually used are: actor, "
+            property.getMetaInfo().addComment("This is a generic property. Subproperties usually used are: actor, "
                     + "message, details, status and errorCode.");
             ms_errorReportProperty = property;
         }
@@ -237,7 +237,7 @@ public class OTDatatypeProperties {
             property.getSuperProperties().add(errorReportProperty());
             property.getMetaInfo().setDescription("A simple message providing some "
                     + "simple description of the exceptional event.");
-            property.getMetaInfo().setComment("For example: 'Prediction feature not provided'");
+            property.getMetaInfo().addComment("For example: 'Prediction feature not provided'");
             property.getMetaInfo().setTitle("error message");
             ms_message = property;
         }

@@ -70,7 +70,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
 
     public void setName(String name) {
         this.name = name;
-        this.meta.setComment(name);
+        this.meta.addComment(name);
     }// </editor-fold>
 
     @Override

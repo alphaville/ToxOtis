@@ -60,7 +60,7 @@ public class KnoufBibTex {
         if (ms_Thing == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Thing");
             clazz.setNameSpace(OWL.NS);
-            clazz.getMetaInfo().setComment("All classes subclass of owl:Thing");
+            clazz.getMetaInfo().addComment("All classes subclass of owl:Thing");
             ms_Thing = clazz;
         }
         return ms_Thing;
@@ -71,7 +71,7 @@ public class KnoufBibTex {
             OntologicalClass clazz = new OntologicalClassImpl("Entry");
             clazz.getSuperClasses().add(Thing());
             clazz.setNameSpace(NS);
-            clazz.getMetaInfo().setComment("Generic bibtex entry");
+            clazz.getMetaInfo().addComment("Generic bibtex entry");
             clazz.getMetaInfo().setSeeAlso("http://zeitkunst.org/bibtex/0.1/");
             ms_Entry = clazz;
         }
@@ -83,7 +83,7 @@ public class KnoufBibTex {
             OntologicalClass clazz = new OntologicalClassImpl("Article");
             clazz.getSuperClasses().add(Entry());
             clazz.setNameSpace(NS);
-            clazz.getMetaInfo().setComment("An article from a journal or magazine.");
+            clazz.getMetaInfo().addComment("An article from a journal or magazine.");
             ms_Article = clazz;
         }
         return ms_Article;
@@ -94,7 +94,7 @@ public class KnoufBibTex {
             OntologicalClass clazz = new OntologicalClassImpl("Book");
             clazz.getSuperClasses().add(Entry());
             clazz.setNameSpace(NS);
-            clazz.getMetaInfo().setComment("A book with an explicit publisher.");
+            clazz.getMetaInfo().addComment("A book with an explicit publisher.");
             ms_Book = clazz;
         }
         return ms_Book;
@@ -105,7 +105,7 @@ public class KnoufBibTex {
             OntologicalClass clazz = new OntologicalClassImpl("Conference");
             clazz.getSuperClasses().add(Entry());
             clazz.setNameSpace(NS);
-            clazz.getMetaInfo().setComment("The same as INPROCEEDINGS, included for Scribe compatibility.");
+            clazz.getMetaInfo().addComment("The same as INPROCEEDINGS, included for Scribe compatibility.");
             ms_Conference = clazz;
         }
         return ms_Conference;
@@ -116,7 +116,7 @@ public class KnoufBibTex {
             OntologicalClass clazz = new OntologicalClassImpl("Phdthesis");
             clazz.getSuperClasses().add(Entry());
             clazz.setNameSpace(NS);
-            clazz.getMetaInfo().setComment("A PhD Thesis.");
+            clazz.getMetaInfo().addComment("A PhD Thesis.");
             ms_Phdthesis = clazz;
         }
         return ms_Phdthesis;

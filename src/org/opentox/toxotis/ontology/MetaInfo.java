@@ -30,7 +30,7 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      A comment on the described entity.
      */
-    TypedValue<String> getComment();
+    Collection<TypedValue<String>> getComment();
 
     /**
      * An account of the content of the resource. Description may include but is not
@@ -126,9 +126,9 @@ public interface MetaInfo extends java.io.Serializable {
 
     Collection<TypedValue<String>> getAudiences();
 
-    MetaInfo setComment(String comment);
+    MetaInfo addComment(String comment);
 
-    MetaInfo setComment(TypedValue<String> comment);
+    MetaInfo addComment(TypedValue<String> comment);
 
     MetaInfo setDescription(String description);
 

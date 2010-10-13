@@ -135,29 +135,7 @@ public class OntologicalClassImpl implements OntologicalClass {
             clazz = model.createClass(getUri());
             MetaInfo meta = getMetaInfo();
             if (meta != null) {
-                String comment = meta.getComment() != null ? meta.getComment().getValue() : null;
-                String desc = meta.getDescription() != null ? meta.getDescription().getValue() : null;
-                String identifier = meta.getIdentifier() != null ? meta.getIdentifier().getValue() : null;
-                String title = meta.getTitle() != null ? meta.getTitle().getValue() : null;
-                String version = meta.getVersionInfo() != null ? meta.getVersionInfo().getValue() : null;
-                if (comment != null) {
-                    clazz.addComment(model.createTypedLiteral(comment, XSDDatatype.XSDstring));
-                }
-                if (desc != null) {
-                    clazz.addProperty(model.createAnnotationProperty(DC.description.getURI()),
-                            model.createTypedLiteral(desc, XSDDatatype.XSDstring));
-                }
-                if (identifier != null) {
-                    clazz.addProperty(model.createAnnotationProperty(DC.identifier.getURI()),
-                            model.createTypedLiteral(identifier, XSDDatatype.XSDstring));
-                }
-                if (title != null) {
-                    clazz.addProperty(model.createAnnotationProperty(DC.title.getURI()),
-                            model.createTypedLiteral(title, XSDDatatype.XSDstring));
-                }
-                if (version != null) {
-                    clazz.setVersionInfo(version);
-                }
+                meta.attachTo(clazz, model);
             }
             for (OntologicalClass superClazz : getSuperClasses()) {
                 clazz.addSuperClass(superClazz.inModel(model));

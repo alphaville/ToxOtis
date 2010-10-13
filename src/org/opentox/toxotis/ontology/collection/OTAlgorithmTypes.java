@@ -76,7 +76,7 @@ public class OTAlgorithmTypes {
         if (ms_Thing == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Thing");
             clazz.setNameSpace(OWL.NS);
-            clazz.getMetaInfo().setComment("All classes are subclasses of owl:Thing");
+            clazz.getMetaInfo().addComment("All classes are subclasses of owl:Thing");
             ms_Thing = clazz;
         }
         return ms_Thing;
@@ -86,7 +86,7 @@ public class OTAlgorithmTypes {
         if (ms_AlgorithmType == null) {
             OntologicalClass clazz = new OntologicalClassImpl("AlgorithmType");
             clazz.setNameSpace(NS);
-            clazz.getMetaInfo().setComment("Generic class for all algorithm types in OpenTox");
+            clazz.getMetaInfo().addComment("Generic class for all algorithm types in OpenTox");
             clazz.getMetaInfo().setTitle("Algorithm Types");
             clazz.getSuperClasses().add(Thing());
             ms_AlgorithmType = clazz;
