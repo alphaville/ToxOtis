@@ -3,6 +3,7 @@ package org.opentox.toxotis.benchmark.job;
 import org.opentox.toxotis.benchmark.job.impl.ParseDatasetJob;
 import java.util.ArrayList;
 import org.opentox.toxotis.benchmark.job.impl.DownloadOntModelJob;
+import org.opentox.toxotis.benchmark.job.impl.TimeAuthenticationJob;
 
 /**
  *
@@ -35,9 +36,9 @@ public class JobFactory {
      *      An array list of jobs parametrized with the specified range of
      *      values, i.e. <code>from START to STOP step STEP</code>.
      */
-    public static ArrayList<Job> createDownloadOntModelJobs(String title, int start, int stop, int step, String templatedServiceUrl, int iterations, String gaugeName){
+    public static ArrayList<Job> createDownloadOntModelJobs(String title, int start, int stop, int step, String templatedServiceUrl, int iterations, String gaugeName) {
         ArrayList<Job> jobs = new ArrayList<Job>();
-        for(int i=start; i<=stop ; i+=step){
+        for (int i = start; i <= stop; i += step) {
             DownloadOntModelJob job = new DownloadOntModelJob(i, i, gaugeName);
             job.setService(templatedServiceUrl);
             job.setNumberIterations(iterations);
@@ -47,9 +48,9 @@ public class JobFactory {
         return jobs;
     }
 
-    public static ArrayList<Job> createParseDatasetJobs(String title, int start, int stop, int step, String templatedServiceUrl, int iterations){
+    public static ArrayList<Job> createParseDatasetJobs(String title, int start, int stop, int step, String templatedServiceUrl, int iterations, String gaugeName) {
         ArrayList<Job> jobs = new ArrayList<Job>();
-        for(int i=start; i<=stop ; i+=step){
+        for (int i = start; i <= stop; i += step) {
             ParseDatasetJob job = new ParseDatasetJob(i, i);
             job.setService(templatedServiceUrl);
             job.setNumberIterations(iterations);
@@ -59,4 +60,11 @@ public class JobFactory {
         return jobs;
     }
 
+    public static Job createAuthenticationJob(String title, String encryptedFile, int iterations, String gaugeName) {
+        TimeAuthenticationJob job = new TimeAuthenticationJob("", "", gaugeName);
+        job.setEncryptedPassFile(encryptedFile);
+        job.setNumberIterations(iterations);
+        job.setTitle(title);
+        return job;
+    }
 }

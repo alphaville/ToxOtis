@@ -23,6 +23,8 @@ public class SecurePostClient extends SecureClient {
     private Map<String, String> postParameters = new HashMap<String, String>();
     /** The method that this client applies */
     public static final String METHOD = "POST";
+    private String postableString = null;
+
 
     public SecurePostClient() {
         super();
@@ -31,7 +33,10 @@ public class SecurePostClient extends SecureClient {
     public SecurePostClient(VRI vri) {
         super(vri);
     }
-    
+
+    public void setPostable(String postableString) {
+        this.postableString = postableString;
+    }
 
     /** Initialize a connection to the target URI */
     protected javax.net.ssl.HttpsURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
@@ -122,12 +127,17 @@ public class SecurePostClient extends SecureClient {
         return this;
     }
 
-     public void postParameters() throws ToxOtisException {
+     public void post() throws ToxOtisException {
         initializeConnection(vri.toURI());
         DataOutputStream wr = null;
         try {
             wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(getParametersAsQuery());// POST the parameters
+            String parametersQuery = getParametersAsQuery();
+            if (parametersQuery!=null && !parametersQuery.trim().isEmpty()){
+                wr.writeBytes(parametersQuery);// POST the parameters
+            }else if (postableString!=null && !postableString.trim().isEmpty()){
+                wr.writeChars(postableString);
+            }
             wr.flush();
             wr.close();
         } catch (final IOException ex) {

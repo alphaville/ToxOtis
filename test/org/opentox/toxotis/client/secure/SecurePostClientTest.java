@@ -43,7 +43,7 @@ public class SecurePostClientTest {
         SecurePostClient p = new SecurePostClient(new VRI("https://opensso.in-silico.ch/opensso/identity/authenticate"));
         p.addParameter("username", "Sopasakis");
         p.addParameter("password", "xxx");
-        p.postParameters();
+        p.post();
         System.out.println(p.getResponseCode());
         System.out.println(p.getResponseText());        
     }

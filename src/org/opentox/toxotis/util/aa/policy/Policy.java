@@ -2,7 +2,6 @@ package org.opentox.toxotis.util.aa.policy;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -23,6 +21,7 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.client.secure.SecureDeleteClient;
 import org.opentox.toxotis.client.secure.SecureGetClient;
 import org.opentox.toxotis.client.secure.SecurePostClient;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -32,7 +31,8 @@ import org.w3c.dom.Element;
 /**
  * An authentication/authorization policy defines explicitly the way in which clients
  * are granted permissions to access certain resource and perform HTTP requests. Policies
- * may grant access to certain individuals or subject groups
+ * may grant access to certain individuals or subject groups.
+ *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -159,6 +159,7 @@ public class Policy {
         }
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public Document getDocument() {
         return policyDocument;
     }
@@ -193,6 +194,29 @@ public class Policy {
 
     public void setSubjectsDescription(String subjectsDescription) {
         this.subjectsDescription = subjectsDescription;
+    }// </editor-fold>
+
+    public static void deleteRemotePolicy(VRI policyServiceUri, String policyName, AuthenticationToken token) throws ToxOtisException {
+        //TODO: We need a secure DELETE client here!
+        if (policyServiceUri == null) {
+            policyServiceUri = Services.SingleSignOn.ssoPolicy();
+        }
+        SecureDeleteClient sdc = null;
+        try{
+            sdc = new SecureDeleteClient(policyServiceUri);
+            sdc.addHeaderParameter("id", policyName);
+            
+            sdc.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
+            sdc.doDelete();
+        }finally{
+            if (sdc!=null){
+                try {
+                    sdc.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                }
+            }
+        }
     }
 
     /**
@@ -220,8 +244,11 @@ public class Policy {
         }
         SecurePostClient spc = new SecurePostClient(policyServer);
         spc.addHeaderParameter(subjectid, token.stringValue());
-        spc.postParameters();
+        spc.setPostable(this.getText());
+        spc.post();
+
         System.out.println(spc.getResponseText());
+        System.out.println(spc.getResponseCode());
         return null;
     }
 
@@ -278,26 +305,68 @@ public class Policy {
         return null;
     }
 
-    public static String getPolicyOwner(VRI serviceUri, VRI policyService,AuthenticationToken token) throws ToxOtisException{
+    /**
+     * Obtain the username of the owner of a policy for a given URI,
+     * @param serviceUri
+     *      URI of an (OpenTox) web service for which the username of its creator
+     *      is requested
+     * @param policyService
+     *      URI of the SSO service used to carry out our request. In case this
+     *      argument is set to <code>null</code>, the default SSO service URI
+     *      <code>https://opensso.in-silico.ch/pol</code> will be used instead.
+     * @param token
+     *      Authentication token used to grant you access to the policy management
+     *      service.
+     * @return
+     *      The owner/creator of the policy for the provided service URI or <code>
+     *      null</code> if this URI is not registered to the policy service and
+     *      does not have a policy.
+     * @throws ToxOtisException
+     *      In case authentication/authorization against the SSO service fails
+     *      due to invalid token or insufficient priviledges or the service has
+     *      encoutnered some unexpected internal condition (status code <code>500</code>).
+     *      The OpenTox REST API specifies that the range of possible status codes
+     *      includes <code>200</code> (OK, Successs), <code>401</code> (Unauthorized)
+     *      and <code>500</code> (other unexpected conditions).
+     */
+    public static String getPolicyOwner(VRI serviceUri, VRI policyService, AuthenticationToken token) throws ToxOtisException {
         SecureGetClient sgt = null;
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
         }
         try {
+            // REQUEST
+            sgt = new SecureGetClient(policyService);
+            sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
+            sgt.addHeaderParameter("uri", serviceUri.clearToken().toString());
 
-        }finally{
-            if (sgt!=null){
+            // RETURN RESPONSE
+            int responseStatus = sgt.getResponseCode();
+            if (responseStatus == 200) {// Successful!
+                String response = sgt.getResponseText();
+                if (response.trim().equals("null")) {
+                    return null;
+                }
+                return response;
+            } else if (responseStatus == 403) {
+                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
+            } else if (responseStatus == 401) {
+                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to perform the request!");
+            } else {
+                throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus);
+            }
+        } finally {
+            if (sgt != null) {
                 try {
                     sgt.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(Policy.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
                 }
             }
         }
-        return null;
     }
 
-    public static Policy parsePolicy(String id,VRI policyService, AuthenticationToken token) throws ToxOtisException {
+    public static Policy parsePolicy(String id, VRI policyService, AuthenticationToken token) throws ToxOtisException {
         SecureGetClient sgt = null;
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
@@ -312,6 +381,7 @@ public class Policy {
             int responseStatus = sgt.getResponseCode();
             if (responseStatus == 200) {
                 //TODO: PARSE XML!
+                System.out.println(sgt.getResponseText());
             } else if (responseStatus == 403) {
                 throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
             } else {

@@ -97,7 +97,7 @@ public class AuthenticationToken {
             poster.addParameter("password", password);
             username = null;
             password = null;
-            poster.postParameters();
+            poster.post();
             int status = poster.getResponseCode();
             if (status >= 400) {
                 throw new ToxOtisException("Error while authenticating user at " +
@@ -282,7 +282,7 @@ public class AuthenticationToken {
         try {
             poster = new SecurePostClient(Services.SingleSignOn.ssoValidate());
             poster.addParameter("tokenid", stringValue());
-            poster.postParameters();
+            poster.post();
             int status = poster.getResponseCode();
             String message = (poster.getResponseText()).trim();
             if (status != 200 && status != 401) {
@@ -331,7 +331,7 @@ public class AuthenticationToken {
         try {
             poster = new SecurePostClient(Services.SingleSignOn.ssoInvalidate());
             poster.addParameter("subjectid", stringValue());
-            poster.postParameters();
+            poster.post();
             int status = poster.getResponseCode();
             if (status != 200) {
                 throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
@@ -359,7 +359,7 @@ public class AuthenticationToken {
         User u = new User();
         SecurePostClient poster = new SecurePostClient(Services.SingleSignOn.ssoAttributes());
         poster.addParameter("subjectid", stringValue());
-        poster.postParameters();
+        poster.post();
 
         InputStream is = null;
         BufferedReader reader = null;
