@@ -18,6 +18,7 @@ public class Services {
     private static final String _SSO_SERVER = "https://" + SSO_HOST;
     private static final String _SSO_IDENTITY = "https://" + SSO_HOST + "/auth/%s";
     private static final String _SSO_POLICY = "https://" + SSO_HOST + "/pol";
+    private static final String _SSO_POLICY_OLD = "https://" + SSO_HOST + "/Pol/opensso-pol";
 
     public static VRI ntua() {
         try {
@@ -119,6 +120,15 @@ public class Services {
         public static VRI ssoPolicy() {
             try {
                 return new VRI(String.format(_SSO_POLICY, ""));
+            } catch (URISyntaxException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        @Deprecated
+        public static VRI ssoPolicyOld() {
+            try {
+                return new VRI(String.format(_SSO_POLICY_OLD, ""));
             } catch (URISyntaxException ex) {
                 throw new RuntimeException(ex);
             }

@@ -228,7 +228,12 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
                 String line = null;
                 while ((line = remoteReader.readLine()) != null) {
                     bufferedWriter.write(line);
-                    bufferedWriter.newLine();
+                    if ((line = remoteReader.readLine()) != null){
+                        bufferedWriter.newLine();
+                        bufferedWriter.write(line);
+                    }else{
+                        break;
+                    }
                 }
 
                 Throwable failure = null;

@@ -18,7 +18,8 @@ public enum Media {
     TEXT_YAML("text/x-yaml"),
     APPLICATION_YAML("application/x-yaml"),
     TEXT_URI_LIST("text/uri-list"),
-    TEXT_N_TRIPLES("text/n-triples");
+    TEXT_N_TRIPLES("text/n-triples"),
+    TEXT_CSV("text/csv");
 
     ;
     private String mime;

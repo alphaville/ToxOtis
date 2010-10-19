@@ -1,9 +1,6 @@
 package org.opentox.toxotis.core.component;
 
 import java.util.concurrent.ExecutionException;
-import org.opentox.toxotis.core.component.Dataset;
-import org.opentox.toxotis.core.component.Compound;
-import org.opentox.toxotis.core.component.Task;
 import java.io.File;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
@@ -24,7 +21,6 @@ import org.opentox.toxotis.factory.CompoundFactory;
 import org.opentox.toxotis.ontology.collection.OTFeatures;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TypedValue;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -103,7 +99,7 @@ public class CompoundTest {
         c.wrapInDataset(new VRI("myserver.com/dataset/1")).asOntModel().write(System.out);
     }
 
-    @Test
+    //@Test
     public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException, ExecutionException {
         IDescriptorCalculation c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145418"));
         Future<VRI> t = c.futureJoeLibDescriptors(null, Services.ambitUniPlovdiv().augment("dataset"));
@@ -116,5 +112,14 @@ public class CompoundTest {
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/1"));
         Dataset ds = c.getPropertiesByOnt(OTFeatures.ChemicalName(), null);
         System.out.println(ds.getDataEntries().get(0).getFeatureValues().size());
+    }
+
+    @Test
+    public void testSmilesAsString() throws Exception {
+        Compound c = new Compound(Services.ideaconsult().augment("compound","100"));
+        StringWriter sw = new StringWriter();
+        c.download(sw, Media.CHEMICAL_SMILES, null);
+        String smilesString = sw.toString();
+        System.out.println(".."+smilesString+"..");
     }
 }

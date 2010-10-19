@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.benchmark.gauge.GaugeFactory;
+import org.opentox.toxotis.benchmark.gauge.TimeGauge;
 import org.opentox.toxotis.benchmark.job.JobFactory;
 import org.opentox.toxotis.client.collection.Services;
 
@@ -51,8 +53,7 @@ public class BenchmarkTest {
         // Number for iterations for each measurement
         int nIter1 = 20;
         int nIter2 = 20;
-        int nIter3 = 5;
-
+//        int nIter3 = 5;
 
         benchmark.addJobs(JobFactory.createDownloadOntModelJobs(
                 "J1", 50, 300, 50,
@@ -104,17 +105,25 @@ public class BenchmarkTest {
     @Test
     public void testAuthBench() throws CloneNotSupportedException, ToxOtisException, InterruptedException, Exception {
 
-        final Benchmark benchmark = new Benchmark("A&A performance");// Diagram Title
-        benchmark.addJob(JobFactory.createAuthenticationJob(
-                "J1", "/home/chung/toxotisKeys/my.key",30,"time"));
+        TimeGauge overallTimer = GaugeFactory.milliTimeGauge("overall");
+        overallTimer.start();
+        final Benchmark benchmark = new Benchmark("Dataset to Instances using text/csv");// Diagram Title
+        benchmark.addJobs(JobFactory.createArffFromCSVJob(
+                "J1", 200, 1000, 200, "http://apps.ideaconsult.net:8080/ambit2/dataset/9?max=%s", 15, "dataset"));
+        benchmark.addJobs(JobFactory.createArffFromCSVJob(
+                "J2", 200, 1000, 200, "http://apps.ideaconsult.net:8080/ambit2/fastdataset/9?max=%s?chemicals=false", 15, "fast dataset no chemicals"));
+        benchmark.addJobs(JobFactory.createArffFromCSVJob(
+                "J3", 200, 1000, 200, "http://apps.ideaconsult.net:8080/ambit2/fastdataset/9?max=%s?chemicals=true", 15, "fast dataset"));
+
 
         benchmark.setHorizontalAxisTitle("");// x-axis name
         benchmark.setVerticalAxisTitle("Time (ms)");// y-axis name
         benchmark.start();
 
         final ChartFrame frame2 = new ChartFrame("AA Test #1", // Window title
-                benchmark.getLineChart("time"));
-
+                benchmark.getLineChart("dataset", "fast dataset no chemicals", "fast dataset"));
+        overallTimer.stop();
+        System.out.println("Overall time : "+overallTimer.getMeasurement()+"ms");
         Runnable r = new Runnable() {
 
             public void run() {

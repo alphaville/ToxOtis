@@ -199,7 +199,7 @@ public class Policy {
     public static void deleteRemotePolicy(VRI policyServiceUri, String policyName, AuthenticationToken token) throws ToxOtisException {
         //TODO: We need a secure DELETE client here!
         if (policyServiceUri == null) {
-            policyServiceUri = Services.SingleSignOn.ssoPolicy();
+            policyServiceUri = Services.SingleSignOn.ssoPolicyOld();
         }
         SecureDeleteClient sdc = null;
         try{
@@ -240,11 +240,12 @@ public class Policy {
      */
     public VRI publishPolicy(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
         if (policyServer == null) {
-            policyServer = Services.SingleSignOn.ssoPolicy();
+            policyServer = Services.SingleSignOn.ssoPolicyOld();
         }
         SecurePostClient spc = new SecurePostClient(policyServer);
         spc.addHeaderParameter(subjectid, token.stringValue());
         spc.setPostable(this.getText());
+        spc.setContentType("application/xml");
         spc.post();
 
         System.out.println(spc.getResponseText());
@@ -275,6 +276,7 @@ public class Policy {
      */
     public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ToxOtisException {
         SecureGetClient sgt = null;
+        ArrayList<String> listOfPolicyNames = new ArrayList<String>();
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
         }
@@ -286,7 +288,7 @@ public class Policy {
             if (responseStatus == 200) {
                 policies = sgt.getResponseUriList();
                 for (String s : policies) {
-                    System.out.println(s);
+                    listOfPolicyNames.add(s);
                 }
             } else if (responseStatus == 403) {
                 throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
@@ -302,7 +304,7 @@ public class Policy {
                 }
             }
         }
-        return null;
+        return listOfPolicyNames;
     }
 
     /**

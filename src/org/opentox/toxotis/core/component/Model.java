@@ -1,7 +1,5 @@
 package org.opentox.toxotis.core.component;
 
-import org.opentox.toxotis.core.component.Parameter;
-import org.opentox.toxotis.core.component.Algorithm;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -11,11 +9,11 @@ import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.OTOnlineResource;
-import org.opentox.toxotis.core.component.Algorithm;
-import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.core.OntologyServiceSupport;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.ModelSpider;
 
 /**
@@ -23,7 +21,7 @@ import org.opentox.toxotis.util.spiders.ModelSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Model extends OTOnlineResource<Model> {
+public class Model extends OTOnlineResource<Model> implements OntologyServiceSupport<Model>{
 
     private VRI dataset;
     private Algorithm algorithm;
@@ -141,6 +139,10 @@ public class Model extends OTOnlineResource<Model> {
 
     @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Model publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

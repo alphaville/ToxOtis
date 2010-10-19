@@ -170,7 +170,8 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
         return this;
     }
 
-    public Algorithm publishToOntService(AuthenticationToken token) throws ToxOtisException {
+    public Algorithm publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException {
+        
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
