@@ -59,11 +59,16 @@ public class PasswordFileManagerTest {
         PasswordFileManager.CRYPTO.createMasterPasswordFile(null, "/home/chung/Desktop/alt.key", 100);
     }
 
-    @Test
+    //@Test
     public void testFileAuth() throws IOException, ToxOtisException {
         AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");        
         System.out.println(at.getUser());
         System.out.println(at);
+    }
+
+    @Test
+    public void testCrypt(){
+        System.out.println(PasswordFileManager.CRYPTO.decrypt("tFTiUPtJi3CeF+IqyeomiFZlsB/6qgfZ"));
     }
 
 }
