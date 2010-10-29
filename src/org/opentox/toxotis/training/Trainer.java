@@ -81,23 +81,23 @@ public class Trainer {
             client.addPostParameter(parameter.getName(), parameter.getTypedValue().getValue().toString());
         }
         client.post();
-
+        String response = client.getResponseText();
         try {
             int status = client.getResponseCode();
-
+            System.out.println(status);
             if(status == 202){
-               return new TaskSpider(new VRI(client.getResponseText())).parse();
+               return new TaskSpider(new VRI(response)).parse();
             }else {
                 Task task = new Task();
                 task.setHttpStatus(status);
                 task.setPercentageCompleted(100);
-                task.setResultUri(new VRI(client.getResponseText()));
+                task.setResultUri(new VRI(response));
                 return task;
             }            
         } catch (IOException ex){
             throw new ToxOtisException(ex);
         }catch (URISyntaxException ex) {
-            throw new ToxOtisException(ErrorCause.TaskNotFoundError, ex);
+            throw new ToxOtisException(ErrorCause.TrainingError, response);
         }
     }
 }
