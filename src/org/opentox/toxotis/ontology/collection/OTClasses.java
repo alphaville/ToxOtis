@@ -40,6 +40,10 @@ public class OTClasses {
     private static OntologicalClass ms_FeatureValuePair;
     private static OntologicalClass ms_Model;
     private static OntologicalClass ms_Parameter;
+    private static OntologicalClass ms_VectorParameter;
+    private static OntologicalClass ms_VectorCoordinate;
+    private static OntologicalClass ms_Vector;
+    private static OntologicalClass ms_MultiValuedParameter;
     private static OntologicalClass ms_Task;
     private static OntologicalClass ms_ErrorReport;
     private static OntologicalClass ms_Thing;
@@ -302,6 +306,44 @@ public class OTClasses {
             ms_Parameter = clazz;
         }
         return ms_Parameter;
+    }
+
+    public static OntologicalClass VectorParameter() {
+        if(ms_VectorParameter == null){
+            OntologicalClass clazz = new OntologicalClassImpl("VectorParameter");
+            clazz.getSuperClasses().add(OpenToxResource());
+            clazz.getSuperClasses().add(Parameter());
+            ms_VectorParameter = clazz;
+        }
+        return ms_VectorParameter;
+    }
+
+    public static OntologicalClass VectorCoordinate() {
+        if(ms_VectorCoordinate == null){
+            OntologicalClass clazz = new OntologicalClassImpl("VectorParameter");
+            clazz.getSuperClasses().add(OpenToxResource());
+            ms_VectorCoordinate = clazz;
+        }
+        return ms_VectorCoordinate;
+    }
+
+    public static OntologicalClass Vector() {
+        if(ms_Vector == null){
+            OntologicalClass clazz = new OntologicalClassImpl("Vector");
+            clazz.getSuperClasses().add(OpenToxResource());
+            ms_Vector = clazz;
+        }
+        return ms_Vector;
+    }
+
+    public static OntologicalClass MultiValuedParameter(){
+        if(ms_MultiValuedParameter == null){
+            OntologicalClass clazz = new OntologicalClassImpl("MultiValuedParameter");
+            clazz.getSuperClasses().add(OpenToxResource());
+            clazz.getSuperClasses().add(Parameter());
+            ms_MultiValuedParameter = clazz;
+        }
+        return ms_MultiValuedParameter;
     }
 
     public static OntologicalClass Task() {

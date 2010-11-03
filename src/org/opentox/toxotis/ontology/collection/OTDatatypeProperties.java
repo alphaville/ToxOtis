@@ -36,6 +36,7 @@ public class OTDatatypeProperties {
     private static OTDatatypeProperty ms_errorCode;
     private static OTDatatypeProperty ms_httpStatus;
     private static OTDatatypeProperty ms_message;
+    private static OTDatatypeProperty ms_index;
     private static Map<String, Method> ms_methodCache;
 
     private synchronized static void initMethodCache() {
@@ -284,5 +285,15 @@ public class OTDatatypeProperties {
             ms_errorCode = property;
         }
         return ms_errorCode;
+    }
+
+    public static OTDatatypeProperty index(){
+        if(ms_index == null){
+           OTDatatypeProperty property = new OTDatatypePropertyImpl("index");
+            property.getDomain().add(OTClasses.MultiValuedParameter());
+            property.getRange().add(XSDDatatype.XSDinteger);
+            ms_index = property;
+        }
+        return ms_index;
     }
 }

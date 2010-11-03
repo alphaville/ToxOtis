@@ -34,6 +34,7 @@ public class OTObjectProperties {
     private static OTObjectProperty ms_bibtex;
     private static OTObjectProperty ms_listElement;
     private static OTObjectProperty ms_hasSource;
+    private static OTObjectProperty ms_vectorCoordinate;
     private static Map<String, Method> ms_methodCache;
 
     private synchronized static void initMethodCache() {
@@ -272,6 +273,17 @@ public class OTObjectProperties {
         }
         return ms_hasSource;
     }
+
+    public static OTObjectProperty vectorCoordinate(){
+        if(ms_vectorCoordinate == null){
+            OTObjectProperty property = new OTObjectPropertyImpl("vectorCoordinate");
+            property.getDomain().add(OTClasses.VectorParameter());
+            property.getRange().add(OTClasses.VectorCoordinate());
+            ms_vectorCoordinate = property;
+        }
+        return ms_vectorCoordinate;
+    }
+    
 
     public static OTObjectProperty listElement() {
         if (ms_listElement == null) {
