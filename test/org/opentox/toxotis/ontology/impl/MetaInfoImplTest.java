@@ -12,6 +12,8 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.util.spiders.AnyValue;
 import org.opentox.toxotis.util.spiders.FeatureSpider;
 import static org.junit.Assert.*;
 
@@ -50,22 +52,18 @@ public class MetaInfoImplTest {
         mi.addComment("Third comment!!!");
         mi.setCreator("YAQP web services");
         mi.setDescription("Brief Description");
-        mi.setHasSource("http://someserver.com/service/1/model/24875");
+        mi.setHasSource(new AnyValue<String>("http://someserver.com/compound/123", OTClasses.Compound()));
         mi.setIdentifier("http://somserver.net/service/134");
         mi.setPublisher("http://opentox.ntua.gr:3000");
-        mi.setSameAs("http://opentox.ntua.gr:3000/clone/24875");
+        AnyValue sameAsVal = new AnyValue<String>("http://opentox.ntua.gr:3000/clone/24875",OTClasses.Algorithm());
+        mi.setSameAs(sameAsVal);
         mi.setSeeAlso("http://opentox.org");
         mi.setTitle("My Resource");
         mi.setVersionInfo("1.1");
-        System.out.println(mi);
-        String featureUri = "http://apps.ideaconsult.net:8080/ambit2/feature/22204";
-        FeatureSpider fSpider = new FeatureSpider(new VRI(featureUri));
-        fSpider.parse();
-        OntModel model = fSpider.getOntModel();
-        Resource resouce = model.getResource(featureUri);
-        resouce = mi.attachTo(resouce, model);
-        FeatureSpider fS = new FeatureSpider((OntModel)model, featureUri);
-        Feature parsedFeature = fS.parse();
-        parsedFeature.asOntModel().write(System.out);
+
+        SimpleOntModelImpl model = new SimpleOntModelImpl();
+        Resource base = model.createResource("http://base.com/base", OTClasses.Compound().inModel(model));
+        mi.attachTo(base, model);
+        model.write(System.out);
     }
 }

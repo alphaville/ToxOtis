@@ -41,13 +41,13 @@ public class FeatureValueSpider extends Tarantula<FeatureValue> {
          * TODO: Also handle dates!
          */
         if (value.getDatatype().equals(XSDDatatype.XSDdouble)) {
-            fValue = new FeatureValue(feature, new TypedValue<Double>(value.getDouble(), XSDDatatype.XSDdouble));
+            fValue = new FeatureValue(feature, new AnyValue<Double>(value.getDouble(), XSDDatatype.XSDdouble));
         } else if (value.getDatatype().equals(XSDDatatype.XSDinteger)) {
-            fValue = new FeatureValue(feature, new TypedValue<Integer>(value.getInt(), XSDDatatype.XSDinteger));
+            fValue = new FeatureValue(feature, new AnyValue<Integer>(value.getInt(), XSDDatatype.XSDinteger));
         } else if (value.getDatatype().equals(XSDDatatype.XSDfloat)) {
-            fValue = new FeatureValue(feature, new TypedValue<Float>(value.getFloat(), XSDDatatype.XSDfloat));
+            fValue = new FeatureValue(feature, new AnyValue<Float>(value.getFloat(), XSDDatatype.XSDfloat));
         } else {
-            fValue = new FeatureValue(feature, new TypedValue<String>(value.getString(), XSDDatatype.XSDstring));
+            fValue = new FeatureValue(feature, new AnyValue<String>(value.getString(), XSDDatatype.XSDstring));
         }
 
         return fValue;

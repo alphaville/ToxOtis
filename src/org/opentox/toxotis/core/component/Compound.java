@@ -31,7 +31,7 @@ import org.opentox.toxotis.core.DescriptorCaclulation;
 import org.opentox.toxotis.factory.FeatureFactory;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TaskSpider;
@@ -134,7 +134,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         return getProperties(token, (VRI[]) features.toArray(new VRI[features.size()]));
     }
 
-    public TypedValue<?> getAssayProperty(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
+    public AnyValue<?> getAssayProperty(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
         return null;
     }
 
@@ -154,7 +154,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      */
-    public TypedValue<?> getProperty(Feature feature, AuthenticationToken token) throws ToxOtisException {
+    public AnyValue<?> getProperty(Feature feature, AuthenticationToken token) throws ToxOtisException {
         /**
          *TODO: Should this request include the uri parameters for the feature?
          */
@@ -187,7 +187,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         return null;
     }
 
-    public TypedValue getProperty(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    public AnyValue getProperty(VRI uri, AuthenticationToken token) throws ToxOtisException {
         Feature tempFeat = new Feature(uri);
         return getProperty(tempFeat, token);
     }

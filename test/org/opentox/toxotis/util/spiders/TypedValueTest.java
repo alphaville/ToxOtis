@@ -36,17 +36,17 @@ public class TypedValueTest {
 
     @Test
     public void testTypeCasting() {
-        TypedValue<Integer> f = new TypedValue<Integer>(new Integer(1));
+        AnyValue<Integer> f = new AnyValue<Integer>(new Integer(1));
         assertEquals(XSDDatatype.XSDint, f.getType());
-        f = new TypedValue(new Integer(1));
+        f = new AnyValue(new Integer(1));
         assertEquals(XSDDatatype.XSDint, f.getType());
-        f = new TypedValue(1.4353);
+        f = new AnyValue(1.4353);
         assertEquals(XSDDatatype.XSDdouble, f.getType());
-        f = new TypedValue(1.4353f);
+        f = new AnyValue(1.4353f);
         assertEquals(XSDDatatype.XSDfloat, f.getType());
-        f = new TypedValue("haha");
+        f = new AnyValue("haha");
         assertEquals(XSDDatatype.XSDstring, f.getType());
-        f = new TypedValue(new Date(System.currentTimeMillis()));
+        f = new AnyValue(new Date(System.currentTimeMillis()));
         assertEquals(XSDDatatype.XSDdateTime, f.getType());
     }
 }

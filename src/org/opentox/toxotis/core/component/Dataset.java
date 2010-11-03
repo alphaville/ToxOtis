@@ -27,7 +27,7 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TaskSpider;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -169,7 +169,7 @@ public class Dataset extends OTPublishable<Dataset> {
                     writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
-                    for (TypedValue admissibleVal : f.getAdmissibleValue()) {                        
+                    for (AnyValue admissibleVal : f.getAdmissibleValue()) {
                         writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                         // TODO: Include also the XSD datatype of the value...
                         writer.writeCharacters(admissibleVal.getValue().toString());// REFERS TO #NODE_ACCEPT_VALUE
@@ -368,7 +368,7 @@ public class Dataset extends OTPublishable<Dataset> {
             } else if (dataType.equals(WekaDataTypes.nominal)) {
                 // COPE WITH NOMINAL VALUES:
                 FastVector nominalFVec = new FastVector(feature.getAdmissibleValue().size());
-                for (TypedValue value : feature.getAdmissibleValue()) {
+                for (AnyValue value : feature.getAdmissibleValue()) {
                     nominalFVec.addElement(value.getValue());
                 }
                 attributes.addElement(new Attribute(feature.getUri().getStringNoQuery(), nominalFVec));
@@ -392,7 +392,7 @@ public class Dataset extends OTPublishable<Dataset> {
             for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
                 Feature feature = featureValue.getFeature();
                 String featureName = feature.getUri().getStringNoQuery();
-                TypedValue value = featureValue.getValue();
+                AnyValue value = featureValue.getValue();
 
                 if (value != null) {
                     if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.numeric)) {

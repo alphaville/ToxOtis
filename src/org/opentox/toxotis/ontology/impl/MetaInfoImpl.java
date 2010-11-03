@@ -1,14 +1,13 @@
 package org.opentox.toxotis.ontology.impl;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIException;
 import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.impl.IRIImpl;
 import com.hp.hpl.jena.ontology.AnnotationProperty;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -19,27 +18,26 @@ import java.util.Date;
 import java.util.Iterator;
 import javax.xml.stream.XMLStreamException;
 import org.opentox.toxotis.ontology.MetaInfo;
-import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 
 public class MetaInfoImpl implements MetaInfo {
 
-    private TypedValue<String> title;
-    private TypedValue<String> description;
-    private TypedValue<String> identifier;
-    private Collection<TypedValue<String>> comment = new ArrayList<TypedValue<String>>();
-    private TypedValue<String> sameAs;
-    private TypedValue<String> seeAlso;
-    private TypedValue<String> versionInfo;
-    private TypedValue<String> creator;
-    private TypedValue<String> publisher;
-    private TypedValue<String> hasSource;
-    private TypedValue<String> subject;
-    private TypedValue<Date> date;
-    private Collection<TypedValue<String>> contributors = new ArrayList<TypedValue<String>>();
-    private Collection<TypedValue<String>> audiences = new ArrayList<TypedValue<String>>();
+    private AnyValue<String> title;
+    private AnyValue<String> description;
+    private AnyValue<String> identifier;
+    private Collection<AnyValue<String>> comment = new ArrayList<AnyValue<String>>();
+    private AnyValue<String> sameAs;
+    private AnyValue<String> seeAlso;
+    private AnyValue<String> versionInfo;
+    private AnyValue<String> creator;
+    private AnyValue<String> publisher;
+    private AnyValue<String> hasSource;
+    private AnyValue<String> subject;
+    private AnyValue<Date> date;
+    private Collection<AnyValue<String>> contributors = new ArrayList<AnyValue<String>>();
+    private Collection<AnyValue<String>> audiences = new ArrayList<AnyValue<String>>();
 
     public MetaInfoImpl() {
     }
@@ -75,7 +73,7 @@ public class MetaInfoImpl implements MetaInfo {
             builder.append("has source  : " + hasSource + "\n");
         }
         if (comment != null && !comment.isEmpty()) {
-            Iterator<TypedValue<String>> commentIterator = comment.iterator();
+            Iterator<AnyValue<String>> commentIterator = comment.iterator();
             while (commentIterator.hasNext()) {
                 builder.append("comment     : " + commentIterator.next() + "\n");
             }
@@ -116,7 +114,9 @@ public class MetaInfoImpl implements MetaInfo {
             if (sameAsProp == null) {
                 sameAsProp = model.createProperty(OWL.sameAs.getURI());
             }
-            resource.addProperty(sameAsProp, model.createResource(sameAs.getValue(), OWL.Thing));
+            Resource sameAsResource = sameAs.isLiteral() ? OWL.Thing : sameAs.getClassType().inModel(model);
+            resource.addProperty(sameAsProp, model.createResource(sameAs.getValue(),
+                    sameAsResource));
         }
         if (seeAlso != null) {
             AnnotationProperty seeAlsoProp = model.getAnnotationProperty(RDFS.seeAlso.getURI());
@@ -154,15 +154,16 @@ public class MetaInfoImpl implements MetaInfo {
                  * TODO: In the following line change 'OTClasses.OpenToxResource().inModel(model))' with
                  * the right Ontological Class in every case according to the value of hasSource...
                  */
-                resource.addProperty(sameProp, model.createResource(hasSource.getValue(), OTClasses.OpenToxResource().inModel(model)));
-            } catch (IRIException ex) {
+                resource.addProperty(sameProp, model.createResource(hasSource.getValue(),
+                        hasSource.isLiteral() ? OTClasses.OpenToxResource().inModel(model) : hasSource.getClassType().inModel(model)));
+            } catch (final IRIException ex) {
                 // In this case the hasSource property is not assigned to the
                 // corresponding node because it cannot be cast as an IRI.
                 System.err.println("[WARNING] Cannot create a resource with identifier : '" + hasSource.getValue() + "'. Not a valid IRI!");
             }
         }
         if (comment != null && !comment.isEmpty()) {
-            Iterator<TypedValue<String>> commentIterator = comment.iterator();
+            Iterator<AnyValue<String>> commentIterator = comment.iterator();
             while (commentIterator.hasNext()) {
                 resource.addLiteral(RDFS.comment.inModel(model).as(Property.class),
                         model.createTypedLiteral(commentIterator.next().getValue(), XSDDatatype.XSDstring));
@@ -179,7 +180,7 @@ public class MetaInfoImpl implements MetaInfo {
         }
         AnnotationProperty contributorProperty = model.createAnnotationProperty(DC.contributor.getURI());
         if (contributors != null && !contributors.isEmpty()) {
-            Iterator<TypedValue<String>> contrIt = contributors.iterator();
+            Iterator<AnyValue<String>> contrIt = contributors.iterator();
             while (contrIt.hasNext()) {
                 resource.addLiteral(contributorProperty, contrIt.next());
             }
@@ -187,162 +188,162 @@ public class MetaInfoImpl implements MetaInfo {
         return resource;
     }
 
-    public Collection<TypedValue<String>> getComment() {
+    public Collection<AnyValue<String>> getComment() {
         return comment;
     }
 
-    public TypedValue<String> getDescription() {
+    public AnyValue<String> getDescription() {
         return description;
     }
 
-    public TypedValue<String> getIdentifier() {
+    public AnyValue<String> getIdentifier() {
         return identifier;
     }
 
-    public TypedValue<String> getSameAs() {
+    public AnyValue<String> getSameAs() {
         return sameAs;
     }
 
-    public TypedValue<String> getSeeAlso() {
+    public AnyValue<String> getSeeAlso() {
         return seeAlso;
     }
 
-    public TypedValue<String> getTitle() {
+    public AnyValue<String> getTitle() {
         return title;
     }
 
-    public TypedValue<String> getVersionInfo() {
+    public AnyValue<String> getVersionInfo() {
         return versionInfo;
     }
 
-    public TypedValue<String> getPublisher() {
+    public AnyValue<String> getPublisher() {
         return publisher;
     }
 
-    public TypedValue<String> getCreator() {
+    public AnyValue<String> getCreator() {
         return creator;
     }
 
-    public TypedValue<String> getHasSource() {
+    public AnyValue<String> getHasSource() {
         return hasSource;
     }
 
-    public Collection<TypedValue<String>> getContributors() {
+    public Collection<AnyValue<String>> getContributors() {
         return contributors;
     }
 
-    public Collection<TypedValue<String>> getAudiences() {
+    public Collection<AnyValue<String>> getAudiences() {
         return audiences;
     }
 
     public MetaInfo addComment(String comment) {
-        this.comment.add(comment != null ? new TypedValue<String>(comment) : null);
+        this.comment.add(comment != null ? new AnyValue<String>(comment) : null);
         return this;
     }
 
-    public MetaInfo addComment(TypedValue<String> comment) {
+    public MetaInfo addComment(AnyValue<String> comment) {
         this.comment.add(comment);
         return this;
     }
 
     public MetaInfo setDescription(String description) {
-        this.description = description != null ? new TypedValue<String>(description) : null;
+        this.description = description != null ? new AnyValue<String>(description) : null;
         return this;
     }
 
-    public MetaInfo setDescription(TypedValue<String> description) {
+    public MetaInfo setDescription(AnyValue<String> description) {
         this.description = description;
         return this;
     }
 
     public MetaInfo setIdentifier(String identifier) {
-        this.identifier = identifier != null ? new TypedValue<String>(identifier) : null;
+        this.identifier = identifier != null ? new AnyValue<String>(identifier) : null;
         return this;
     }
 
-    public MetaInfo setIdentifier(TypedValue<String> identifier) {
+    public MetaInfo setIdentifier(AnyValue<String> identifier) {
         this.identifier = identifier;
         return this;
     }
 
     public MetaInfo setSameAs(String sameAs) {
-        this.sameAs = sameAs != null ? new TypedValue<String>(sameAs) : null;
+        this.sameAs = sameAs != null ? new AnyValue<String>(sameAs) : null;
         return this;
     }
 
-    public MetaInfo setSameAs(TypedValue<String> sameAs) {
+    public MetaInfo setSameAs(AnyValue<String> sameAs) {
         this.sameAs = sameAs;
         return this;
     }
 
     public MetaInfo setSeeAlso(String seeAlso) {
-        this.seeAlso = seeAlso != null ? new TypedValue<String>(seeAlso) : null;
+        this.seeAlso = seeAlso != null ? new AnyValue<String>(seeAlso) : null;
         return this;
     }
 
-    public MetaInfo setSeeAlso(TypedValue<String> seeAlso) {
+    public MetaInfo setSeeAlso(AnyValue<String> seeAlso) {
         this.seeAlso = seeAlso;
         return this;
     }
 
     public MetaInfo setTitle(String title) {
-        this.title = title != null ? new TypedValue<String>(title) : null;
+        this.title = title != null ? new AnyValue<String>(title) : null;
         return this;
     }
 
-    public MetaInfo setTitle(TypedValue<String> title) {
+    public MetaInfo setTitle(AnyValue<String> title) {
         this.title = title;
         return this;
     }
 
     public MetaInfo setVersionInfo(String versionInfo) {
-        this.versionInfo = versionInfo != null ? new TypedValue<String>(versionInfo) : null;
+        this.versionInfo = versionInfo != null ? new AnyValue<String>(versionInfo) : null;
         return this;
     }
 
-    public MetaInfo setVersionInfo(TypedValue<String> versionInfo) {
+    public MetaInfo setVersionInfo(AnyValue<String> versionInfo) {
         this.versionInfo = versionInfo;
         return this;
     }
 
     public MetaInfo setPublisher(String publisher) {
-        this.publisher = publisher != null ? new TypedValue<String>(publisher) : null;
+        this.publisher = publisher != null ? new AnyValue<String>(publisher) : null;
         return this;
     }
 
-    public MetaInfo setPublisher(TypedValue<String> publisher) {
+    public MetaInfo setPublisher(AnyValue<String> publisher) {
         this.publisher = publisher;
         return this;
     }
 
     public MetaInfo setCreator(String creator) {
-        this.creator = creator != null ? new TypedValue<String>(creator) : null;
+        this.creator = creator != null ? new AnyValue<String>(creator) : null;
         return this;
     }
 
-    public MetaInfo setCreator(TypedValue<String> creator) {
+    public MetaInfo setCreator(AnyValue<String> creator) {
         this.creator = creator;
         return this;
     }
 
     public MetaInfo setHasSource(String hasSource) {
-        this.hasSource = hasSource != null ? new TypedValue<String>(hasSource) : null;
+        this.hasSource = hasSource != null ? new AnyValue<String>(hasSource) : null;
         return this;
     }
 
-    public MetaInfo setHasSource(TypedValue<String> hasSource) {
+    public MetaInfo setHasSource(AnyValue<String> hasSource) {
         this.hasSource = hasSource;
         return this;
     }
 
     public MetaInfo addContributor(String contributor) {
         if (contributor != null) {
-            this.contributors.add(new TypedValue<String>(contributor));
+            this.contributors.add(new AnyValue<String>(contributor));
         }
         return this;
     }
 
-    public MetaInfo addContributor(TypedValue<String> contributor) {
+    public MetaInfo addContributor(AnyValue<String> contributor) {
         if (contributor != null) {
             this.contributors.add(contributor);
         }
@@ -351,12 +352,12 @@ public class MetaInfoImpl implements MetaInfo {
 
     public MetaInfo addAudience(String audience) {
         if (audience != null) {
-            this.audiences.add(new TypedValue<String>(audience));
+            this.audiences.add(new AnyValue<String>(audience));
         }
         return this;
     }
 
-    public MetaInfo addAudience(TypedValue<String> audience) {
+    public MetaInfo addAudience(AnyValue<String> audience) {
         if (audience != null) {
             this.audiences.add(audience);
         }
@@ -364,35 +365,35 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
-    public TypedValue<Date> getDate() {
+    public AnyValue<Date> getDate() {
         return date;
     }
 
-    public MetaInfo setDate(TypedValue<Date> date) {
+    public MetaInfo setDate(AnyValue<Date> date) {
         this.date = date;
         return this;
     }
 
     public MetaInfo setDate(Date date) {
-        this.date = date != null ? new TypedValue<Date>(date) : null;
+        this.date = date != null ? new AnyValue<Date>(date) : null;
         return this;
     }
 
-    public TypedValue<String> getSubject() {
+    public AnyValue<String> getSubject() {
         return subject;
     }
 
     public MetaInfo setSubject(String subject) {
-        this.subject = subject != null ? new TypedValue<String>(subject) : null;
+        this.subject = subject != null ? new AnyValue<String>(subject) : null;
         return this;
     }
 
-    public MetaInfo setSubject(TypedValue<String> subject) {
+    public MetaInfo setSubject(AnyValue<String> subject) {
         this.subject = subject;
         return this;
     }
 
-    private void writeMetaDatumResourceToStAX(String metaDatumNS, String metaDatumName, TypedValue<?> value, javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
+    private void writeMetaDatumResourceToStAX(String metaDatumNS, String metaDatumName, AnyValue<?> value, javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
         if (value != null && value.getValue() != null && !value.getValue().toString().isEmpty()) {
             String stringVal = value.getValue().toString();
             try {
@@ -405,7 +406,7 @@ public class MetaInfoImpl implements MetaInfo {
         }
     }
 
-    private void writeMetaDatumToStAX(String metaDatumNS, String metaDatumName, TypedValue<?> value, javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
+    private void writeMetaDatumToStAX(String metaDatumNS, String metaDatumName, AnyValue<?> value, javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
         if (value != null) {
             String propertyTag = metaDatumNS + ":" + metaDatumName;
             if (value.getValue().toString().isEmpty()) {
@@ -420,7 +421,7 @@ public class MetaInfoImpl implements MetaInfo {
     public void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         writeMetaDatumToStAX("dc", "identifier", identifier, writer);
         if (comment != null && !comment.isEmpty()) {
-            Iterator<TypedValue<String>> commentIterator = comment.iterator();
+            Iterator<AnyValue<String>> commentIterator = comment.iterator();
             while (commentIterator.hasNext()) {
                 writeMetaDatumToStAX("rdfs", "comment", commentIterator.next(), writer);
             }
@@ -428,7 +429,7 @@ public class MetaInfoImpl implements MetaInfo {
 
         writeMetaDatumToStAX("rdfs", "creator", creator, writer);
         if (contributors != null) {
-            for (TypedValue contrib : contributors) {
+            for (AnyValue contrib : contributors) {
                 writeMetaDatumToStAX("dc", "contributor", contrib, writer);
             }
         }

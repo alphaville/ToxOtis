@@ -84,7 +84,7 @@ public abstract class Tarantula<Result> implements Closeable {
      */
     public abstract Result parse() throws ToxOtisException;
 
-    protected TypedValue retrieveProp(Property prop) {
+    protected AnyValue retrieveProp(Property prop) {
         StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
         if (it.hasNext()) {
             try {
@@ -97,21 +97,21 @@ public abstract class Tarantula<Result> implements Closeable {
                         DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
                         try {
                             Date date = (Date) formatter.parse(stringVal);
-                            return (new TypedValue<Date>(date, datatype));
+                            return (new AnyValue<Date>(date, datatype));
                         } catch (ParseException ex) {
                             try {
                                 long longDate = Long.parseLong(stringVal);
-                                return new TypedValue<Date>(new Date(longDate), datatype);
+                                return new AnyValue<Date>(new Date(longDate), datatype);
                             } catch (NumberFormatException nfe) {
                                 System.err.println("[WARNING] Date format not supported.");
                                 nfe.printStackTrace();
                             }
                         }
                     } else {
-                        return (new TypedValue(stringVal, datatype));
+                        return (new AnyValue(stringVal, datatype));
                     }
                 } else if (node.isResource()) {
-                    return (new TypedValue(node.as(Resource.class).getURI()));
+                    return (new AnyValue(node.as(Resource.class).getURI()));
                 }
             } finally {
                 it.close();
@@ -135,14 +135,14 @@ public abstract class Tarantula<Result> implements Closeable {
         return props;
     }
 
-    protected ArrayList<TypedValue<String>> retrieveTypedProps(Property prop) {
-        ArrayList<TypedValue<String>> props = new ArrayList<TypedValue<String>>();
+    protected ArrayList<AnyValue<String>> retrieveTypedProps(Property prop) {
+        ArrayList<AnyValue<String>> props = new ArrayList<AnyValue<String>>();
 
         StmtIterator it = model.listStatements(
                 new SimpleSelector(resource, prop, (Literal) null));
         while (it.hasNext()) {
             try {
-                props.add(new TypedValue(it.nextStatement().getObject().as(Literal.class).getString()));
+                props.add(new AnyValue(it.nextStatement().getObject().as(Literal.class).getString()));
             } finally {
                 it.close();
             }

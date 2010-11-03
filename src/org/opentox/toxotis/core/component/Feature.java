@@ -27,7 +27,7 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.FeatureSpider;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  * A Feature is an object,representing any kind of property, assigned to a
@@ -44,7 +44,7 @@ public class Feature extends OTPublishable<Feature> {
 
     private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
     private String units;
-    private Set<TypedValue> admissibleValue = new HashSet<TypedValue>();
+    private Set<AnyValue> admissibleValue = new HashSet<AnyValue>();
 
     public Feature() {
         super();
@@ -54,11 +54,11 @@ public class Feature extends OTPublishable<Feature> {
         super(uri);
     }
 
-    public Set<TypedValue> getAdmissibleValue() {
+    public Set<AnyValue> getAdmissibleValue() {
         return admissibleValue;
     }
 
-    public void setAdmissibleValue(Set<TypedValue> admissibleValue) {
+    public void setAdmissibleValue(Set<AnyValue> admissibleValue) {
         this.admissibleValue = admissibleValue;
     }
 
@@ -106,7 +106,7 @@ public class Feature extends OTPublishable<Feature> {
         /* Add admissible values in the RDF graph */
         if (admissibleValue != null && !admissibleValue.isEmpty()) {
             DatatypeProperty accepts = OTDatatypeProperties.acceptValue().asDatatypeProperty(model);
-            for (TypedValue tv : admissibleValue) {
+            for (AnyValue tv : admissibleValue) {
                 if (tv != null) {
                     indiv.addProperty(accepts, model.createTypedLiteral(tv.getValue(), tv.getType()));
                 }
@@ -249,7 +249,7 @@ public class Feature extends OTPublishable<Feature> {
             if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
                 explicitTypeDeclaration = true;
                 writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
-                for (TypedValue admissibleVal : getAdmissibleValue()) {
+                for (AnyValue admissibleVal : getAdmissibleValue()) {
                     writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                     // TODO: Include also the XSD datatype of the value...
                     writer.writeCharacters(admissibleVal.getValue().toString());// REFERS TO #NODE_ACCEPT_VALUE

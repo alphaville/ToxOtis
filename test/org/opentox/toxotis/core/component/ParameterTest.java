@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Parameter.ParameterScope;
 import org.opentox.toxotis.util.spiders.ParameterSpider;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 import static org.junit.Assert.*;
 
 /**
@@ -43,7 +43,7 @@ public class ParameterTest {
         Parameter<String> p = new Parameter<String>();
         //p.setName("xx");
         //p.setScope(ParameterScope.OPTIONAL);
-        //p.setTypedValue(new TypedValue<String>("yyy"));
+        //p.setTypedValue(new AnyValue<String>("yyy"));
         //p.getMeta().setDescription("My parameter");
         OntModel om = p.asOntModel();
         om.write(System.out);

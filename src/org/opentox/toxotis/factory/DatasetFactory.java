@@ -18,7 +18,7 @@ import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.FeatureValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -127,20 +127,20 @@ public class DatasetFactory {
                     FeatureValue fv = new FeatureValue();
                     Feature feature = new Feature(new VRI(attribute.name()));
 
-                    TypedValue value = null;
+                    AnyValue value = null;
                     if (attribute.isNumeric()) {
-                        value = new TypedValue<Double>(instance.value(attribute), XSDDatatype.XSDdouble);
+                        value = new AnyValue<Double>(instance.value(attribute), XSDDatatype.XSDdouble);
                         feature.getOntologies().add(OTClasses.NumericFeature());
                     } else if (attribute.isString() || attribute.isDate()) {
-                        value = new TypedValue<String>(instance.stringValue(attribute), XSDDatatype.XSDstring);
+                        value = new AnyValue<String>(instance.stringValue(attribute), XSDDatatype.XSDstring);
                         feature.getOntologies().add(OTClasses.StringFeature());
                     } else if (attribute.isNominal()) {
-                        value = new TypedValue<String>(instance.stringValue(attribute), XSDDatatype.XSDstring);
+                        value = new AnyValue<String>(instance.stringValue(attribute), XSDDatatype.XSDstring);
                         Enumeration nominalValues = attribute.enumerateValues();
                         feature.getOntologies().add(OTClasses.NominalFeature());
                         while (nominalValues.hasMoreElements()) {
                             String nomValue = (String) nominalValues.nextElement();
-                            feature.getAdmissibleValue().add(new TypedValue<String>(nomValue, XSDDatatype.XSDstring));
+                            feature.getAdmissibleValue().add(new AnyValue<String>(nomValue, XSDDatatype.XSDstring));
                         }
                     }
                     fv.setFeature(feature);

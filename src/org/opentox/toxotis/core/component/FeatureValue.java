@@ -8,7 +8,7 @@ import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  *
@@ -18,12 +18,12 @@ import org.opentox.toxotis.util.spiders.TypedValue;
 public class FeatureValue extends OTComponent<FeatureValue> {
 
     private Feature feature;
-    private TypedValue value;
+    private AnyValue value;
 
     public FeatureValue() {
     }
 
-    public FeatureValue(Feature feature, TypedValue value) {
+    public FeatureValue(Feature feature, AnyValue value) {
         this.feature = feature;
         this.value = value;
     }
@@ -36,11 +36,11 @@ public class FeatureValue extends OTComponent<FeatureValue> {
         this.feature = feature;
     }
 
-    public TypedValue getValue() {
+    public AnyValue getValue() {
         return value;
     }
 
-    public void setValue(TypedValue value) {
+    public void setValue(AnyValue value) {
         this.value = value;
     }
 

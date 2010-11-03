@@ -4,7 +4,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.Collection;
 import java.util.Date;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  * <p align=justify width=80%>
@@ -30,7 +30,7 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      A comment on the described entity.
      */
-    Collection<TypedValue<String>> getComment();
+    Collection<AnyValue<String>> getComment();
 
     /**
      * An account of the content of the resource. Description may include but is not
@@ -39,7 +39,7 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      Description as a typed value
      */
-    TypedValue<String> getDescription();
+    AnyValue<String> getDescription();
 
     /**
      * Get the identifier (ID) of the described entity. An identifier is an unambiguous
@@ -52,7 +52,7 @@ public interface MetaInfo extends java.io.Serializable {
      *      Identifier as a Typed Value
      * @see http://dublincore.org/documents/usageguide/elements.shtml
      */
-    TypedValue<String> getIdentifier();
+    AnyValue<String> getIdentifier();
 
     /**
      * The built-in OWL property <code>owl:sameAs</code> links an individual to an individual.
@@ -73,7 +73,7 @@ public interface MetaInfo extends java.io.Serializable {
      *      A link to a resource that resembles the described entity
      *
      */
-    TypedValue<String> getSameAs();
+    AnyValue<String> getSameAs();
 
     /**
      * Related to the datatype ontological property <code>rdfs:seeAlso</code>. The property
@@ -86,7 +86,7 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      A reference to some other entity as a typed value.
      */
-    TypedValue<String> getSeeAlso();
+    AnyValue<String> getSeeAlso();
 
     /**
      * Get the name given to the resource.
@@ -94,7 +94,7 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      Tile as a Typed Value
      */
-    TypedValue<String> getTitle();
+    AnyValue<String> getTitle();
 
     /**
      * Ge the topic of the content of the resource. Typically, a Subject will be
@@ -104,11 +104,11 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      Subject as a typed value
      */
-    TypedValue<String> getSubject();
+    AnyValue<String> getSubject();
 
-    TypedValue<String> getVersionInfo();
+    AnyValue<String> getVersionInfo();
 
-    TypedValue<String> getPublisher();
+    AnyValue<String> getPublisher();
 
     /**
      * The <code>creator</code> is an entity primarily responsible for making the content
@@ -118,69 +118,69 @@ public interface MetaInfo extends java.io.Serializable {
      *      Creator as a typed value
      */
     //TODO: Change this into a list of creators
-    TypedValue<String> getCreator();
+    AnyValue<String> getCreator();
 
-    TypedValue<String> getHasSource();
+    AnyValue<String> getHasSource();
 
-    Collection<TypedValue<String>> getContributors();
+    Collection<AnyValue<String>> getContributors();
 
-    Collection<TypedValue<String>> getAudiences();
+    Collection<AnyValue<String>> getAudiences();
 
     MetaInfo addComment(String comment);
 
-    MetaInfo addComment(TypedValue<String> comment);
+    MetaInfo addComment(AnyValue<String> comment);
 
     MetaInfo setDescription(String description);
 
-    MetaInfo setDescription(TypedValue<String> description);
+    MetaInfo setDescription(AnyValue<String> description);
 
     MetaInfo setIdentifier(String identifier);
 
-    MetaInfo setIdentifier(TypedValue<String> identifier);
+    MetaInfo setIdentifier(AnyValue<String> identifier);
 
     MetaInfo setSameAs(String sameAs);
 
-    MetaInfo setSameAs(TypedValue<String> sameAs);
+    MetaInfo setSameAs(AnyValue<String> sameAs);
 
     MetaInfo setSeeAlso(String seeAlso);
 
-    MetaInfo setSeeAlso(TypedValue<String> seeAlso);
+    MetaInfo setSeeAlso(AnyValue<String> seeAlso);
 
     MetaInfo setTitle(String title);
 
-    MetaInfo setTitle(TypedValue<String> title);
+    MetaInfo setTitle(AnyValue<String> title);
 
     MetaInfo setSubject(String subject);
 
-    MetaInfo setSubject(TypedValue<String> subject);
+    MetaInfo setSubject(AnyValue<String> subject);
 
     MetaInfo setVersionInfo(String versionInfo);
 
-    MetaInfo setVersionInfo(TypedValue<String> versionInfo);
+    MetaInfo setVersionInfo(AnyValue<String> versionInfo);
 
     MetaInfo setPublisher(String publisher);
 
-    MetaInfo setPublisher(TypedValue<String> publisher);
+    MetaInfo setPublisher(AnyValue<String> publisher);
 
     MetaInfo setCreator(String creator);
 
-    MetaInfo setCreator(TypedValue<String> creator);
+    MetaInfo setCreator(AnyValue<String> creator);
 
     MetaInfo setHasSource(String hasSource);
 
-    MetaInfo setHasSource(TypedValue<String> hasSource);
+    MetaInfo setHasSource(AnyValue<String> hasSource);
 
     MetaInfo addContributor(String contributor);
 
-    MetaInfo addContributor(TypedValue<String> contributor);
+    MetaInfo addContributor(AnyValue<String> contributor);
 
     MetaInfo addAudience(String audience);
 
-    MetaInfo addAudience(TypedValue<String> audience);
+    MetaInfo addAudience(AnyValue<String> audience);
 
-    TypedValue<Date> getDate();
+    AnyValue<Date> getDate();
 
-    MetaInfo setDate(TypedValue<Date> date);
+    MetaInfo setDate(AnyValue<Date> date);
 
     MetaInfo setDate(Date date);
 

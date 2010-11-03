@@ -9,7 +9,7 @@ import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
-import org.opentox.toxotis.util.spiders.TypedValue;
+import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  *
@@ -31,7 +31,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
     /** The name of the parameter*/
     private String name;
     /** Typed value for the parameter */
-    private TypedValue<T> typedValue;
+    private AnyValue<T> typedValue;
     /** The scope of the parameter (mandatory/optional)*/
     private ParameterScope scope;
 
@@ -56,11 +56,11 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         return typedValue != null ? typedValue.getValue() : null;
     }
 
-    public void setTypedValue(TypedValue<T> value) {
+    public void setTypedValue(AnyValue<T> value) {
         this.typedValue = value;
     }
 
-    public TypedValue<T> getTypedValue() {
+    public AnyValue<T> getTypedValue() {
         return typedValue;
     }
 

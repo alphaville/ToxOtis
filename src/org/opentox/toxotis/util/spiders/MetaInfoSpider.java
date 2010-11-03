@@ -30,7 +30,7 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
     @Override
     public MetaInfo parse() {
         MetaInfo dcmeta = new MetaInfoImpl();
-        TypedValue<String> temp = null;
+        AnyValue<String> temp = null;
         /* title */
         temp = retrieveProp(DC.title);
         dcmeta.setTitle(temp != null ? temp.getValue() : null);
@@ -68,7 +68,7 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
         temp = retrieveProp(DC.identifier);
         dcmeta.setIdentifier(temp != null ? temp.getValue() : null);
         /* date */
-        TypedValue<Date> date = (TypedValue<Date>) retrieveProp(DC.date);
+        AnyValue<Date> date = (AnyValue<Date>) retrieveProp(DC.date);
         dcmeta.setDate(date != null ? date.getValue() : null);
         //TODO: add audiences
         return dcmeta;
