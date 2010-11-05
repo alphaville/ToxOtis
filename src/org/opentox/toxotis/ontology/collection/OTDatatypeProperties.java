@@ -135,8 +135,10 @@ public class OTDatatypeProperties {
         if (ms_paramValue == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramValue");
             property.getDomain().add(OTClasses.Parameter());
+            property.getDomain().add(OTClasses.VariableValue());
             property.getMetaInfo().setTitle("parameter value");
-            property.getMetaInfo().setDescription("The value of a Parameter");
+            property.getMetaInfo().setDescription("The value of a Parameter or the value " +
+                    "of a variable in a set of variables");
             ms_paramValue = property;
         }
         return ms_paramValue;
@@ -290,7 +292,7 @@ public class OTDatatypeProperties {
     public static OTDatatypeProperty index(){
         if(ms_index == null){
            OTDatatypeProperty property = new OTDatatypePropertyImpl("index");
-            property.getDomain().add(OTClasses.MultiValuedParameter());
+            property.getDomain().add(OTClasses.SetValuedParameter());
             property.getRange().add(XSDDatatype.XSDinteger);
             ms_index = property;
         }

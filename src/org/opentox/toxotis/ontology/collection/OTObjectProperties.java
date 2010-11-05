@@ -34,7 +34,13 @@ public class OTObjectProperties {
     private static OTObjectProperty ms_bibtex;
     private static OTObjectProperty ms_listElement;
     private static OTObjectProperty ms_hasSource;
-    private static OTObjectProperty ms_vectorCoordinate;
+    private static OTObjectProperty ms_variableInfo;
+    private static OTObjectProperty ms_setValues;
+    private static OTObjectProperty ms_variableValues;
+    private static OTObjectProperty ms_variable;
+    private static OTObjectProperty ms_multiParameter;
+
+
     private static Map<String, Method> ms_methodCache;
 
     private synchronized static void initMethodCache() {
@@ -274,16 +280,61 @@ public class OTObjectProperties {
         return ms_hasSource;
     }
 
-    public static OTObjectProperty vectorCoordinate(){
-        if(ms_vectorCoordinate == null){
-            OTObjectProperty property = new OTObjectPropertyImpl("vectorCoordinate");
-            property.getDomain().add(OTClasses.VectorParameter());
-            property.getRange().add(OTClasses.VectorCoordinate());
-            ms_vectorCoordinate = property;
+    public static OTObjectProperty variableInfo() {
+        if (ms_variableInfo == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("variableInfo");
+            property.getDomain().add(OTClasses.SetValuedParameter());
+            property.getRange().add(OTClasses.VariableInfo());
+            ms_variableInfo = property;
         }
-        return ms_vectorCoordinate;
+        return ms_variableInfo;
     }
-    
+
+    public static OTObjectProperty setValues() {
+        if (ms_setValues == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("setValues");
+            property.getDomain().add(OTClasses.SetValuedParameter());
+            property.getRange().add(OTClasses.Set());
+            ms_setValues = property;
+        }
+        return ms_setValues;
+    }
+
+    public static OTObjectProperty variableValues() {
+        if (ms_variableValues == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("variableValues");
+            property.getDomain().add(OTClasses.Set());
+            property.getRange().add(OTClasses.VariableValue());
+            ms_variableValues = property;
+        }
+        return ms_variableValues;
+    }
+
+    /**
+     * Assigns a multi-parameter (ot:MultiParameter) to a Model or an Algorithm
+     * @return
+     *      Object Property ot:multiParameter
+     */
+    public static OTObjectProperty multiParameter() {
+        if (ms_multiParameter == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("multiParameter");
+            property.getDomain().add(OTClasses.Model());
+            property.getDomain().add(OTClasses.Algorithm());
+            property.getRange().add(OTClasses.MultiParameter());
+            ms_multiParameter = property;
+        }
+        return ms_multiParameter;
+    }
+
+    public static OTObjectProperty variable() {
+        if (ms_variable == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("variable");
+            property.getDomain().add(OTClasses.VariableValue());
+            property.getRange().add(OTClasses.VariableInfo());
+            ms_variable = property;
+        }
+        return ms_variable;
+    }
 
     public static OTObjectProperty listElement() {
         if (ms_listElement == null) {

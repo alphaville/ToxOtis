@@ -78,7 +78,9 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
 
         Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.Parameter().inModel(model));
         MetaInfo metaInfo = getMeta();
-        metaInfo.attachTo(indiv, model);
+        if (metaInfo != null) {
+            metaInfo.attachTo(indiv, model);
+        }
 
         // scope
         if (getScope() != null) {

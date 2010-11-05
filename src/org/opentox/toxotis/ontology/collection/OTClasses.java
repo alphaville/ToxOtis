@@ -40,10 +40,14 @@ public class OTClasses {
     private static OntologicalClass ms_FeatureValuePair;
     private static OntologicalClass ms_Model;
     private static OntologicalClass ms_Parameter;
+
+    private static OntologicalClass ms_MultiParameter;
     private static OntologicalClass ms_VectorParameter;
-    private static OntologicalClass ms_VectorCoordinate;
-    private static OntologicalClass ms_Vector;
-    private static OntologicalClass ms_MultiValuedParameter;
+    private static OntologicalClass ms_VariableInfo;
+    private static OntologicalClass ms_Set;
+    private static OntologicalClass ms_SetValuedParameter;
+    private static OntologicalClass ms_VariableValue;
+
     private static OntologicalClass ms_Task;
     private static OntologicalClass ms_ErrorReport;
     private static OntologicalClass ms_Thing;
@@ -309,41 +313,58 @@ public class OTClasses {
     }
 
     public static OntologicalClass VectorParameter() {
-        if(ms_VectorParameter == null){
+        if (ms_VectorParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("VectorParameter");
-            clazz.getSuperClasses().add(OpenToxResource());
-            clazz.getSuperClasses().add(Parameter());
+            clazz.getSuperClasses().add(MultiParameter());
             ms_VectorParameter = clazz;
         }
         return ms_VectorParameter;
     }
 
-    public static OntologicalClass VectorCoordinate() {
-        if(ms_VectorCoordinate == null){
-            OntologicalClass clazz = new OntologicalClassImpl("VectorParameter");
+    public static OntologicalClass VariableInfo() {
+        if (ms_VariableInfo == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("VariableInfo");
             clazz.getSuperClasses().add(OpenToxResource());
-            ms_VectorCoordinate = clazz;
+            ms_VariableInfo = clazz;
         }
-        return ms_VectorCoordinate;
+        return ms_VariableInfo;
     }
 
-    public static OntologicalClass Vector() {
-        if(ms_Vector == null){
-            OntologicalClass clazz = new OntologicalClassImpl("Vector");
+    public static OntologicalClass Set() {
+        if (ms_Set == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("Set");
             clazz.getSuperClasses().add(OpenToxResource());
-            ms_Vector = clazz;
+            ms_Set = clazz;
         }
-        return ms_Vector;
+        return ms_Set;
     }
 
-    public static OntologicalClass MultiValuedParameter(){
-        if(ms_MultiValuedParameter == null){
-            OntologicalClass clazz = new OntologicalClassImpl("MultiValuedParameter");
+    public static OntologicalClass MultiParameter() {
+        if (ms_MultiParameter == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("MultiParameter");
             clazz.getSuperClasses().add(OpenToxResource());
-            clazz.getSuperClasses().add(Parameter());
-            ms_MultiValuedParameter = clazz;
+            clazz.getDisjointWith().add(Parameter());// << Different from Parameter
+            ms_MultiParameter = clazz;
         }
-        return ms_MultiValuedParameter;
+        return ms_MultiParameter;
+    }
+
+    public static OntologicalClass SetValuedParameter() {
+        if (ms_SetValuedParameter == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("SetValuedParameter");
+            clazz.getSuperClasses().add(MultiParameter());
+            ms_SetValuedParameter = clazz;
+        }
+        return ms_SetValuedParameter;
+    }
+
+    public static OntologicalClass VariableValue() {
+        if (ms_VariableValue == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("VariableValue");
+            clazz.getSuperClasses().add(MultiParameter());
+            ms_VariableValue = clazz;
+        }
+        return ms_VariableValue;
     }
 
     public static OntologicalClass Task() {
