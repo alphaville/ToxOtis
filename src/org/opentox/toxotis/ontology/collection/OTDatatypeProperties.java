@@ -293,7 +293,7 @@ public class OTDatatypeProperties {
     public static OTDatatypeProperty index(){
         if(ms_index == null){
            OTDatatypeProperty property = new OTDatatypePropertyImpl("index");
-            property.getDomain().add(OTClasses.SetValuedParameter());
+            property.getDomain().add(OTClasses.ParameterValue());
             property.getRange().add(XSDDatatype.XSDinteger);
             ms_index = property;
         }

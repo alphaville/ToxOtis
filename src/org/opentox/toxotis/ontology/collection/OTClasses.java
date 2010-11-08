@@ -44,7 +44,7 @@ public class OTClasses {
     private static OntologicalClass ms_MultiParameter;
     private static OntologicalClass ms_VectorParameter;
     private static OntologicalClass ms_VariableInfo;
-    private static OntologicalClass ms_Set;
+    private static OntologicalClass ms_ParameterValue;
     private static OntologicalClass ms_SetValuedParameter;
     private static OntologicalClass ms_VariableValue;
 
@@ -330,13 +330,13 @@ public class OTClasses {
         return ms_VariableInfo;
     }
 
-    public static OntologicalClass Set() {
-        if (ms_Set == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Set");
+    public static OntologicalClass ParameterValue() {
+        if (ms_ParameterValue == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("ParameterValue");
             clazz.getSuperClasses().add(OpenToxResource());
-            ms_Set = clazz;
+            ms_ParameterValue = clazz;
         }
-        return ms_Set;
+        return ms_ParameterValue;
     }
 
     public static OntologicalClass MultiParameter() {

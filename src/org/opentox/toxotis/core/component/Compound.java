@@ -389,7 +389,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      Authentication token used to obtain the SMILES string of the token and
      *      acquire access to the similarity service.
      * @return
-     *      Set of URIs that are similar to the compound on which the method is
+     *      ParameterValue of URIs that are similar to the compound on which the method is
      *      applied up to a certain threshold.
      * @throws ToxOtisException
      *      In case the remote service responds with a non-success status code
@@ -442,7 +442,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      Authentication token used to obtain the SMILES string of the token and
      *      acquire access to the similarity service.
      * @return
-     *      Set of URIs that are similar to the compound on which the method is
+     *      ParameterValue of URIs that are similar to the compound on which the method is
      *      applied up to a certain threshold.
      * @throws ToxOtisException
      *      In case the remote service responds with a non-success status code

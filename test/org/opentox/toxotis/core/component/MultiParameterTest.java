@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.ontology.Individual;
@@ -59,12 +54,12 @@ public class MultiParameterTest {
         varInfo2.setMeta(new MetaInfoImpl().setTitle("y"));
         varValue2.setVariableInfo(varInfo2);
 
-        SetValue setValue = new SetValue();
+        ParameterValue setValue = new ParameterValue();
         setValue.getValues().add(varValue1);
         setValue.getValues().add(varValue2);
 
         MultiParameter multiParam = new MultiParameter();
-        multiParam.getSetValues().add(setValue);
+        multiParam.getParameterValues().add(setValue);
 
         OntModel model = new OntModelImpl(OntModelSpec.OWL_DL_MEM);
         Individual indiv = multiParam.asIndividual(model);

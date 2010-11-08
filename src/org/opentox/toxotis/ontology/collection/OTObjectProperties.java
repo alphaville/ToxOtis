@@ -35,7 +35,7 @@ public class OTObjectProperties {
     private static OTObjectProperty ms_listElement;
     private static OTObjectProperty ms_hasSource;
     private static OTObjectProperty ms_variableInfo;
-    private static OTObjectProperty ms_setValues;
+    private static OTObjectProperty ms_parameterValues;
     private static OTObjectProperty ms_variableValues;
     private static OTObjectProperty ms_variable;
     private static OTObjectProperty ms_multiParameter;
@@ -290,20 +290,20 @@ public class OTObjectProperties {
         return ms_variableInfo;
     }
 
-    public static OTObjectProperty setValues() {
-        if (ms_setValues == null) {
-            OTObjectProperty property = new OTObjectPropertyImpl("setValues");
-            property.getDomain().add(OTClasses.SetValuedParameter());
-            property.getRange().add(OTClasses.Set());
-            ms_setValues = property;
+    public static OTObjectProperty parameterValues() {
+        if (ms_parameterValues == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("parameterValues");
+            property.getDomain().add(OTClasses.MultiParameter());
+            property.getRange().add(OTClasses.ParameterValue());
+            ms_parameterValues = property;
         }
-        return ms_setValues;
+        return ms_parameterValues;
     }
 
     public static OTObjectProperty variableValues() {
         if (ms_variableValues == null) {
             OTObjectProperty property = new OTObjectPropertyImpl("variableValues");
-            property.getDomain().add(OTClasses.Set());
+            property.getDomain().add(OTClasses.ParameterValue());
             property.getRange().add(OTClasses.VariableValue());
             ms_variableValues = property;
         }

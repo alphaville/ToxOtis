@@ -78,7 +78,7 @@ public class VRI { // Well tested!
         MODEL(OTClasses.Model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_orNothing),
         TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing);
         /**
-         * Set of regular expressions that identify a
+         * ParameterValue of regular expressions that identify a
          * certain resource.
          */
         private final Set<String> regexp = new HashSet<String>();

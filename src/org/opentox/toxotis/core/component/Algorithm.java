@@ -36,11 +36,11 @@ import org.opentox.toxotis.util.spiders.AlgorithmSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Algorithm extends OTOnlineResource<Algorithm> implements OntologyServiceSupport<Algorithm>{
+public class Algorithm extends OTOnlineResource<Algorithm> implements OntologyServiceSupport<Algorithm> {
 
-    /** Set of parameters of the algorithm. Specify the way the algorithm is parametrized */
+    /** ParameterValue of parameters of the algorithm. Specify the way the algorithm is parametrized */
     private ArrayList<Parameter> parameters = new ArrayList<Parameter>();
-    /** Set of ontological classes that characterize the algorithm*/
+    /** ParameterValue of ontological classes that characterize the algorithm*/
     private Collection<OntologicalClass> ontologies;
     /** List of multi-parameters */
     private Set<MultiParameter> multiParameters = new LinkedHashSet<MultiParameter>();
@@ -92,16 +92,16 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
     /**
      * Retrieve the set of parameters for this algorithm.
      * @return
-     *      Set of parameters.
+     *      ParameterValue of parameters.
      */
     public ArrayList<Parameter> getParameters() {
         return parameters;
     }
 
     /**
-     * Set the parameters of the algorithm.
+     * ParameterValue the parameters of the algorithm.
      * @param parameters
-     *      Set of parameters.
+     *      ParameterValue of parameters.
      */
     public Algorithm setParameters(ArrayList<Parameter> parameters) {
         this.parameters = parameters;
@@ -115,7 +115,6 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
     public void setMultiParameters(Set<MultiParameter> multiParameters) {
         this.multiParameters = multiParameters;
     }
-    
 
     @Override
     public Individual asIndividual(OntModel model) {
@@ -139,8 +138,8 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
                 indiv.addProperty(OTObjectProperties.parameters().asObjectProperty(model), param.asIndividual(model));
             }
         }
-        if (multiParameters!=null){
-            for (MultiParameter mp : multiParameters){
+        if (multiParameters != null) {
+            for (MultiParameter mp : multiParameters) {
                 indiv.addProperty(OTObjectProperties.multiParameter().asObjectProperty(model), mp.asIndividual(model));
             }
         }
@@ -189,15 +188,12 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
     }
 
     public Algorithm publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException {
-        
+
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    
     @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
 }

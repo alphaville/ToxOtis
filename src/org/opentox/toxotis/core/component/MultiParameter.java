@@ -17,37 +17,38 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class MultiParameter extends OTComponent<MultiParameter> {
 
-    private ArrayList<SetValue> setValues = new ArrayList<SetValue>();
+    /** ParameterValue values to the multi-valued multi-parameter*/
+    private ArrayList<ParameterValue> parameterValues = new ArrayList<ParameterValue>();
 
-    public ArrayList<SetValue> getSetValues() {
-        return setValues;
+    public ArrayList<ParameterValue> getParameterValues() {
+        return parameterValues;
     }
 
-    public void setSetValues(ArrayList<SetValue> setValues) {
-        this.setValues = setValues;
+    public void setParameterValues(ArrayList<ParameterValue> setValues) {
+        this.parameterValues = setValues;
     }
+
+    
 
     @Override
     public Individual asIndividual(OntModel model) {
         Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.SetValuedParameter().inModel(model));
-        if (setValues.size() > 1) {
+        if (parameterValues.size() > 1) {
             indiv.addRDFType(OTClasses.VectorParameter().inModel(model));
-            for (int i = 0; i < setValues.size(); i++) {
-                SetValue setValue = setValues.get(i);
+            for (int i = 0; i < parameterValues.size(); i++) {
+                ParameterValue setValue = parameterValues.get(i);
                 Individual valueIndiv = setValue.asIndividual(model);
                 valueIndiv.addLiteral(OTDatatypeProperties.index().asDatatypeProperty(model), i);
-                indiv.addProperty(OTObjectProperties.setValues().asObjectProperty(model), valueIndiv);
+                indiv.addProperty(OTObjectProperties.parameterValues().asObjectProperty(model), valueIndiv);
             }
         } else {
-            SetValue setValue = setValues.get(0);
+            ParameterValue setValue = parameterValues.get(0);
             Individual valueIndiv = setValue.asIndividual(model);
-            indiv.addProperty(OTObjectProperties.setValues().asObjectProperty(model), valueIndiv);
+            indiv.addProperty(OTObjectProperties.parameterValues().asObjectProperty(model), valueIndiv);
         }
         if (getMeta() != null) {
             getMeta().attachTo(indiv, model);
         }
-
-
         return indiv;
     }
 

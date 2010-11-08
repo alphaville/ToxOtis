@@ -70,7 +70,7 @@ public class Task extends OTOnlineResource<Task> {
     }
 
     /**
-     * Set the status of a task.
+     * ParameterValue the status of a task.
      * @param hasStatus
      *      The new value for the status of the task.
      */
