@@ -2,6 +2,7 @@ package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.ArrayList;
 import javax.xml.stream.XMLStreamException;
@@ -21,7 +22,7 @@ import org.opentox.toxotis.util.spiders.ModelSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Model extends OTOnlineResource<Model> implements OntologyServiceSupport<Model>{
+public class Model extends OTOnlineResource<Model> implements OntologyServiceSupport<Model> {
 
     private VRI dataset;
     private Algorithm algorithm;
@@ -29,6 +30,7 @@ public class Model extends OTOnlineResource<Model> implements OntologyServiceSup
     private Feature dependentFeature;
     private ArrayList<Feature> independentFeatures;
     private ArrayList<Parameter> parameters;
+    private ArrayList<MultiParameter> multiParameters;
 
     public Model(VRI uri) {
         super(uri);
@@ -77,6 +79,14 @@ public class Model extends OTOnlineResource<Model> implements OntologyServiceSup
         this.parameters = parameters;
     }
 
+    public ArrayList<MultiParameter> getMultiParameters() {
+        return multiParameters;
+    }
+
+    public void setMultiParameters(ArrayList<MultiParameter> multiParameters) {
+        this.multiParameters = multiParameters;
+    }
+
     public Feature getPredictedFeature() {
         return predictedFeature;
     }
@@ -96,8 +106,15 @@ public class Model extends OTOnlineResource<Model> implements OntologyServiceSup
             metaInfo.attachTo(indiv, model);
         }
         if (parameters != null) {
+            ObjectProperty parameterProperty = OTObjectProperties.parameters().asObjectProperty(model);
             for (Parameter param : parameters) {
-                indiv.addProperty(OTObjectProperties.parameters().asObjectProperty(model), param.asIndividual(model));
+                indiv.addProperty(parameterProperty, param.asIndividual(model));
+            }
+        }
+        if (multiParameters!=null){
+            ObjectProperty multiParameterProperty = OTObjectProperties.multiParameter().asObjectProperty(model);
+            for (MultiParameter mp : multiParameters){
+                indiv.addProperty(multiParameterProperty, mp.asIndividual(model));
             }
         }
         if (dependentFeature != null) {

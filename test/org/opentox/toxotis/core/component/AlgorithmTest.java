@@ -1,6 +1,5 @@
 package org.opentox.toxotis.core.component;
 
-import org.opentox.toxotis.core.component.Algorithm;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.After;
@@ -10,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.OpenToxAlgorithms;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.PasswordFileManager;
@@ -42,12 +42,18 @@ public class AlgorithmTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException, IOException {
-        Algorithm a = new Algorithm(OpenToxAlgorithms.TUM_KNN_CLASSIFICATION.getServiceVri());
+        Algorithm a = new Algorithm(Services.ntua().augment("algorithm","mlr"));
+        System.out.println(a.getUri());
+        System.out.println("Authenticating...");
         AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
+        System.out.println("Received token for user... "+at.getUser().getMail());
         a.loadFromRemote(at);
+        System.out.println("Algorithm meta-information...");
         System.out.println(a.getMeta());
         WonderWebValidator wwv = new WonderWebValidator(a.asOntModel());
-        System.out.println(wwv.validate(WonderWebValidator.OWL_SPECIFICATION.DL)?"HORRRAAAAYYY!!":"SHIT!");
+        System.out.println(wwv.validate(WonderWebValidator.OWL_SPECIFICATION.DL)?"Document is OWL-DL valid":"Document not OWL-DL valid!");
+        System.out.println("Invalidating token...");
+        at.invalidate();
     }
 
 

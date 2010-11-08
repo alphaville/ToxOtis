@@ -5,9 +5,11 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -37,9 +39,11 @@ import org.opentox.toxotis.util.spiders.AlgorithmSpider;
 public class Algorithm extends OTOnlineResource<Algorithm> implements OntologyServiceSupport<Algorithm>{
 
     /** Set of parameters of the algorithm. Specify the way the algorithm is parametrized */
-    private Set<Parameter> parameters = new HashSet<Parameter>();
+    private ArrayList<Parameter> parameters = new ArrayList<Parameter>();
     /** Set of ontological classes that characterize the algorithm*/
     private Collection<OntologicalClass> ontologies;
+    /** List of multi-parameters */
+    private Set<MultiParameter> multiParameters = new LinkedHashSet<MultiParameter>();
 
     /**
      * Create a new instance of Algorithm providing its identifier as a {@link VRI }.
@@ -90,7 +94,7 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
      * @return
      *      Set of parameters.
      */
-    public Set<Parameter> getParameters() {
+    public ArrayList<Parameter> getParameters() {
         return parameters;
     }
 
@@ -99,10 +103,19 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
      * @param parameters
      *      Set of parameters.
      */
-    public Algorithm setParameters(Set<Parameter> parameters) {
+    public Algorithm setParameters(ArrayList<Parameter> parameters) {
         this.parameters = parameters;
         return this;
     }
+
+    public Set<MultiParameter> getMultiParameters() {
+        return multiParameters;
+    }
+
+    public void setMultiParameters(Set<MultiParameter> multiParameters) {
+        this.multiParameters = multiParameters;
+    }
+    
 
     @Override
     public Individual asIndividual(OntModel model) {
@@ -124,6 +137,11 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
         if (parameters != null) {
             for (Parameter param : parameters) {
                 indiv.addProperty(OTObjectProperties.parameters().asObjectProperty(model), param.asIndividual(model));
+            }
+        }
+        if (multiParameters!=null){
+            for (MultiParameter mp : multiParameters){
+                indiv.addProperty(OTObjectProperties.multiParameter().asObjectProperty(model), mp.asIndividual(model));
             }
         }
         return indiv;
