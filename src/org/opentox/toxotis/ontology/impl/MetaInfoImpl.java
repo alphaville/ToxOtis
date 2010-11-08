@@ -98,7 +98,7 @@ public class MetaInfoImpl implements MetaInfo {
         if (title != null) {
             AnnotationProperty titleProp = model.getAnnotationProperty(DC.title.getURI());
             if (titleProp == null) {
-                titleProp = model.createAnnotationProperty(DC.identifier.getURI());
+                titleProp = model.createAnnotationProperty(DC.title.getURI());
             }
             resource.addLiteral(titleProp, model.createTypedLiteral(title.getValue()));
         }

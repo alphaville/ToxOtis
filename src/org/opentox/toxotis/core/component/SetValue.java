@@ -33,7 +33,7 @@ public class SetValue extends OTComponent<SetValue>{  // ot:Set
         if (getMeta()!=null){
             getMeta().attachTo(indiv, model);
         }
-        ObjectProperty multiParam = OTObjectProperties.multiParameter().asObjectProperty(model);
+        ObjectProperty multiParam = OTObjectProperties.variableValues().asObjectProperty(model);
         if (values!=null){
             for (VariableValue vv : values){
                 indiv.addProperty(multiParam, vv.asIndividual(model));

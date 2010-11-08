@@ -160,7 +160,8 @@ public class OTDatatypeProperties {
         if (ms_value == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("value");
             property.getDomain().add(OTClasses.FeatureValue());
-            property.getMetaInfo().setDescription("Value of a feature value pair (class FeatureValuePair)");
+            property.getDomain().add(OTClasses.VariableValue());
+            property.getMetaInfo().setDescription("Value of a feature value pair (class FeatureValuePair), also used to assign values to ot:VariableValue resources");
             ms_value = property;
         }
         return ms_value;

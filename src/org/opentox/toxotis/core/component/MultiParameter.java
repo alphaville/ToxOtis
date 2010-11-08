@@ -42,7 +42,7 @@ public class MultiParameter extends OTComponent<MultiParameter> {
                 indiv.addProperty(OTObjectProperties.setValues().asObjectProperty(model), valueIndiv);
             }
         } else {
-            SetValue setValue = setValues.get(1);
+            SetValue setValue = setValues.get(0);
             Individual valueIndiv = setValue.asIndividual(model);
             indiv.addProperty(OTObjectProperties.setValues().asObjectProperty(model), valueIndiv);
         }
