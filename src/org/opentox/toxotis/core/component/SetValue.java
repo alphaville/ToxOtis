@@ -19,6 +19,14 @@ public class SetValue extends OTComponent<SetValue>{  // ot:Set
 
     private ArrayList<VariableValue> values = new ArrayList<VariableValue>();
 
+    public ArrayList<VariableValue> getValues() {
+        return values;
+    }
+
+    public void setValues(ArrayList<VariableValue> values) {
+        this.values = values;
+    }    
+
     @Override
     public Individual asIndividual(OntModel model) {
         Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.Set().inModel(model));
