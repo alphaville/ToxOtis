@@ -19,6 +19,22 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class ParameterValue extends OTComponent<ParameterValue> {  // ot:ParameterValue
 
+    public ParameterValue() {
+    }
+
+    public ParameterValue(VariableValue... values) {
+        this();
+        if (values != null) {
+            for (VariableValue vv : values) {
+                getValues().add(vv);
+            }
+        }
+    }
+
+    public ParameterValue(int index, VariableValue... values) {
+        this(values);
+        setIndex(index);
+    }
     private int index = -1;// optional index for the ot:ParameterValue node.
     private ArrayList<VariableValue> values = new ArrayList<VariableValue>();
 

@@ -8,9 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Model;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -39,7 +37,7 @@ public class ModelSpiderTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException {
-        VRI vri = new VRI(Services.tumDev().augment("model","TUMOpenToxModel_j48_7"));
+        VRI vri = new VRI("http://opentox.ntua.gr:3000/model/dd2063a5-5ac4-40ca-8725-4d3701aafcdf");
 //        ModelSpider mSpider = new ModelSpider(vri);
 //        Model m = mSpider.parse();
 

@@ -113,12 +113,8 @@ public class ErrorReport extends OTComponent<ErrorReport> {
         if (getMeta() == null) {
             setMeta(new MetaInfoImpl());
         }
-        if (getMeta().getIdentifier() == null) {
-            getMeta().setIdentifier(getUri() != null ? getUri().toString() : null);
-        }
-        if (getMeta().getTitle() == null) {
-            getMeta().setTitle("Error report produced by '" + getActor() + "'");
-        }
+        getMeta().addIdentifier(getUri() != null ? getUri().toString() : null);
+        getMeta().addTitle("Error report produced by '" + getActor() + "'");
         getMeta().attachTo(indiv, model);
         if (message != null) {
             indiv.addLiteral(OTDatatypeProperties.message().asDatatypeProperty(model),

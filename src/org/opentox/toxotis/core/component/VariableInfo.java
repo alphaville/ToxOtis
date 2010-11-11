@@ -3,14 +3,20 @@ package org.opentox.toxotis.core.component;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.core.component.Parameter.ParameterScope;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
-import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  *
@@ -29,9 +35,11 @@ public class VariableInfo extends OTComponent<VariableInfo> {
         this.scope = scope;
     }
 
-
     @Override
     public Individual asIndividual(OntModel model) {
+        if (getUri() == null) {
+            setUri(Services.opentox().augment(getMeta().getTitles().iterator().next().getValue().toString()));
+        }
         Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.VariableInfo().inModel(model));
         MetaInfo metaInfo = getMeta();
         if (metaInfo != null) {
@@ -48,7 +56,4 @@ public class VariableInfo extends OTComponent<VariableInfo> {
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
-
 }

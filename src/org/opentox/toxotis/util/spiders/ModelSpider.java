@@ -14,6 +14,7 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Parameter;
@@ -33,7 +34,7 @@ public class ModelSpider extends Tarantula<Model> {
         this.uri = uri;
         GetClient client = new GetClient();
         try {
-            client.setMediaType("application/rdf+xml");
+            client.setMediaType(Media.APPLICATION_RDF_XML);
             client.setUri(uri);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);

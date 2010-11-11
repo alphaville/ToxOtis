@@ -5,10 +5,10 @@ import com.hp.hpl.jena.ontology.OntModel;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.core.OTComponent;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
-import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  *
@@ -17,14 +17,33 @@ import org.opentox.toxotis.util.spiders.AnyValue;
  */
 public class VariableValue<T> extends OTComponent<VariableValue<T>> {
 
-    private AnyValue<T> value;
+    public VariableValue() {
+        super();
+    }
+
+    public VariableValue(String variableName, T value, Parameter.ParameterScope scope) {
+        this();        
+        setVariableInfo(new VariableInfo());
+        getVariableInfo().getMeta().addTitle(variableName);
+        getVariableInfo().setScope(scope);
+        setValue(new LiteralValue<T>(value));
+    }
+
+    public VariableValue(String variableName, T value) {
+        this();
+        setVariableInfo(new VariableInfo());
+        getVariableInfo().getMeta().addTitle(variableName);
+        setValue(new LiteralValue<T>(value));
+    }
+
+    private LiteralValue<T> value;
     private VariableInfo variableInfo;
 
-    public AnyValue<T> getValue() {
+    public LiteralValue<T> getValue() {
         return value;
     }
 
-    public void setValue(AnyValue<T> value) {
+    public void setValue(LiteralValue<T> value) {
         this.value = value;
     }
 
@@ -39,7 +58,7 @@ public class VariableValue<T> extends OTComponent<VariableValue<T>> {
     @Override
     public Individual asIndividual(OntModel model) {
         Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.VariableValue().inModel(model));
-        if (getMeta()!=null){
+        if (getMeta() != null) {
             getMeta().attachTo(indiv, model);
         }
         if (value != null) {

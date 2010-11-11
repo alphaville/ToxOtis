@@ -20,6 +20,7 @@ import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.OTPublishable;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
@@ -27,7 +28,6 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TaskSpider;
-import org.opentox.toxotis.util.spiders.AnyValue;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -169,7 +169,7 @@ public class Dataset extends OTPublishable<Dataset> {
                     writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
-                    for (AnyValue admissibleVal : f.getAdmissibleValue()) {
+                    for (LiteralValue admissibleVal : f.getAdmissibleValue()) {
                         writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                         // TODO: Include also the XSD datatype of the value...
                         writer.writeCharacters(admissibleVal.getValue().toString());// REFERS TO #NODE_ACCEPT_VALUE
@@ -204,13 +204,13 @@ public class Dataset extends OTPublishable<Dataset> {
             /* Feature Meta Data*/
             if (f.getMeta() != null) {
                 f.getMeta().writeToStAX(writer);
-                if (f.getMeta().getSameAs() != null && f.getMeta().getSameAs().getValue() != null) {
-                    String featureUri = f.getMeta().getSameAs().getValue().toString();
-                    if (!featureUri.contains("http")) {
-                        featureUri = OTClasses.NS + featureUri;
-                    }
-                    sameAsFeatures.add(featureUri);
-                }
+//                if (f.getMeta().getSameAs() != null && f.getMeta().getSameAs().getValue() != null) {
+//                    String featureUri = f.getMeta().getSameAs().getValue().toString();
+//                    if (!featureUri.contains("http")) {
+//                        featureUri = OTClasses.NS + featureUri;
+//                    }
+//                    sameAsFeatures.add(featureUri);
+//                }
             }
             writer.writeEndElement();// #__NODE_FEATURE_DECLARATION
         }
@@ -368,7 +368,7 @@ public class Dataset extends OTPublishable<Dataset> {
             } else if (dataType.equals(WekaDataTypes.nominal)) {
                 // COPE WITH NOMINAL VALUES:
                 FastVector nominalFVec = new FastVector(feature.getAdmissibleValue().size());
-                for (AnyValue value : feature.getAdmissibleValue()) {
+                for (LiteralValue value : feature.getAdmissibleValue()) {
                     nominalFVec.addElement(value.getValue());
                 }
                 attributes.addElement(new Attribute(feature.getUri().getStringNoQuery(), nominalFVec));
@@ -392,7 +392,7 @@ public class Dataset extends OTPublishable<Dataset> {
             for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
                 Feature feature = featureValue.getFeature();
                 String featureName = feature.getUri().getStringNoQuery();
-                AnyValue value = featureValue.getValue();
+                LiteralValue value = featureValue.getValue();
 
                 if (value != null) {
                     if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.numeric)) {

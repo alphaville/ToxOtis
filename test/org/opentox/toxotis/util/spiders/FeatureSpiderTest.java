@@ -44,6 +44,6 @@ public class FeatureSpiderTest {
         System.out.println("Feature : " + featureUri);
         FeatureSpider fSpider = new FeatureSpider(new VRI(featureUri));
         Feature f = fSpider.parse();
-        System.out.println(f);
+        System.out.println(f.getMeta().getHasSources());
     }
 }

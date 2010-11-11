@@ -85,7 +85,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAbstract");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has Abstract");
+            property.getMetaInfo().addTitle("has Abstract");
             property.getMetaInfo().addComment("An abstract of the work.");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasAbstract = property;
@@ -98,7 +98,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasTitle");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has title");
+            property.getMetaInfo().addTitle("has title");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasTitle = property;
         }
@@ -110,7 +110,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasURL");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has url");
+            property.getMetaInfo().addTitle("has url");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasURL = property;
         }
@@ -122,7 +122,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAuthor");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has Author");
+            property.getMetaInfo().addTitle("has Author");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasAuthor = property;
         }
@@ -134,7 +134,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasBookTitle");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has BookTitle");
+            property.getMetaInfo().addTitle("has BookTitle");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasBookTitle = property;
         }
@@ -146,7 +146,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasChapter");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has Chapter");
+            property.getMetaInfo().addTitle("has Chapter");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasChapter = property;
         }
@@ -158,7 +158,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasCopyright");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has Copyright");
+            property.getMetaInfo().addTitle("has Copyright");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasCopyright = property;
         }
@@ -170,7 +170,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasCrossref");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDanyURI);
-            property.getMetaInfo().setTitle("has Cross-reference");
+            property.getMetaInfo().addTitle("has Cross-reference");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasCrossref = property;
         }
@@ -182,7 +182,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasEdition");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has Edition");
+            property.getMetaInfo().addTitle("has Edition");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasEdition = property;
         }
@@ -194,7 +194,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasEditor");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has Editor");
+            property.getMetaInfo().addTitle("has Editor");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasEditor = property;
         }
@@ -206,7 +206,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasISBN");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has ISBN");
+            property.getMetaInfo().addTitle("has ISBN");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasISBN = property;
         }
@@ -218,7 +218,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasISSN");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has ISSN");
+            property.getMetaInfo().addTitle("has ISSN");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasISSN = property;
         }
@@ -230,7 +230,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasJournal");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has journal");
+            property.getMetaInfo().addTitle("has journal");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasJournal = property;
         }
@@ -242,7 +242,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasOrganization");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has organization");
+            property.getMetaInfo().addTitle("has organization");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasOrganization = property;
         }
@@ -254,7 +254,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAddress");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has address");
+            property.getMetaInfo().addTitle("has address");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasAddress = property;
         }
@@ -266,7 +266,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAffiliation");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has affiliation");
+            property.getMetaInfo().addTitle("has affiliation");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasAffiliation = property;
         }
@@ -278,7 +278,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAnnotation");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has annotation");
+            property.getMetaInfo().addTitle("has annotation");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasAnnotation = property;
         }
@@ -290,7 +290,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasKey");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has key");
+            property.getMetaInfo().addTitle("has key");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasKey = property;
         }
@@ -302,7 +302,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasKeywords");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has keywords");
+            property.getMetaInfo().addTitle("has keywords");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasKeywords = property;
         }
@@ -314,7 +314,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasMonth");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has month");
+            property.getMetaInfo().addTitle("has month");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasMonth = property;
         }
@@ -326,7 +326,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasNumber");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has number");
+            property.getMetaInfo().addTitle("has number");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasNumber = property;
         }
@@ -338,7 +338,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasVolume");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has volume");
+            property.getMetaInfo().addTitle("has volume");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasVolume = property;
         }
@@ -350,7 +350,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasSchool");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has school");
+            property.getMetaInfo().addTitle("has school");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasSchool = property;
         }
@@ -362,7 +362,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasPages");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has pages");
+            property.getMetaInfo().addTitle("has pages");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasPages = property;
         }
@@ -374,7 +374,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasSeries");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has series");
+            property.getMetaInfo().addTitle("has series");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasSeries = property;
         }
@@ -386,7 +386,7 @@ public class KnoufDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasYear");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has year");
+            property.getMetaInfo().addTitle("has year");
             property.setNameSpace(KnoufBibTex.NS);
             ms_hasYear = property;
         }

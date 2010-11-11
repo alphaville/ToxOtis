@@ -7,11 +7,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.component.Parameter.ParameterScope;
 import org.opentox.toxotis.util.spiders.ParameterSpider;
-import org.opentox.toxotis.util.spiders.AnyValue;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -41,7 +37,7 @@ public class ParameterTest {
     @Test
     public void testSomeMethod() throws URISyntaxException {
         Parameter<String> p = new Parameter<String>();
-        //p.setName("xx");
+        p.setName("xx");
         //p.setScope(ParameterScope.OPTIONAL);
         //p.setTypedValue(new AnyValue<String>("yyy"));
         //p.getMeta().setDescription("My parameter");

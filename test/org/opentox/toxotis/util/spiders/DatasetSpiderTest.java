@@ -41,7 +41,7 @@ public class DatasetSpiderTest {
     public void tearDown() {
     }
 
-    //@Test
+    @Test
     public void testDataset() throws URISyntaxException, ToxOtisException {
         VRI vri = new VRI(Services.ambitUniPlovdiv().augment("dataset", "9"));
         final int size = 4;
@@ -55,6 +55,7 @@ public class DatasetSpiderTest {
         FeatureValue fv = de.getFeatureValue(0);
 
         ds.asOntModel().write(System.out);
+        System.out.println(ds.getInstances());
 
     }
 

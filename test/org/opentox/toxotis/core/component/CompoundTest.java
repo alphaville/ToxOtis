@@ -18,9 +18,9 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.IDescriptorCalculation;
 import org.opentox.toxotis.factory.CompoundFactory;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTFeatures;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  *
@@ -47,11 +47,11 @@ public class CompoundTest {
     public void tearDown() {
     }
 
-    //@Test
+    @Test
     public void testDownload() throws Exception {
         Compound c = new Compound(Services.ideaconsult().augment("compound", "4"));
         c.download(new File(System.getProperty("user.home") + "/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
-        AnyValue val = c.getProperty(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"), null);
+        LiteralValue val = c.getProperty(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"), null);
         System.out.println(val);
         Dataset ds = c.getProperties(null, new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/1"),
                 new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/2"));
@@ -81,7 +81,7 @@ public class CompoundTest {
     //@Test
     public void testPublishFromRDF() throws ToxOtisException {
         Compound comp = new Compound(null);
-        comp.getMeta().setTitle("My compound");
+        comp.getMeta().addTitle("My compound");
         Task tsk = comp.publishOnline(Services.ambitUniPlovdiv().augment("compound"), null);
         System.out.println(tsk);
     }

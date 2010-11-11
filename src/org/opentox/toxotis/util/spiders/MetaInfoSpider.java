@@ -7,7 +7,10 @@ import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
@@ -30,46 +33,56 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
     @Override
     public MetaInfo parse() {
         MetaInfo dcmeta = new MetaInfoImpl();
-        AnyValue<String> temp = null;
+        Set<LiteralValue> temp = null;
+        Set<ResourceValue> temp2 = null;
+
         /* title */
-        temp = retrieveProp(DC.title);
-        dcmeta.setTitle(temp != null ? temp.getValue() : null);
+        temp = retrievePropertyLiterals(DC.title);
+        dcmeta.setTitles(temp);
         /* subject */
-        temp = retrieveProp(DC.subject);
-        dcmeta.setSubject(temp != null ? temp.getValue() : null);
+        temp = retrievePropertyLiterals(DC.subject);
+        dcmeta.setSubjects(temp);
         /* creator */
-        temp = retrieveProp(DC.creator);
-        dcmeta.setCreator(temp != null ? temp.getValue() : null);
+        temp = retrievePropertyLiterals(DC.creator);
+        dcmeta.setCreators(temp);
         /* description */
-        temp = retrieveProp(DC.description);
-        dcmeta.setDescription(temp != null ? temp.getValue() : null);
+        temp = retrievePropertyLiterals(DC.description);
+        dcmeta.setDescriptions(temp);
         /* publidher */
-        temp = retrieveProp(DC.publisher);
-        dcmeta.setPublisher(temp != null ? temp.getValue() : null);
+        temp = retrievePropertyLiterals(DC.publisher);
+        dcmeta.setPublishers(temp);
         /* comment */
-        ArrayList<String> temps = retrieveProps(RDFS.comment);
-        for (String comment : temps){
-            dcmeta.addComment(comment != null ? comment : null);
-        }
-        /* version info */
-        temp = retrieveProp(OWL.versionInfo);
-        dcmeta.setVersionInfo(temp != null ? temp.getValue() : null);
+        temp = retrievePropertyLiterals(RDFS.comment);
+        dcmeta.setComments(temp);
         /* contributors */
-        temp = retrieveProp(org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(model));
-        dcmeta.setHasSource(temp != null ? temp.getValue() : null);
-        dcmeta.getContributors().addAll(retrieveTypedProps(DC.contributor));
-        /* sameAs */
-        temp = retrieveProp(OWL.sameAs);
-        dcmeta.setSameAs(temp != null ? temp.getValue() : null);
-        /* see also... */
-        temp = retrieveProp(RDFS.seeAlso);
-        dcmeta.setSeeAlso(temp != null ? temp.getValue() : null);
+        temp = retrievePropertyLiterals(DC.contributor);
+        dcmeta.setContributors(temp);
         /* identifier */
-        temp = retrieveProp(DC.identifier);
-        dcmeta.setIdentifier(temp != null ? temp.getValue() : null);
+        temp = retrievePropertyLiterals(DC.identifier);
+        dcmeta.setIdentifiers(temp != null ? temp : null);
         /* date */
-        AnyValue<Date> date = (AnyValue<Date>) retrieveProp(DC.date);
-        dcmeta.setDate(date != null ? date.getValue() : null);
+        temp = retrievePropertyLiterals(DC.date);
+        if (temp != null && !temp.isEmpty()) {// date declaration found!
+            dcmeta.setDate(temp.iterator().next());
+        }
+
+
+        /* version info */
+//        temp = retrieveProp(OWL.versionInfo);
+//        dcmeta.setVersionInfo(temp != null ? temp.getValue() : null);
+
+
+        /* hasSource */
+        temp2 = retrievePropertyNodes(org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(model));
+        dcmeta.setHasSources(temp2);
+        /* sameAs */
+        temp2 = retrievePropertyNodes(OWL.sameAs);
+        dcmeta.setSameAs(temp2);
+        /* see also... */
+        temp2 = retrievePropertyNodes(RDFS.seeAlso);
+        dcmeta.setSeeAlso(temp2);
+
+
         //TODO: add audiences
         return dcmeta;
     }

@@ -6,10 +6,10 @@ import com.hp.hpl.jena.ontology.OntModel;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.core.OTComponent;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
-import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  *
@@ -31,7 +31,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
     /** The name of the parameter*/
     private String name;
     /** Typed value for the parameter */
-    private AnyValue<T> typedValue;
+    private LiteralValue<T> typedValue;
     /** The scope of the parameter (mandatory/optional)*/
     private ParameterScope scope;
 
@@ -56,11 +56,11 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         return typedValue != null ? typedValue.getValue() : null;
     }
 
-    public void setTypedValue(AnyValue<T> value) {
+    public void setTypedValue(LiteralValue<T> value) {
         this.typedValue = value;
     }
 
-    public AnyValue<T> getTypedValue() {
+    public LiteralValue<T> getTypedValue() {
         return typedValue;
     }
 
@@ -70,7 +70,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
 
     public void setName(String name) {
         this.name = name;
-        this.meta.addComment(name);
+        this.meta.addTitle(name);
     }// </editor-fold>
 
     @Override

@@ -2,7 +2,9 @@ package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
+import java.util.Set;
 import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 
@@ -20,23 +22,39 @@ public class ParameterSpider extends Tarantula<Parameter> {
     @Override
     public Parameter parse() {
         Parameter parameter = new Parameter();
-        AnyValue<String> typedScope = retrieveProp(OTDatatypeProperties.paramScope().
+
+
+        /*
+         * Parse parameter scope...
+         */
+        Set<LiteralValue> scopes = retrievePropertyLiterals(OTDatatypeProperties.paramScope().
                 asDatatypeProperty(model));
-        String scope = typedScope != null ? typedScope.getValue().toUpperCase() : null;
-        if (scope != null) {
-            parameter.setScope(
-                    Parameter.ParameterScope.valueOf(scope));
+        if (scopes != null && !scopes.isEmpty()) {
+            if (scopes.size() > 1) {
+                System.err.println("[WARN ] Multiple scopes declared for the parsed parameter! " +
+                        "Only one will be taken into account.");
+            }
+            LiteralValue scope = scopes.iterator().next();
+            parameter.setScope(Parameter.ParameterScope.valueOf(scope.getValue().toString().toUpperCase()));
         }
-        AnyValue paramTypedValue = retrieveProp(OTDatatypeProperties.paramValue().asDatatypeProperty(model));
-        parameter.setTypedValue(paramTypedValue);
+
+        Set<LiteralValue> paramTypedValues = retrievePropertyLiterals(OTDatatypeProperties.paramValue().asDatatypeProperty(model));
+        if (paramTypedValues != null && !paramTypedValues.isEmpty()) {
+            if (paramTypedValues.size()>1){
+                System.err.println("[WARN ] Multiple parameter values are declared for a single parameter. " +
+                        "Only one of them will be taken into account!");
+            }
+            LiteralValue paramTypedValue = paramTypedValues.iterator().next();
+            parameter.setTypedValue(paramTypedValue);
+        }
+        
 
         MetaInfoSpider metaSpider = new MetaInfoSpider(resource, model);
         MetaInfo mi = metaSpider.parse();
         parameter.setMeta(mi);
-        if (mi.getIdentifier() != null) {
-            parameter.setName(mi.getIdentifier().getValue());
-        } else if (mi.getComment() != null && !mi.getComment().isEmpty()) {
-            parameter.setName(mi.getComment().iterator().next().getValue());
+        // The name of the parameter is defined using the dc:title property
+        if (mi.getTitles() != null && !mi.getTitles().isEmpty()) {
+            parameter.setName(mi.getTitles().iterator().next().getValue().toString());
         }
 
         return parameter;

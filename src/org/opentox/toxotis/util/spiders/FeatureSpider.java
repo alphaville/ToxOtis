@@ -18,6 +18,7 @@ import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -90,11 +91,11 @@ public class FeatureSpider extends Tarantula<Feature> {
 
         if (feature.getOntologies() != null && feature.getOntologies().contains(OTClasses.NominalFeature())) {
             // Gather 'accept' values from the RDF and add them to the feature
-            Set<AnyValue> admissibleValues = new HashSet<AnyValue>();
+            Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
             StmtIterator acceptIt = resource.listProperties(OTDatatypeProperties.acceptValue().asDatatypeProperty(model));
             while (acceptIt.hasNext()) {
                 Literal acceptValueLiteral = acceptIt.nextStatement().getObject().as(Literal.class);
-                AnyValue acceptValue = new AnyValue(acceptValueLiteral.getValue().toString(),
+                LiteralValue acceptValue = new LiteralValue(acceptValueLiteral.getValue().toString(),
                         (XSDDatatype) acceptValueLiteral.getDatatype());
                 admissibleValues.add(acceptValue);
             }

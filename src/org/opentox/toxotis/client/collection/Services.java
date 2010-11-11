@@ -19,6 +19,16 @@ public class Services {
     private static final String _SSO_IDENTITY = "https://" + SSO_HOST + "/auth/%s";
     private static final String _SSO_POLICY = "https://" + SSO_HOST + "/pol";
     private static final String _SSO_POLICY_OLD = "https://" + SSO_HOST + "/Pol/opensso-pol";
+    private static final String _OPENTOX_ORG = "http://opentox.org/%s";
+
+    public static VRI opentox() {
+        try {
+            return new VRI(String.format(_OPENTOX_ORG, ""));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
 
     public static VRI ntua() {
         try {

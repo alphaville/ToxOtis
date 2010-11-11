@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.opentox.toxotis.training;
 
 import java.io.IOException;
@@ -16,16 +12,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Algorithm;
 import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.util.TaskRunner;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.spiders.AnyValue;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -57,7 +51,7 @@ public class TrainerTest {
         Algorithm alg = new Algorithm(org.opentox.toxotis.client.collection.OpenToxAlgorithms.NTUA_MLR.getServiceVri());
         Parameter p1 = new Parameter();
         p1.setName("gamma");
-        p1.setTypedValue(new AnyValue("1"));
+        p1.setTypedValue(new LiteralValue<String>("1"));
         alg.getParameters().add(p1);
         Dataset ds = new Dataset(new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/6"));
         Feature pf = new Feature(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/20180"));

@@ -93,7 +93,7 @@ public class OTDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasStatus");
             property.getDomain().add(OTClasses.Task());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("has status");
+            property.getMetaInfo().addTitle("has status");
             ms_hasStatus = property;
         }
         return ms_hasStatus;
@@ -112,7 +112,7 @@ public class OTDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("acceptValue");
             property.getDomain().add(OTClasses.Nominal());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("accepts value");
+            property.getMetaInfo().addTitle("accepts value");
             ms_acceptValue = property;
         }
         return ms_acceptValue;
@@ -123,8 +123,8 @@ public class OTDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramScope");
             property.getDomain().add(OTClasses.Parameter());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("parameter scope");
-            property.getMetaInfo().setDescription("specifies if a parameter is "
+            property.getMetaInfo().addTitle("parameter scope");
+            property.getMetaInfo().addDescription("specifies if a parameter is "
                     + "optional or mandatory");
             ms_paramScope = property;
         }
@@ -136,8 +136,8 @@ public class OTDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramValue");
             property.getDomain().add(OTClasses.Parameter());
             property.getDomain().add(OTClasses.VariableValue());
-            property.getMetaInfo().setTitle("parameter value");
-            property.getMetaInfo().setDescription("The value of a Parameter or the value " +
+            property.getMetaInfo().addTitle("parameter value");
+            property.getMetaInfo().addDescription("The value of a Parameter or the value " +
                     "of a variable in a set of variables");
             ms_paramValue = property;
         }
@@ -149,7 +149,7 @@ public class OTDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("resultURI");
             property.getDomain().add(OTClasses.Task());
             property.getRange().add(XSDDatatype.XSDanyURI);
-            property.getMetaInfo().setDescription("URI of the new resource, "
+            property.getMetaInfo().addDescription("URI of the new resource, "
                     + "created by the Task is stored here");
             ms_resultURI = property;
         }
@@ -161,7 +161,7 @@ public class OTDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("value");
             property.getDomain().add(OTClasses.FeatureValue());
             property.getDomain().add(OTClasses.VariableValue());
-            property.getMetaInfo().setDescription("Value of a feature value pair (class FeatureValuePair), also used to assign values to ot:VariableValue resources");
+            property.getMetaInfo().addDescription("Value of a feature value pair (class FeatureValuePair), also used to assign values to ot:VariableValue resources");
             ms_value = property;
         }
         return ms_value;
@@ -171,8 +171,8 @@ public class OTDatatypeProperties {
         if (ms_units == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("units");
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setTitle("Units");
-            property.getMetaInfo().setDescription("Units of a feature value");
+            property.getMetaInfo().addTitle("Units");
+            property.getMetaInfo().addDescription("Units of a feature value");
             ms_units = property;
         }
         return ms_units;
@@ -192,7 +192,7 @@ public class OTDatatypeProperties {
             property.getDomain().add(OTClasses.Task());
             property.getRange().add(XSDDatatype.XSDfloat);
             property.getSuperProperties().add(classificationStatistics());
-            property.getMetaInfo().setDescription("Estimated percentage of completion of a "
+            property.getMetaInfo().addDescription("Estimated percentage of completion of a "
                     + "running task.");
             ms_percentageCompleted = property;
         }
@@ -211,7 +211,7 @@ public class OTDatatypeProperties {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("errorReportProperty");
             property.getDomain().add(OTClasses.ErrorReport());
             property.getRange().add(XSDDatatype.XSDstring);
-            property.getMetaInfo().setDescription("Datatype property applied on an error report.");
+            property.getMetaInfo().addDescription("Datatype property applied on an error report.");
             property.getMetaInfo().addComment("This is a generic property. Subproperties usually used are: actor, "
                     + "message, details, status and errorCode.");
             ms_errorReportProperty = property;
@@ -225,9 +225,9 @@ public class OTDatatypeProperties {
             property.getDomain().add(OTClasses.ErrorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getSuperProperties().add(errorReportProperty());
-            property.getMetaInfo().setDescription("URI of the peer "
+            property.getMetaInfo().addDescription("URI of the peer "
                     + "that produces the exception.");
-            property.getMetaInfo().setTitle("error actor");
+            property.getMetaInfo().addTitle("error actor");
             ms_actor = property;
         }
         return ms_actor;
@@ -239,10 +239,10 @@ public class OTDatatypeProperties {
             property.getDomain().add(OTClasses.ErrorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getSuperProperties().add(errorReportProperty());
-            property.getMetaInfo().setDescription("A simple message providing some "
+            property.getMetaInfo().addDescription("A simple message providing some "
                     + "simple description of the exceptional event.");
             property.getMetaInfo().addComment("For example: 'Prediction feature not provided'");
-            property.getMetaInfo().setTitle("error message");
+            property.getMetaInfo().addTitle("error message");
             ms_message = property;
         }
         return ms_message;
@@ -254,10 +254,10 @@ public class OTDatatypeProperties {
             property.getDomain().add(OTClasses.ErrorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getSuperProperties().add(errorReportProperty());
-            property.getMetaInfo().setDescription("Detailed message including "
+            property.getMetaInfo().addDescription("Detailed message including "
                     + "technical information about the exceptional event. "
                     + "Can be used to help both peers in the debugging.");
-            property.getMetaInfo().setTitle("error details");
+            property.getMetaInfo().addTitle("error details");
             ms_details = property;
         }
         return ms_details;
@@ -269,7 +269,7 @@ public class OTDatatypeProperties {
             property.getDomain().add(OTClasses.ErrorReport());
             property.getRange().add(XSDDatatype.XSDint);
             property.getSuperProperties().add(errorReportProperty());
-            property.getMetaInfo().setTitle("HTTP status");
+            property.getMetaInfo().addTitle("HTTP status");
             ms_httpStatus = property;
         }
         return ms_httpStatus;
@@ -281,10 +281,10 @@ public class OTDatatypeProperties {
             property.getDomain().add(OTClasses.ErrorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getSuperProperties().add(errorReportProperty());
-            property.getMetaInfo().setDescription("Error codes of error reports "
+            property.getMetaInfo().addDescription("Error codes of error reports "
                     + "are specified by the service providers that produce the"
                     + " error report. These are characteristic for every class of exceptional events.");
-            property.getMetaInfo().setTitle("error code");
+            property.getMetaInfo().addTitle("error code");
             ms_errorCode = property;
         }
         return ms_errorCode;

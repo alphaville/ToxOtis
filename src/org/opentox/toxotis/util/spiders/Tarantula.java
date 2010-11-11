@@ -11,6 +11,7 @@ import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.Closeable;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,11 +20,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.OTComponent;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.collection.OTAlgorithmTypes;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 
@@ -84,10 +88,11 @@ public abstract class Tarantula<Result> implements Closeable {
      */
     public abstract Result parse() throws ToxOtisException;
 
-    protected AnyValue retrieveProp(Property prop) {
+    protected Set<LiteralValue> retrievePropertyLiterals(Property prop) {
+        Set<LiteralValue> results = new HashSet<LiteralValue>();
         StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
-        if (it.hasNext()) {
-            try {
+        try {
+            while (it.hasNext()) {
                 RDFNode node = it.nextStatement().getObject();
                 if (node.isLiteral()) {
                     XSDDatatype datatype = (XSDDatatype) node.as(Literal.class).getDatatype();
@@ -97,57 +102,56 @@ public abstract class Tarantula<Result> implements Closeable {
                         DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
                         try {
                             Date date = (Date) formatter.parse(stringVal);
-                            return (new AnyValue<Date>(date, datatype));
+                            results.add(new LiteralValue<Date>(date, datatype));
                         } catch (ParseException ex) {
                             try {
                                 long longDate = Long.parseLong(stringVal);
-                                return new AnyValue<Date>(new Date(longDate), datatype);
+                                results.add(new LiteralValue<Date>(new Date(longDate), datatype));
                             } catch (NumberFormatException nfe) {
                                 System.err.println("[WARNING] Date format not supported.");
                                 nfe.printStackTrace();
                             }
                         }
                     } else {
-                        return (new AnyValue(stringVal, datatype));
+                        results.add(new LiteralValue(stringVal, datatype));
                     }
                 } else if (node.isResource()) {
-                    return (new AnyValue(node.as(Resource.class).getURI()));
+                    System.err.println("Non-literal value found for property : " + prop.getURI());
+                    System.err.println("URI of that value is : " + node.as(Resource.class).getURI());
+                }
+            }
+        } finally {
+            it.close();
+        }
+        return results;
+    }
+
+    protected Set<ResourceValue> retrievePropertyNodes(Property prop) {
+        Set<ResourceValue> results = new HashSet<ResourceValue>();
+        StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
+        while (it.hasNext()) {           
+            try {
+                RDFNode node = it.nextStatement().getObject();
+                if (node.isResource()) {
+                    Resource value = node.as(Resource.class);
+                    try {
+                        results.add(
+                                new ResourceValue(value.getURI() != null ? new VRI(value.getURI()) : null,
+                                OTClasses.forName(value.getLocalName())));
+                    } catch (URISyntaxException ex) {
+                        Logger.getLogger(Tarantula.class.getName()).log(Level.SEVERE, null, ex);
+                        throw new RuntimeException(ex);
+                    }
+                } else if (node.isLiteral()) {
+                    System.err.println("[WARN ] Parsing warning (no exception is thrown). Timestamp : "+new Date(System.currentTimeMillis())+".");
+                    System.err.println("Details: Found literal value while expecting a resource for the property :"+prop.getURI());
+                    System.err.println("Property value : "+node.as(Literal.class).getString());
                 }
             } finally {
                 it.close();
             }
         }
-        return null;
-    }
-
-    protected ArrayList<String> retrieveProps(Property prop) {
-        ArrayList<String> props = new ArrayList<String>();
-
-        StmtIterator it = model.listStatements(
-                new SimpleSelector(resource, prop, (Literal) null));
-        while (it.hasNext()) {
-            try {
-                props.add(it.nextStatement().getObject().as(Literal.class).getString());
-            } finally {
-                it.close();
-            }
-        }
-        return props;
-    }
-
-    protected ArrayList<AnyValue<String>> retrieveTypedProps(Property prop) {
-        ArrayList<AnyValue<String>> props = new ArrayList<AnyValue<String>>();
-
-        StmtIterator it = model.listStatements(
-                new SimpleSelector(resource, prop, (Literal) null));
-        while (it.hasNext()) {
-            try {
-                props.add(new AnyValue(it.nextStatement().getObject().as(Literal.class).getString()));
-            } finally {
-                it.close();
-            }
-        }
-        return props;
+        return results;
     }
 
     protected Set<OntologicalClass> getOTATypes(Resource currentResource) {

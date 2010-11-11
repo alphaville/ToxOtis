@@ -72,7 +72,7 @@ public class KnoufBibTex {
             clazz.getSuperClasses().add(Thing());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("Generic bibtex entry");
-            clazz.getMetaInfo().setSeeAlso("http://zeitkunst.org/bibtex/0.1/");
+            clazz.getMetaInfo().addComment("Take a look at http://zeitkunst.org/bibtex/0.1/");
             ms_Entry = clazz;
         }
         return ms_Entry;

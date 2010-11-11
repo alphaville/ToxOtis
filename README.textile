@@ -25,6 +25,12 @@ This project is licensed under the GNU GPL license version 3.0. A copy of this l
 
 This project is being developed in the "Automatic Control Lab":http://www.chemeng.ntua.gr/labs/control_lab/index.html of the "School of Chemical Engineering":http://www.chemeng.ntua.gr/index.php?lang_change=en, "NTUA":http://www.ntua.gr/index_en.html, Athens, Greece and is part of "OpenTox":http://opentox.org; an EU funded FP7 research project.
 
+h3. Extensible
+
+We work on various extensions for ToxOtis including modules that will facilitate external developers towards builing theie own web service applications, modules that provide extra security mechanisms and local account management, Hibernate support for ToxOtis to provide persistence for all core ToxOtis objects (Datasets, Algorithms, Models etc), Triple-storage database support (TDB) and lots of other features. Recently "hampos":http://gr.linkedin.com/pub/hampos-chomenidis/14/29a/778 kicked off a new project for Hibernate support, namely "ToxOtis-Persistence":http://github.com/hampos/ToxOtis-persistence.
+
+h3. 
+
 
 h2. Dependencies
 
@@ -35,6 +41,11 @@ This project depends on the following libraries (Should be downloaded and added 
 * "Weka, version 3.6.2":http://sourceforge.net/projects/weka/files/weka-3-6/3.6.2/weka-3-6-2.zip/download : Download weka and add weka.jar in your classpath.
 
 * "JFreeChart 1.0.13":http://sourceforge.net/projects/jfreechart/files/1.%20JFreeChart/1.0.13/jfreechart-1.0.13.tar.gz/download : Download JFreeChart and enjoy free charts.
+
+
+h2. License
+
+This project, as well as all other projects developed by the NTUA developers team under OpeTox, is licensed under the GNU GPL license version 3. There is a considerable debate taking place in the open source community regarding the use of the GPL or LGPL, while a variety of other licenses can be found on the web as well. However it is GNU itself that prompts developers to use GPL (read "this article":http://www.gnu.org/philosophy/why-not-lgpl.html).
 
 
 h2. Stay Tuned

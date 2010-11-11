@@ -64,12 +64,19 @@ public class OTClasses {
         }
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     *      OntologicalClass instance for the given name of <code>null</code> if
+     *      no such class is found.
+     */
     public static OntologicalClass forName(String name) {
         initMethodCache();
         try {
             Method method = ms_methodCache.get(name);
             if (method == null) {
-                throw new IllegalArgumentException("No such ontological class : " + name);
+                return null;
             }
             OntologicalClass oc = (OntologicalClass) method.invoke(null);
             return oc;
@@ -119,7 +126,6 @@ public class OTClasses {
         if (ms_Algorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Algorithm");
             clazz.getMetaInfo().addComment("Provides access to OpenTox algorithms");
-            clazz.getMetaInfo().setVersionInfo("1.1");
             clazz.getSuperClasses().add(OpenToxResource());
             ms_Algorithm = clazz;
         }
@@ -393,14 +399,13 @@ public class OTClasses {
         if (ms_ErrorReport == null) {
             OntologicalClass clazz = new OntologicalClassImpl("ErrorReport");
             clazz.getSuperClasses().add(OpenToxResource());
-            clazz.getMetaInfo().setDescription("Instances of the class ErrorReport "
+            clazz.getMetaInfo().addDescription("Instances of the class ErrorReport "
                     + "appear in ontological models to report some exceptional event "
                     + "that happened during the transaction of data from one server "
                     + "to another, request errors or internal server errors. An error "
                     + "report is characterized by its actor, the corresponding status code, "
                     + "some unique identifier for the exceptional event and possibly "
                     + "another error report that triggered its creation.");
-            clazz.getMetaInfo().setVersionInfo("Latest modification of OpenTox ontology version 1.1 (May 31, 2010)");
             ms_ErrorReport = clazz;
         }
         return ms_ErrorReport;

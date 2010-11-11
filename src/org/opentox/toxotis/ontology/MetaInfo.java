@@ -2,9 +2,8 @@ package org.opentox.toxotis.ontology;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
-import java.util.Collection;
 import java.util.Date;
-import org.opentox.toxotis.util.spiders.AnyValue;
+import java.util.Set;
 
 /**
  * <p align=justify width=80%>
@@ -14,24 +13,44 @@ import org.opentox.toxotis.util.spiders.AnyValue;
  * a resource. Such are the identifier, the title and other related meta. Formally
  * these are included in the Dublin Core ontology for modeling meta-data and partially
  * in the OpenTox ontology (e.g. hasSource) for modeling some OT-specific properties.
+ * The list of attributes that compile the list of generic meta-information in this
+ * class inludes:
  * </p>
+ * <ul>
+ * <li>A single identifier</li>
+ * <li>A set of comments</li>
+ * <li>A set of descriptions for the resource</li>
+ * <li>A set of resources that are 'owl:sameAs' the underlying resource</li>
+ * <li>A set of resources provided as reference through the seeAlso property</li>
+ * <li>A set of titles for the resource</li>
+ * </ul>
  *
  * @author Sopasakis Pantelis
  *
  * @see http://dublincore.org/documents/usageguide/elements.shtml
  */
 public interface MetaInfo extends java.io.Serializable {
-//TODO: add bibtex?
 
+    //// 1. comments
+    ////
     /**
      * The property <code>rdfs:comment</code> is used to provide a human-readable
-     * description of a resource.
+     * description of a resource. Users can specify a set of such comments on a
+     * resource of interest.
      *
      * @return
      *      A comment on the described entity.
      */
-    Collection<AnyValue<String>> getComment();
+    Set<LiteralValue> getComments();
 
+    void setComments(Set<LiteralValue> comments);
+
+    void addComment(LiteralValue comment);
+
+    void addComment(String comment);
+
+    //// 2. descriptions
+    ////
     /**
      * An account of the content of the resource. Description may include but is not
      * limited to: an abstract, table of contents, reference to a graphical representation
@@ -39,7 +58,12 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      Description as a typed value
      */
-    AnyValue<String> getDescription();
+    Set<LiteralValue> getDescriptions();
+
+    void setDescriptions(Set<LiteralValue> descriptions);
+
+    void addDescription(LiteralValue description);
+    void addDescription(String description);
 
     /**
      * Get the identifier (ID) of the described entity. An identifier is an unambiguous
@@ -52,10 +76,18 @@ public interface MetaInfo extends java.io.Serializable {
      *      Identifier as a Typed Value
      * @see http://dublincore.org/documents/usageguide/elements.shtml
      */
-    AnyValue<String> getIdentifier();
+    Set<LiteralValue> getIdentifiers();
 
+    void setIdentifiers(Set<LiteralValue> identifiers);
+
+    void addIdentifier(LiteralValue identifier);
+    void addIdentifier(String identifier);
+
+    //// 4. sameAs
+    ////
     /**
-     * The built-in OWL property <code>owl:sameAs</code> links an individual to an individual.
+     * The built-in OWL property <code>owl:sameAs</code> links an individual to an individual
+     * (i.e. it is an object property).
      * Such an <code>owl:sameAs</code> statement indicates that two URI references
      * actually refer to the same thing: the individuals have the same "identity".
      * For individuals such as "people" this notion is relatively easy to understand.
@@ -73,8 +105,13 @@ public interface MetaInfo extends java.io.Serializable {
      *      A link to a resource that resembles the described entity
      *
      */
-    AnyValue<String> getSameAs();
+    Set<ResourceValue> getSameAs(); // TODO: Change this into some other class...
 
+    void setSameAs(Set<ResourceValue> values);
+
+    void addSameAs(ResourceValue value);
+
+    //// 5. seeAlso
     /**
      * Related to the datatype ontological property <code>rdfs:seeAlso</code>. The property
      * <code>rdfs:seeAlso</code> specifies a resource that might provide additional information
@@ -86,30 +123,53 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      A reference to some other entity as a typed value.
      */
-    AnyValue<String> getSeeAlso();
+    Set<ResourceValue> getSeeAlso(); // TODO: Change this into some other class...
 
+    void setSeeAlso(Set<ResourceValue> values);
+
+    void addSeeAlso(ResourceValue value);
+
+    //// 6. titles (dc:title)
+    ////
     /**
      * Get the name given to the resource.
      * Typically, a Title will be a name by which the resource is formally known.
      * @return
      *      Tile as a Typed Value
      */
-    AnyValue<String> getTitle();
+    Set<LiteralValue> getTitles();
 
+    void setTitles(Set<LiteralValue> values);
+
+    void addTitle(LiteralValue value);
+    void addTitle(String value);
+
+    //// 7. subjects (dc:subject)
+    ////
     /**
-     * Ge the topic of the content of the resource. Typically, a Subject will be
+     * Get the topic of the content of the resource. Typically, a Subject will be
      * expressed as keywords or key phrases or classification codes that describe the
      * topic of the resource. Recommended best practice is to select a value from
      * a controlled vocabulary or formal classification scheme.
      * @return
      *      Subject as a typed value
      */
-    AnyValue<String> getSubject();
+    Set<LiteralValue> getSubjects();
 
-    AnyValue<String> getVersionInfo();
+    void setSubjects(Set<LiteralValue> subjects);
 
-    AnyValue<String> getPublisher();
+    void addSubject(LiteralValue subject);
 
+    //// 8. publishers
+    ////
+    Set<LiteralValue> getPublishers();
+
+    void setPublishers(Set<LiteralValue> publishers);
+
+    void addPublishers(LiteralValue publisher);
+
+    //// 9. creators
+    ////
     /**
      * The <code>creator</code> is an entity primarily responsible for making the content
      * of the resource. Examples of a Creator include a person, an organization, or a service.
@@ -117,73 +177,41 @@ public interface MetaInfo extends java.io.Serializable {
      * @return
      *      Creator as a typed value
      */
-    //TODO: Change this into a list of creators
-    AnyValue<String> getCreator();
+    Set<LiteralValue> getCreators();
 
-    AnyValue<String> getHasSource();
+    void setCreators(Set<LiteralValue> creators);
 
-    Collection<AnyValue<String>> getContributors();
+    void addCreator(LiteralValue creator);
 
-    Collection<AnyValue<String>> getAudiences();
+    //// 10. Sources (ot:hasSource)
+    ////
+    Set<ResourceValue> getHasSources();
 
-    MetaInfo addComment(String comment);
+    void setHasSources(Set<ResourceValue> hasSources);
 
-    MetaInfo addComment(AnyValue<String> comment);
+    void addHasSource(ResourceValue hasSource);
 
-    MetaInfo setDescription(String description);
+    Set<LiteralValue> getContributors();
 
-    MetaInfo setDescription(AnyValue<String> description);
+    void setContributors(Set<LiteralValue> contributors);
 
-    MetaInfo setIdentifier(String identifier);
+    void addContributor(LiteralValue contributor);
 
-    MetaInfo setIdentifier(AnyValue<String> identifier);
+    Set<LiteralValue> getAudiences();
 
-    MetaInfo setSameAs(String sameAs);
+    void setAudiences(Set<LiteralValue> audiences);
 
-    MetaInfo setSameAs(AnyValue<String> sameAs);
+    void addAudience(LiteralValue audience);
 
-    MetaInfo setSeeAlso(String seeAlso);
+    LiteralValue getDate();// used for versioning, timestamping e
 
-    MetaInfo setSeeAlso(AnyValue<String> seeAlso);
+    void setDate(LiteralValue date);
 
-    MetaInfo setTitle(String title);
-
-    MetaInfo setTitle(AnyValue<String> title);
-
-    MetaInfo setSubject(String subject);
-
-    MetaInfo setSubject(AnyValue<String> subject);
-
-    MetaInfo setVersionInfo(String versionInfo);
-
-    MetaInfo setVersionInfo(AnyValue<String> versionInfo);
-
-    MetaInfo setPublisher(String publisher);
-
-    MetaInfo setPublisher(AnyValue<String> publisher);
-
-    MetaInfo setCreator(String creator);
-
-    MetaInfo setCreator(AnyValue<String> creator);
-
-    MetaInfo setHasSource(String hasSource);
-
-    MetaInfo setHasSource(AnyValue<String> hasSource);
-
-    MetaInfo addContributor(String contributor);
-
-    MetaInfo addContributor(AnyValue<String> contributor);
-
-    MetaInfo addAudience(String audience);
-
-    MetaInfo addAudience(AnyValue<String> audience);
-
-    AnyValue<Date> getDate();
-
-    MetaInfo setDate(AnyValue<Date> date);
-
-    MetaInfo setDate(Date date);
-
+    // --------------------------------------------------------------
+    // --------------------------------------------------------------
+    // --------------------- End of Getters -------------------------
+    // --------------------------------------------------------------
+    // --------------------------------------------------------------
     /**
      * Attaches the meta data to a given resource in an ontological model
      * returning the updated resource. The provided ontological model is also updated

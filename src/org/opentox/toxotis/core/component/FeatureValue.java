@@ -5,10 +5,10 @@ import com.hp.hpl.jena.ontology.OntModel;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.core.OTComponent;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
-import org.opentox.toxotis.util.spiders.AnyValue;
 
 /**
  *
@@ -18,12 +18,12 @@ import org.opentox.toxotis.util.spiders.AnyValue;
 public class FeatureValue extends OTComponent<FeatureValue> {
 
     private Feature feature;
-    private AnyValue value;
+    private LiteralValue value;
 
     public FeatureValue() {
     }
 
-    public FeatureValue(Feature feature, AnyValue value) {
+    public FeatureValue(Feature feature, LiteralValue value) {
         this.feature = feature;
         this.value = value;
     }
@@ -36,11 +36,11 @@ public class FeatureValue extends OTComponent<FeatureValue> {
         this.feature = feature;
     }
 
-    public AnyValue getValue() {
+    public LiteralValue getValue() {
         return value;
     }
 
-    public void setValue(AnyValue value) {
+    public void setValue(LiteralValue value) {
         this.value = value;
     }
 

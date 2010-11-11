@@ -87,7 +87,7 @@ public class OTAlgorithmTypes {
             OntologicalClass clazz = new OntologicalClassImpl("AlgorithmType");
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("Generic class for all algorithm types in OpenTox");
-            clazz.getMetaInfo().setTitle("Algorithm Types");
+            clazz.getMetaInfo().addTitle("Algorithm Types");
             clazz.getSuperClasses().add(Thing());
             ms_AlgorithmType = clazz;
         }
@@ -99,7 +99,7 @@ public class OTAlgorithmTypes {
             OntologicalClass clazz = new OntologicalClassImpl("ApplicabilityDomain");
             clazz.setNameSpace(NS);
             clazz.getSuperClasses().add(AlgorithmType());
-            clazz.getMetaInfo().setTitle("Appplicability Domain Algorithm");
+            clazz.getMetaInfo().addTitle("Appplicability Domain Algorithm");
             ms_ApplicabilityDomain = clazz;
         }
         return ms_ApplicabilityDomain;

@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
-import org.opentox.toxotis.util.spiders.AnyValue;
 import static org.junit.Assert.*;
 
 /**
@@ -40,34 +39,26 @@ public class MultiParameterTest {
 
     @Test
     public void testCreateIndiv() {
-        VariableValue<String> varValue1 = new VariableValue<String>();
-        varValue1.setValue(new AnyValue<String>("100"));
-        VariableInfo varInfo = new VariableInfo();
-        varInfo.setScope(Parameter.ParameterScope.MANDATORY);
-        varInfo.setMeta(new MetaInfoImpl().setTitle("x"));
-        varValue1.setVariableInfo(varInfo);
+        VariableValue<String> varValue1 = new VariableValue<String>("x", "100", Parameter.ParameterScope.MANDATORY);
+        VariableValue<String> varValue2 = new VariableValue<String>("y", "200", Parameter.ParameterScope.OPTIONAL);
+        VariableValue<String> varValue3 = new VariableValue<String>("x", "300");
+        VariableValue<String> varValue4 = new VariableValue<String>("y", "400");
 
-        VariableValue<String> varValue2 = new VariableValue<String>();
-        varValue2.setValue(new AnyValue<String>("200"));
-        VariableInfo varInfo2 = new VariableInfo();
-        varInfo2.setScope(Parameter.ParameterScope.OPTIONAL);
-        varInfo2.setMeta(new MetaInfoImpl().setTitle("y"));
-        varValue2.setVariableInfo(varInfo2);
-
-        ParameterValue setValue = new ParameterValue();
-        setValue.getValues().add(varValue1);
-        setValue.getValues().add(varValue2);
+        ParameterValue setValue = new ParameterValue(1, varValue1, varValue2);
+        ParameterValue setValue2 = new ParameterValue(2, varValue3, varValue4);
 
         MultiParameter multiParam = new MultiParameter();
+        multiParam.getMeta().addTitle("myParam");
         multiParam.getParameterValues().add(setValue);
+        multiParam.getParameterValues().add(setValue2);
+        multiParam.setScope(Parameter.ParameterScope.OPTIONAL);
 
         OntModel model = new OntModelImpl(OntModelSpec.OWL_DL_MEM);
-        Individual indiv = multiParam.asIndividual(model);
+        multiParam.asIndividual(model);
 
         model.write(System.out);
 
 
 
     }
-
 }

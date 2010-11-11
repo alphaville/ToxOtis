@@ -8,6 +8,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
@@ -41,13 +42,13 @@ public class FeatureValueSpider extends Tarantula<FeatureValue> {
          * TODO: Also handle dates!
          */
         if (value.getDatatype().equals(XSDDatatype.XSDdouble)) {
-            fValue = new FeatureValue(feature, new AnyValue<Double>(value.getDouble(), XSDDatatype.XSDdouble));
+            fValue = new FeatureValue(feature, new LiteralValue<Double>(value.getDouble(), XSDDatatype.XSDdouble));
         } else if (value.getDatatype().equals(XSDDatatype.XSDinteger)) {
-            fValue = new FeatureValue(feature, new AnyValue<Integer>(value.getInt(), XSDDatatype.XSDinteger));
+            fValue = new FeatureValue(feature, new LiteralValue<Integer>(value.getInt(), XSDDatatype.XSDinteger));
         } else if (value.getDatatype().equals(XSDDatatype.XSDfloat)) {
-            fValue = new FeatureValue(feature, new AnyValue<Float>(value.getFloat(), XSDDatatype.XSDfloat));
+            fValue = new FeatureValue(feature, new LiteralValue<Float>(value.getFloat(), XSDDatatype.XSDfloat));
         } else {
-            fValue = new FeatureValue(feature, new AnyValue<String>(value.getString(), XSDDatatype.XSDstring));
+            fValue = new FeatureValue(feature, new LiteralValue<String>(value.getString(), XSDDatatype.XSDstring));
         }
 
         return fValue;

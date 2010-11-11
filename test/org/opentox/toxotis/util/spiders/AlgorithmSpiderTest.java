@@ -50,7 +50,7 @@ public class AlgorithmSpiderTest {
         spider = new AlgorithmSpider(new VRI(OpenToxAlgorithms.NTUA_MLR.getServiceUri()), tok); // << Authentication/Authorization using token
         Algorithm a = spider.parse();
         spider.close();
-        System.out.println(a.getMeta());
+        System.out.println(a.getMeta().getDescriptions().iterator().next());
         Iterator<Parameter> param = a.getParameters().iterator();
         while (param.hasNext()) {
             System.out.println(param.next());
