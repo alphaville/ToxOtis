@@ -1,9 +1,9 @@
-h1. 人馬座 - ToxOtis
+h1. Τοξότης
 
 h2. About
 
 <b>Version:</b>
- + 0.1.0.11, first alpha version
+ + 0.1.0.20, official alpha version
 
 <b>Authors:</b>
  + "Sopasakis Pantelis":http://gr.linkedin.com/in/sopasakis
@@ -27,9 +27,7 @@ This project is being developed in the "Automatic Control Lab":http://www.chemen
 
 h3. Extensible
 
-We work on various extensions for ToxOtis including modules that will facilitate external developers towards builing theie own web service applications, modules that provide extra security mechanisms and local account management, Hibernate support for ToxOtis to provide persistence for all core ToxOtis objects (Datasets, Algorithms, Models etc), Triple-storage database support (TDB) and lots of other features. Recently "hampos":http://gr.linkedin.com/pub/hampos-chomenidis/14/29a/778 kicked off a new project for Hibernate support, namely "ToxOtis-Persistence":http://github.com/hampos/ToxOtis-persistence.
-
-h3. 
+We work on various extensions for ToxOtis including modules that will facilitate external developers towards builing their own web service applications or applications that need to consume OpenTox web services as client. Modules that provide extra security mechanisms and local account management, Hibernate support for ToxOtis to provide persistence for all core ToxOtis objects (Datasets, Algorithms, Models etc), Triple-storage database support (TDB) and lots of other features are under design and construction. The first release of "ToxOtis-Persistence":http://github.com/hampos/ToxOtis-persistence, a persistence module for ToxOtis, provides hibernate support for the core project. 
 
 
 h2. Dependencies
