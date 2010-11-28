@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.OTPublishable;
@@ -233,7 +233,7 @@ public class Dataset extends OTPublishable<Dataset> {
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
-        PostClient client = new PostClient(vri);
+        PostHttpClient client = new PostHttpClient(vri);
         client.setContentType(Media.APPLICATION_RDF_XML);
         client.setMediaType(Media.TEXT_URI_LIST);
         client.setPostable(asOntModel());
@@ -462,10 +462,10 @@ public class Dataset extends OTPublishable<Dataset> {
     }
 
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
-        PostClient client = new PostClient(descriptorCalculationAlgorithm);
+        PostHttpClient client = new PostHttpClient(descriptorCalculationAlgorithm);
         client.setMediaType(Media.APPLICATION_RDF_XML);
         descriptorCalculationAlgorithm.clearToken().appendToken(token);
-        PostClient pc = new PostClient(descriptorCalculationAlgorithm);
+        PostHttpClient pc = new PostHttpClient(descriptorCalculationAlgorithm);
         pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={dataset_uri}
         pc.addPostParameter("ALL", "true");
         pc.setMediaType(Media.TEXT_URI_LIST);

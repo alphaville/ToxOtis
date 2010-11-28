@@ -11,8 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.GetClient;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.http.GetHttpClient;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
@@ -37,13 +37,13 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
     }
 
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
-        PostClient client = new PostClient(descriptorCalculationAlgorithm);
+        PostHttpClient client = new PostHttpClient(descriptorCalculationAlgorithm);
         client.authorize(token);
 
         client.setMediaType(Media.APPLICATION_RDF_XML);
 
         /** REQUEST */
-        PostClient pc = new PostClient(descriptorCalculationAlgorithm);
+        PostHttpClient pc = new PostHttpClient(descriptorCalculationAlgorithm);
         pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={compound_uri}
         if (serviceConfiguration != null) {
             for (int i = 0; i < serviceConfiguration.length; i++) {

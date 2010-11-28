@@ -7,6 +7,7 @@ package org.opentox.toxotis.client.collection;
  */
 public enum Media {
 
+    APPLICATION_FORM_URL_ENCODED("application/x-www-form-urlencoded"),
     APPLICATION_RDF_XML("application/rdf+xml"),
     APPLICATION_RDF_TURTLE("application/x-turtle"),
     APPLICATION_RDF_XML_ABBREV("application/rdf+xml-abbrev"),

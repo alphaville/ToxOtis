@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
@@ -87,7 +87,7 @@ public class BibTeX extends OTPublishable<BibTeX> {
             // Replace existing token with the new ones
             vri.clearToken().appendToken(token);
         }
-        PostClient pc = new PostClient(vri);
+        PostHttpClient pc = new PostHttpClient(vri);
         pc.setMediaType("text/uri-list");
         pc.setContentType("application/rdf+xml");
         pc.setPostable(asOntModel());

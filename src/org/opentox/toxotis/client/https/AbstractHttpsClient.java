@@ -1,17 +1,23 @@
-package org.opentox.toxotis.client.secure;
+package org.opentox.toxotis.client.https;
 
+import com.hp.hpl.jena.ontology.OntModel;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.IClient;
+import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.SSLConfiguration;
 
 /**
@@ -19,15 +25,12 @@ import org.opentox.toxotis.util.aa.SSLConfiguration;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class SecureClient implements Closeable {
+public abstract class AbstractHttpsClient implements Closeable, IClient {
 
     /** Target secure URI */
     protected VRI vri = null;
     /** Connection to the above URI */
-    protected javax.net.ssl.HttpsURLConnection con = null;
-    protected static final String MEDIATYPE_FORM_URL_ENCODED = "application/x-www-form-urlencoded";
-    /** Standard UTF-8 Encoding */
-    protected static final String URL_ENCODING = "UTF-8";
+    protected javax.net.ssl.HttpsURLConnection con = null;        
     /** Size of a buffer used to download the data from the remote server */
     protected static final int bufferSize = 4194304;
     /** Accepted mediatype  */
@@ -35,11 +38,11 @@ public abstract class SecureClient implements Closeable {
     /** A mapping from parameter names to their corresponding values */
     protected Map<String, String> headerValues = new HashMap<String, String>();
 
-    public SecureClient() {
+    public AbstractHttpsClient() {
         SSLConfiguration.initializeSSLConnection();
     }
 
-    public SecureClient(VRI vri) {
+    public AbstractHttpsClient(VRI vri) {
         this();
         this.vri = vri;
     }
@@ -56,10 +59,12 @@ public abstract class SecureClient implements Closeable {
         return acceptMediaType;
     }
 
+
+
     /**
      * Note: if the parameter name (paramName) is either 'Accept' or 'Content-type', this
-     * method will override {@link PostClient#setMediaType(java.lang.String) setMediaType} and
-     * {@link PostClient#setContentType(java.lang.String) setContentType} respectively. In general
+     * method will override {@link PostHttpClient#setMediaType(java.lang.String) setMediaType} and
+     * {@link PostHttpClient#setContentType(java.lang.String) setContentType} respectively. In general
      * it is not advisable that you choose this method for setting values to these headers. Once the
      * parameter name and its value are submitted to the client, they are encoded using the
      * standard UTF-8 encoding.
@@ -69,7 +74,7 @@ public abstract class SecureClient implements Closeable {
      * @throws NullPointerException
      *          If any of the arguments is null
      */
-    public SecureClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
+    public AbstractHttpsClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
         if (paramName == null) {
             throw new NullPointerException("ParamName is null");
         }
@@ -91,7 +96,7 @@ public abstract class SecureClient implements Closeable {
      *
      * @see RequestHeaders#ACCEPT
      */
-    public SecureClient setMediaType(String mediaType) {
+    public AbstractHttpsClient setMediaType(String mediaType) {
         this.acceptMediaType = mediaType;
         return this;
     }
@@ -102,7 +107,7 @@ public abstract class SecureClient implements Closeable {
      * @throws ToxOtisException
      *      If the provided URI is not secure (https)
      */
-    public SecureClient setUri(VRI vri) throws ToxOtisException {
+    public AbstractHttpsClient setUri(VRI vri) throws ToxOtisException {
         if (vri != null) {
             if (!vri.getProtocol().equals("https")) {
                 throw new ToxOtisException();
@@ -188,4 +193,32 @@ public abstract class SecureClient implements Closeable {
             con.disconnect();
         }
     }
+
+    public AbstractHttpsClient authorize(AuthenticationToken token) {
+        return token != null ? addHeaderParameter(RequestHeaders.AUTHORIZATION, token.getTokenUrlEncoded()) : this;
+    }
+
+    public OntModel getResponseOntModel() throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public OntModel getResponseOntModel(String specification) throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public IClient setMediaType(Media mediaType) {
+        this.acceptMediaType = mediaType.getMime();
+        return this;
+    }
+
+    public IClient setUri(String uri) throws URISyntaxException, ToxOtisException {
+        this.vri = new VRI(uri);
+        return this;
+    }
+
+    public Set<VRI> getResponseUriList() throws ToxOtisException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
 }

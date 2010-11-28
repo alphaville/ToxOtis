@@ -1,5 +1,6 @@
 package org.opentox.toxotis.client;
 
+import org.opentox.toxotis.client.http.PostHttpClient;
 import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -39,7 +40,7 @@ public class PostClientTest {
 //        final String ambitUri = "http://ambit.uni-plovdiv.bg:8080/ambit2/%s";
 //        final String datasetUri = String.format(ambitUri, "dataset/6");
 //        final String targetFeatureUri = String.format(ambitUri, "feature/11954");
-//        PostClient pc = new PostClient(new VRI("http://localhost:3000/algorithm/mlr"));
+//        PostHttpClient pc = new PostHttpClient(new VRI("http://localhost:3000/algorithm/mlr"));
 //        pc.addPostParameter("dataset_uri", datasetUri);
 //        pc.addPostParameter("prediction_feature", targetFeatureUri);
 //        pc.post();
@@ -53,7 +54,7 @@ public class PostClientTest {
         //b.setNumber(10);
         //b.setYear(2010);
         b.asOntModel().write(System.out);
-        PostClient pc = new PostClient(new VRI("http://localhost:3000/bibtex"));
+        PostHttpClient pc = new PostHttpClient(new VRI("http://localhost:3000/bibtex"));
         pc.setMediaType("text/uri-list");
         pc.setContentType("application/rdf+xml");
         pc.setPostable(b.asOntModel());

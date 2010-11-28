@@ -1,4 +1,4 @@
-package org.opentox.toxotis.client.secure;
+package org.opentox.toxotis.client.https;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,16 +15,16 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class SecureDeleteClient extends SecureClient {
+public class DeleteHttpsClient extends AbstractHttpsClient {
 
     /** The method that this client applies */
     public static final String METHOD = "DELETE";
 
-    public SecureDeleteClient(VRI vri) {
+    public DeleteHttpsClient(VRI vri) {
         super(vri);
     }
 
-    public SecureDeleteClient() {
+    public DeleteHttpsClient() {
     }
 
     @Override

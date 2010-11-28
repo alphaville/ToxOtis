@@ -22,8 +22,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.GetClient;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.http.GetHttpClient;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
@@ -118,7 +118,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         if (token != null) {
             newUri.appendToken(token);
         }
-        GetClient client = new GetClient(newUri);
+        GetHttpClient client = new GetHttpClient(newUri);
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
         Set<VRI> uriList = client.getResponseUriList();
         Set<Conformer> conformers = new HashSet<Conformer>();
@@ -162,7 +162,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         if (token != null) {
             dsUri.appendToken(token);
         }
-        GetClient client = new GetClient();
+        GetHttpClient client = new GetHttpClient();
         client.setUri(dsUri);
         client.setMediaType(Media.APPLICATION_RDF_XML);
         OntModel model = client.getResponseOntModel();
@@ -201,7 +201,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         if (token != null) {
             dsUri.clearToken().appendToken(token);
         }
-        GetClient client = new GetClient();
+        GetHttpClient client = new GetHttpClient();
         client.setUri(dsUri);
         client.setMediaType(Media.APPLICATION_RDF_XML);
         OntModel model = client.getResponseOntModel();
@@ -248,7 +248,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
             // Replace existing token with the new one
             vri.clearToken().appendToken(token);
         }
-        PostClient client = new PostClient(vri);
+        PostHttpClient client = new PostHttpClient(vri);
         client.setContentType(Media.APPLICATION_RDF_XML.getMime());
         client.setPostable(asOntModel());
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
@@ -303,7 +303,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      */
     public Set<VRI> listAvailableFeatures() throws ToxOtisException {
         VRI featuresUri = new VRI(uri).augment("feature");
-        GetClient client = new GetClient(featuresUri);
+        GetHttpClient client = new GetHttpClient(featuresUri);
         Set<VRI> availableUris = new HashSet<VRI>();
         for (VRI fUri : client.getResponseUriList()) {
             availableUris.add(new VRI(fUri));
@@ -403,10 +403,10 @@ public class Compound extends DescriptorCaclulation<Compound> {
         String smiles = smilesWriter.toString().trim();
         VRI similarityService = new VRI(service);
         similarityService.clearToken().appendToken(token).addUrlParameter("search", smiles).addUrlParameter("threshol", similarity);
-        GetClient client = null;
+        GetHttpClient client = null;
         Set<VRI> resultSet = null;
         try {
-            client = new GetClient(similarityService);
+            client = new GetHttpClient(similarityService);
             client.setMediaType(Media.TEXT_URI_LIST);
             try {
                 int status = client.getResponseCode();

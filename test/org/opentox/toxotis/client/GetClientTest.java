@@ -1,5 +1,6 @@
 package org.opentox.toxotis.client;
 
+import org.opentox.toxotis.client.http.GetHttpClient;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -41,7 +42,7 @@ public class GetClientTest {
     @Test
     public void testGETAlgorithm() throws URISyntaxException, ToxOtisException {
         System.out.println("--. Testing GetClient#getOntModel()");
-        GetClient client = new GetClient();
+        GetHttpClient client = new GetHttpClient();
         client.setUri("http://opentox.ntua.gr:3000/algorithm/mlr").setMediaType("application/rdf+xml");
         OntModel model = client.getResponseOntModel();
         assertNotNull(model);
@@ -50,7 +51,7 @@ public class GetClientTest {
     @Test
     public void testGETURIlist() throws URISyntaxException, ToxOtisException, IOException {
         System.out.println("--. Testing GetClient#getUriList()");
-        GetClient client = new GetClient();
+        GetHttpClient client = new GetHttpClient();
         client.setUri(new VRI("http://opentox.ntua.gr:3000/algorithm")).setMediaType("will be ignored");
         Set<VRI> algorithms = client.getResponseUriList();
         assertEquals(4, algorithms.size());

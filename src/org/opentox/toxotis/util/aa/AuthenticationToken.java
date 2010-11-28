@@ -10,7 +10,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.secure.SecurePostClient;
+import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.client.collection.Services;
 
 /**
@@ -89,7 +89,7 @@ public class AuthenticationToken {
      */
     public AuthenticationToken(String username, String password) throws ToxOtisException {
         this();
-        SecurePostClient poster = new SecurePostClient(Services.SingleSignOn.ssoAuthenticate());
+        PostHttpsClient poster = new PostHttpsClient(Services.SingleSignOn.ssoAuthenticate());
         try {
             poster.addParameter("username", username);
             poster.addParameter("password", password);
@@ -276,9 +276,9 @@ public class AuthenticationToken {
         if (token == null || (token != null && token.isEmpty())) {
             return false;
         }
-        SecurePostClient poster = null;
+        PostHttpsClient poster = null;
         try {
-            poster = new SecurePostClient(Services.SingleSignOn.ssoValidate());
+            poster = new PostHttpsClient(Services.SingleSignOn.ssoValidate());
             poster.addParameter("tokenid", stringValue());
             poster.post();
             int status = poster.getResponseCode();
@@ -325,9 +325,9 @@ public class AuthenticationToken {
         if (token == null || (token != null && token.isEmpty())) {
             return; // Nothing to invalidate!
         }
-        SecurePostClient poster = null;
+        PostHttpsClient poster = null;
         try {
-            poster = new SecurePostClient(Services.SingleSignOn.ssoInvalidate());
+            poster = new PostHttpsClient(Services.SingleSignOn.ssoInvalidate());
             poster.addParameter("subjectid", stringValue());
             poster.post();
             int status = poster.getResponseCode();
@@ -355,7 +355,7 @@ public class AuthenticationToken {
      */
     public User getUser() throws ToxOtisException {
         User u = new User();
-        SecurePostClient poster = new SecurePostClient(Services.SingleSignOn.ssoAttributes());
+        PostHttpsClient poster = new PostHttpsClient(Services.SingleSignOn.ssoAttributes());
         poster.addParameter("subjectid", stringValue());
         poster.post();
 
@@ -475,7 +475,6 @@ public class AuthenticationToken {
         sb.append("\n");
         sb.append("Status              : " + getStatus());
         return new String(sb);
-    }
-
+    }    
     
 }

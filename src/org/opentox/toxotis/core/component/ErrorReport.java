@@ -153,26 +153,35 @@ public class ErrorReport extends OTComponent<ErrorReport> {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         if (uri != null) {
-            builder.append("URI    : ");
+            builder.append("URI     : ");
             builder.append(uri);
             builder.append("\n");
         }
         if (actor != null) {
-            builder.append("Actor  : ");
+            builder.append("Actor   : ");
             builder.append(actor);
             builder.append("\n");
         }
         if (errorCode != null) {
-            builder.append("Code   : ");
+            builder.append("Code    : ");
             builder.append(errorCode);
             builder.append("\n");
         }
         if (httpStatus != 0) {
-            builder.append("Status : ");
+            builder.append("Status  : ");
             builder.append(httpStatus);
             builder.append("\n");
         }
-
+        if (message!=null){
+            builder.append("Message : ");
+            builder.append(message);
+            builder.append("\n");
+        }
+        if (details!=null){
+            builder.append("Details : ");
+            builder.append("\n");
+            builder.append(details);
+        }
         return new String(builder);
     }
 

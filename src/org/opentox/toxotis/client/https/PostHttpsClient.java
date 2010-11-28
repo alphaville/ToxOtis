@@ -1,21 +1,28 @@
-package org.opentox.toxotis.client.secure;
+package org.opentox.toxotis.client.https;
 
+import com.hp.hpl.jena.ontology.OntModel;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.IClient;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.http.PostHttpClient;
+import org.opentox.toxotis.core.IStAXWritable;
 
 /**
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class SecurePostClient extends SecureClient {
+public class PostHttpsClient extends AbstractHttpsClient implements IPostClient {
 
     /** Type of the posted content*/
     private String contentType = null;
@@ -26,16 +33,17 @@ public class SecurePostClient extends SecureClient {
     private String postableString = null;
 
 
-    public SecurePostClient() {
+    public PostHttpsClient() {
         super();
     }
 
-    public SecurePostClient(VRI vri) {
+    public PostHttpsClient(VRI vri) {
         super(vri);
     }
 
-    public void setPostable(String postableString) {
+    public PostHttpsClient setPostable(String postableString) {
         this.postableString = postableString;
+        return this;
     }
 
     /** Initialize a connection to the target URI */
@@ -63,7 +71,7 @@ public class SecurePostClient extends SecureClient {
              * declare the posted data as application/x-form-urlencoded.
              */
             if (!postParameters.isEmpty()) {
-                setContentType(MEDIATYPE_FORM_URL_ENCODED);
+                setContentType(Media.APPLICATION_FORM_URL_ENCODED);
                 con.setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
                 con.setRequestProperty(RequestHeaders.CONTENT_LENGTH,
                         Integer.toString(getParametersAsQuery().getBytes().length));
@@ -79,7 +87,7 @@ public class SecurePostClient extends SecureClient {
         return contentType;
     }
 
-    public SecurePostClient setContentType(String contentType) {
+    public PostHttpsClient setContentType(String contentType) {
         this.contentType = contentType;
         return this;
     }
@@ -115,7 +123,7 @@ public class SecurePostClient extends SecureClient {
      * @return This object
      * @throws NullPointerException If paramName is <code>null</code>.
      */
-    public SecurePostClient addParameter(String paramName, String paramValue) throws NullPointerException {
+    public IClient addParameter(String paramName, String paramValue) throws NullPointerException {
         if (paramName == null) {
             throw new NullPointerException("paramName must be not null");
         }
@@ -144,4 +152,23 @@ public class SecurePostClient extends SecureClient {
             throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
         }
     }
+
+
+    public PostHttpClient setContentType(Media media) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public PostHttpClient setPostable(OntModel model) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public PostHttpClient setPostable(IStAXWritable staxWritable) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public PostHttpClient setPostable(File objectToPost) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
 }

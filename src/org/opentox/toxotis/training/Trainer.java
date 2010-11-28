@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Algorithm;
@@ -65,7 +65,7 @@ public class Trainer {
     public Task train(AuthenticationToken token) throws ToxOtisException {
         /** Handle provided token */
         VRI vri = algorithm.getUri();        
-        PostClient client = new PostClient(vri);
+        PostHttpClient client = new PostHttpClient(vri);
         client.authorize(token);
         client.setMediaType(Media.TEXT_URI_LIST);
         if (dataset != null) {
@@ -85,7 +85,6 @@ public class Trainer {
         String response = client.getResponseText();
         try {
             int status = client.getResponseCode();
-            System.out.println(status);
             if (status == 202) {
                 return new TaskSpider(new VRI(response)).parse();
             } else {

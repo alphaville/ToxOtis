@@ -47,7 +47,7 @@ public class CompoundTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
     public void testDownload() throws Exception {
         Compound c = new Compound(Services.ideaconsult().augment("compound", "4"));
         c.download(new File(System.getProperty("user.home") + "/Desktop/b.txt"), Media.CHEMICAL_MDLMOL, null);
@@ -99,10 +99,10 @@ public class CompoundTest {
         c.wrapInDataset(new VRI("myserver.com/dataset/1")).asOntModel().write(System.out);
     }
 
-    //@Test
+    @Test
     public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException, ExecutionException {
-        IDescriptorCalculation c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/145418"));
-        Future<VRI> t = c.futureJoeLibDescriptors(null, Services.ambitUniPlovdiv().augment("dataset"));
+        IDescriptorCalculation c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/100"));
+        Future<VRI> t = c.futureCDKPhysChemDescriptors(null, Services.ambitUniPlovdiv().augment("dataset"));
         System.out.println("Waiting for result...");
         System.out.println(t.get());
     }
@@ -114,7 +114,7 @@ public class CompoundTest {
         System.out.println(ds.getDataEntries().get(0).getFeatureValues().size());
     }
 
-    @Test
+    //@Test
     public void testSmilesAsString() throws Exception {
         Compound c = new Compound(Services.ideaconsult().augment("compound","100"));
         StringWriter sw = new StringWriter();

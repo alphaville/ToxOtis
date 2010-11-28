@@ -502,7 +502,7 @@ public class PasswordFileManager extends Observable {
             @Override
             public void run() {
                 try {
-                    PasswordFileManager.CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", 1000);
+                    CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", 1000);
                 } catch (IOException ex) {
                     Logger.getLogger(PasswordFileManager.class.getName()).log(Level.SEVERE, null, ex);
                 }

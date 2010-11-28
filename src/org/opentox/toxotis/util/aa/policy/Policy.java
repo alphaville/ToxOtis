@@ -21,9 +21,9 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.client.secure.SecureDeleteClient;
-import org.opentox.toxotis.client.secure.SecureGetClient;
-import org.opentox.toxotis.client.secure.SecurePostClient;
+import org.opentox.toxotis.client.https.DeleteHttpsClient;
+import org.opentox.toxotis.client.https.GetHttpsClient;
+import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -201,9 +201,9 @@ public class Policy {
         if (policyServiceUri == null) {
             policyServiceUri = Services.SingleSignOn.ssoPolicyOld();
         }
-        SecureDeleteClient sdc = null;
+        DeleteHttpsClient sdc = null;
         try{
-            sdc = new SecureDeleteClient(policyServiceUri);
+            sdc = new DeleteHttpsClient(policyServiceUri);
             sdc.addHeaderParameter("id", policyName);
             
             sdc.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
@@ -242,7 +242,7 @@ public class Policy {
         if (policyServer == null) {
             policyServer = Services.SingleSignOn.ssoPolicyOld();
         }
-        SecurePostClient spc = new SecurePostClient(policyServer);
+        PostHttpsClient spc = new PostHttpsClient(policyServer);
         spc.addHeaderParameter(subjectid, token.stringValue());
         spc.setPostable(this.getText());
         spc.setContentType("application/xml");
@@ -275,20 +275,20 @@ public class Policy {
      *      include 200, 401/403 and 500.
      */
     public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ToxOtisException {
-        SecureGetClient sgt = null;
+        GetHttpsClient sgt = null;
         ArrayList<String> listOfPolicyNames = new ArrayList<String>();
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
         }
         try {
-            sgt = new SecureGetClient(policyService);
+            sgt = new GetHttpsClient(policyService);
             sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
-            List<String> policies = null;
+            Set<VRI> policies = null;
             int responseStatus = sgt.getResponseCode();
             if (responseStatus == 200) {
                 policies = sgt.getResponseUriList();
-                for (String s : policies) {
-                    listOfPolicyNames.add(s);
+                for (VRI s : policies) {
+                    listOfPolicyNames.add(s.toString());
                 }
             } else if (responseStatus == 403) {
                 throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
@@ -332,13 +332,13 @@ public class Policy {
      *      and <code>500</code> (other unexpected conditions).
      */
     public static String getPolicyOwner(VRI serviceUri, VRI policyService, AuthenticationToken token) throws ToxOtisException {
-        SecureGetClient sgt = null;
+        GetHttpsClient sgt = null;
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
         }
         try {
             // REQUEST
-            sgt = new SecureGetClient(policyService);
+            sgt = new GetHttpsClient(policyService);
             sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
             sgt.addHeaderParameter("uri", serviceUri.clearToken().toString());
 
@@ -369,13 +369,13 @@ public class Policy {
     }
 
     public static Policy parsePolicy(String id, VRI policyService, AuthenticationToken token) throws ToxOtisException {
-        SecureGetClient sgt = null;
+        GetHttpsClient sgt = null;
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
         }
         try {
             // REQUEST
-            sgt = new SecureGetClient(policyService);
+            sgt = new GetHttpsClient(policyService);
             sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
             sgt.addHeaderParameter("id", id);
 

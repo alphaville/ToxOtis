@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.GetClient;
+import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
@@ -48,7 +48,7 @@ public class FeatureFactory {
     public static Set<VRI> lookupSameAs(
             VRI service, OntologicalClass echaEndpoint, AuthenticationToken token)
             throws ToxOtisException {
-        GetClient client = new GetClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
+        GetHttpClient client = new GetHttpClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
         int responseStatus;
         try {
@@ -162,7 +162,7 @@ public class FeatureFactory {
             if (pagesize > 0) {
                 featureServiceWithToken.addUrlParameter("pagesize", pagesize);
             }
-            GetClient client = new GetClient(featureServiceWithToken);
+            GetHttpClient client = new GetHttpClient(featureServiceWithToken);
             client.setMediaType(Media.TEXT_URI_LIST);
             int httpStatus = client.getResponseCode();
             if (httpStatus != 200) {

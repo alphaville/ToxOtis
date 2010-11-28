@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTPublishable;
@@ -188,7 +188,7 @@ public class Feature extends OTPublishable<Feature> {
             // Replace existing token with the new one
             vri.removeUrlParameter("tokenid").addUrlParameter("tokenid", token.stringValue());
         }
-        PostClient client = new PostClient(vri);
+        PostHttpClient client = new PostHttpClient(vri);
         client.setContentType("application/rdf+xml");
         client.setPostable(asOntModel());
         client.setMediaType("text/uri-list");

@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.IStAXWritable;
@@ -89,7 +89,7 @@ public class WonderWebValidator {
     }
 
     public boolean validate(OWL_SPECIFICATION specification) throws ToxOtisException {
-        PostClient pc = new PostClient(WONDERWEB_VLD);
+        PostHttpClient pc = new PostHttpClient(WONDERWEB_VLD);
         Writer result = new StringWriter();
         PrintWriter printWriter = new PrintWriter(result);
         if (model != null) {

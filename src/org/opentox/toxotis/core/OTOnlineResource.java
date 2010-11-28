@@ -12,7 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.client.GetClient;
+import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
@@ -211,7 +211,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
         if (token != null) {
             newUri.clearToken().appendToken(token);
         }
-        GetClient client = new GetClient(newUri);
+        GetHttpClient client = new GetHttpClient(newUri);
         client.setMediaType(media.getMime());
 
         try {

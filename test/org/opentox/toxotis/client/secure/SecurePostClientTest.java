@@ -1,5 +1,6 @@
 package org.opentox.toxotis.client.secure;
 
+import org.opentox.toxotis.client.https.PostHttpsClient;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.After;
@@ -40,7 +41,7 @@ public class SecurePostClientTest {
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException {
         SSLConfiguration.initializeSSLConnection();
-        SecurePostClient p = new SecurePostClient(new VRI("https://opensso.in-silico.ch/opensso/identity/authenticate"));
+        PostHttpsClient p = new PostHttpsClient(new VRI("https://opensso.in-silico.ch/opensso/identity/authenticate"));
         p.addParameter("username", "Sopasakis");
         p.addParameter("password", "xxx");
         p.post();

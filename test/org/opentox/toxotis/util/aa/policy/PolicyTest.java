@@ -13,7 +13,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.PasswordFileManager;
-import org.opentox.toxotis.util.aa.SSLConfiguration;
+
 import static org.junit.Assert.*;
 
 /**

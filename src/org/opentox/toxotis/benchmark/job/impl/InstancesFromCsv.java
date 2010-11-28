@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 import org.opentox.toxotis.benchmark.gauge.GaugeFactory;
 import org.opentox.toxotis.benchmark.gauge.TimeGauge;
 import org.opentox.toxotis.benchmark.job.Job;
-import org.opentox.toxotis.client.GetClient;
+import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import weka.core.Instances;
@@ -46,11 +46,11 @@ public class InstancesFromCsv extends Job {
     @Override
     public void work() throws Exception {
         TimeGauge d_timeGauge = (TimeGauge) getGaugeForName(milliTimeDownloadGaugeName);        
-        GetClient client = null;
+        GetHttpClient client = null;
         try {
             d_timeGauge.start();
             VRI uri = new VRI(String.format(templatedUri, parameter.toString()));
-            client = new GetClient(uri);
+            client = new GetHttpClient(uri);
             client.setMediaType(Media.TEXT_CSV);            
             CSVLoader csvLoader = new CSVLoader();
             csvLoader.setSource(client.getRemoteStream());

@@ -7,6 +7,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.util.spiders.ParameterSpider;
 
 /**
@@ -36,11 +37,10 @@ public class ParameterTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException {
-        Parameter<String> p = new Parameter<String>();
-        p.setName("xx");
-        //p.setScope(ParameterScope.OPTIONAL);
-        //p.setTypedValue(new AnyValue<String>("yyy"));
-        //p.getMeta().setDescription("My parameter");
+        Parameter<String> p = new Parameter<String>();        
+        p.setScope(Parameter.ParameterScope.OPTIONAL);
+        p.setTypedValue(new LiteralValue<String>("t1"));
+        p.getMeta().addDescription("My parameter");
         OntModel om = p.asOntModel();
         om.write(System.out);
         ParameterSpider pS = new ParameterSpider(om, null);

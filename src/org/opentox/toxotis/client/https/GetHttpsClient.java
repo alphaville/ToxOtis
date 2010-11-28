@@ -1,8 +1,13 @@
-package org.opentox.toxotis.client.secure;
+package org.opentox.toxotis.client.https;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.RequestHeaders;
@@ -13,17 +18,17 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class SecureGetClient extends SecureClient {
+public class GetHttpsClient extends AbstractHttpsClient {
 
     
     /** The method that this client applies */
     public static final String METHOD = "GET";
 
-    public SecureGetClient(VRI vri) {
+    public GetHttpsClient(VRI vri) {
         super(vri);
     }
 
-    public SecureGetClient() {
+    public GetHttpsClient() {
     }
 
     @Override
@@ -50,8 +55,9 @@ public class SecureGetClient extends SecureClient {
 
 
     /** Get the result as a URI list */
-    public java.util.List<String> getResponseUriList() throws ToxOtisException {
-        java.util.List<String> list = new java.util.ArrayList<String>();
+    @Override
+    public Set<VRI> getResponseUriList() throws ToxOtisException {
+        java.util.Set<VRI> list = new java.util.HashSet<VRI>();
         java.io.InputStreamReader isr = null;
         java.io.InputStream is = null;
         java.io.BufferedReader reader = null;
@@ -64,7 +70,11 @@ public class SecureGetClient extends SecureClient {
             reader = new java.io.BufferedReader(isr);
             String line;
             while ((line = reader.readLine()) != null) {
-                list.add(line);
+                try {
+                    list.add(new VRI(line));
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(GetHttpsClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } catch (ToxOtisException cl) {
             throw cl;

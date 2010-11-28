@@ -1,14 +1,18 @@
-package org.opentox.toxotis.client;
+package org.opentox.toxotis.client.http;
 
+import org.opentox.toxotis.client.IClient;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.RequestHeaders;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -19,15 +23,12 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class AbstractClient implements Closeable {
+public abstract class AbstractHttpClient implements IClient {
 
     /** Target URI */
     protected VRI vri = null;
     /** Connection to the above URI */
     protected java.net.HttpURLConnection con = null;
-    protected static final String MEDIATYPE_FORM_URL_ENCODED = "application/x-www-form-urlencoded";
-    /** Standard UTF-8 Encoding */
-    protected static final String URL_ENCODING = "UTF-8";
     /** Size of a buffer used to download the data from the remote server */
     protected static final int bufferSize = 4194304;
     /** Accepted mediatype  */
@@ -66,7 +67,7 @@ public abstract class AbstractClient implements Closeable {
      * @throws NullPointerException
      *          If any of the arguments is null
      */
-    public AbstractClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
+    public AbstractHttpClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
         if (paramName == null) {
             throw new NullPointerException("ParamName is null");
         }
@@ -97,7 +98,7 @@ public abstract class AbstractClient implements Closeable {
      * @return
      *      This object with an updated header.
      */
-    public AbstractClient authorize(AuthenticationToken token) {
+    public AbstractHttpClient authorize(AuthenticationToken token) {
         return token != null ? addHeaderParameter(RequestHeaders.AUTHORIZATION, token.getTokenUrlEncoded()) : this;
     }
 
@@ -263,7 +264,7 @@ public abstract class AbstractClient implements Closeable {
      *
      * @see RequestHeaders#ACCEPT
      */
-    public AbstractClient setMediaType(String mediaType) {
+    public AbstractHttpClient setMediaType(String mediaType) {
         this.acceptMediaType = mediaType;
         return this;
     }
@@ -275,7 +276,7 @@ public abstract class AbstractClient implements Closeable {
      *      Accepted mediatype
      * @see RequestHeaders#ACCEPT
      */
-    public AbstractClient setMediaType(Media mediaType) {
+    public AbstractHttpClient setMediaType(Media mediaType) {
         this.acceptMediaType = mediaType.getMime();
         return this;
     }
@@ -285,7 +286,7 @@ public abstract class AbstractClient implements Closeable {
      * @param vri
      *      The URI that will be used by the client to perform the remote connection.
      */
-    public AbstractClient setUri(VRI vri) {
+    public AbstractHttpClient setUri(VRI vri) {
         this.vri = vri;
         return this;
     }
@@ -296,7 +297,7 @@ public abstract class AbstractClient implements Closeable {
      * @throws java.net.URISyntaxException In case the provided URI is syntactically
      * incorrect.
      */
-    public AbstractClient setUri(String uri) throws java.net.URISyntaxException {
+    public AbstractHttpClient setUri(String uri) throws java.net.URISyntaxException {
         this.vri = new VRI(uri);
         return this;
     }
@@ -313,4 +314,66 @@ public abstract class AbstractClient implements Closeable {
             con.disconnect();
         }
     }
+    /**
+     * Get the response of the remote service as a Set of URIs. The media type of
+     * the request, as specified by the <code>Accept</code> header is set to
+     * <code>text/uri-list</code>.
+     * @return
+     *      Set of URIs returned by the remote service.
+     * @throws ToxOtisException
+     *      In case some I/O communication error inhibits the transimittance of
+     *      data between the client and the server or a some stream cannot close.
+     */
+    public java.util.Set<VRI> getResponseUriList() throws ToxOtisException {
+        setMediaType(Media.TEXT_URI_LIST);// Set the mediatype to text/uri-list
+        java.util.Set<VRI> setOfUris = new java.util.HashSet<VRI>();
+        java.io.InputStreamReader isr = null;
+        java.io.InputStream is = null;
+        java.io.BufferedReader reader = null;
+        try {
+            if (con == null) {
+                con = initializeConnection(vri.toURI());
+            }
+            is = getRemoteStream();
+            isr = new java.io.InputStreamReader(is);
+            reader = new java.io.BufferedReader(isr);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                try {
+                    setOfUris.add(new VRI(line));
+                } catch (URISyntaxException ex) {
+                    throw new ToxOtisException(ErrorCause.InvalidUriReturnedFromRemote,
+                            "The server returned an invalid URI : '" + line + "'", ex);
+                }
+            }
+        } catch (final ToxOtisException cl) {
+            throw cl;
+        } catch (IOException io) {
+            throw new ToxOtisException(ErrorCause.CommunicationError, io);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                }
+            }
+            if (isr != null) {
+                try {
+                    isr.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                }
+            }
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                }
+            }
+        }
+        return setOfUris;
+    }
+
 }

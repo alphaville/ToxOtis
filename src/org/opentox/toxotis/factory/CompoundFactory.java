@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.PostClient;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
@@ -122,7 +122,7 @@ public class CompoundFactory {
             File sourceFile, String fileType, AuthenticationToken token, String service)
             throws ToxOtisException {
         try {
-            PostClient postClient = new PostClient(
+            PostHttpClient postClient = new PostHttpClient(
                     new VRI(service).appendToken(token));
             postClient.setPostable(sourceFile);
             postClient.setContentType(fileType);
