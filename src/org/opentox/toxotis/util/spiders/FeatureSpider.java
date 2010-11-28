@@ -99,7 +99,7 @@ public class FeatureSpider extends Tarantula<Feature> {
                         (XSDDatatype) acceptValueLiteral.getDatatype());
                 admissibleValues.add(acceptValue);
             }
-            feature.setAdmissibleValue(admissibleValues);
+            feature.setAdmissibleValues(admissibleValues);
         }
 
         return feature;

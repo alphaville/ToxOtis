@@ -11,6 +11,8 @@ import org.opentox.toxotis.core.OTOnlineResource;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.User;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
@@ -20,12 +22,12 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  */
 public class Task extends OTOnlineResource<Task> {
 
-    protected Task loadFromRemote(VRI uri) throws ToxOtisException {
-        TaskSpider tSpider = new TaskSpider(uri);
+    protected Task loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+        TaskSpider tSpider = new TaskSpider(uri,token);
         Task downloadedTask = tSpider.parse();
         setMeta(downloadedTask.getMeta());
         setErrorReport(downloadedTask.getErrorReport());
-        seStatus(downloadedTask.getStatus());
+        setStatus(downloadedTask.getStatus());
         setPercentageCompleted(downloadedTask.getPercentageCompleted());
         setResultUri(downloadedTask.getResultUri());
         setHttpStatus(downloadedTask.getHttpStatus());
@@ -42,13 +44,16 @@ public class Task extends OTOnlineResource<Task> {
         RUNNING,
         COMPLETED,
         CANCELLED,
-        ERROR;
+        ERROR,
+        REJECTED,
+         QUEUED;
     }
     private VRI resultUri;
     private Status hasStatus;
     private float percentageCompleted = -1;
     private ErrorReport errorReport;
     private float httpStatus = -1;
+    private User createdBy;
 
     public Task() {
         super();
@@ -56,6 +61,14 @@ public class Task extends OTOnlineResource<Task> {
 
     public Task(VRI uri) {
         super(uri);
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     /**
@@ -71,11 +84,11 @@ public class Task extends OTOnlineResource<Task> {
 
     /**
      * ParameterValue the status of a task.
-     * @param hasStatus
+     * @param status
      *      The new value for the status of the task.
      */
-    public void seStatus(Status hasStatus) {
-        this.hasStatus = hasStatus;
+    public void setStatus(Status status) {
+        this.hasStatus = status;
     }
 
     public float getPercentageCompleted() {
@@ -148,13 +161,11 @@ public class Task extends OTOnlineResource<Task> {
         sb.append("Status      : ");
         sb.append(hasStatus);
         sb.append("\n");
-        if (resultUri!=null){
+        if (resultUri != null) {
             sb.append("Result URI  : ");
-        sb.append(resultUri);
-        sb.append("\n");
+            sb.append(resultUri);
+            sb.append("\n");
         }
         return new String(sb);
     }
-
-
 }

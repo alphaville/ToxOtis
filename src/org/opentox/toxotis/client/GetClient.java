@@ -2,10 +2,7 @@ package org.opentox.toxotis.client;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Media;

@@ -1,32 +1,27 @@
 package org.opentox.toxotis.ontology.impl;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.iri.IRIException;
-import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.ontology.AnnotationProperty;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
-import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 public class MetaInfoImpl implements MetaInfo {
 
+    public MetaInfoImpl() {
+    }
     private Set<LiteralValue> identifiers;
     private Set<LiteralValue> comments;
     private Set<LiteralValue> descriptions;
@@ -46,7 +41,7 @@ public class MetaInfoImpl implements MetaInfo {
         StringBuilder builder = new StringBuilder();
         if (identifiers != null) {
             builder.append("identifiers  : ");
-            for (LiteralValue id : identifiers){
+            for (LiteralValue id : identifiers) {
                 builder.append(id.toString());
                 builder.append(" ");
             }
@@ -264,6 +259,7 @@ public class MetaInfoImpl implements MetaInfo {
     public void addComment(String comment) {
         addComment(new LiteralValue<String>(comment));
     }
+
     public void addComment(LiteralValue comment) {
         if (this.comments != null) {
             this.comments.add(comment);
@@ -282,7 +278,7 @@ public class MetaInfoImpl implements MetaInfo {
         this.descriptions = descriptions;
     }
 
-    public void addDescription(LiteralValue description) {
+    public MetaInfo addDescription(LiteralValue description) {
         if (getDescriptions() != null) {
             getDescriptions().add(description);
         } else {
@@ -290,10 +286,12 @@ public class MetaInfoImpl implements MetaInfo {
             values.add(description);
             setDescriptions(values);
         }
+        return this;
     }
 
-    public void addDescription(String description) {
+    public MetaInfo addDescription(String description) {
         addDescription(new LiteralValue<String>(description));
+        return this;
     }
 
     public Set<LiteralValue> getIdentifiers() {
@@ -357,6 +355,7 @@ public class MetaInfoImpl implements MetaInfo {
     public void addTitle(String value) {
         addTitle(new LiteralValue<String>(value, XSDDatatype.XSDstring));
     }
+
     public void addTitle(LiteralValue value) {
         if (getTitles() != null) {
             getTitles().add(value);
@@ -485,12 +484,101 @@ public class MetaInfoImpl implements MetaInfo {
 
     public void setDateCurrent() {
         Date currentDate = new Date(System.currentTimeMillis());
-        this.date = new LiteralValue<Date>(currentDate, XSDDatatype.XSDdate);
+        setDate(new LiteralValue<Date>(currentDate, XSDDatatype.XSDdate));
     }
 
     public void addIdentifier(String identifier) {
         addIdentifier(new LiteralValue<String>(identifier, XSDDatatype.XSDstring));
     }
 
-    
+    public long getHash() {
+        int hash = 3;
+        hash = 89 * hash + (this.identifiers != null ? this.identifiers.hashCode() : 0);
+        hash = 89 * hash + (this.comments != null ? this.comments.hashCode() : 0);
+        hash = 89 * hash + (this.descriptions != null ? this.descriptions.hashCode() : 0);
+        hash = 89 * hash + (this.titles != null ? this.titles.hashCode() : 0);
+        hash = 89 * hash + (this.subjects != null ? this.subjects.hashCode() : 0);
+        hash = 89 * hash + (this.publishers != null ? this.publishers.hashCode() : 0);
+        hash = 89 * hash + (this.creators != null ? this.creators.hashCode() : 0);
+        hash = 89 * hash + (this.contributors != null ? this.contributors.hashCode() : 0);
+        hash = 89 * hash + (this.audiences != null ? this.audiences.hashCode() : 0);
+        hash = 89 * hash + (this.date != null ? this.date.hashCode() : 0);
+        hash = 89 * hash + (this.sameAs != null ? this.sameAs.hashCode() : 0);
+        hash = 89 * hash + (this.seeAlso != null ? this.seeAlso.hashCode() : 0);
+        hash = 89 * hash + (this.hasSources != null ? this.hasSources.hashCode() : 0);
+        return hash;
+    }
+
+    public void setHash(long hash) {
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MetaInfoImpl other = (MetaInfoImpl) obj;
+        if (this.identifiers != other.identifiers && (this.identifiers == null || !this.identifiers.equals(other.identifiers))) {
+            return false;
+        }
+        if (this.comments != other.comments && (this.comments == null || !this.comments.equals(other.comments))) {
+            return false;
+        }
+        if (this.descriptions != other.descriptions && (this.descriptions == null || !this.descriptions.equals(other.descriptions))) {
+            return false;
+        }
+        if (this.titles != other.titles && (this.titles == null || !this.titles.equals(other.titles))) {
+            return false;
+        }
+        if (this.subjects != other.subjects && (this.subjects == null || !this.subjects.equals(other.subjects))) {
+            return false;
+        }
+        if (this.publishers != other.publishers && (this.publishers == null || !this.publishers.equals(other.publishers))) {
+            return false;
+        }
+        if (this.creators != other.creators && (this.creators == null || !this.creators.equals(other.creators))) {
+            return false;
+        }
+        if (this.contributors != other.contributors && (this.contributors == null || !this.contributors.equals(other.contributors))) {
+            return false;
+        }
+        if (this.audiences != other.audiences && (this.audiences == null || !this.audiences.equals(other.audiences))) {
+            return false;
+        }
+        if (this.date != other.date && (this.date == null || !this.date.equals(other.date))) {
+            return false;
+        }
+        if (this.sameAs != other.sameAs && (this.sameAs == null || !this.sameAs.equals(other.sameAs))) {
+            return false;
+        }
+        if (this.seeAlso != other.seeAlso && (this.seeAlso == null || !this.seeAlso.equals(other.seeAlso))) {
+            return false;
+        }
+        if (this.hasSources != other.hasSources && (this.hasSources == null || !this.hasSources.equals(other.hasSources))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + (this.identifiers != null ? this.identifiers.hashCode() : 0);
+        hash = 89 * hash + (this.comments != null ? this.comments.hashCode() : 0);
+        hash = 89 * hash + (this.descriptions != null ? this.descriptions.hashCode() : 0);
+        hash = 89 * hash + (this.titles != null ? this.titles.hashCode() : 0);
+        hash = 89 * hash + (this.subjects != null ? this.subjects.hashCode() : 0);
+        hash = 89 * hash + (this.publishers != null ? this.publishers.hashCode() : 0);
+        hash = 89 * hash + (this.creators != null ? this.creators.hashCode() : 0);
+        hash = 89 * hash + (this.contributors != null ? this.contributors.hashCode() : 0);
+        hash = 89 * hash + (this.audiences != null ? this.audiences.hashCode() : 0);
+        hash = 89 * hash + (this.date != null ? this.date.hashCode() : 0);
+        hash = 89 * hash + (this.sameAs != null ? this.sameAs.hashCode() : 0);
+        hash = 89 * hash + (this.seeAlso != null ? this.seeAlso.hashCode() : 0);
+        hash = 89 * hash + (this.hasSources != null ? this.hasSources.hashCode() : 0);
+        return hash;
+    }
 }

@@ -62,8 +62,9 @@ public interface MetaInfo extends java.io.Serializable {
 
     void setDescriptions(Set<LiteralValue> descriptions);
 
-    void addDescription(LiteralValue description);
-    void addDescription(String description);
+    MetaInfo addDescription(LiteralValue description);
+
+    MetaInfo addDescription(String description);
 
     /**
      * Get the identifier (ID) of the described entity. An identifier is an unambiguous
@@ -81,6 +82,7 @@ public interface MetaInfo extends java.io.Serializable {
     void setIdentifiers(Set<LiteralValue> identifiers);
 
     void addIdentifier(LiteralValue identifier);
+
     void addIdentifier(String identifier);
 
     //// 4. sameAs
@@ -142,6 +144,7 @@ public interface MetaInfo extends java.io.Serializable {
     void setTitles(Set<LiteralValue> values);
 
     void addTitle(LiteralValue value);
+
     void addTitle(String value);
 
     //// 7. subjects (dc:subject)
@@ -272,4 +275,8 @@ public interface MetaInfo extends java.io.Serializable {
      *      in the XML.
      */
     void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException;
+
+    long getHash();
+
+    void setHash(long hash);
 }

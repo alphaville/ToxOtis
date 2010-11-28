@@ -5,6 +5,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  * <p>
@@ -45,7 +46,7 @@ public class Conformer extends Compound {
     }
 
     @Override
-    protected Conformer loadFromRemote(VRI uri) throws ToxOtisException {
+    protected Conformer loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

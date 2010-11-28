@@ -7,6 +7,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
@@ -27,7 +28,7 @@ import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class OTComponent<T extends OTComponent> implements IStAXWritable {
+public abstract class OTComponent<T extends OTComponent> implements IStAXWritable, Serializable {
 
     /** URI of the component */
     protected VRI uri;

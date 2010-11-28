@@ -3,8 +3,11 @@ package org.opentox.toxotis.ontology.collection;
 import com.hp.hpl.jena.vocabulary.OWL;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
@@ -55,6 +58,32 @@ public class OTAlgorithmTypes {
         }
     }
 
+    public static Set<OntologicalClass> getAll() {
+        initMethodCache();
+        Set<OntologicalClass> result = new HashSet<OntologicalClass>();
+        Collection<Method> methods = ms_methodCache.values();
+        for (Method m : methods) {
+            try {
+                result.add((OntologicalClass) m.invoke(null));
+            } catch (IllegalAccessException ex) {
+            } catch (IllegalArgumentException ex) {
+            } catch (InvocationTargetException ex) {
+            }
+        }
+        return result;
+    }
+
+      private static OntologicalClass Thing() {
+        if (ms_Thing == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("Thing");
+            clazz.setNameSpace(OWL.NS);
+            clazz.getMetaInfo().addComment("All classes are subclasses of owl:Thing");
+            ms_Thing = clazz;
+        }
+        return ms_Thing;
+    }
+
+
     public static OntologicalClass forName(String name) {
         initMethodCache();
         try {
@@ -72,15 +101,7 @@ public class OTAlgorithmTypes {
 
     }
 
-    private static OntologicalClass Thing() {
-        if (ms_Thing == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Thing");
-            clazz.setNameSpace(OWL.NS);
-            clazz.getMetaInfo().addComment("All classes are subclasses of owl:Thing");
-            ms_Thing = clazz;
-        }
-        return ms_Thing;
-    }
+
 
     public static OntologicalClass AlgorithmType() {
         if (ms_AlgorithmType == null) {
@@ -88,7 +109,7 @@ public class OTAlgorithmTypes {
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("Generic class for all algorithm types in OpenTox");
             clazz.getMetaInfo().addTitle("Algorithm Types");
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(OTClasses.Thing());
             ms_AlgorithmType = clazz;
         }
         return ms_AlgorithmType;

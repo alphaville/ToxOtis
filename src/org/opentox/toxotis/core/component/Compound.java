@@ -177,7 +177,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
             if (data != null && data.size() >= 1) {
                 DataEntry firstEntry = ds.getDataEntries().get(0);
                 if (firstEntry != null && firstEntry.getFeatureValues().size() >= 1) {
-                    FeatureValue fVal = firstEntry.getFeatureValue(0);
+                    FeatureValue fVal = firstEntry.getFeatureValues().iterator().next();
                     if (fVal != null) {
                         return fVal.getValue();
                     }
@@ -237,7 +237,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      transaction of data.
      */
     @Override
-    protected Compound loadFromRemote(VRI uri) throws ToxOtisException {
+    protected Compound loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -259,7 +259,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
             if (status == 200) {
                 Task readyTask = new Task();
                 readyTask.setPercentageCompleted(100);
-                readyTask.seStatus(Task.Status.COMPLETED);
+                readyTask.setStatus(Task.Status.COMPLETED);
                 try {
                     readyTask.setResultUri(new VRI(client.getResponseText()));
                     return readyTask;

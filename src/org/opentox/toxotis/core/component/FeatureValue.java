@@ -4,6 +4,8 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -19,8 +21,18 @@ public class FeatureValue extends OTComponent<FeatureValue> {
 
     private Feature feature;
     private LiteralValue value;
+    private static final String DISCRIMINATOR = "featureValue";
+
+    @Override
+    public VRI getUri() {
+        if (uri == null) {
+            uri = Services.anonymous().augment(DISCRIMINATOR, hashCode());
+        }
+        return uri;
+    }
 
     public FeatureValue() {
+        super();
     }
 
     public FeatureValue(Feature feature, LiteralValue value) {
@@ -61,5 +73,31 @@ public class FeatureValue extends OTComponent<FeatureValue> {
     @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FeatureValue other = (FeatureValue) obj;
+        if (this.feature != other.feature && (this.feature == null || !this.feature.equals(other.feature))) {
+            return false;
+        }
+        if (this.value != other.value && (this.value == null || !this.value.equals(other.value))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + (this.feature != null ? this.feature.hashCode() : 0);
+        hash = 67 * hash + (this.value != null ? this.value.hashCode() : 0);
+        return hash;
     }
 }

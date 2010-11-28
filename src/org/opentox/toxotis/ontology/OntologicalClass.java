@@ -2,9 +2,9 @@ package org.opentox.toxotis.ontology;
 
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import java.util.Collection;
+import java.util.Set;
 
-public interface OntologicalClass extends OTResource, java.io.Serializable{
+public interface OntologicalClass extends OTResource, java.io.Serializable {
 
     String getNameSpace();
 
@@ -18,15 +18,23 @@ public interface OntologicalClass extends OTResource, java.io.Serializable{
 
     void setMetaInfo(MetaInfo metaInfo);
 
-    Collection<OntologicalClass> getSuperClasses();
+    Set<OntologicalClass> getSuperClasses();
 
-    void setSuperClasses(Collection<OntologicalClass> superClasses);
+    void setSuperClasses(Set<OntologicalClass> superClasses);
 
-    Collection<OntologicalClass> getDisjointWith();
+    Set<OntologicalClass> getDisjointWith();
 
-    void setDisjointWith(Collection<OntologicalClass> disjointWith);
+    String getUri();
+
+    void setUri(String uri);
+
+    void setDisjointWith(Set<OntologicalClass> disjointWith);
 
     OntClass inModel(OntModel model);
 
+    @Override
+    boolean equals(Object obj);
 
+    @Override
+    int hashCode();
 }

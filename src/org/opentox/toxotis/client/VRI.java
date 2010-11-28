@@ -1,5 +1,6 @@
 package org.opentox.toxotis.client;
 
+import java.io.Serializable;
 import org.opentox.toxotis.core.component.*;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -27,7 +28,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class VRI { // Well tested!
+public class VRI implements Serializable { // Well tested!
 
     /** The URI as a string */
     private String uri;
@@ -142,7 +143,7 @@ public class VRI { // Well tested!
     /**
      * Dummy contructor
      */
-    private VRI() {
+    public VRI() {
     }
 
     /**
@@ -155,6 +156,10 @@ public class VRI { // Well tested!
      */
     public VRI(String uri) throws URISyntaxException {
         this();
+        doProcessUri(uri);
+    }
+
+    private void doProcessUri(String uri) throws URISyntaxException {
         new URI(uri);
         if (!uri.contains("://")) {
             uri = "http://" + uri;
@@ -184,7 +189,7 @@ public class VRI { // Well tested!
                                 }
                             }
                         }
-                        urlParams.add(new Pair(URLEncoder.encode(paramName, URL_ENCODING), // paramname cannot be null
+                        urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), // paramname cannot be null
                                 paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : ""));
                     }
                 } catch (UnsupportedEncodingException ex) {
@@ -282,9 +287,11 @@ public class VRI { // Well tested!
     }
 
     /**
-     * Clears any tokens that might be contained in the URI
+     * Clears any tokens that might be contained in the URI. Though tokens are not
+     * provided any more within the set of URL parameters,
+     *
      * @return
-     *      Updated URI without tokens.
+     *      Updated URI without tokens.    
      */
     public VRI clearToken() {
         return removeUrlParameter(TOKENID);
@@ -293,7 +300,8 @@ public class VRI { // Well tested!
     /**
      * Add a URL parameter. As soon as you provide the URL parameter and its value,
      * these are encoded using the UTF-8 encoding so you do not need to encode them
-     * before submitting them.
+     * before submitting them. 
+     *
      * @param paramName
      *      The name of the parameter
      * @param paramValue
@@ -303,7 +311,8 @@ public class VRI { // Well tested!
      */
     public VRI addUrlParameter(String paramName, String paramValue) {
         try {
-            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(paramValue, URL_ENCODING)));
+            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
+                    URLEncoder.encode(paramValue, URL_ENCODING)));
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
@@ -314,6 +323,7 @@ public class VRI { // Well tested!
      * Add a double valued URL parameter. As soon as you provide the URL parameter and its value,
      * these are encoded using the UTF-8 encoding so you do not need to encode them
      * before submitting them.
+     *
      * @param paramName
      *      The name of the parameter
      * @param paramValue
@@ -323,7 +333,8 @@ public class VRI { // Well tested!
      */
     public VRI addUrlParameter(String paramName, double paramValue) {
         try {
-            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(new Double(paramValue).toString(), URL_ENCODING)));
+            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
+                    URLEncoder.encode(new Double(paramValue).toString(), URL_ENCODING)));
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
@@ -334,6 +345,7 @@ public class VRI { // Well tested!
      * Add an integer valued URL parameter. As soon as you provide the URL parameter and its value,
      * these are encoded using the UTF-8 encoding so you do not need to (and must not) encode them
      * before submitting them.
+     *
      * @param paramName
      *      The name of the parameter
      * @param paramValue
@@ -357,7 +369,13 @@ public class VRI { // Well tested!
      *      Authentication Token
      * @return
      *      The updated VRI with the token.
+     * @deprecated
+     *      This method is deprectated due to migration from OpenTox API 1.1.
+     *      to version 1.2. Authentication is materialized using the HTTP Header
+     *      <code>Authorization</code> instead of the URL parameter
+     *      <code>toked_id</code>.
      */
+    @Deprecated
     public VRI appendToken(AuthenticationToken token) {
         if (token != null) {
             return addUrlParameter(TOKENID, token.stringValue());
@@ -415,6 +433,20 @@ public class VRI { // Well tested!
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
+        return this;
+    }
+
+    public VRI augment(Object... params) {
+        if (params == null || (params != null && params.length == 0)) {
+            return this;
+        }
+        String[] parametersStringArray = new String[params.length];
+        int i = 0;
+        for (Object o : params) {
+            parametersStringArray[i] = params[i].toString();
+            i++;
+        }
+        augment(parametersStringArray);
         return this;
     }
 
@@ -556,7 +588,7 @@ public class VRI { // Well tested!
                 }
             }
         }
-        return null;
+        return this;
     }
 
     /**
@@ -577,7 +609,6 @@ public class VRI { // Well tested!
             return false;
         }
         final VRI other = (VRI) obj;
-
         if ((this.uri == null) || (other.uri == null)) {
             return false;
         }
@@ -593,5 +624,17 @@ public class VRI { // Well tested!
         int hash = 3;
         hash = 37 * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
+    }
+
+    public String getUri() {
+        return toString();
+    }
+
+    public void setUri(String uri) {
+        try {
+            doProcessUri(uri);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(VRI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

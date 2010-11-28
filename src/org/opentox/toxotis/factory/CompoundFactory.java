@@ -141,7 +141,7 @@ public class CompoundFactory {
             } else if (responseStatus == 200) {
                 Task t = new Task();
                 t.setResultUri(newVRI);
-                t.seStatus(Task.Status.COMPLETED);
+                t.setStatus(Task.Status.COMPLETED);
                 return t;
             } else {
                 throw new ToxOtisException("HTTP Status : " + responseStatus);

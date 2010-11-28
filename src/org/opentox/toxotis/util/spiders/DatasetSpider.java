@@ -19,6 +19,7 @@ import org.opentox.toxotis.core.component.DataEntry;
 import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  * A parser for RDF representations of OpenTox datasets.
@@ -30,10 +31,15 @@ public class DatasetSpider extends Tarantula<Dataset> {
     VRI datasetUri;
 
     public DatasetSpider(VRI uri) throws ToxOtisException {
+        this(uri, null);
+    }
+
+    public DatasetSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
         super();
         long timeFlag = System.currentTimeMillis();
         this.datasetUri = uri;
         GetClient client = new GetClient();
+        client.authorize(token); // << OpenTox API 1.2. 
         try {
             client.setMediaType(Media.APPLICATION_RDF_XML);
             client.setUri(uri);

@@ -1,8 +1,6 @@
 package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.impl.OntModelImpl;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
@@ -15,6 +13,7 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.GetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.OpenToxAlgorithms;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Algorithm;
@@ -38,6 +37,43 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
 
     /**
      * Create a new AlgorithmSpider providing the URI of the algorithm to be
+     * <em>spidered</em>, i.e. downloded from the remote location the URI specifies
+     * (as an RDF/XML document) and then parsed into an {@link org.opentox.toxotis.core.component.Algorithm Algorithm}
+     * object. Be aware that the invokation of this method assumes that no authentication or
+     * authorization mechanism exists on the remote server to control access to the
+     * resource and it can be freely accessed.
+     *
+     * @param uri
+     *      The URI of the algorithm to be downloaded and parsed into an {@link
+     *      Algorithm } object. You can pick an algorithm URI from the list inside
+     *      {@link OpenToxAlgorithms }; for example {@link OpenToxAlgorithms#NTUA_MLR NTUA MLR}
+     *      from the {@link Services#ntua() NTUA SERVICES} server.
+     *
+     * @throws ToxOtisException
+     *      In case some exceptional event occurs during the server-client communication,
+     *      the connection is not possible (e.g. the remote server is down), or the
+     *      response status is 403 (Authentication Failed), 401 (The user is not authorized),
+     *      404 (Algorithm not found on the server), 500 (Some internal server error
+     *      occured) or other exceptional status code.
+     */
+    public AlgorithmSpider(VRI uri) throws ToxOtisException {
+        this(uri, null);
+    }
+
+    public AlgorithmSpider(Resource resource, OntModel model) throws ToxOtisException {
+        super(resource, model);
+        try {
+            uri = new VRI(resource.getURI());
+            if (!Algorithm.class.equals(uri.getOpenToxType())) {
+                throw new ToxOtisException("Bad URI : Not an algorithm URI (" + uri + ")");
+            }
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(AlgorithmSpider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Create a new AlgorithmSpider providing the URI of the algorithm to be
      * <em>spidered</em> and an authentication token that will allow the client
      * to access the content of the algorithm.
      * @param uri
@@ -55,32 +91,11 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      *      occured) or other exceptional status code.
      */
     public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
-        this(uri.addUrlParameter("tokenid", token.stringValue()));
-    }
-
-
-    public AlgorithmSpider(Resource resource, OntModel model) throws ToxOtisException {
-        super(resource, model);
-        try {
-            uri = new VRI(resource.getURI());
-            if (!Algorithm.class.equals(uri.getOpenToxType())) {
-                throw new ToxOtisException("Bad URI : Not an algorithm URI (" + uri + ")");
-            }
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(AlgorithmSpider.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    /**
-     *
-     * @param uri
-     * @throws ToxOtisException
-     */
-    public AlgorithmSpider(VRI uri) throws ToxOtisException {
         super();
         this.uri = uri;
         GetClient client = new GetClient(uri);
-        client.setMediaType("application/rdf+xml");
+        client.authorize(token);
+        client.setMediaType(Media.APPLICATION_RDF_XML);
         try {
             /*
              * Handle excpetional events caused during the server-client communiation.
@@ -88,7 +103,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
             int status = client.getResponseCode();
             if (status != 200) {
                 OntModel om = client.getResponseOntModel();
-                ErrorReportSpider ersp = new ErrorReportSpider(uri, om);
+                ErrorReportSpider ersp = new ErrorReportSpider(om);
                 ErrorReport er = ersp.parse();
 
                 if (status == 403) {

@@ -4,7 +4,8 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
-import org.opentox.toxotis.ontology.OntologicalClass;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * A simple wrapper for a value (usually String) and its datatype according to the XSD
@@ -20,7 +21,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
  * a URI, but it is often more convenient or intuitive to use literals.
  * A literal may be the object of an RDF statement, but not the subject or the predicate.
  * </blockquote>
- * 
+ *
  * This class aims at providing the Java interface to RDF literal values.
  *
  * @param <T> Generic for the (Java) datatype of the value.
@@ -28,12 +29,16 @@ import org.opentox.toxotis.ontology.OntologicalClass;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class LiteralValue<T> {
+public class LiteralValue<T> implements Serializable {
 
     /** The value */
-    private final T value;
+    private T value;
+    private Class<?> clazz = String.class;
     /** XSD datatype for the value */
-    private XSDDatatype type;
+    private XSDDatatype type = XSDDatatype.XSDstring;
+
+    public LiteralValue() {
+    }
 
     /**
      * Create a new typed value
@@ -45,6 +50,9 @@ public class LiteralValue<T> {
     public LiteralValue(final T value, final XSDDatatype type) {
         this.value = value;
         this.type = type;
+        if (value != null) {
+            this.clazz = value.getClass();
+        }
     }
 
     /**
@@ -55,6 +63,9 @@ public class LiteralValue<T> {
      */
     public LiteralValue(final T value) {
         this.value = value;
+        if (value != null) {
+            this.clazz = value.getClass();
+        }
         if (value.getClass().equals(java.util.Date.class)) {
             this.type = XSDDatatype.XSDdateTime; // << According to the OpenTox API dc:date should be xsd:datetime
         } else {
@@ -69,6 +80,44 @@ public class LiteralValue<T> {
      */
     public XSDDatatype getType() {
         return type;
+    }
+
+    public void setType(XSDDatatype type) {
+        this.type = type;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    /**
+     * Returns a String representation of the underlying value. This is
+     * different from the method toString() defined in this class.
+     * @return
+     *      The value as String or <code>null</code> in case the value is null.
+     */
+    public String getValueAsString() {
+        return value != null ? value.toString() : null;
+    }
+
+    public void setValueAsString(String value) {
+        if (clazz != null) {
+            if (value == null) {
+                this.value = null;
+            } else {
+                if (clazz == Double.class) {
+                    this.value = (T) (Double) Double.parseDouble(value);
+                } else if (clazz == Integer.class) {
+                    this.value = (T) (Integer) Integer.parseInt(value);
+                } else if (clazz == Date.class) {
+                    this.value = (T) new Date(value);
+                } else if (String.class.isAssignableFrom(clazz)) {
+                    this.value = (T) value.toString();
+                }
+            }
+        } else {
+            this.value = (T) value;
+        }
     }
 
     /**
@@ -93,28 +142,43 @@ public class LiteralValue<T> {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (LiteralValue.class != obj.getClass()) {
             return false;
         }
         final LiteralValue<T> other = (LiteralValue<T>) obj;
-        if (this.value != other.value && (this.value == null || !this.value.equals(other.value))) {
-            return false;
-        }
-        if (this.type != other.type && (this.type == null || !this.type.equals(other.type))) {
-            return false;
-        }
-        return true;
+        boolean isEq = getHash() == other.getHash();
+        return isEq;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 71 * hash + (this.value != null ? this.value.hashCode() : 0);
-        hash = 71 * hash + (this.type != null ? this.type.hashCode() : 0);
+        return (int) getHash();
+    }
+
+    public Literal inModel(OntModel model) {
+        return model.createTypedLiteral(getValue(), getType());
+    }
+
+
+    public long getHash() {
+        long hash =  (value != null ? value.toString().trim().hashCode() : 0)
+                + 7 * (type != null ? type.toString().trim().hashCode() : 0);
         return hash;
     }
 
-    public Literal inModel(OntModel model){
-        return model.createTypedLiteral(getValue(),getType());
+    public void setHash(long hashCode) {/* Do nothing! */ }
+
+    public static void main(String... ars) {
+        LiteralValue lv = new LiteralValue();
+
+        lv.setValue("abcdefghijklmnopqrstuvwxyz");
+        LiteralValue lv2 = new LiteralValue();
+        lv2.setValue("abcdefghijklmnopqrstuvwxyz");
+        System.out.println(lv + ", " + lv2.equals(lv));
+        System.out.println(lv.equals(lv2));
+        System.out.println(lv.getType());
+        System.out.println(lv.getValue());
+        System.out.println(lv.getHash());
+        System.out.println(lv.hashCode());
     }
 }

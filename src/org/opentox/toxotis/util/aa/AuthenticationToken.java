@@ -8,8 +8,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.secure.SecurePostClient;
@@ -100,8 +98,8 @@ public class AuthenticationToken {
             poster.post();
             int status = poster.getResponseCode();
             if (status >= 400) {
-                throw new ToxOtisException("Error while authenticating user at " +
-                        poster.getUri() + ". Status code : " + status);
+                throw new ToxOtisException("Error while authenticating user at "
+                        + poster.getUri() + ". Status code : " + status);
             }
 
             String response = poster.getResponseText();
@@ -389,7 +387,7 @@ public class AuthenticationToken {
                     line = reader.readLine();
                     if (line != null) {
                         line = line.trim();
-                        u.setUid(line.replaceAll(valueKey, ""));
+                        u.setUid(line.replaceAll(valueKey, "") + "@" + Services.SSO_HOST);
                     }
                 } else if (line.equals(String.format(nameKey, "mail"))) {
                     line = reader.readLine();
@@ -478,4 +476,6 @@ public class AuthenticationToken {
         sb.append("Status              : " + getStatus());
         return new String(sb);
     }
+
+    
 }

@@ -78,9 +78,15 @@ public class Dataset extends OTPublishable<Dataset> {
      */
     public Dataset(List<DataEntry> dataEntries) {
         this.dataEntries = dataEntries;
-    }    
+    }
 
-    
+    public Set<FeatureValue> getFeatureValues() {
+        Set<FeatureValue> featureValues = new HashSet<FeatureValue>();
+        for (DataEntry de : getDataEntries()) {
+            featureValues.addAll(de.getFeatureValues());
+        }
+        return featureValues;
+    }
 
     /**
      * Due to the large size of some dataset objects, it is advisable to use this method
@@ -93,7 +99,7 @@ public class Dataset extends OTPublishable<Dataset> {
      *      In case the serialization is not possible due to syntax errors.
      */
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
-        initRdfWriter(writer);          
+        initRdfWriter(writer);
 
         writeClass(writer, OTClasses.Dataset());
         writeClass(writer, OTClasses.DataEntry());
@@ -124,7 +130,7 @@ public class Dataset extends OTPublishable<Dataset> {
         writer.writeStartElement("ot:Dataset");// #NODE_BASE: Start Base Dataset Node
         writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_BASE
         /* Meta-information about the dataset */
-        if (getMeta()!=null){
+        if (getMeta() != null) {
             getMeta().writeToStAX(writer);
         }
         for (DataEntry dataEntry : getDataEntries()) {
@@ -161,7 +167,7 @@ public class Dataset extends OTPublishable<Dataset> {
             writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
             writer.writeAttribute("rdf:about", f.getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
 
-            
+
             featureOntologies = f.getOntologies();
             boolean explicitTypeDeclaration = false;
             if (featureOntologies != null && !featureOntologies.isEmpty()) {
@@ -169,7 +175,7 @@ public class Dataset extends OTPublishable<Dataset> {
                     writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
-                    for (LiteralValue admissibleVal : f.getAdmissibleValue()) {
+                    for (LiteralValue admissibleVal : f.getAdmissibleValues()) {
                         writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                         // TODO: Include also the XSD datatype of the value...
                         writer.writeCharacters(admissibleVal.getValue().toString());// REFERS TO #NODE_ACCEPT_VALUE
@@ -250,7 +256,7 @@ public class Dataset extends OTPublishable<Dataset> {
             dsUpload.loadFromRemote();
         } else if (status == 200) {
             dsUpload.setPercentageCompleted(100);
-            dsUpload.seStatus(Task.Status.COMPLETED);
+            dsUpload.setStatus(Task.Status.COMPLETED);
             try {
                 dsUpload.setUri(new VRI(remoteResult));
                 dsUpload.setResultUri(new VRI(remoteResult));
@@ -265,6 +271,8 @@ public class Dataset extends OTPublishable<Dataset> {
     public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    
 
     private enum WekaDataTypes {
 
@@ -311,8 +319,9 @@ public class Dataset extends OTPublishable<Dataset> {
         return indiv;
     }
 
-    protected Dataset loadFromRemote(VRI uri) throws ToxOtisException {
-        DatasetSpider spider = new DatasetSpider(uri);
+    @Override
+    protected Dataset loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+        DatasetSpider spider = new DatasetSpider(uri, token);
         Dataset ds = spider.parse();
         setDataEntries(ds.getDataEntries());
         setUri(ds.getUri());
@@ -367,8 +376,8 @@ public class Dataset extends OTPublishable<Dataset> {
                 attributes.addElement(new Attribute(feature.getUri().getStringNoQuery(), (FastVector) null));
             } else if (dataType.equals(WekaDataTypes.nominal)) {
                 // COPE WITH NOMINAL VALUES:
-                FastVector nominalFVec = new FastVector(feature.getAdmissibleValue().size());
-                for (LiteralValue value : feature.getAdmissibleValue()) {
+                FastVector nominalFVec = new FastVector(feature.getAdmissibleValues().size());
+                for (LiteralValue value : feature.getAdmissibleValues()) {
                     nominalFVec.addElement(value.getValue());
                 }
                 attributes.addElement(new Attribute(feature.getUri().getStringNoQuery(), nominalFVec));
@@ -469,5 +478,27 @@ public class Dataset extends OTPublishable<Dataset> {
             throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
                     + " returned an invalid task URI : " + taskUri, ex);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Dataset other = (Dataset) obj;
+        if (this.dataEntries != other.dataEntries && (this.dataEntries == null || !this.dataEntries.equals(other.dataEntries))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.dataEntries != null ? this.dataEntries.hashCode() : 0);
+        return hash;
     }
 }

@@ -10,6 +10,7 @@ import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
  *
@@ -28,8 +29,6 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         OPTIONAL,
         MANDATORY;
     };
-    /** The name of the parameter*/
-    private String name;
     /** Typed value for the parameter */
     private LiteralValue<T> typedValue;
     /** The scope of the parameter (mandatory/optional)*/
@@ -37,6 +36,12 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
 
     public Parameter() {
         super();
+    }
+
+    public Parameter(String name, LiteralValue value){
+        super();
+        setName(name);
+        setTypedValue(value);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
@@ -64,15 +69,25 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         return typedValue;
     }
 
-    public String getName() {
-        return name;
+    public LiteralValue getName() {
+        if (getMeta() != null) {
+            if (getMeta().getTitles() != null && !getMeta().getTitles().isEmpty()) {
+                LiteralValue val = getMeta().getTitles().iterator().next();
+                return val;
+            }
+        }
+        return null;
     }
 
-    public void setName(String name) {
-        this.name = name;
-        this.meta.addTitle(name);
-    }// </editor-fold>
+    public Parameter setName(String name) {
+        if (getMeta() == null) {
+            setMeta(new MetaInfoImpl());
+        }
+        getMeta().addTitle(name);
+        return this;
+    }
 
+// </editor-fold>
     @Override
     public Individual asIndividual(OntModel model) {
 
@@ -105,7 +120,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Name  : ");
-        builder.append(name);
+        builder.append(getName());
         builder.append("\n");
         builder.append("Value : ");
         builder.append(typedValue.getValue());
@@ -116,5 +131,35 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         builder.append("Type  : ");
         builder.append(typedValue.getType());
         return new String(builder);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Parameter<T> other = (Parameter<T>) obj;
+        if (this.typedValue != other.typedValue && (this.typedValue == null || !this.typedValue.equals(other.typedValue))) {
+            return false;
+        }
+        if (this.scope != other.scope && (this.scope == null || !this.scope.equals(other.scope))) {
+            return false;
+        }
+        if (getName() != other.getName() && (getName() == null || !getName().equals(other.getName()))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + (this.getName() != null ? this.getName().toString().hashCode() : 0);
+        hash = 37 * hash + (this.typedValue != null ? this.typedValue.toString().hashCode() : 0);
+        hash = 37 * hash + (this.scope != null ? this.scope.toString().hashCode() : 0);
+        return hash;
     }
 }

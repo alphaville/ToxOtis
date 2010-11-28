@@ -26,7 +26,7 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTPublishable<T> implements IDescriptorCalculation{
+public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTPublishable<T> implements IDescriptorCalculation {
 
     public DescriptorCaclulation() {
         super();
@@ -36,14 +36,11 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
         super(uri);
     }
 
-
-    
-
-    public Task calculateDescriptors(VRI  descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
         PostClient client = new PostClient(descriptorCalculationAlgorithm);
+        client.authorize(token);
 
         client.setMediaType(Media.APPLICATION_RDF_XML);
-        descriptorCalculationAlgorithm.clearToken().appendToken(token);
 
         /** REQUEST */
         PostClient pc = new PostClient(descriptorCalculationAlgorithm);
@@ -59,7 +56,7 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
         /** RESPONSE */
         String taskUri = pc.getResponseText().trim();
 
-        try {                        
+        try {
             Thread.sleep(4000);
         } catch (Exception ex) {
             System.out.println("FAILURE");
@@ -69,7 +66,7 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
 
         try {
             TaskSpider taskSpider = new TaskSpider(new VRI(taskUri));
-            
+
             return taskSpider.parse();
         } catch (URISyntaxException ex) {
             throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
@@ -132,7 +129,4 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
         ops = options.toArray(ops);
         return futureDescriptors(descriptorCalculationAlgorithm, token, ops);
     }
-
-    
-
 }

@@ -8,6 +8,9 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
@@ -19,6 +22,8 @@ import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.User;
 
 /**
  *
@@ -27,17 +32,25 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class ModelSpider extends Tarantula<Model> {
 
-    VRI uri;
+    private VRI uri;
+    private AuthenticationToken token;
 
     public ModelSpider(VRI uri) throws ToxOtisException {
+        this(uri, (AuthenticationToken) null);
+    }
+
+    public ModelSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
         super();
         this.uri = uri;
+        this.token = token;
         GetClient client = new GetClient();
+        client.authorize(token);
         try {
             client.setMediaType(Media.APPLICATION_RDF_XML);
             client.setUri(uri);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
+            uri.clearToken(); // << Token no needed any more!
             model = client.getResponseOntModel();
             resource = model.getResource(uri.toString());
         } catch (final IOException ex) {
@@ -82,6 +95,15 @@ public class ModelSpider extends Tarantula<Model> {
         m.setUri(uri);
         m.setMeta(new MetaInfoSpider(resource, model).parse());
 
+        if (token != null) {
+            try {
+                User u = token.getUser();
+                m.setCreatedBy(u);
+            } catch (ToxOtisException ex) {
+                Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         StmtIterator itDataset = model.listStatements(
                 new SimpleSelector(resource,
                 OTObjectProperties.trainingDataset().asObjectProperty(model),
@@ -119,7 +141,7 @@ public class ModelSpider extends Tarantula<Model> {
                 new SimpleSelector(resource,
                 OTObjectProperties.independentVariables().asObjectProperty(model),
                 (RDFNode) null));
-        ArrayList<Feature> indepFeatures = new ArrayList<Feature>();
+        Set<Feature> indepFeatures = new LinkedHashSet<Feature>();
         while (itFeature.hasNext()) {
             FeatureSpider fspider = new FeatureSpider(model,
                     itFeature.nextStatement().getObject().as(Resource.class).getURI());
@@ -133,13 +155,8 @@ public class ModelSpider extends Tarantula<Model> {
                 (RDFNode) null));
         if (itAlgorithm.hasNext()) {
             AlgorithmSpider aspider;
-//            try {
             aspider = new AlgorithmSpider(itAlgorithm.nextStatement().getObject().as(Resource.class), model);
             m.setAlgorithm(aspider.parse());
-//            } catch (URISyntaxException ex) {
-//                Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-
         }
 
         StmtIterator itParam = model.listStatements(
@@ -147,14 +164,12 @@ public class ModelSpider extends Tarantula<Model> {
                 OTObjectProperties.parameters().asObjectProperty(model),
                 (RDFNode) null));
 
-        ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+        Set<Parameter> parameters = new LinkedHashSet<Parameter>();
         while (itParam.hasNext()) {
             ParameterSpider paramSpider = new ParameterSpider(model, itParam.nextStatement().getObject().as(Resource.class));
             parameters.add(paramSpider.parse());
         }
         m.setParameters(parameters);
-
-
         return m;
     }
 }

@@ -140,7 +140,7 @@ public class DatasetFactory {
                         feature.getOntologies().add(OTClasses.NominalFeature());
                         while (nominalValues.hasMoreElements()) {
                             String nomValue = (String) nominalValues.nextElement();
-                            feature.getAdmissibleValue().add(new LiteralValue<String>(nomValue, XSDDatatype.XSDstring));
+                            feature.getAdmissibleValues().add(new LiteralValue<String>(nomValue, XSDDatatype.XSDstring));
                         }
                     }
                     fv.setFeature(feature);

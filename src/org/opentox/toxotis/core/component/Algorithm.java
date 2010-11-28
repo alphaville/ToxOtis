@@ -39,11 +39,14 @@ import org.opentox.toxotis.util.spiders.AlgorithmSpider;
 public class Algorithm extends OTOnlineResource<Algorithm> implements OntologyServiceSupport<Algorithm> {
 
     /** ParameterValue of parameters of the algorithm. Specify the way the algorithm is parametrized */
-    private ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+    private Set<Parameter> parameters = new HashSet<Parameter>();
     /** ParameterValue of ontological classes that characterize the algorithm*/
-    private Collection<OntologicalClass> ontologies;
+    private Set<OntologicalClass> ontologies;
     /** List of multi-parameters */
     private Set<MultiParameter> multiParameters = new LinkedHashSet<MultiParameter>();
+
+    public Algorithm() {
+    }
 
     /**
      * Create a new instance of Algorithm providing its identifier as a {@link VRI }.
@@ -76,7 +79,7 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
      * @return
      *      The collection of ontological classes for this algorithm.
      */
-    public Collection<OntologicalClass> getOntologies() {
+    public Set<OntologicalClass> getOntologies() {
         return ontologies;
     }
 
@@ -85,7 +88,7 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
      * @param ontologies
      *      A collection of ontological classes that characterize this algorithm.
      */
-    public void setOntologies(Collection<OntologicalClass> ontologies) {
+    public void setOntologies(Set<OntologicalClass> ontologies) {
         this.ontologies = ontologies;
     }
 
@@ -94,7 +97,7 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
      * @return
      *      ParameterValue of parameters.
      */
-    public ArrayList<Parameter> getParameters() {
+    public Set<Parameter> getParameters() {
         return parameters;
     }
 
@@ -103,7 +106,7 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
      * @param parameters
      *      ParameterValue of parameters.
      */
-    public Algorithm setParameters(ArrayList<Parameter> parameters) {
+    public Algorithm setParameters(Set<Parameter> parameters) {
         this.parameters = parameters;
         return this;
     }
@@ -174,11 +177,12 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
         com.hp.hpl.jena.ontology.OntModel om = new SimpleOntModelImpl();
         om.read(stream, null);
         AlgorithmSpider spider = new AlgorithmSpider(null, om);
-        throw new UnsupportedOperationException();
+        Algorithm alg = spider.parse();
+        return alg;
     }
 
     @Override
-    protected Algorithm loadFromRemote(VRI uri) throws ToxOtisException {
+    protected Algorithm loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
         AlgorithmSpider spider = new AlgorithmSpider(uri);
         Algorithm algorithm = spider.parse();
         setMeta(algorithm.getMeta());
@@ -188,7 +192,6 @@ public class Algorithm extends OTOnlineResource<Algorithm> implements OntologySe
     }
 
     public Algorithm publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException {
-
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

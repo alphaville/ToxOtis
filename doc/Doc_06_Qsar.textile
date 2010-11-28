@@ -1,0 +1,58 @@
+h1. Consuming OpenTox QSAR web services
+
+QSAR services roughly include model training (regression/classification), prediction and dataset preprocessing (filtering, feature selection), so all boild down to the consumption of the Algorithm and Model web services of "OpenTox":http://opentox.org.
+
+h2. Invoke an algorithm service
+
+  For the time the only utility that is available for using OpenTox algorithms is the class "Trainer":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/training/Trainer.java. In order to use an algorithm service the user has to provide its URI, parametrize the algorithm and provide the URIs of the training dataset and the prediction feature. In the following example we use the algorithm "svm":http://opentox.ntua.gr:3000/algorithm/svm (running on the NTUA server) to train a predictive regression model:
+
+
+<pre>
+/*
+ * Initialize and parametrize the algorithm you
+ * want to use. Create a trainer.
+ */
+Algorithm alg = new Algorithm(Services.NtuaAlgorithms.mlr());
+Parameter p1 = new Parameter("gamma", new LiteralValue(0.746));
+Parameter p2 = new Parameter("cost", new LiteralValue(243.00));
+alg.getParameters().add(p1);
+alg.getParameters().add(p2);
+Dataset ds = new Dataset(new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/6"));
+Feature pf = new Feature(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/20180"));
+
+Trainer trainer = new Trainer(alg, ds, pf);
+
+/*
+ * Create an authentication token with your 
+ * credentials (use encrypted file for higher security)
+ */
+AuthenticationToken at =
+                new AuthenticationToken(new java.io.File("/home/chung/toxotisKeys/my.key"));
+
+/*
+ * Have a task running and wait for the result
+ */
+Task task = trainer.train(at);// << Use your credentials here!
+TaskRunner tr = new TaskRunner(task);
+Future<Task> future = Executors.newSingleThreadExecutor().submit(tr);
+Task completedTask = future.get();
+
+/* 
+ * Output the task's result (model URI).
+ */
+System.out.println(completedTask.getResultUri());
+</pre>
+
+Upon completion the model's URI will be printed on your System's output:
+
+<pre>
+http://opentox.ntua.gr:3000/model/0253cde2-9d22-43c2-b9ef-e3887e69f61e
+</pre>
+
+You can use a parser to load the created model:
+
+<pre>
+Model model = new Model(completedTask.getResultUri());
+model.loadFromRemote();
+</pre>
+  

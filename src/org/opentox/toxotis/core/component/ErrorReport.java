@@ -4,17 +4,17 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.net.URISyntaxException;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
-import org.opentox.toxotis.util.spiders.ErrorReportSpider;
 
 /**
  * Error Reports are part of the OpenTox API since version 1.1. Error Reports define a
@@ -40,8 +40,18 @@ public class ErrorReport extends OTComponent<ErrorReport> {
     private String errorCode;
     /** Trace... */
     private ErrorReport errorCause;
+    private UUID uuid = UUID.randomUUID();
+    private static final String DISCRIMINATOR = "error";
 
     public ErrorReport() {
+    }
+
+    @Override
+    public VRI getUri() {
+        if (uri == null) {
+            uri = Services.anonymous().augment(DISCRIMINATOR, uuid.toString());
+        }
+        return uri;
     }
 
     public String getActor() {

@@ -1,6 +1,5 @@
 package org.opentox.toxotis.core.component;
 
-import org.opentox.toxotis.core.component.Task;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.Individual;
@@ -20,7 +19,6 @@ import org.opentox.toxotis.client.PostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTPublishable;
-import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -44,7 +42,8 @@ public class Feature extends OTPublishable<Feature> {
 
     private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
     private String units;
-    private Set<LiteralValue> admissibleValue = new HashSet<LiteralValue>();
+    private Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
+
 
     public Feature() {
         super();
@@ -54,12 +53,12 @@ public class Feature extends OTPublishable<Feature> {
         super(uri);
     }
 
-    public Set<LiteralValue> getAdmissibleValue() {
-        return admissibleValue;
+    public Set<LiteralValue> getAdmissibleValues() {
+        return admissibleValues;
     }
 
-    public void setAdmissibleValue(Set<LiteralValue> admissibleValue) {
-        this.admissibleValue = admissibleValue;
+    public void setAdmissibleValues(Set<LiteralValue> admissibleValue) {
+        this.admissibleValues = admissibleValue;
     }
 
     public Set<OntologicalClass> getOntologies() {
@@ -68,6 +67,27 @@ public class Feature extends OTPublishable<Feature> {
 
     public void setOntologies(Set<OntologicalClass> ontologies) {
         this.ontologies = ontologies;
+    }
+
+    public Set<OntologicalClass> getLowLevelOntologies(){
+        Set<OntologicalClass> lowLevel = new HashSet<OntologicalClass>();
+        for (OntologicalClass oc : ontologies){
+            if (oc.equals(OTClasses.NominalFeature()) || oc.equals(OTClasses.NumericFeature()) || oc.equals(OTClasses.StringFeature())){
+                lowLevel.add(oc);
+            }
+        }
+        if (lowLevel.isEmpty()){
+            lowLevel.add(OTClasses.StringFeature());
+        }
+        return lowLevel;
+    }
+
+    public void setLowLevelOntologies(Set<OntologicalClass> ontologies){
+        if (this.ontologies==null){
+            this.ontologies = ontologies;
+        }else{
+            this.ontologies.addAll(ontologies);
+        }
     }
 
     public String getUnits() {
@@ -104,9 +124,9 @@ public class Feature extends OTPublishable<Feature> {
             }
         }
         /* Add admissible values in the RDF graph */
-        if (admissibleValue != null && !admissibleValue.isEmpty()) {
+        if (admissibleValues != null && !admissibleValues.isEmpty()) {
             DatatypeProperty accepts = OTDatatypeProperties.acceptValue().asDatatypeProperty(model);
-            for (LiteralValue tv : admissibleValue) {
+            for (LiteralValue tv : admissibleValues) {
                 if (tv != null) {
                     indiv.addProperty(accepts, model.createTypedLiteral(tv.getValue(), tv.getType()));
                 }
@@ -152,7 +172,7 @@ public class Feature extends OTPublishable<Feature> {
         return new String(builder);
     }
 
-    protected Feature loadFromRemote(VRI uri) throws ToxOtisException {
+    protected Feature loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
         FeatureSpider fSpider = new FeatureSpider(uri);
         Feature f = fSpider.parse();
         setMeta(f.getMeta());
@@ -179,7 +199,7 @@ public class Feature extends OTPublishable<Feature> {
             if (status == 200) {
                 Task readyTask = new Task();
                 readyTask.setPercentageCompleted(100);
-                readyTask.seStatus(Task.Status.COMPLETED);
+                readyTask.setStatus(Task.Status.COMPLETED);
                 try {
                     readyTask.setResultUri(new VRI(client.getResponseText()));
                     return readyTask;
@@ -249,7 +269,7 @@ public class Feature extends OTPublishable<Feature> {
             if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
                 explicitTypeDeclaration = true;
                 writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
-                for (LiteralValue admissibleVal : getAdmissibleValue()) {
+                for (LiteralValue admissibleVal : getAdmissibleValues()) {
                     writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                     // TODO: Include also the XSD datatype of the value...
                     writer.writeCharacters(admissibleVal.getValue().toString());// REFERS TO #NODE_ACCEPT_VALUE
@@ -300,4 +320,29 @@ public class Feature extends OTPublishable<Feature> {
         }
         endRdfWriter(writer);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Feature other = (Feature) obj;
+        if (this.uri != other.uri && (this.uri == null || !this.uri.equals(other.uri))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 19 * hash + (this.getUri() != null ? this.getUri().toString().hashCode() : 0);
+        return hash;
+    }
+
+   
+
 }

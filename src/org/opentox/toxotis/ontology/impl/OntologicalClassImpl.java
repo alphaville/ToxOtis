@@ -1,11 +1,9 @@
 package org.opentox.toxotis.ontology.impl;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.vocabulary.DC;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -15,8 +13,8 @@ public class OntologicalClassImpl implements OntologicalClass {
     private String ns = OTClasses.NS;
     private String name;
     private MetaInfo metaInfo = new MetaInfoImpl();
-    private Collection<OntologicalClass> superClasses = new ArrayList<OntologicalClass>();
-    private Collection<OntologicalClass> disjointWith = new ArrayList<OntologicalClass>();
+    private Set<OntologicalClass> superClasses = new HashSet<OntologicalClass>();
+    private Set<OntologicalClass> disjointWith = new HashSet<OntologicalClass>();
 
     /**
      * Contruct an empty instance of OntologicalClass. The namespace is by default
@@ -64,23 +62,23 @@ public class OntologicalClassImpl implements OntologicalClass {
     }
 
     @Override
-    public Collection<OntologicalClass> getSuperClasses() {
+    public Set<OntologicalClass> getSuperClasses() {
         return superClasses;
     }
 
     @Override
-    public void setSuperClasses(Collection<OntologicalClass> superClasses) {
+    public void setSuperClasses(Set<OntologicalClass> superClasses) {
         this.superClasses = superClasses;
     }
 
     @Override
-    public Collection<OntologicalClass> getDisjointWith() {
+    public Set<OntologicalClass> getDisjointWith() {
         OntModel om = null;
         return disjointWith;
     }
 
     @Override
-    public void setDisjointWith(Collection<OntologicalClass> disjointWith) {
+    public void setDisjointWith(Set<OntologicalClass> disjointWith) {
         this.disjointWith = disjointWith;
     }
 
@@ -107,6 +105,9 @@ public class OntologicalClassImpl implements OntologicalClass {
     @Override
     public String getUri() {
         return ns + name;
+    }
+
+    public void setUri(String uri) {
     }
 
     @Override
@@ -137,15 +138,24 @@ public class OntologicalClassImpl implements OntologicalClass {
             if (meta != null) {
                 meta.attachTo(clazz, model);
             }
-            for (OntologicalClass superClazz : getSuperClasses()) {
-                clazz.addSuperClass(superClazz.inModel(model));
+            if (getSuperClasses() != null) {
+                for (OntologicalClass superClazz : getSuperClasses()) {
+                    clazz.addSuperClass(superClazz.inModel(model));
+                }
             }
-
-            for (OntologicalClass disjointClazz : getDisjointWith()) {
-                clazz.addDisjointWith(disjointClazz.inModel(model));
+            if (disjointWith != null) {
+                for (OntologicalClass disjointClazz : getDisjointWith()) {
+                    clazz.addDisjointWith(disjointClazz.inModel(model));
+                }
             }
         }
         return clazz;
-
     }
+
+    @Override
+    public String toString() {
+        return getUri();
+    }
+
+
 }

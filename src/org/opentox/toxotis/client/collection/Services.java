@@ -20,6 +20,15 @@ public class Services {
     private static final String _SSO_POLICY = "https://" + SSO_HOST + "/pol";
     private static final String _SSO_POLICY_OLD = "https://" + SSO_HOST + "/Pol/opensso-pol";
     private static final String _OPENTOX_ORG = "http://opentox.org/%s";
+    private static final String _ANONYMOUS_ONG = "http://anonymous.org/%s";
+
+    public static VRI anonymous() {
+        try {
+            return new VRI(String.format(_ANONYMOUS_ONG, ""));
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     public static VRI opentox() {
         try {
@@ -28,7 +37,6 @@ public class Services {
             throw new RuntimeException(ex);
         }
     }
-
 
     public static VRI ntua() {
         try {
@@ -67,6 +75,27 @@ public class Services {
             return new VRI(_SSO_SERVER);
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    public static class NtuaAlgorithms {
+
+        private static final VRI NTUA_ALGORITHM = ntua().augment("algorithm");
+
+        public static VRI mlr() {
+            return NTUA_ALGORITHM.augment("mlr");
+        }
+
+        public static VRI svm() {
+            return NTUA_ALGORITHM.augment("svm");
+        }
+
+        public static VRI leverages() {
+            return NTUA_ALGORITHM.augment("leverages");
+        }
+
+        public static VRI filter() {
+            return NTUA_ALGORITHM.augment("filter");
         }
     }
 

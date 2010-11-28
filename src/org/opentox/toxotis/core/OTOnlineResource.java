@@ -50,6 +50,8 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
     /**
      * Update the current component according to some remote resource. Load information
      * from the remote location as is identified by the {@link VRI uri} of the resource.
+     * This method assuemes that no Authentication or Authorization is required to
+     * access the remote resource.
      *
      * @return
      *      An OpenTox component as an instance of <code>T</code>, i.e. of the
@@ -61,7 +63,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @see OTComponent#setUri(org.opentox.toxotis.client.VRI)
      */
     public T loadFromRemote() throws ToxOtisException {
-        return loadFromRemote(uri);
+        return loadFromRemote(uri,null);
     }
 
     /**
@@ -85,20 +87,22 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      */
     public T loadFromRemote(AuthenticationToken authentication) throws ToxOtisException {
         VRI authenticatedUri = new VRI(uri);
-        authenticatedUri.appendToken(authentication);
-        return loadFromRemote(authenticatedUri);
+        authenticatedUri.appendToken(authentication); //TODO: Remove this line [due for next release]
+        return loadFromRemote(authenticatedUri, authentication);
     }
 
     /**
      * Loads an OpenTox component from a remote location identified by its {@link VRI uri} and
      * parses it into an instance of <code>T</code>. This method is protected and should be
-     * implemented by all subclasses of {@link OTOnlineResource }. The method in invoked by
+     * implemented by all subclasses of {@link OTOnlineResource }. The method is invoked by
      * its public counterpart {@link OTOnlineResource#loadFromRemote(org.opentox.toxotis.util.aa.AuthenticationToken) }
      * which accesses the remote location providing an authentication token.
      *
      * @param vri
      *      Identifier of the location from where the component should be downloaded
      *      and parsed
+     * @param token
+     *      Token provided
      * @return
      *      Parsed instance of the component.
      * @throws ToxOtisException
@@ -107,7 +111,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      or other potent communication error occur during the connection or the
      *      transaction of data.
      */
-    protected abstract T loadFromRemote(VRI vri) throws ToxOtisException;
+    protected abstract T loadFromRemote(VRI vri, AuthenticationToken token) throws ToxOtisException;
 
     /**
      * Downloads a certain representation of the compound in a specified MIME

@@ -16,6 +16,7 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  *
@@ -31,8 +32,13 @@ public class TaskSpider extends Tarantula<Task> {
     }
 
     public TaskSpider(VRI vri) throws ToxOtisException {
+        this(vri, (AuthenticationToken) null);
+    }
+
+    public TaskSpider(VRI vri, AuthenticationToken token) throws ToxOtisException {
         this.vri = vri;
         GetClient client = new GetClient(vri);
+        client.authorize(token);
         client.setMediaType(Media.APPLICATION_RDF_XML);
         try {
             final int status = client.getResponseCode();
@@ -71,7 +77,7 @@ public class TaskSpider extends Tarantula<Task> {
         if (hasStatusProp != null) {
             Literal hasStatus = hasStatusProp.getObject().as(Literal.class);
             if (hasStatus != null) {
-                task.seStatus(Task.Status.valueOf(hasStatus.getString().toUpperCase()));
+                task.setStatus(Task.Status.valueOf(hasStatus.getString().toUpperCase()));
             }
         }
 
