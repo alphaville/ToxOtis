@@ -154,8 +154,9 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     }
 
 
-    public PostHttpClient setContentType(Media media) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public PostHttpsClient setContentType(Media media) {
+        this.contentType = media.getMime();
+        return this;
     }
 
     public PostHttpClient setPostable(OntModel model) {

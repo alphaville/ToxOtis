@@ -475,6 +475,11 @@ public class AuthenticationToken {
         sb.append("\n");
         sb.append("Status              : " + getStatus());
         return new String(sb);
-    }    
+    }
+
+    public static void main(String... art) throws ToxOtisException{
+        AuthenticationToken at = new AuthenticationToken("Sopasakis", "abfhs8y");
+        System.out.println(at);
+    }
     
 }
