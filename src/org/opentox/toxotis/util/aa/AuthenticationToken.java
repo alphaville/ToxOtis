@@ -477,9 +477,6 @@ public class AuthenticationToken {
         return new String(sb);
     }
 
-    public static void main(String... art) throws ToxOtisException{
-        AuthenticationToken at = new AuthenticationToken("Sopasakis", "abfhs8y");
-        System.out.println(at);
-    }
+    
     
 }
