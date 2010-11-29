@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 
@@ -18,11 +19,8 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class GetHttpsClient extends AbstractHttpsClient {
-
-    
-    /** The method that this client applies */
-    public static final String METHOD = "GET";
+public class GetHttpsClient extends AbstractHttpsClient implements IGetClient{
+   
 
     public GetHttpsClient(VRI vri) {
         super(vri);

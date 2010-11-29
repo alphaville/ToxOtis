@@ -170,5 +170,17 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public IPostClient addPostParameter(String paramName, String paramValue) throws NullPointerException {
+        if (paramName == null) {
+            throw new NullPointerException("paramName must be not null");
+        }
+        try {
+            postParameters.put(URLEncoder.encode(paramName, URL_ENCODING), paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "");
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex);
+        }
+        return this;
+    }
+
 
 }

@@ -2,11 +2,10 @@ package org.opentox.toxotis.training;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.http.PostHttpClient;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Algorithm;
@@ -15,7 +14,6 @@ import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.spiders.ModelSpider;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
@@ -64,8 +62,8 @@ public class Trainer {
 
     public Task train(AuthenticationToken token) throws ToxOtisException {
         /** Handle provided token */
-        VRI vri = algorithm.getUri();        
-        PostHttpClient client = new PostHttpClient(vri);
+        VRI vri = algorithm.getUri();
+        IPostClient client = ClientFactory.createPostClient(vri);
         client.authorize(token);
         client.setMediaType(Media.TEXT_URI_LIST);
         if (dataset != null) {
@@ -74,7 +72,7 @@ public class Trainer {
         if (predictionFeature != null) {
             client.addPostParameter("prediction_feature", predictionFeature.getUri().toString());
         }
-        
+
         if (algorithm.getParameters() != null && !algorithm.getParameters().isEmpty()) {
             for (Parameter parameter : algorithm.getParameters()) {
                 client.addPostParameter(parameter.getName().getValueAsString(),

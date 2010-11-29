@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Set;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 

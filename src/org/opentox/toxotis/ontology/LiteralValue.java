@@ -167,18 +167,5 @@ public class LiteralValue<T> implements Serializable {
     }
 
     public void setHash(long hashCode) {/* Do nothing! */ }
-
-    public static void main(String... ars) {
-        LiteralValue lv = new LiteralValue();
-
-        lv.setValue("abcdefghijklmnopqrstuvwxyz");
-        LiteralValue lv2 = new LiteralValue();
-        lv2.setValue("abcdefghijklmnopqrstuvwxyz");
-        System.out.println(lv + ", " + lv2.equals(lv));
-        System.out.println(lv.equals(lv2));
-        System.out.println(lv.getType());
-        System.out.println(lv.getValue());
-        System.out.println(lv.getHash());
-        System.out.println(lv.hashCode());
-    }
+    
 }

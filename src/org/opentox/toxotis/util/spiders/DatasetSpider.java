@@ -12,7 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.http.GetHttpClient;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.DataEntry;
@@ -38,7 +39,7 @@ public class DatasetSpider extends Tarantula<Dataset> {
         super();
         long timeFlag = System.currentTimeMillis();
         this.datasetUri = uri;
-        GetHttpClient client = new GetHttpClient();
+        IGetClient client = ClientFactory.createGetClient(uri);
         client.authorize(token); // << OpenTox API 1.2. 
         try {
             client.setMediaType(Media.APPLICATION_RDF_XML);

@@ -13,6 +13,7 @@ import org.opentox.toxotis.core.IStAXWritable;
  * @author Charalampos Chomenides
  */
 public interface IPostClient extends IClient {
+
     /**
      * The method that this client applies
      */
@@ -93,4 +94,13 @@ public interface IPostClient extends IClient {
      */
     IPostClient setPostable(String string);
 
+    /**
+     * Add a parameter which will be posted to the target URI. Once the parameter is
+     * submitted to the PostHttpClient, it is stored as URL-encoded using the UTF-8 encoding.
+     * @param paramName Parameter name
+     * @param paramValue Parameter value
+     * @return This object
+     * @throws NullPointerException If paramName is <code>null</code>.
+     */
+    IPostClient addPostParameter(String paramName, String paramValue) throws NullPointerException;
 }
