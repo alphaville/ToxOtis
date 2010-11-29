@@ -72,7 +72,7 @@ public class ModelSpider extends Tarantula<Model> {
         try {
             uri = new VRI(resource.getURI());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -82,7 +82,7 @@ public class ModelSpider extends Tarantula<Model> {
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.resource = model.getResource(uri);
     }
@@ -99,7 +99,7 @@ public class ModelSpider extends Tarantula<Model> {
                 User u = token.getUser();
                 m.setCreatedBy(u);
             } catch (ToxOtisException ex) {
-                Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

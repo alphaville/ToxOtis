@@ -31,6 +31,7 @@ public class Task extends OTOnlineResource<Task> {
         setPercentageCompleted(downloadedTask.getPercentageCompleted());
         setResultUri(downloadedTask.getResultUri());
         setHttpStatus(downloadedTask.getHttpStatus());
+        setCreatedBy(downloadedTask.getCreatedBy());
         return this;
     }
 
