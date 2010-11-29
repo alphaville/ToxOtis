@@ -19,6 +19,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IClient;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.https.DeleteHttpsClient;
@@ -52,7 +55,7 @@ public class Policy {
     private Set<PolicyRule> rules = new HashSet<PolicyRule>();
     private Set<PolicySubject> subjects = new HashSet<PolicySubject>();
     private String subjectsCollectionName = "mySubjects";
-    private static final String subjectid = "subjectid";
+    private static final String SUBJECT_ID = "subjectid";
     private String subjectsDescription = "";
     private static Document policyDocument = null;
 
@@ -206,7 +209,7 @@ public class Policy {
             sdc = new DeleteHttpsClient(policyServiceUri);
             sdc.addHeaderParameter("id", policyName);
             
-            sdc.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
+            sdc.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
             sdc.doDelete();
         }finally{
             if (sdc!=null){
@@ -243,7 +246,7 @@ public class Policy {
             policyServer = Services.SingleSignOn.ssoPolicyOld();
         }
         PostHttpsClient spc = new PostHttpsClient(policyServer);
-        spc.addHeaderParameter(subjectid, token.stringValue());
+        spc.addHeaderParameter(SUBJECT_ID, token.stringValue());
         spc.setPostable(this.getText());
         spc.setContentType("application/xml");
         spc.post();
@@ -275,14 +278,14 @@ public class Policy {
      *      include 200, 401/403 and 500.
      */
     public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ToxOtisException {
-        GetHttpsClient sgt = null;
+        IGetClient sgt = null;
         ArrayList<String> listOfPolicyNames = new ArrayList<String>();
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
         }
         try {
-            sgt = new GetHttpsClient(policyService);
-            sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
+            sgt = ClientFactory.createGetClient(policyService);
+            sgt.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
             Set<VRI> policies = null;
             int responseStatus = sgt.getResponseCode();
             if (responseStatus == 200) {
@@ -295,6 +298,8 @@ public class Policy {
             } else {
                 throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus);
             }
+        } catch (IOException ex) {
+            Logger.getLogger(Policy.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (sgt != null) {
                 try {
@@ -339,7 +344,7 @@ public class Policy {
         try {
             // REQUEST
             sgt = new GetHttpsClient(policyService);
-            sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
+            sgt.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
             sgt.addHeaderParameter("uri", serviceUri.clearToken().toString());
 
             // RETURN RESPONSE
@@ -376,7 +381,7 @@ public class Policy {
         try {
             // REQUEST
             sgt = new GetHttpsClient(policyService);
-            sgt.addHeaderParameter(subjectid, token.getTokenUrlEncoded());
+            sgt.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
             sgt.addHeaderParameter("id", id);
 
             // PROCESS RESPONSE

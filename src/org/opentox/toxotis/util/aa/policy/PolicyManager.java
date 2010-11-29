@@ -81,8 +81,6 @@ public class PolicyManager {
         throw new UnsupportedOperationException();
     }
 
-    public static void main(String... args) throws Exception {
-
-    }
+ 
 }
 
