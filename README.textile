@@ -1,4 +1,4 @@
-h1. Τοξότης
+h1. Τοξότης : Core Project
 
 h2. About
 
@@ -43,8 +43,7 @@ This project depends on the following libraries (Should be downloaded and added 
 
 h2. License
 
-This project, as well as all other projects developed by the NTUA developers team under OpeTox, is licensed under the GNU GPL license version 3. There is a considerable debate taking place in the open source community regarding the use of the GPL or LGPL, while a variety of other licenses can be found on the web as well. However it is GNU itself that prompts developers to use GPL (read "this article":http://www.gnu.org/philosophy/why-not-lgpl.html).
-
+This project, as well as all other projects developed by the NTUA developers team under OpeTox, is licensed under the "GNU GPL license version 3":http://www.gnu.org/licenses/gpl.html. There is a considerable debate taking place in the open source community regarding the use of the GPL or LGPL, while a variety of other licenses can be found on the web as well. However it is GNU itself that prompts developers to use GPL (read "this article":http://www.gnu.org/philosophy/why-not-lgpl.html).
 
 h2. Stay Tuned
 
