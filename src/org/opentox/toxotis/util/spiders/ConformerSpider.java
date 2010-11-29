@@ -11,7 +11,8 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.http.GetHttpClient;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Conformer;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -29,7 +30,7 @@ public class ConformerSpider extends Tarantula<Conformer>{
     public ConformerSpider(VRI uri) throws ToxOtisException {
         super();
         this.uri = uri;
-        GetHttpClient client = new GetHttpClient();
+        IGetClient client = ClientFactory.createGetClient(uri);
         client.setMediaType("application/rdf+xml");
         client.setUri(uri);
         model = client.getResponseOntModel();

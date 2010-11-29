@@ -3,7 +3,8 @@ package org.opentox.toxotis.benchmark.job.impl;
 import org.opentox.toxotis.benchmark.gauge.GaugeFactory;
 import org.opentox.toxotis.benchmark.gauge.TimeGauge;
 import org.opentox.toxotis.benchmark.job.Job;
-import org.opentox.toxotis.client.http.GetHttpClient;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 
 /**
@@ -44,7 +45,7 @@ public class DownloadOntModelJob extends Job {
         timeGauge.start();
         VRI uri = new VRI(String.format(templatedUri, parameter.toString()));
         System.out.println(uri);
-        GetHttpClient client = new GetHttpClient(uri);
+        IGetClient client = ClientFactory.createGetClient(uri);
         client.getResponseOntModel();
         client.close();
         timeGauge.stop();

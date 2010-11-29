@@ -10,7 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.http.GetHttpClient;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Task;
@@ -37,7 +38,7 @@ public class TaskSpider extends Tarantula<Task> {
 
     public TaskSpider(VRI vri, AuthenticationToken token) throws ToxOtisException {
         this.vri = vri;
-        GetHttpClient client = new GetHttpClient(vri);
+        IGetClient client = ClientFactory.createGetClient(vri);
         client.authorize(token);
         client.setMediaType(Media.APPLICATION_RDF_XML);
         try {

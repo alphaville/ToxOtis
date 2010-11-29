@@ -15,6 +15,8 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
@@ -211,9 +213,9 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
         if (token != null) {
             newUri.clearToken().appendToken(token);
         }
-        GetHttpClient client = new GetHttpClient(newUri);
+        IGetClient client = ClientFactory.createGetClient(newUri);
         client.setMediaType(media.getMime());
-
+        client.authorize(token);
         try {
             int responseStatus;
             try {
