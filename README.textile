@@ -1,6 +1,6 @@
 h1. Τοξότης : Core Project
 
-!http://cloud.github.com/downloads/alphaville/ToxOtis/Sagittarius.jpg(Saggitarius)!
+!http://opentox.ntua.gr/pics/Sagittarius.png!
 
 h2. About
 
