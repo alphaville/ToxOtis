@@ -20,6 +20,7 @@ import org.opentox.toxotis.util.aa.SSLConfiguration;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
+@Deprecated
 public class PolicyManager {
 
     /*

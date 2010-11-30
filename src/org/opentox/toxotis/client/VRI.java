@@ -565,6 +565,11 @@ public class VRI implements Serializable { // Well tested!
         return null;
     }
 
+    public String getHost() {
+        URI asUri = this.toURI();
+        return asUri != null ? asUri.getHost() : null;
+    }
+
     /**
      * Returns the base URI of the service.
      * @return

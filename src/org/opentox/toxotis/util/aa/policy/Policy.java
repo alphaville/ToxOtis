@@ -325,7 +325,7 @@ public class Policy {
     }
 
     /**
-     * Obtain the username of the owner of a policy for a given URI,
+     * Obtain the username of the owner of a policy for a given URI.
      * @param serviceUri
      *      URI of an (OpenTox) web service for which the username of its creator
      *      is requested
@@ -366,7 +366,7 @@ public class Policy {
                 if (response.trim().equals("null")) {
                     return null;
                 }
-                return response;
+                return response + "@" + policyService.getServiceBaseUri().getHost();
             } else if (responseStatus == 403) {
                 throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
             } else if (responseStatus == 401) {

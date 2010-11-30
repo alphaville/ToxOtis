@@ -1,0 +1,44 @@
+package org.opentox.toxotis.core.html;
+
+/**
+ *
+ * @author Pantelis Sopasakis
+ * @author Charalampos Chomenides
+ */
+public interface HTMLTableRow {
+
+    int getNumColumns();
+
+    HTMLTableRow cursorUp();
+
+    HTMLTableRow cursorDown();
+
+    HTMLTableRow moveCursorAt(int i) throws ArrayIndexOutOfBoundsException;
+
+    /**
+     *
+     * @param index
+     *      Index starts from <b>1</b>.
+     * @return
+     */
+    HTMLComponent get(int index);
+
+    HTMLComponent getCurrent();
+
+    HTMLTableRow setAtCursor(HTMLComponent component);
+
+    HTMLTableRow setCurrentColumnWidth(int width);
+
+    HTMLTableRow setColumnWidth(int column, int width);
+
+    HTMLTableRow setColumnWidths(int... widths);
+
+    boolean isCursorLast();
+
+    boolean isCursorFirst();
+
+    int cursorPosition();
+
+    boolean isRowEmpty();
+}
+
