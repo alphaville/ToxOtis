@@ -1,6 +1,6 @@
 h1. Τοξότης : Core Project
 
-<img src="http://opentox.ntua.gr/pics/Sagittarius.png" width="20%"/>
+<img src="http://opentox.ntua.gr/pics/Sagittarius.png" width="5%"/>
 
 h2. About
 
