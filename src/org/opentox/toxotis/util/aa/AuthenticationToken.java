@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.client.collection.Services;
@@ -362,33 +363,29 @@ public class AuthenticationToken {
      *
      */
     public User getUser() throws ToxOtisException {
-        User u = new User();
-        PostHttpsClient poster = new PostHttpsClient(Services.SingleSignOn.ssoAttributes());
-        poster.addPostParameter("subjectid", stringValue());
-        poster.post();
-
         InputStream is = null;
         BufferedReader reader = null;
-        int status = poster.getResponseCode();
-        if (status != 200) {
-            if (status == 401) {
-                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access the resource at : '"
-                        + poster.getUri() + "'. Status is " + status);
-            }
-            if (status == 403) {
-                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "Permission is denied to : '"
-                        + poster.getUri() + "'. Status is " + status);
-            }
-            throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service '" + poster.getUri()
-                    + "' returned status code " + status);
-        }
+        IPostClient poster = null;
+        User u = new User();
         try {
+            poster = ClientFactory.createPostClient(Services.SingleSignOn.ssoAttributes());
+            poster.addPostParameter("subjectid", stringValue());
+            poster.post();
+            int status = poster.getResponseCode();
+            if (status != 200) {
+                if (status == 401) {
+                    throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access the resource at : '" + poster.getUri() + "'. Status is " + status);
+                }
+                if (status == 403) {
+                    throw new ToxOtisException(ErrorCause.UnauthorizedUser, "Permission is denied to : '" + poster.getUri() + "'. Status is " + status);
+                }
+                throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service '" + poster.getUri() + "' returned status code " + status);
+            }
             final String valueKey = "userdetails.attribute.value=";
             final String nameKey = "userdetails.attribute.name=%s";
             is = poster.getRemoteStream();
             reader = new BufferedReader(new InputStreamReader(is));
             String line;
-
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (line.equals(String.format(nameKey, "uid"))) {
@@ -417,8 +414,9 @@ public class AuthenticationToken {
                     }
                 }
             }
-        } catch (final IOException io) {
-            throw new ToxOtisException(io);
+
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
         } finally {
             if (reader != null) {
                 try {
@@ -442,7 +440,6 @@ public class AuthenticationToken {
                 }
             }
         }
-
         return u;
     }
 
@@ -484,4 +481,6 @@ public class AuthenticationToken {
         sb.append("Status              : " + getStatus());
         return new String(sb);
     }
+
+    
 }
