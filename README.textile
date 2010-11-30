@@ -1,5 +1,7 @@
 h1. Τοξότης : Core Project
 
+!http://cloud.github.com/downloads/alphaville/ToxOtis/Sagittarius.png!
+
 h2. About
 
 <b>Version:</b>
