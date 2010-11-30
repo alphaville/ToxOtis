@@ -349,14 +349,14 @@ public class Policy {
      *      and <code>500</code> (other unexpected conditions).
      */
     public static String getPolicyOwner(VRI serviceUri, VRI policyService, AuthenticationToken token) throws ToxOtisException {
-        GetHttpsClient sgt = null;
+        IGetClient sgt = null;
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
         }
         try {
             // REQUEST
             sgt = new GetHttpsClient(policyService);
-            sgt.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
+            sgt.addHeaderParameter(SUBJECT_ID, token.stringValue());
             sgt.addHeaderParameter("uri", serviceUri.clearToken().toString());
 
             // RETURN RESPONSE
@@ -374,6 +374,8 @@ public class Policy {
             } else {
                 throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus);
             }
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
         } finally {
             if (sgt != null) {
                 try {
