@@ -8,8 +8,11 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.client.collection.Services;
 
@@ -91,8 +94,8 @@ public class AuthenticationToken {
         this();
         PostHttpsClient poster = new PostHttpsClient(Services.SingleSignOn.ssoAuthenticate());
         try {
-            poster.addParameter("username", username);
-            poster.addParameter("password", password);
+            poster.addPostParameter("username", username);
+            poster.addPostParameter("password", password);
             username = null;
             password = null;
             poster.post();
@@ -276,10 +279,10 @@ public class AuthenticationToken {
         if (token == null || (token != null && token.isEmpty())) {
             return false;
         }
-        PostHttpsClient poster = null;
+        IPostClient poster = null;
         try {
             poster = new PostHttpsClient(Services.SingleSignOn.ssoValidate());
-            poster.addParameter("tokenid", stringValue());
+            poster.addPostParameter("tokenid", stringValue());
             poster.post();
             int status = poster.getResponseCode();
             String message = (poster.getResponseText()).trim();
@@ -298,6 +301,9 @@ public class AuthenticationToken {
             } else {
                 return false;
             }
+        } catch (IOException ex) {
+            throw new ToxOtisException("Exception caught while communicating with the "
+                    + "token validation service at :" + Services.SingleSignOn.ssoValidate().toString(), ex);
         } finally {
             if (poster != null) {
                 try {
@@ -325,15 +331,17 @@ public class AuthenticationToken {
         if (token == null || (token != null && token.isEmpty())) {
             return; // Nothing to invalidate!
         }
-        PostHttpsClient poster = null;
+        IPostClient poster = null;
         try {
             poster = new PostHttpsClient(Services.SingleSignOn.ssoInvalidate());
-            poster.addParameter("subjectid", stringValue());
+            poster.addPostParameter("subjectid", stringValue());
             poster.post();
             int status = poster.getResponseCode();
             if (status != 200) {
                 throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
             }
+        } catch (IOException ex) {
+            Logger.getLogger(AuthenticationToken.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (poster != null) {
                 try {
@@ -356,7 +364,7 @@ public class AuthenticationToken {
     public User getUser() throws ToxOtisException {
         User u = new User();
         PostHttpsClient poster = new PostHttpsClient(Services.SingleSignOn.ssoAttributes());
-        poster.addParameter("subjectid", stringValue());
+        poster.addPostParameter("subjectid", stringValue());
         poster.post();
 
         InputStream is = null;
@@ -476,7 +484,4 @@ public class AuthenticationToken {
         sb.append("Status              : " + getStatus());
         return new String(sb);
     }
-
-    
-    
 }

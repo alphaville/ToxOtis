@@ -113,27 +113,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
             }
         }
         return new String(string);
-    }
-
-    /**
-     * Add a parameter which will be posted to the target URI. Once the parameter is
-     * submitted to the PostClient, it is stored as URL-encoded using the UTF-8 encoding.
-     * @param paramName Parameter name
-     * @param paramValue Parameter value
-     * @return This object
-     * @throws NullPointerException If paramName is <code>null</code>.
-     */
-    public IClient addParameter(String paramName, String paramValue) throws NullPointerException {
-        if (paramName == null) {
-            throw new NullPointerException("paramName must be not null");
-        }
-        try {
-            postParameters.put(URLEncoder.encode(paramName, URL_ENCODING), paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "");
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
-        }
-        return this;
-    }
+    }  
 
      public void post() throws ToxOtisException {
         initializeConnection(vri.toURI());
@@ -171,6 +151,15 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+
+    /**
+     * Add a parameter which will be posted to the target URI. Once the parameter is
+     * submitted to the PostClient, it is stored as URL-encoded using the UTF-8 encoding.
+     * @param paramName Parameter name
+     * @param paramValue Parameter value
+     * @return This object
+     * @throws NullPointerException If paramName is <code>null</code>.
+     */
     public IPostClient addPostParameter(String paramName, String paramValue) throws NullPointerException {
         if (paramName == null) {
             throw new NullPointerException("paramName must be not null");

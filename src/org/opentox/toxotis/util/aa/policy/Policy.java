@@ -1,6 +1,9 @@
 package org.opentox.toxotis.util.aa.policy;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -205,14 +208,14 @@ public class Policy {
             policyServiceUri = Services.SingleSignOn.ssoPolicyOld();
         }
         DeleteHttpsClient sdc = null;
-        try{
+        try {
             sdc = new DeleteHttpsClient(policyServiceUri);
             sdc.addHeaderParameter("id", policyName);
-            
+
             sdc.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
             sdc.doDelete();
-        }finally{
-            if (sdc!=null){
+        } finally {
+            if (sdc != null) {
                 try {
                     sdc.close();
                 } catch (IOException ex) {
@@ -285,13 +288,22 @@ public class Policy {
         }
         try {
             sgt = ClientFactory.createGetClient(policyService);
-            sgt.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
-            Set<VRI> policies = null;
+            sgt.addHeaderParameter(SUBJECT_ID, token.stringValue());
             int responseStatus = sgt.getResponseCode();
+
+            InputStream remote = null;
+            InputStreamReader isr = null;
+            BufferedReader reader = null;
+            String line = null;
             if (responseStatus == 200) {
-                policies = sgt.getResponseUriList();
-                for (VRI s : policies) {
-                    listOfPolicyNames.add(s.toString());
+                // OK => List policies!
+                remote = sgt.getRemoteStream();
+                isr = new InputStreamReader(remote);
+                reader = new BufferedReader(isr);
+                while ((line = reader.readLine()) != null) {
+                    if (!line.trim().isEmpty()) {
+                        listOfPolicyNames.add(line);
+                    }
                 }
             } else if (responseStatus == 403) {
                 throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
