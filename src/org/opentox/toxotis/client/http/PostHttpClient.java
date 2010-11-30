@@ -18,7 +18,6 @@ import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.IStAXWritable;
-import org.opentox.toxotis.core.OTComponent;
 
 /**
  * A client used to perform POST operations. It is used to perform POST requests in

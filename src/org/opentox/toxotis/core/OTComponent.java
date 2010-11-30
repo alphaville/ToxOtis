@@ -28,7 +28,7 @@ import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class OTComponent<T extends OTComponent> implements IStAXWritable, Serializable {
+public abstract class OTComponent<T extends OTComponent> implements IOTComponent, IStAXWritable, Serializable {
 
     /** URI of the component */
     protected VRI uri;
@@ -72,15 +72,6 @@ public abstract class OTComponent<T extends OTComponent> implements IStAXWritabl
         this.meta = meta;
         return (T) this;
     }
-
-    /**
-     * The OpenTox component as an individual.
-     * @param model
-     *      The ontological model to which the individual belongs.
-     * @return
-     *      The OpenTox component as an individual of a data model.
-     */
-    public abstract Individual asIndividual(OntModel model);
 
     /**
      * Creates a new Ontological Model (uses an instance of {@link SimpleOntModelImpl })
@@ -129,7 +120,7 @@ public abstract class OTComponent<T extends OTComponent> implements IStAXWritabl
         } catch (javax.xml.stream.XMLStreamException ex) {
             Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
         } finally {
-            if (streamWriter!=null){
+            if (streamWriter != null) {
                 try {
                     streamWriter.close();
                 } catch (XMLStreamException ex) {

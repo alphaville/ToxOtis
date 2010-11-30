@@ -2,7 +2,6 @@ package org.opentox.toxotis.core;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -26,7 +24,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> {
+public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> implements IOnlineResource{
 
     /**
      * Construct an OpenTox online resource providing its URI. This constructor is

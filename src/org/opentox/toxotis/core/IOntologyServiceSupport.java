@@ -10,7 +10,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public interface OntologyServiceSupport<T extends OTOnlineResource> {
+public interface IOntologyServiceSupport<T extends OTOnlineResource> {
 
     /**
      * Publishes the underlying component to the ontology service. When an OpenTox

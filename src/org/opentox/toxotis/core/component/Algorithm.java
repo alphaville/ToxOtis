@@ -5,8 +5,6 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -15,9 +13,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.HTMLSupport;
+import org.opentox.toxotis.core.IHTMLSupport;
 import org.opentox.toxotis.core.OTOnlineResource;
-import org.opentox.toxotis.core.OntologyServiceSupport;
+import org.opentox.toxotis.core.IOntologyServiceSupport;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
@@ -42,7 +40,8 @@ import org.opentox.toxotis.util.spiders.AlgorithmSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Algorithm extends OTOnlineResource<Algorithm> implements OntologyServiceSupport<Algorithm>, HTMLSupport {
+public class Algorithm extends OTOnlineResource<Algorithm>
+        implements IOntologyServiceSupport<Algorithm>, IHTMLSupport {
 
     /** ParameterValue of parameters of the algorithm. Specify the way the algorithm is parametrized */
     private Set<Parameter> parameters = new HashSet<Parameter>();
