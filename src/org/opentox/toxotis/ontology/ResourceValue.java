@@ -7,7 +7,9 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
- *
+ * A wrapper for a Resource assigned to some other resource through an Object
+ * property acting as a value for that property. A resource value is characterized
+ * by its URI and its type which in that case is an Ontological Class.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

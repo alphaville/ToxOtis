@@ -2,6 +2,7 @@ package org.opentox.toxotis.benchmark.job;
 
 import org.opentox.toxotis.benchmark.gauge.Gauge;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.jfree.data.statistics.Statistics;
 
@@ -100,11 +101,12 @@ public abstract class Job implements Runnable {
         return null;
     }
 
-        /**
+    /**
      * Adds a Gauge in the Job. If a Gauge is used but not added in the Job, it's
      * results will be ignored.
      * @param gauge A Gauge to be added in the Job.
      * @return
+     *  <code>true</code> as specified by {@link Collection#add(java.lang.Object) }.
      */
     public boolean addGauge(Gauge e) {
         return gauges.add(e);

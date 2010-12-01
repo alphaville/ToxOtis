@@ -1,7 +1,8 @@
 package org.opentox.toxotis.benchmark.gauge;
 
 /**
- *
+ * Gauge used to measure the system's CPU load.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

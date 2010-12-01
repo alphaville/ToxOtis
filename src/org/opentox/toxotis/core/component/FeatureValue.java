@@ -13,7 +13,9 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
- *
+ * A pair of a feature and a Literal value. Feature Values appear in Datasets wrapping
+ * all values in it.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

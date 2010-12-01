@@ -13,6 +13,11 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
+ * A parameter of an Algorithm characterized by its name, value and scope. Being an
+ * OpenTox component it is also described by a set of meta information.
+ *
+ * @param <T>
+ *      Datatype of the parameter's value.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides

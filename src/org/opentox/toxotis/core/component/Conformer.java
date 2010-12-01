@@ -8,9 +8,10 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
- * <p>
- * WARNING: This is utterly under developement...!
- * </p>
+ * Conformers are compounds with 3D characteristics. Conformers don't play any
+ * significant role in ToxOtis till now since all chemical entities are cast
+ * as Compounds.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

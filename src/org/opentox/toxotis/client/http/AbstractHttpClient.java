@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -56,8 +57,8 @@ public abstract class AbstractHttpClient implements IClient {
 
     /**
      * Note: if the parameter name (paramName) is either 'Accept' or 'Content-type', this
-     * method will override {@link PostClient#setMediaType(java.lang.String) setMediaType} and
-     * {@link PostClient#setContentType(java.lang.String) setContentType} respectively. In general
+     * method will override {@link IClient#setMediaType(java.lang.String) setMediaType} and
+     * {@link IPostClient#setContentType(java.lang.String) setContentType} respectively. In general
      * it is not advisable that you choose this method for setting values to these headers. Once the
      * parameter name and its value are submitted to the client, they are encoded using the
      * standard UTF-8 encoding.

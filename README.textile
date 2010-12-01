@@ -5,7 +5,7 @@ h1. Τοξότης : Core Project
 h2. About
 
 <b>Version:</b>
- + 0.1.0.20, official alpha version
+ + 0.3.0.31, official alpha version
 
 <b>Authors:</b>
  + "Sopasakis Pantelis":http://gr.linkedin.com/in/sopasakis
@@ -18,6 +18,10 @@ h2. About
 
  + You can find full documentation at the "doc":http://github.com/alphaville/ToxOtis/tree/master/doc/ directory including lots of examples. For any questions don't hesitate contact to the authors by sending a message to "alphaville":http://github.com/alphaville or "hampos":http://github.com/hampos (in "github":http://github.com ).
 
+
+h2. Download
+
+  You can download the source code of ToxOtis from github either in zip or tar.gz format (click on the "Downloads" button). The jar and javadoc files are found online at "https://opentox.ntua.gr/dev/toxotis":https://opentox.ntua.gr/dev/toxotis and are regularly updated. Download the latest version of ToxOtis from that repository; To get the necessary libraries (jar files) you can either read the "Dependencies" section below or easier download what you need from "https://opentox.ntua.gr/dev/toxotis/external_libs":https://opentox.ntua.gr/dev/toxotis/external_libs/ : Download the file 'ToxOtisLibs.zip' unzip it and add all jar files in your classpath.
 
 h2. Features
 

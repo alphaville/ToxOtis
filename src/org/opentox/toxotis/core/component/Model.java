@@ -20,7 +20,12 @@ import org.opentox.toxotis.util.aa.User;
 import org.opentox.toxotis.util.spiders.ModelSpider;
 
 /**
- *
+ * QSAR, DoA or other OpenTox models. Models in OpenTox are services on which a
+ * dataset can be POSTed for processing. An OpenTox model may correspond to a predictive
+ * QSAR model, a domain of applicability estimator,  a filtering model that outputs
+ * a (filtered) dataset or any other process on datasets and is not identical to the
+ * notion of a predictive model as it appears in QSAR.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

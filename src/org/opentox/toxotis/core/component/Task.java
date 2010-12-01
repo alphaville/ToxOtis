@@ -16,6 +16,8 @@ import org.opentox.toxotis.util.aa.User;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
+ * An asynchronous job running on a remote service. Tasks are resources provided to
+ * the client to be able to monitor the progress of a job running on a server.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides

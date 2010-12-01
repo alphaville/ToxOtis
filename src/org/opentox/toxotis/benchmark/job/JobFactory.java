@@ -7,7 +7,7 @@ import org.opentox.toxotis.benchmark.job.impl.InstancesFromCsv;
 import org.opentox.toxotis.benchmark.job.impl.TimeAuthenticationJob;
 
 /**
- *
+ * Factory for creating some standard benchmarking jobs.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

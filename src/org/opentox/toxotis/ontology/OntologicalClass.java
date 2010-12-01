@@ -4,6 +4,14 @@ import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.Set;
 
+/**
+ * ToxOtis interface for ontological classes. Ontological classes are Resources
+ * (in the RDF sense) characterized by their URI, meta information about them and
+ * a set of relations with other ontological classes like subclassing/inheritance and
+ * distinctions.
+ * @author Pantelis Sopasakis
+ * @author Hampos Chomenides
+ */
 public interface OntologicalClass extends OTResource, java.io.Serializable {
 
     String getNameSpace();

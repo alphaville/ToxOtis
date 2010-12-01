@@ -17,7 +17,9 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
- *
+ * Abstact class that implements the interface {@link IDescriptorCalculation } offering
+ * some facilities for easier calculation of descriptors using a remote DC algorithm.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

@@ -8,7 +8,7 @@ import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.core.IStAXWritable;
 
 /**
- *
+ * Interface for clients that perform POST requests.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

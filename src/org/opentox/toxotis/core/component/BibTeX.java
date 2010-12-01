@@ -38,11 +38,9 @@ import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
- * <p align=justify>
  * Bibliographic reference designed according to the BibTeX specifications. OpenTox
  * resource are pointing to bibliographic entries (articles, conferences etc) using the
  * Knouf ontology.
- * </p>
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides

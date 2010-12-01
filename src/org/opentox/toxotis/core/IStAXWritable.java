@@ -8,7 +8,7 @@ package org.opentox.toxotis.core;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public interface IStAXWritable {
+public interface IStAXWritable extends IOTComponent {
 
     /**
      * Serializes the Dataset object into an RDF/XML document and writes it to an

@@ -24,6 +24,7 @@ package org.opentox.toxotis.client;
 
 /**
  *
+ * Interface for clients that perform GET requests.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

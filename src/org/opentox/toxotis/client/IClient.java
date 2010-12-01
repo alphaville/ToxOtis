@@ -8,10 +8,11 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.http.AbstractHttpClient;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
- *
+ * Generic interface for a client in ToxOtis. 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -22,8 +23,8 @@ public interface IClient extends Closeable {
 
     /**
      * Note: if the parameter name (paramName) is either 'Accept' or 'Content-type', this
-     * method will override {@link PostClient#setMediaType(java.lang.String) setMediaType} and
-     * {@link PostClient#setContentType(java.lang.String) setContentType} respectively. In general
+     * method will override {@link IClient#setMediaType(java.lang.String) setMediaType} and
+     * {@link IPostClient#setContentType(java.lang.String) setContentType} respectively. In general
      * it is not advisable that you choose this method for setting values to these headers. Once the
      * parameter name and its value are submitted to the client, they are encoded using the
      * standard UTF-8 encoding.
@@ -88,8 +89,7 @@ public interface IClient extends Closeable {
      * Response status code.
      * @throws ToxOtisException
      * In case the connection cannot be established because a {@link ToxOtisException }
-     * is thrown from the method {@link AbstractClient#initializeConnection(java.net.URI)
-     * initializeConnection(URI)}.
+     * is thrown while a connection is attempted to the remote service.
      * @throws java.io.IOException
      * In case some communication error with the remote location occurs during
      * the transaction of data.
