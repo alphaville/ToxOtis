@@ -28,10 +28,8 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     private String contentType = null;
     /** Parameters to be posted as application/x-www-form-urlencoded (if any) */
     private Map<String, String> postParameters = new HashMap<String, String>();
-    /** The method that this client applies */
-    public static final String METHOD = "POST";
     private String postableString = null;
-
+    private String postableBytes = null;
 
     public PostHttpsClient() {
         super();
@@ -41,8 +39,12 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         super(vri);
     }
 
-    public PostHttpsClient setPostable(String postableString) {
-        this.postableString = postableString;
+    public PostHttpsClient setPostable(String string, boolean binary) {
+        if (binary) {
+            this.postableBytes = string;
+        } else {
+            this.postableString = string;
+        }
         return this;
     }
 
@@ -80,7 +82,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         } catch (IOException ex) {
             throw new ToxOtisException(ex);
         }
-        
+
     }
 
     public String getContentType() {
@@ -113,18 +115,20 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
             }
         }
         return new String(string);
-    }  
+    }
 
-     public void post() throws ToxOtisException {
+    public void post() throws ToxOtisException {
         initializeConnection(vri.toURI());
         DataOutputStream wr = null;
         try {
             wr = new DataOutputStream(con.getOutputStream());
             String parametersQuery = getParametersAsQuery();
-            if (parametersQuery!=null && !parametersQuery.trim().isEmpty()){
+            if (parametersQuery != null && !parametersQuery.trim().isEmpty()) {
                 wr.writeBytes(parametersQuery);// POST the parameters
-            }else if (postableString!=null && !postableString.trim().isEmpty()){
+            } else if (postableString != null && !postableString.trim().isEmpty()) {
                 wr.writeChars(postableString);
+            }else if (postableBytes != null && !postableBytes.trim().isEmpty()) {
+                wr.writeBytes(postableBytes);
             }
             wr.flush();
             wr.close();
@@ -132,7 +136,6 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
             throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
         }
     }
-
 
     public PostHttpsClient setContentType(Media media) {
         this.contentType = media.getMime();
@@ -150,7 +153,6 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     public PostHttpClient setPostable(File objectToPost) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 
     /**
      * Add a parameter which will be posted to the target URI. Once the parameter is
@@ -171,6 +173,4 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         }
         return this;
     }
-
-
 }

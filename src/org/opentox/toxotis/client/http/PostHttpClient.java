@@ -38,6 +38,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     private File fileContentToPost = null;
     /** A simple string to be posted to the remote service */
     private String stringToPost;
+    private String bytesToPost;
     /** A StAX component that implements the interface {@link IStAXWritable }
     that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
     write(OutputStream)} that writes the component to an outputstream pointing to the
@@ -124,18 +125,12 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
         return this;
     }
 
-    /**
-     * Provide a POSTable object as a string. Keep in mind that the this string will
-     * <b>not</b> be URL-Encoded or by any means modified prior to the POST operation.
-     * It is also up to the user to specify a proper Content-type.
-     * @param string
-     *      String representation of an entity to be posted to a remote server.
-     * @return
-     *      This post client with an updated value of the postable object.
-     * @see Media Collection of Media Types
-     */
-    public PostHttpClient setPostable(String string) {
-        this.stringToPost = string;
+    public PostHttpClient setPostable(String string, boolean binary) {
+        if (binary) {
+            this.bytesToPost = string;
+        } else {
+            this.stringToPost = string;
+        }
         return this;
     }
 
@@ -263,6 +258,8 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                 staxComponent.writeRdf(wr);
             } else if (stringToPost != null) {
                 wr.writeChars(stringToPost);
+            } else if (bytesToPost != null) {
+                wr.writeBytes(bytesToPost);
             } else if (fileContentToPost != null) {
                 FileReader fr = null;
                 BufferedReader br = null;

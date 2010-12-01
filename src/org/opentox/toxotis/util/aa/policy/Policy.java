@@ -25,7 +25,9 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IClient;
 import org.opentox.toxotis.client.IGetClient;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.https.DeleteHttpsClient;
 import org.opentox.toxotis.client.https.GetHttpsClient;
@@ -212,7 +214,7 @@ public class Policy {
             sdc = new DeleteHttpsClient(policyServiceUri);
             sdc.addHeaderParameter("id", policyName);
 
-            sdc.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
+            sdc.addHeaderParameter(SUBJECT_ID, token.stringValue());
             sdc.doDelete();
         } finally {
             if (sdc != null) {
@@ -237,26 +239,32 @@ public class Policy {
      *      against the policy service. If you think that no authentication is needed
      *      to perform the HTTP request you may set it to <code>null</code>.
      * @return
-     *      URI of the created policy.
+     *      Server's response message
      * @throws ToxOtisException
      *      In case a HTTP related error occurs (I/O communication error, or the
      *      remote server is down), the service respondes in an unexpected manner
      *      like a status code 500 or 503 or authentication/authorization fails and
      *      a status code 403 or 401 are returned respectively.
      */
-    public VRI publishPolicy(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
+    public int publishPolicy(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
         if (policyServer == null) {
             policyServer = Services.SingleSignOn.ssoPolicyOld();
         }
-        PostHttpsClient spc = new PostHttpsClient(policyServer);
+        IPostClient spc = ClientFactory.createPostClient(policyServer);
+        spc.setContentType(Media.APPLICATION_XML);
         spc.addHeaderParameter(SUBJECT_ID, token.stringValue());
-        spc.setPostable(this.getText());
-        spc.setContentType("application/xml");
+        spc.setPostable(this.getText().trim(), true);
         spc.post();
-
-        System.out.println(spc.getResponseText());
-        System.out.println(spc.getResponseCode());
-        return null;
+        try {
+            int httpStatus = spc.getResponseCode();
+            if (httpStatus != 200) {
+                org.apache.log4j.Logger.getLogger(Policy.class).debug("Policy server at " + policyServer
+                        + " responded with a status code " + httpStatus, null);
+            }
+            return spc.getResponseCode();
+        } catch (IOException ex) {
+            throw new ToxOtisException("Communication error with the SSO policy server at " + policyServer, ex);
+        }
     }
 
     /**

@@ -87,12 +87,15 @@ public interface IPostClient extends IClient {
      * <b>not</b> be URL-Encoded or by any means modified prior to the POST operation.
      * It is also up to the user to specify a proper Content-type.
      * @param string
-     * String representation of an entity to be posted to a remote server.
+     *      String representation of an entity to be posted to a remote server.
+     * @param binary
+     *      Specifies whether the data should be posted in binary format, i.e.
+     *      as a sequence of bytes or as a character sequence.
      * @return
-     * This post client with an updated value of the postable object.
+     *      This post client with an updated value of the postable object.
      * @see Media Collection of Media Types
      */
-    IPostClient setPostable(String string);
+    IPostClient setPostable(String string, boolean binary);
 
     /**
      * Add a parameter which will be posted to the target URI. Once the parameter is
