@@ -37,6 +37,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.User;
 
 /**
  * Bibliographic reference designed according to the BibTeX specifications. OpenTox
@@ -244,8 +245,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
         builder.getDiv().breakLine();
         builder.addSubSubSubHeading("BibTeX in Plain Text Format");
-        builder.addParagraph(getPlainText().replaceAll("\n", "<br/>"),
-                Alignment.justify);
+        builder.addComponent(
+                new HTMLTagImpl("pre", toString()));
         builder.getDiv().breakLine();
         builder.addParagraph("<small>Other Formats: "
                 + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"
@@ -258,37 +259,15 @@ public class BibTeX extends OTPublishable<BibTeX>
         return builder.getDiv();
     }
 
-    public String getPlainText() {
-        StringBuilder result = new StringBuilder();
-        result.append("@");
-        result.append(m_bib_type.toString());
-        result.append("{");
-        result.append(getUri());
-        result.append(",\n");
-        result.append("author = \"");
-        result.append(m_author);
-        result.append("\"");
-
-        for (Field f : this.getClass().getDeclaredFields()) {
-            try {
-                if (!f.getName().equals("m_id")
-                        && !f.getName().equals("m_author")
-                        && !f.getName().equals("m_bib_type")
-                        && f.get(this) != null) {
-                    result.append(",\n");
-                    result.append(f.getName().substring(2));
-                    result.append(" = \"");
-                    result.append(f.get(this));
-                    result.append("\"");
-                }
-            } catch (IllegalArgumentException ex) {
-                throw new RuntimeException(ex);
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-        result.append("\n}\n");
-        return result.toString();
+    /**
+     * Retained for backward compatibility with third party systems. Will be
+     * removed in some future distribution. Use {@link BibTeX#toString() } instead.
+     * @return
+     *      Plain text representation of the BibTeX resource.
+     */
+    @Deprecated
+    public String getPlainText() {        
+        return toString();
     }
 
     /**
@@ -331,8 +310,17 @@ public class BibTeX extends OTPublishable<BibTeX>
     private String m_series;
     private String m_url;
     private BIB_TYPE m_bib_type;
+    private User m_createdBy;
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
+    public User getCreatedBy() {
+        return m_createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.m_createdBy = createdBy;
+    }
+
     public String getAbstract() {
         return m_abstract;
     }
@@ -508,7 +496,7 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     public BibTeX setYear(Integer year) {
-        if (year < 0 || year == null) {
+        if (year == null || (year != null && year < 0)) {
             this.m_year = null;
         } else {
             this.m_year = Integer.toString(year);
@@ -686,7 +674,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
         for (Field f : this.getClass().getDeclaredFields()) {
             try {
-                if (!f.getName().equals("m_author")
+                if (f.getName().equals("m_createdBy")) {
+                    // skip it
+                } else if (!f.getName().equals("m_author")
                         && !f.getName().equals("m_bib_type")
                         && f.get(this) != null) {
                     result.append(",\n");

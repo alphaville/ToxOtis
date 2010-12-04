@@ -288,7 +288,9 @@ public class VRI implements Serializable { // Well tested!
 
     /**
      * Clears any tokens that might be contained in the URI. Though tokens are not
-     * provided any more within the set of URL parameters,
+     * provided any more within the set of URL parameters, this method is useful, and
+     * should be used, to avoid persistense of token-related parameter in URLs in
+     * case a client provides such information within the URL parameters.
      *
      * @return
      *      Updated URI without tokens.    

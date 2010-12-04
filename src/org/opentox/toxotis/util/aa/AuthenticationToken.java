@@ -523,4 +523,9 @@ public class AuthenticationToken {
         return new String(sb);
     }
 
+    public static void main(String... arg) throws Exception{
+        AuthenticationToken a = new AuthenticationToken(new File("/home/chung/toxotisKeys/my.key"));
+        System.out.println(a);
+    }
+
 }
