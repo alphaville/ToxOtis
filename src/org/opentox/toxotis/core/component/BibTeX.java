@@ -32,6 +32,7 @@ import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
+import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
@@ -164,7 +165,7 @@ public class BibTeX extends OTPublishable<BibTeX>
 
         builder.addSubSubSubHeading("BibTeX Information");
         HTMLTable table = builder.addTable(2).
-                setTextAtCursor("BibTeX URI").setTextAtCursor(getUri().toString()).
+                setTextAtCursor("BibTeX URI").setTextAtCursor(new HTMLTagImpl("a", getUri().toString()).addTagAttribute("href", getUri().toString()).toString()).
                 setTextAtCursor("Title").setTextAtCursor(getTitle()).
                 setTextAtCursor("Author(s)").setTextAtCursor(getAuthor()).
                 setTextAtCursor("Entry Type").setTextAtCursor(getBibType().toString()).

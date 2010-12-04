@@ -15,7 +15,7 @@ import org.opentox.toxotis.core.component.FeatureValue;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
- *
+ * Parser for a DataEntry individual in an RDF graph.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

@@ -7,7 +7,8 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
- *
+ * An invokation that will be repeated after a certain time if it fails. The invokation
+ * is retried for a specified number of times.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

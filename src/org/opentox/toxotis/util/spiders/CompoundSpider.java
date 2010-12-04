@@ -15,7 +15,7 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Compound;
 
 /**
- *
+ * Downloader and parser for a compound resource available in RDF.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

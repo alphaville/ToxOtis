@@ -1,7 +1,7 @@
 package org.opentox.toxotis.core.html;
 
 /**
- *
+ * Header of an HTML document.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

@@ -1,7 +1,7 @@
 package org.opentox.toxotis.core.html;
 
 /**
- *
+ * Arbitrary user-defined HTML tag. Can be used to define a-tags or other.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

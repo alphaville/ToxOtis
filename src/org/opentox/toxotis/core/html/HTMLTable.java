@@ -1,7 +1,7 @@
 package org.opentox.toxotis.core.html;
 
 /**
- *
+ * A table in an HTML document.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -20,7 +20,6 @@ public interface HTMLTable extends HTMLExpandableComponent {
     HTMLTableRow nextRow();
 
     HTMLTableRow previousRow();
-
 
     HTMLTable setSummary(String summary);
 

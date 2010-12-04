@@ -3,15 +3,17 @@ package org.opentox.toxotis.util;
 import java.util.concurrent.Callable;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.core.component.Task.Status;
 
 /**
- *
+ * Reloads a task until its status is no longer {@link Status#RUNNING }.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public class TaskRunner implements Callable<Task> {
 
     private Task task;
+    private long delay = 100;
 
     private TaskRunner() {
         throw new AssertionError("Dummy constructor invokation in TaskRunner!");
@@ -19,6 +21,17 @@ public class TaskRunner implements Callable<Task> {
 
     public TaskRunner(final Task task) {
         this.task = task;
+    }
+
+    /**
+     * Specify the delay between successive reloads of the task resource from the
+     * remote location.
+     *
+     * @param delay
+     *      Delay in milliseconds.
+     */
+    public void setDelay(long delay) {
+        this.delay = delay;
     }
 
     private Task updateTask(Task old) throws ToxOtisException {
@@ -33,7 +46,7 @@ public class TaskRunner implements Callable<Task> {
         } else if (taskHttpStatus == 202) {// Waiting for completion!
             try {
                 // Waiting for completion!
-                Thread.sleep(100);
+                Thread.sleep(delay);
                 return updateTask(old);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);

@@ -18,7 +18,7 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
- *
+ * Parser for an ErrorReport RDF representation.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

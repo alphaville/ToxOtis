@@ -12,7 +12,7 @@ import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
- *
+ * Parser of meta information over a given resource in an RDF graph.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

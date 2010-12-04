@@ -1,7 +1,7 @@
 package org.opentox.toxotis.core.html;
 
 /**
- *
+ * Formatted text in an HTML document.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

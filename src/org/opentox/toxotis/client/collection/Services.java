@@ -4,7 +4,7 @@ import java.net.URISyntaxException;
 import org.opentox.toxotis.client.VRI;
 
 /**
- *
+ * A collection of URIs of services that participate in the OpenTox net.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -78,6 +78,9 @@ public class Services {
         }
     }
 
+    /**
+     * Algorithms implemented by NTUA.
+     */
     public static class NtuaAlgorithms {
 
         private static final VRI NTUA_ALGORITHM = ntua().augment("algorithm");
@@ -99,6 +102,9 @@ public class Services {
         }
     }
 
+    /**
+     * Services that create a depiction of a given chemical.
+     */
     public static class Depiction {
 
         public static VRI ambitCdkImage() {
@@ -138,6 +144,9 @@ public class Services {
         }
     }
 
+    /**
+     * SSO-related services.
+     */
     public static class SingleSignOn {
 
         public static VRI ssoIdentity() {
@@ -196,8 +205,19 @@ public class Services {
                 throw new RuntimeException(ex);
             }
         }
+
+        public static VRI ssoAuthorize() {
+            try {
+                return new VRI(String.format(_SSO_IDENTITY, "authorize"));
+            } catch (URISyntaxException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
+    /**
+     * Descriptor calculation services.
+     */
     public static class DescriptorCalculation {
 
         public static VRI joelib() {

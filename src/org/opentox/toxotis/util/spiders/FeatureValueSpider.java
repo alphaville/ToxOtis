@@ -13,7 +13,7 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
- *
+ * Parser for a FeatureValue resource in a given RDF graph.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

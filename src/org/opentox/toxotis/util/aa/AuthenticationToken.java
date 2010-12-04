@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.logging.Level;
@@ -14,6 +15,7 @@ import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.client.collection.Services;
 
@@ -461,6 +463,45 @@ public class AuthenticationToken {
         return true;
     }
 
+    /**
+     * Ask the SSO server whether the user with the given token is allowed to
+     * perform an HTTP operation on a target URI. If the SSO server allows the
+     * action, then  it replies with a status code <code>200</code> and the message
+     * <code>boolean=true</code>, otherwise it returns a response with the status
+     * code <code>401 (Unauthorized)</code> and the plain text message
+     * <code>boolean=false</code>.
+     *
+     * @param httpMethod
+     *      The HTTP for which permission is asked.
+     * @param target
+     *      The action URI on which the HTTP method will be applied once
+     *      permission is granted to the client.
+     * @return
+     *      <code>true</code> if the user is allowed to perform the operation and
+     *      <code>false</code> otherwise.
+     * @throws ToxOtisException
+     *      If a connection problem occurs with the remote or the communication is
+     *      corrupted.
+     */
+    public boolean authorize(String httpMethod, VRI target) throws ToxOtisException {
+        IPostClient client = ClientFactory.createPostClient(Services.SingleSignOn.ssoAuthorize());
+        client.addPostParameter("action", httpMethod);
+        client.addPostParameter("uri", target.toString());
+        client.addPostParameter("subjectid", stringValue());
+        client.post();
+        String textResponse = client.getResponseText();
+        int httpResponseStatus = -1;
+        try {
+            httpResponseStatus = client.getResponseCode();
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        }
+        if (httpResponseStatus==200 && textResponse.equals("boolean=true")){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -482,5 +523,4 @@ public class AuthenticationToken {
         return new String(sb);
     }
 
-    
 }

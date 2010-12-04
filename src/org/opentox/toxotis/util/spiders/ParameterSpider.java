@@ -11,7 +11,7 @@ import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 
 /**
- *
+ * Parser for Parameter resources in a given RDF graph.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

@@ -1,7 +1,7 @@
 package org.opentox.toxotis.core.html;
 
 /**
- *
+ * A row of an HTML table.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

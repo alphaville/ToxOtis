@@ -1,7 +1,7 @@
 package org.opentox.toxotis.core.html;
 
 /**
- *
+ * An HTML form used to accept input by end-users.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

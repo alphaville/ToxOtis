@@ -25,7 +25,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.User;
 
 /**
- *
+ * Downloader and Parser for RDF representation of OpenTox Model resources.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

@@ -24,7 +24,7 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 
 /**
- *
+ * Downloader and parser for a Feature resource available in RDF.s
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */

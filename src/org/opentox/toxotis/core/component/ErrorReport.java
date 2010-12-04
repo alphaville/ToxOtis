@@ -4,6 +4,8 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,8 +51,37 @@ public class ErrorReport extends OTComponent<ErrorReport>
     private ErrorReport errorCause;
     private UUID uuid = UUID.randomUUID();
     private static final String DISCRIMINATOR = "error";
+    private static Map<Integer, String> errorCodeReference;
+
+    static {
+        errorCodeReference = new HashMap<Integer, String>();
+        errorCodeReference.put(400, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1");// Bad request
+        errorCodeReference.put(401, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2");// Unauthorized
+        errorCodeReference.put(403, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4");// Forbidden
+        errorCodeReference.put(404, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5");// Not found
+        errorCodeReference.put(405, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.6");// Method not allowed
+        errorCodeReference.put(406, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.7");// Not acceptable
+
+        errorCodeReference.put(500, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1");// Internal server error
+        errorCodeReference.put(501, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2");// Not implemented
+        errorCodeReference.put(502, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.3");// Bad Gateway
+        errorCodeReference.put(503, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4");// Service Unavailable
+
+    }
 
     public ErrorReport() {
+    }
+
+    public ErrorReport(VRI uri) {
+        super(uri);
+    }
+
+    public ErrorReport(int httpStatus, String actor, String message, String details, String errorCode) {
+        this.httpStatus = httpStatus;
+        this.actor = actor;
+        this.message = message;
+        this.details = details;
+        this.errorCode = errorCode;
     }
 
     @Override
@@ -209,7 +240,7 @@ public class ErrorReport extends OTComponent<ErrorReport>
                 setTextAtCursor("Error Code").setTextAtCursor(getErrorCode()).
                 setTextAtCursor("Message").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getMessage())).setAlignment(Alignment.justify)).
                 setTextAtCursor("HTTP Code").setAtCursor(
-                new HTMLParagraphImpl(Integer.toString(getHttpStatus())).setAlignment(Alignment.justify)).
+                new HTMLParagraphImpl("<a href= \"" + errorCodeReference.get(getHttpStatus()) + "\" >" + Integer.toString(getHttpStatus()) + "</a>").setAlignment(Alignment.justify)).
                 setTextAtCursor("Who is to Blame").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getActor())).setAlignment(Alignment.justify)).
                 setCellPadding(5).
                 setCellSpacing(2).

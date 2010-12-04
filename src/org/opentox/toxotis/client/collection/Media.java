@@ -1,7 +1,7 @@
 package org.opentox.toxotis.client.collection;
 
 /**
- *
+ * A collection of useful mediatypes. 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
