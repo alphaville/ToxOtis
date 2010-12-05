@@ -496,10 +496,39 @@ public class AuthenticationToken {
         } catch (IOException ex) {
             throw new ToxOtisException(ex);
         }
-        if (httpResponseStatus==200 && textResponse.equals("boolean=true")){
+        if (httpResponseStatus == 200 && textResponse.equals("boolean=true")) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Ask the SSO server whether the user with the given token is allowed to
+     * perform an HTTP operation on a target URI. If the SSO server allows the
+     * action, then  it replies with a status code <code>200</code> and the message
+     * <code>boolean=true</code>, otherwise it returns a response with the status
+     * code <code>401 (Unauthorized)</code> and the plain text message
+     * <code>boolean=false</code>.
+     *
+     * @param httpMethod
+     *      The HTTP for which permission is asked.
+     * @param target
+     *      The action URI on which the HTTP method will be applied once
+     *      permission is granted to the client. The target URI in this method is
+     *      provided as a simple String.
+     * @return
+     *      <code>true</code> if the user is allowed to perform the operation and
+     *      <code>false</code> otherwise.
+     * @throws ToxOtisException
+     *      If a connection problem occurs with the remote or the communication is
+     *      corrupted or the provided target is not a valid URI.
+     */
+    public boolean authorize(String httpMethod, String target) throws ToxOtisException {
+        try {
+            return authorize(httpMethod, new VRI(target));
+        } catch (URISyntaxException ex) {
+            throw new ToxOtisException(ex);
+        }
     }
 
     @Override
@@ -523,9 +552,5 @@ public class AuthenticationToken {
         return new String(sb);
     }
 
-    public static void main(String... arg) throws Exception{
-        AuthenticationToken a = new AuthenticationToken(new File("/home/chung/toxotisKeys/my.key"));
-        System.out.println(a);
-    }
-
+    
 }

@@ -495,6 +495,15 @@ public class BibTeX extends OTPublishable<BibTeX>
         return Integer.parseInt(m_year);
     }
 
+    /**
+     * Set the year of publication. The year is provided as an instance of Integer.
+     * If the supplied value is <code>null</code>, or not-null but non-positive, then
+     * no value is stored in the corresponding field.
+     * @param year
+     *      The year of publication for the BibTeX provided as an Integer object.
+     * @return
+     *      The current updated BibTeX object.
+     */
     public BibTeX setYear(Integer year) {
         if (year == null || (year != null && year < 0)) {
             this.m_year = null;

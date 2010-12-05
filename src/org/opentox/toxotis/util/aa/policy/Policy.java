@@ -62,12 +62,10 @@ public class Policy {
     private String subjectsCollectionName = "mySubjects";
     private static final String SUBJECT_ID = "subjectid";
     private String subjectsDescription = "";
-    private static Document policyDocument = null;
+    private Document policyDocument = null;
 
     private void createDocument() {
-        if (policyDocument != null) {
-            return;
-        }
+
         Document doc = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -213,7 +211,6 @@ public class Policy {
         try {
             sdc = new DeleteHttpsClient(policyServiceUri);
             sdc.addHeaderParameter("id", policyName);
-
             sdc.addHeaderParameter(SUBJECT_ID, token.stringValue());
             sdc.doDelete();
         } finally {

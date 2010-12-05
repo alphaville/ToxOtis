@@ -128,6 +128,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
             } else if (postableString != null && !postableString.trim().isEmpty()) {
                 wr.writeChars(postableString);
             }else if (postableBytes != null && !postableBytes.trim().isEmpty()) {
+                System.err.println(".."+postableBytes+"..");
                 wr.writeBytes(postableBytes);
             }
             wr.flush();
