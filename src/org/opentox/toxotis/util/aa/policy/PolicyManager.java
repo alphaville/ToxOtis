@@ -16,7 +16,8 @@ import org.opentox.toxotis.util.aa.SSLConfiguration;
 
 
 /**
- *
+ * Functionalities provided in PolicyManager were moved to {@link Policy } as
+ * static methods.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

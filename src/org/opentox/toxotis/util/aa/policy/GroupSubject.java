@@ -2,7 +2,7 @@ package org.opentox.toxotis.util.aa.policy;
 
 
 /**
- *
+ * A collection of standard groups of Users used to identify certain access levels.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

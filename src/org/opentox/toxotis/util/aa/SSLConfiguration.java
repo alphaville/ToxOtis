@@ -10,9 +10,14 @@ import javax.net.ssl.SSLSession;
 import org.opentox.toxotis.client.collection.Services;
 
 /**
+ * 
+ * Manages your SSL connections. The method {@link #initializeSSLConnection() } in this
+ * class should be invoked prior to any SSL connection in order to identify the
+ * remote server's certificate during the handshake.
  * IMPORTANT NOTE: You have to add the certificate from opensso.in-silico.ch
  * to your $JAVA_HOME. To do this, run the main method in InstallCert (this
  * is provided by Sun). This will produce a file (ignore the exception messages).
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

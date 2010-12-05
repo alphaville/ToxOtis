@@ -1,7 +1,7 @@
 package org.opentox.toxotis.util.aa.policy;
 
 /**
- *
+ * An individual user as it is defined and used for the purposes of an SSO Policy.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

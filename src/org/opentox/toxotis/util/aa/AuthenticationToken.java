@@ -9,8 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -95,14 +94,20 @@ public class AuthenticationToken {
      */
     public AuthenticationToken(String username, String password) throws ToxOtisException {
         this();
-        PostHttpsClient poster = new PostHttpsClient(Services.SingleSignOn.ssoAuthenticate());
+        IPostClient poster = ClientFactory.createPostClient(Services.SingleSignOn.ssoAuthenticate());
         try {
             poster.addPostParameter("username", username);
             poster.addPostParameter("password", password);
             username = null;
             password = null;
             poster.post();
-            int status = poster.getResponseCode();
+            int status = 0;
+            try {
+                status = poster.getResponseCode();
+            } catch (IOException ex) {
+                throw new ToxOtisException(ErrorCause.CommunicationError, "Communication error with the service at "
+                        + Services.SingleSignOn.ssoAuthenticate(), ex);
+            }
             if (status >= 400) {
                 throw new ToxOtisException("Error while authenticating user at "
                         + poster.getUri() + ". Status code : " + status);
@@ -344,7 +349,8 @@ public class AuthenticationToken {
                 throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
             }
         } catch (IOException ex) {
-            Logger.getLogger(AuthenticationToken.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass()).debug(ex);
+            throw new ToxOtisException(ex);
         } finally {
             if (poster != null) {
                 try {
@@ -420,31 +426,51 @@ public class AuthenticationToken {
         } catch (IOException ex) {
             throw new ToxOtisException(ex);
         } finally {
+            IOException exception = null;
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (final IOException ex) {
-                    throw new ToxOtisException(ex);
+                    Logger.getLogger(getClass()).info(ex);
+                    exception = ex;
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (final IOException ex) {
-                    throw new ToxOtisException(ex);
+                    Logger.getLogger(getClass()).info(ex);
+                    exception = ex;
                 }
             }
             if (poster != null) {
                 try {
                     poster.close();
                 } catch (final IOException ex) {
-                    throw new ToxOtisException(ex);
+                    Logger.getLogger(getClass()).debug(ex);
+                    exception = ex;
                 }
             }
+            if (exception != null) {
+                throw new ToxOtisException(exception);
+            }
+
         }
         return u;
     }
 
+    /**
+     * Two Authentication tokens are equal to each other if and only if, none of
+     * them is <code>null</code> and they have the same string representation when
+     * non encoded.
+     * @param obj
+     *      Some other object for which equality to the current authentication token
+     *      is under examination.
+     * @return
+     *          <code>true</code> if this object is the same as the obj
+     *          argument; <code>false</code> otherwise.
+     * @see #hashCode() 
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -455,9 +481,6 @@ public class AuthenticationToken {
         }
         final AuthenticationToken other = (AuthenticationToken) obj;
         if ((this.token == null) ? (other.token != null) : !this.token.equals(other.token)) {
-            return false;
-        }
-        if ((this.encoding == null) ? (other.encoding != null) : !this.encoding.equals(other.encoding)) {
             return false;
         }
         return true;
@@ -484,7 +507,9 @@ public class AuthenticationToken {
      *      corrupted.
      */
     public boolean authorize(String httpMethod, VRI target) throws ToxOtisException {
-        IPostClient client = ClientFactory.createPostClient(Services.SingleSignOn.ssoAuthorize());
+        IPostClient client = null;
+
+        client = ClientFactory.createPostClient(Services.SingleSignOn.ssoAuthorize());
         client.addPostParameter("action", httpMethod);
         client.addPostParameter("uri", target.toString());
         client.addPostParameter("subjectid", stringValue());
@@ -495,6 +520,15 @@ public class AuthenticationToken {
             httpResponseStatus = client.getResponseCode();
         } catch (IOException ex) {
             throw new ToxOtisException(ex);
+        }finally{
+            if (client!=null){
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(getClass()).error(ex);
+                    throw new ToxOtisException(ex);
+                }
+            }
         }
         if (httpResponseStatus == 200 && textResponse.equals("boolean=true")) {
             return true;
@@ -552,5 +586,7 @@ public class AuthenticationToken {
         return new String(sb);
     }
 
-    
+//    public static void main(String... art) throws Exception{
+//        System.out.println(new AuthenticationToken(new java.io.File("/home/chung/toxotisKeys/my.key")));
+//    }
 }

@@ -11,7 +11,8 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
- *
+ * Serves as a pool of tokens you can use in your project to best manage your tokens
+ * and not create multiple tokens for the same user.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

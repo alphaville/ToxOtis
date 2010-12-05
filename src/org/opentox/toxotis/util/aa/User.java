@@ -3,7 +3,7 @@ package org.opentox.toxotis.util.aa;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
- *
+ * An individual User and its publicly available attributes.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

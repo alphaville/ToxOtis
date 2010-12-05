@@ -7,10 +7,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,18 +17,16 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.log4j.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
-import org.opentox.toxotis.client.IClient;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.https.DeleteHttpsClient;
-import org.opentox.toxotis.client.https.GetHttpsClient;
-import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,7 +60,7 @@ public class Policy {
     private Document policyDocument = null;
 
     private void createDocument() {
-        if (policyDocument!=null){
+        if (policyDocument != null) {
             return;
         }
         Document doc = null;
@@ -130,9 +125,10 @@ public class Policy {
                 subjectsAll.appendChild(subjectElement);
             }
             policy.appendChild(subjectsAll);
-
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(Policy.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Policy.class).fatal(ex);
+            throw new RuntimeException("Utterly unexpected condition while creating an XML document for an SSO Policy." +
+                    "Definitely a BUG! Please report is ASAP at https://github.com/alphaville/ToxOtis/issues.", ex);
         }
         policyDocument = doc;
     }
@@ -257,12 +253,21 @@ public class Policy {
         try {
             int httpStatus = spc.getResponseCode();
             if (httpStatus != 200) {
-                org.apache.log4j.Logger.getLogger(Policy.class).debug("Policy server at " + policyServer
-                        + " responded with a status code " + httpStatus, null);
+                Logger.getLogger(Policy.class).debug("Policy server at " + policyServer
+                        + " responded with a status code " + httpStatus +" with message \n"+spc.getResponseText(), null);
             }
             return spc.getResponseCode();
         } catch (IOException ex) {
             throw new ToxOtisException("Communication error with the SSO policy server at " + policyServer, ex);
+        } finally {
+            if (spc != null) {
+                try {
+                    spc.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Policy.class).error(ex);
+                    throw new ToxOtisException(ex);
+                }
+            }
         }
     }
 
@@ -318,7 +323,8 @@ public class Policy {
                 throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus);
             }
         } catch (IOException ex) {
-            Logger.getLogger(Policy.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Policy.class).error(ex);
+            throw new ToxOtisException(ex);
         } finally {
             if (sgt != null) {
                 try {
@@ -362,7 +368,7 @@ public class Policy {
         }
         try {
             // REQUEST
-            sgt = new GetHttpsClient(policyService);
+            sgt = ClientFactory.createGetClient(policyService);
             sgt.addHeaderParameter(SUBJECT_ID, token.stringValue());
             sgt.addHeaderParameter("uri", serviceUri.clearToken().toString());
 
@@ -395,18 +401,24 @@ public class Policy {
     }
 
     public static Policy parsePolicy(String id, VRI policyService, AuthenticationToken token) throws ToxOtisException {
-        GetHttpsClient sgt = null;
+        IGetClient sgt = null;
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
         }
         try {
             // REQUEST
-            sgt = new GetHttpsClient(policyService);
+            sgt = ClientFactory.createGetClient(policyService);
             sgt.addHeaderParameter(SUBJECT_ID, token.getTokenUrlEncoded());
             sgt.addHeaderParameter("id", id);
 
             // PROCESS RESPONSE
-            int responseStatus = sgt.getResponseCode();
+            int responseStatus = 0;
+            try {
+                responseStatus = sgt.getResponseCode();
+            } catch (IOException ex) {
+                Logger.getLogger(Policy.class).error(ex);
+                throw new ToxOtisException(ex);
+            }
             if (responseStatus == 200) {
                 //TODO: PARSE XML!
                 System.out.println(sgt.getResponseText());

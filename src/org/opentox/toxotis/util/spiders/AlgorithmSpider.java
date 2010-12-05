@@ -22,7 +22,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
- * A parser for data models of OpenTox algorithms.
+ * A downloader parser for data models of OpenTox algorithms.
  *
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis

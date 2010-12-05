@@ -3,7 +3,9 @@ package org.opentox.toxotis;
 import org.opentox.toxotis.core.component.ErrorReport;
 
 /**
- *
+ * Main exception in ToxOtis thrown whenever something goes wrong with a client-server
+ * session or some parsing and in general anything that might go wrong and is related
+ * to ToxOtis.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

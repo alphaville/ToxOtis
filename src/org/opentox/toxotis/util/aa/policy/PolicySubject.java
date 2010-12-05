@@ -1,7 +1,7 @@
 package org.opentox.toxotis.util.aa.policy;
 
 /**
- *
+ * Any subject of a policy that can either be an individual user or a group of such.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */

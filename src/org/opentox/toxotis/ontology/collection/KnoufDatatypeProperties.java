@@ -382,7 +382,7 @@ public class KnoufDatatypeProperties {
     }
 
     public static OTDatatypeProperty hasYear() {
-        if (ms_hasSeries == null) {
+        if (ms_hasYear == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasYear");
             property.getDomain().add(KnoufBibTex.Entry());
             property.getRange().add(XSDDatatype.XSDstring);

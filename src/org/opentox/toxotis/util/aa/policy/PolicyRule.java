@@ -1,7 +1,9 @@
 package org.opentox.toxotis.util.aa.policy;
 
 /**
- *
+ * A Rule in a policy that defined the behavior of the SSO service when permission
+ * is asked on a target URI for some method. Specifies where POST, GET, PUT and DELETE
+ * should be allowed or denied on certain individual users or groups of users.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
