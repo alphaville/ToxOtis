@@ -65,7 +65,9 @@ public class Policy {
     private Document policyDocument = null;
 
     private void createDocument() {
-
+        if (policyDocument!=null){
+            return;
+        }
         Document doc = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
