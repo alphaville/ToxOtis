@@ -46,6 +46,7 @@ This project depends on the following libraries (Should be downloaded and added 
 
 * "JFreeChart 1.0.13":http://sourceforge.net/projects/jfreechart/files/1.%20JFreeChart/1.0.13/jfreechart-1.0.13.tar.gz/download : Download JFreeChart and enjoy free charts.
 
+If you wish, you can download the full set of dependencies (jar files only) from our online repository at "https://opentox.ntua.gr/dev/toxotis/external_libs":https://opentox.ntua.gr/dev/toxotis/external_libs/ and add all jar files in your classpath. All licenses are included in the "/Licenses":https://github.com/alphaville/ToxOtis/tree/master/Licenses directory of this project.
 
 h2. License
 
