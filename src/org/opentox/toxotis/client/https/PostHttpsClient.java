@@ -9,12 +9,10 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.IClient;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.core.IStAXWritable;
 
 /**
@@ -142,15 +140,15 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         return this;
     }
 
-    public PostHttpClient setPostable(OntModel model) {
+    public PostHttpsClient setPostable(OntModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public PostHttpClient setPostable(IStAXWritable staxWritable) {
+    public PostHttpsClient setPostable(IStAXWritable staxWritable) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public PostHttpClient setPostable(File objectToPost) {
+    public PostHttpsClient setPostable(File objectToPost) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

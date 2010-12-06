@@ -43,11 +43,11 @@ public interface MetaInfo extends java.io.Serializable {
      */
     Set<LiteralValue> getComments();
 
-    void setComments(Set<LiteralValue> comments);
+    MetaInfo setComments(Set<LiteralValue> comments);
 
-    void addComment(LiteralValue comment);
+    MetaInfo addComment(LiteralValue... comment);
 
-    void addComment(String comment);
+    MetaInfo addComment(String... comment);
 
     //// 2. descriptions
     ////
@@ -60,11 +60,11 @@ public interface MetaInfo extends java.io.Serializable {
      */
     Set<LiteralValue> getDescriptions();
 
-    void setDescriptions(Set<LiteralValue> descriptions);
+    MetaInfo setDescriptions(Set<LiteralValue> descriptions);
 
-    MetaInfo addDescription(LiteralValue description);
+    MetaInfo addDescription(LiteralValue... description);
 
-    MetaInfo addDescription(String description);
+    MetaInfo addDescription(String... description);
 
     /**
      * Get the identifier (ID) of the described entity. An identifier is an unambiguous
@@ -79,11 +79,11 @@ public interface MetaInfo extends java.io.Serializable {
      */
     Set<LiteralValue> getIdentifiers();
 
-    void setIdentifiers(Set<LiteralValue> identifiers);
+    MetaInfo setIdentifiers(Set<LiteralValue> identifiers);
 
-    void addIdentifier(LiteralValue identifier);
+    MetaInfo addIdentifier(LiteralValue... identifier);
 
-    void addIdentifier(String identifier);
+    MetaInfo addIdentifier(String... identifier);
 
     //// 4. sameAs
     ////
@@ -109,9 +109,9 @@ public interface MetaInfo extends java.io.Serializable {
      */
     Set<ResourceValue> getSameAs(); // TODO: Change this into some other class...
 
-    void setSameAs(Set<ResourceValue> values);
+    MetaInfo setSameAs(Set<ResourceValue> values);
 
-    void addSameAs(ResourceValue value);
+    MetaInfo addSameAs(ResourceValue value);
 
     //// 5. seeAlso
     /**
@@ -127,9 +127,9 @@ public interface MetaInfo extends java.io.Serializable {
      */
     Set<ResourceValue> getSeeAlso(); // TODO: Change this into some other class...
 
-    void setSeeAlso(Set<ResourceValue> values);
+    MetaInfo setSeeAlso(Set<ResourceValue> values);
 
-    void addSeeAlso(ResourceValue value);
+    MetaInfo addSeeAlso(ResourceValue value);
 
     //// 6. titles (dc:title)
     ////
@@ -141,11 +141,11 @@ public interface MetaInfo extends java.io.Serializable {
      */
     Set<LiteralValue> getTitles();
 
-    void setTitles(Set<LiteralValue> values);
+    MetaInfo setTitles(Set<LiteralValue> values);
 
-    void addTitle(LiteralValue value);
+    MetaInfo addTitle(LiteralValue... value);
 
-    void addTitle(String value);
+    MetaInfo addTitle(String... value);
 
     //// 7. subjects (dc:subject)
     ////
@@ -159,17 +159,21 @@ public interface MetaInfo extends java.io.Serializable {
      */
     Set<LiteralValue> getSubjects();
 
-    void setSubjects(Set<LiteralValue> subjects);
+    MetaInfo setSubjects(Set<LiteralValue> subjects);
 
-    void addSubject(LiteralValue subject);
+    MetaInfo addSubject(LiteralValue... subject);
+
+    MetaInfo addSubject(String... subject);
 
     //// 8. publishers
     ////
     Set<LiteralValue> getPublishers();
 
-    void setPublishers(Set<LiteralValue> publishers);
+    MetaInfo setPublishers(Set<LiteralValue> publishers);
 
-    void addPublishers(LiteralValue publisher);
+    MetaInfo addPublisher(LiteralValue... publisher);
+
+    MetaInfo addPublisher(String... publisher);
 
     //// 9. creators
     ////
@@ -182,33 +186,43 @@ public interface MetaInfo extends java.io.Serializable {
      */
     Set<LiteralValue> getCreators();
 
-    void setCreators(Set<LiteralValue> creators);
+    MetaInfo setCreators(Set<LiteralValue> creators);
 
-    void addCreator(LiteralValue creator);
+    MetaInfo addCreator(LiteralValue... creator);
+
+    MetaInfo addCreator(String... creator);
 
     //// 10. Sources (ot:hasSource)
     ////
     Set<ResourceValue> getHasSources();
 
-    void setHasSources(Set<ResourceValue> hasSources);
+    MetaInfo setHasSources(Set<ResourceValue> hasSources);
 
-    void addHasSource(ResourceValue hasSource);
+    MetaInfo addHasSource(ResourceValue hasSource);
+
+    //// 11. Contributors
 
     Set<LiteralValue> getContributors();
 
-    void setContributors(Set<LiteralValue> contributors);
+    MetaInfo setContributors(Set<LiteralValue> contributors);
 
-    void addContributor(LiteralValue contributor);
+    MetaInfo addContributor(LiteralValue... contributor);
+
+    MetaInfo addContributor(String... contributor);
+
+
 
     Set<LiteralValue> getAudiences();
 
-    void setAudiences(Set<LiteralValue> audiences);
+    MetaInfo setAudiences(Set<LiteralValue> audiences);
 
-    void addAudience(LiteralValue audience);
+    MetaInfo addAudience(LiteralValue... audience);
+
+    MetaInfo addAudience(String... audience);
 
     LiteralValue getDate();// used for versioning, timestamping e
 
-    void setDate(LiteralValue date);
+    MetaInfo setDate(LiteralValue date);
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------

@@ -252,45 +252,62 @@ public class MetaInfoImpl implements MetaInfo {
         return comments;
     }
 
-    public void setComments(Set<LiteralValue> comments) {
+    public MetaInfo setComments(Set<LiteralValue> comments) {
         this.comments = comments;
+        return this;
     }
 
-    public void addComment(String comment) {
-        addComment(new LiteralValue<String>(comment));
+    public MetaInfo addComment(String... comment) {
+        for (String s : comment) {
+            addComment(new LiteralValue<String>(s));
+        }
+        return this;
     }
 
-    public void addComment(LiteralValue comment) {
+    public MetaInfo addComment(LiteralValue... comment) {
         if (this.comments != null) {
-            this.comments.add(comment);
+            for (LiteralValue lvc : comment) {
+                this.comments.add(lvc);
+            }
         } else {
             Set<LiteralValue> values = new HashSet<LiteralValue>();
-            values.add(comment);
+            for (LiteralValue lvc : comment) {
+                values.add(lvc);
+            }
             setComments(values);
         }
+        return this;
     }
 
     public Set<LiteralValue> getDescriptions() {
         return this.descriptions;
     }
 
-    public void setDescriptions(Set<LiteralValue> descriptions) {
+    public MetaInfo setDescriptions(Set<LiteralValue> descriptions) {
         this.descriptions = descriptions;
+        return this;
     }
 
-    public MetaInfo addDescription(LiteralValue description) {
+    public MetaInfo addDescription(LiteralValue... description) {
         if (getDescriptions() != null) {
-            getDescriptions().add(description);
+            for (LiteralValue lv : description) {
+                getDescriptions().add(lv);
+            }
+
         } else {
             Set<LiteralValue> values = new HashSet<LiteralValue>();
-            values.add(description);
+            for (LiteralValue lv : description) {
+                values.add(lv);
+            }
             setDescriptions(values);
         }
         return this;
     }
 
-    public MetaInfo addDescription(String description) {
-        addDescription(new LiteralValue<String>(description));
+    public MetaInfo addDescription(String... description) {
+        for (String s : description) {
+            addDescription(new LiteralValue<String>(s));
+        }
         return this;
     }
 
@@ -298,25 +315,43 @@ public class MetaInfoImpl implements MetaInfo {
         return identifiers;
     }
 
-    public void setIdentifiers(Set<LiteralValue> identifiers) {
+    public MetaInfo setIdentifiers(Set<LiteralValue> identifiers) {
         this.identifiers = identifiers;
+        return this;
     }
 
-    public void addIdentifier(LiteralValue identifier) {
+    public MetaInfo addIdentifier(LiteralValue... identifier) {
         if (getIdentifiers() != null) {
-            getIdentifiers().add(identifier);
+            for (LiteralValue lv : identifier) {
+                getIdentifiers().add(lv);
+            }
+        } else {
+            Set<LiteralValue> values = new HashSet<LiteralValue>();
+            for (LiteralValue lv : identifier) {
+                values.add(lv);
+            }
+            setIdentifiers(values);
         }
+        return this;
+    }
+
+    public MetaInfo addIdentifier(String... identifier) {
+        for (String s : identifier) {
+            addIdentifier(new LiteralValue<String>(s));
+        }
+        return this;
     }
 
     public Set<ResourceValue> getSameAs() {
         return sameAs;
     }
 
-    public void setSameAs(Set<ResourceValue> values) {
+    public MetaInfo setSameAs(Set<ResourceValue> values) {
         this.sameAs = values;
+        return this;
     }
 
-    public void addSameAs(ResourceValue value) {
+    public MetaInfo addSameAs(ResourceValue value) {
         if (getSameAs() != null) {
             getSameAs().add(value);
         } else {
@@ -324,17 +359,19 @@ public class MetaInfoImpl implements MetaInfo {
             values.add(value);
             setSameAs(values);
         }
+        return this;
     }
 
     public Set<ResourceValue> getSeeAlso() {
         return seeAlso;
     }
 
-    public void setSeeAlso(Set<ResourceValue> values) {
+    public MetaInfo setSeeAlso(Set<ResourceValue> values) {
         this.seeAlso = values;
+        return this;
     }
 
-    public void addSeeAlso(ResourceValue value) {
+    public MetaInfo addSeeAlso(ResourceValue value) {
         if (getSeeAlso() != null) {
             getSeeAlso().add(value);
         } else {
@@ -342,93 +379,148 @@ public class MetaInfoImpl implements MetaInfo {
             values.add(value);
             setSeeAlso(values);
         }
+        return this;
     }
 
     public Set<LiteralValue> getTitles() {
         return titles;
     }
 
-    public void setTitles(Set<LiteralValue> values) {
+    public MetaInfo setTitles(Set<LiteralValue> values) {
         this.titles = values;
+        return this;
     }
 
-    public void addTitle(String value) {
+    public MetaInfo addTitle(String value) {
         addTitle(new LiteralValue<String>(value, XSDDatatype.XSDstring));
+        return this;
     }
 
-    public void addTitle(LiteralValue value) {
+    public MetaInfo addTitle(LiteralValue... value) {
         if (getTitles() != null) {
-            getTitles().add(value);
+            for (LiteralValue lv : value) {
+                getTitles().add(lv);
+            }
         } else {
             Set<LiteralValue> values = new HashSet<LiteralValue>();
-            values.add(value);
+            for (LiteralValue lv : value) {
+                values.add(lv);
+            }
             setTitles(values);
         }
+        return this;
+    }
+
+    public MetaInfo addTitle(String... value) {
+        for (String s : value) {
+            addTitle(new LiteralValue<String>(s));
+        }
+        return this;
     }
 
     public Set<LiteralValue> getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(Set<LiteralValue> subjects) {
+    public MetaInfo setSubjects(Set<LiteralValue> subjects) {
         this.subjects = subjects;
+        return this;
     }
 
-    public void addSubject(LiteralValue subject) {
+    public MetaInfo addSubject(LiteralValue... subject) {
         if (getSubjects() != null) {
-            getSubjects().add(subject);
+            for (LiteralValue lv : subject) {
+                getSubjects().add(lv);
+            }
         } else {
             Set<LiteralValue> values = new HashSet<LiteralValue>();
-            values.add(subject);
+            for (LiteralValue lv : subject) {
+                values.add(lv);
+            }
             setSubjects(values);
         }
+        return this;
+    }
+
+    public MetaInfo addSubject(String... subject) {
+        for (String x : subject) {
+            addSubject(new LiteralValue<String>(x));
+        }
+        return this;
     }
 
     public Set<LiteralValue> getPublishers() {
         return publishers;
     }
 
-    public void setPublishers(Set<LiteralValue> publishers) {
+    public MetaInfo setPublishers(Set<LiteralValue> publishers) {
         this.publishers = publishers;
+        return this;
     }
 
-    public void addPublishers(LiteralValue publisher) {
+    public MetaInfo addPublisher(LiteralValue... publisher) {
         if (getPublishers() != null) {
-            getPublishers().add(publisher);
+            for (LiteralValue lv : publisher) {
+                getPublishers().add(lv);
+            }
         } else {
             Set<LiteralValue> values = new HashSet<LiteralValue>();
-            values.add(publisher);
+            for (LiteralValue lv : publisher) {
+                values.add(lv);
+            }
             setPublishers(values);
         }
+        return this;
+    }
+
+    public MetaInfo addPublisher(String... publisher) {
+        for (String x : publisher) {
+            addPublisher(new LiteralValue<String>(x));
+        }
+        return this;
     }
 
     public Set<LiteralValue> getCreators() {
         return creators;
     }
 
-    public void setCreators(Set<LiteralValue> creators) {
+    public MetaInfo setCreators(Set<LiteralValue> creators) {
         this.creators = creators;
+        return this;
     }
 
-    public void addCreator(LiteralValue creator) {
+    public MetaInfo addCreator(LiteralValue... creator) {
         if (getCreators() != null) {
-            getCreators().add(creator);
+            for (LiteralValue lv : creator) {
+                getCreators().add(lv);
+            }
         } else {
             Set<LiteralValue> values = new HashSet<LiteralValue>();
-            values.add(creator);
+            for (LiteralValue lv : creator) {
+                values.add(lv);
+            }
             setCreators(values);
         }
+        return this;
+    }
+
+    public MetaInfo addCreator(String... creator) {
+        for (String x : creator) {
+            addCreator(new LiteralValue<String>(x));
+        }
+        return this;
     }
 
     public Set<ResourceValue> getHasSources() {
         return hasSources;
     }
 
-    public void setHasSources(Set<ResourceValue> hasSources) {
+    public MetaInfo setHasSources(Set<ResourceValue> hasSources) {
         this.hasSources = hasSources;
+        return this;
     }
 
-    public void addHasSource(ResourceValue hasSource) {
+    public MetaInfo addHasSource(ResourceValue hasSource) {
         if (getHasSources() != null) {
             getHasSources().add(hasSource);
         } else {
@@ -436,59 +528,89 @@ public class MetaInfoImpl implements MetaInfo {
             values.add(hasSource);
             setHasSources(hasSources);
         }
+        return this;
     }
 
     public Set<LiteralValue> getContributors() {
         return contributors;
     }
 
-    public void setContributors(Set<LiteralValue> contributors) {
+    public MetaInfo setContributors(Set<LiteralValue> contributors) {
         this.contributors = contributors;
+        return this;
     }
 
-    public void addContributor(LiteralValue contributor) {
+    public MetaInfo addContributor(LiteralValue... contributor) {
         if (getContributors() != null) {
-            getContributors().add(contributor);
+            for (LiteralValue lv : contributor) {
+                getContributors().add(lv);
+            }
         } else {
             Set<LiteralValue> values = new HashSet<LiteralValue>();
-            values.add(contributor);
+            for (LiteralValue lv : contributor) {
+                values.add(lv);
+            }
             setContributors(values);
         }
+        return this;
+    }
+
+    public MetaInfo addContributor(String... contributor) {
+        for (String x : contributor) {
+            addContributor(new LiteralValue<String>(x));
+        }
+        return this;
     }
 
     public Set<LiteralValue> getAudiences() {
         return audiences;
     }
 
-    public void setAudiences(Set<LiteralValue> audiences) {
+    public MetaInfo setAudiences(Set<LiteralValue> audiences) {
         this.audiences = audiences;
+        return this;
     }
 
-    public void addAudience(LiteralValue audience) {
+    public MetaInfo addAudience(LiteralValue... audience) {
         if (getAudiences() != null) {
-            getAudiences().add(audience);
+            for (LiteralValue lv : audience) {
+                getAudiences().add(lv);
+            }
         } else {
             Set<LiteralValue> values = new HashSet<LiteralValue>();
-            values.add(audience);
+            for (LiteralValue lv : audience) {
+                values.add(lv);
+            }
             setAudiences(values);
         }
+        return this;
+    }
+
+    public MetaInfo addAudience(String... audience) {
+        for (String x : audience){
+            addAudience(new LiteralValue<String>(x));
+        }
+        return this;
     }
 
     public LiteralValue getDate() {
         return date;
     }
 
-    public void setDate(LiteralValue date) {
+    public MetaInfo setDate(LiteralValue date) {
         this.date = date;
+        return this;
     }
 
-    public void setDateCurrent() {
+    public MetaInfo setDateCurrent() {
         Date currentDate = new Date(System.currentTimeMillis());
         setDate(new LiteralValue<Date>(currentDate, XSDDatatype.XSDdate));
+        return this;
     }
 
-    public void addIdentifier(String identifier) {
+    public MetaInfo addIdentifier(String identifier) {
         addIdentifier(new LiteralValue<String>(identifier, XSDDatatype.XSDstring));
+        return this;
     }
 
     public long getHash() {
