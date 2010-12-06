@@ -714,7 +714,8 @@ public class MetaInfoImpl implements MetaInfo {
         HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
         HTMLTable table = builder.addTable(2);
         if (identifiers != null && !identifiers.isEmpty()) {
-            table.setTextAtCursor("Identifiers").setTextAtCursor(createHtmlList(identifiers));
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "identifier") + "\">Identifier" + (identifiers.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(identifiers));
         }
         if (titles != null && !titles.isEmpty()) {
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "title") + "\">Title" + (titles.size() > 1 ? "s" : "") + "</a>").

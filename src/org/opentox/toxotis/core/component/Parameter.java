@@ -5,6 +5,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
@@ -43,8 +44,18 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         super();
     }
 
-    public Parameter(String name, LiteralValue value){
+    public Parameter(VRI uri) {
+        super(uri);
+    }
+
+    public Parameter(String name, LiteralValue value) {
         super();
+        setName(name);
+        setTypedValue(value);
+    }
+
+    public Parameter(VRI uri, String name, LiteralValue value) {
+        super(uri);
         setName(name);
         setTypedValue(value);
     }
@@ -54,8 +65,9 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         return scope;
     }
 
-    public void setScope(ParameterScope scope) {
+    public Parameter<T> setScope(ParameterScope scope) {
         this.scope = scope;
+        return this;
     }
 
     public XSDDatatype getType() {

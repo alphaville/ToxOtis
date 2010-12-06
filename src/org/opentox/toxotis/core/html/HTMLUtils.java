@@ -7,6 +7,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.ResourceValue;
 
 /**
+ * Utilities for automatically creating HTML code.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -15,11 +16,19 @@ public class HTMLUtils {
 
     /**
      * Returns a list of objects in an HTML container out of a given list of objects.
-     * The method
+     * The method creates a list invoking the method toString() defined in Object for
+     * each one of the objects in the list.
+     *
      * @param objects
+     *      List of objects for which a list in HTML is needed
      * @param listTag
+     *      The tag that defines the list. It's default value is <code>ol</code>, so
+     *      in case <code>null</code> is provided, a numbered list will be created.
      * @param divElement
+     *      The <code>div</code> class to enclose the list. The value <code>_list</code>
+     *      is the default in case <code>null</code> is provided.
      * @return
+     *      A list of the submitted objects in HTML wrapped in an {@link HTMLContainer }.
      */
     public static HTMLContainer createObjectList(Collection objects, String listTag, String divElement) {
         HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : "_list");
