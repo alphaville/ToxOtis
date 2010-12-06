@@ -2,6 +2,7 @@ package org.opentox.toxotis.ontology.impl;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.AnnotationProperty;
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -13,6 +14,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
+import org.opentox.toxotis.core.html.Alignment;
+import org.opentox.toxotis.core.html.HTMLContainer;
+import org.opentox.toxotis.core.html.HTMLDivBuilder;
+import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -22,6 +27,7 @@ public class MetaInfoImpl implements MetaInfo {
 
     public MetaInfoImpl() {
     }
+    private static final String DUBLIN_CORE_DOC = "http://dublincore.org/documents/usageguide/elements.shtml#%s";
     private Set<LiteralValue> identifiers;
     private Set<LiteralValue> comments;
     private Set<LiteralValue> descriptions;
@@ -587,7 +593,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo addAudience(String... audience) {
-        for (String x : audience){
+        for (String x : audience) {
             addAudience(new LiteralValue<String>(x));
         }
         return this;
@@ -702,5 +708,105 @@ public class MetaInfoImpl implements MetaInfo {
         hash = 89 * hash + (this.seeAlso != null ? this.seeAlso.hashCode() : 0);
         hash = 89 * hash + (this.hasSources != null ? this.hasSources.hashCode() : 0);
         return hash;
+    }
+
+    public HTMLContainer inHtml() {
+        HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
+        HTMLTable table = builder.addTable(2);
+        if (identifiers != null && !identifiers.isEmpty()) {
+            table.setTextAtCursor("Identifiers").setTextAtCursor(createHtmlList(identifiers));
+        }
+        if (titles != null && !titles.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "title") + "\">Title" + (titles.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(titles));
+        }
+        if (descriptions != null && !descriptions.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "description") + "\">Description" + (descriptions.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(descriptions));
+        }
+        if (subjects != null && !subjects.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "subject") + "\">Subject" + (subjects.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(subjects));
+        }
+        if (creators != null && !creators.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "creator") + "\">Creator" + (subjects.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(subjects));
+        }
+        if (publishers != null && !publishers.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "publisher") + "\">Publisher" + (publishers.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(publishers));
+        }
+        if (contributors != null && !contributors.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "contributor") + "\">Contributor" + (contributors.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(contributors));
+        }
+        if (audiences != null && !audiences.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "audience") + "\">Audience" + (audiences.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(audiences));
+        }
+
+        if (seeAlso != null && !seeAlso.isEmpty()) {
+            table.setTextAtCursor("<a href=\"http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4\">See Also</a>").
+                    setTextAtCursor(createHtmlList2(seeAlso));
+        }
+        if (sameAs != null && !sameAs.isEmpty()) {
+            table.setTextAtCursor("<a href=\"http://www.w3.org/TR/owl-ref/#sameAs-def\">Same As</a>").
+                    setTextAtCursor(createHtmlList2(sameAs));
+        }
+        if (hasSources != null && !hasSources.isEmpty()) {
+            table.setTextAtCursor("<a>Source" + (hasSources.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList2(hasSources));
+        }
+        if (comments != null && !comments.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "comments") + "\">Comments" + (comments.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(comments));
+        }
+        if (date!=null){
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "date") + "\">Date</a>").
+                    setTextAtCursor(date.getValueAsString());
+        }
+        table.setCellPadding(5).
+                setCellSpacing(2).
+                setTableBorder(1).
+                setColWidth(1, 150).
+                setColWidth(2, 600);
+        
+        return builder.getDiv();
+    }
+
+    private static String createHtmlList(Set<LiteralValue> values) {
+        if (values.size() == 0) {
+            return "";
+        } else if (values.size() == 1) {
+            return values.iterator().next().getValueAsString();
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("<ol>\n");
+            for (LiteralValue lv : values) {
+                builder.append("<li>");
+                builder.append(lv.getValueAsString());
+                builder.append("</li>");
+            }
+            builder.append("</ol>");
+            return builder.toString();
+        }
+    }
+
+    private static String createHtmlList2(Set<ResourceValue> values) {
+        if (values.size() == 0) {
+            return "";
+        } else if (values.size() == 1) {
+            return values.iterator().next().getUri().toString();
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("<ol>\n");
+            for (ResourceValue lv : values) {
+                builder.append("<li>");
+                builder.append("<a href=\"" + lv.getUri().toString() + "\">" + lv.getUri().toString() + "</a>");
+                builder.append("</li>");
+            }
+            builder.append("</ol>");
+            return builder.toString();
+        }
     }
 }

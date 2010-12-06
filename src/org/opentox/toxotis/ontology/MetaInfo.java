@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.Date;
 import java.util.Set;
+import org.opentox.toxotis.core.IHTMLSupport;
 
 /**
  *
@@ -40,7 +41,7 @@ import java.util.Set;
  *
  * @see http://dublincore.org/documents/usageguide/elements.shtml
  */
-public interface MetaInfo extends java.io.Serializable {
+public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
 
     //// 1. comments
     ////
