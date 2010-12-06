@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.Set;
 
 /**
+ *
+ * Interface describing meta-information for a resource.
+ * 
  * <p align=justify width=80%>
  * The term metadata is usually used to describe <em>data about data</em> that include 
  * a definition, description and other auxiliary information about the underlying resource. 
@@ -17,12 +20,20 @@ import java.util.Set;
  * class inludes:
  * </p>
  * <ul>
- * <li>A single identifier</li>
+ * <li>A set of identifiers each one of which uniquely identifies the resource</li>
  * <li>A set of comments</li>
- * <li>A set of descriptions for the resource</li>
+ * <li>The subject(s) of the resource acting also like a set of keywords</li>
+ * <li>Descriptions that are available for the resource</li>
  * <li>A set of resources that are 'owl:sameAs' the underlying resource</li>
+ * <li>A set of "sources" for the resource, that is resources that are de facto responsible
+ * for the creation/existence of the resource. (The corresponding object property ot:hasSource is
+ * defined in the OpenTox ontology)</li>
  * <li>A set of resources provided as reference through the seeAlso property</li>
  * <li>A set of titles for the resource</li>
+ * <li>Audiences to which the resource addresses or is suitable for</li>
+ * <li>Creators of the resource</li>
+ * <li>A collection of publishers</li>
+ * <li>The date of creation or some characteristic date for the resource (e.g. date of publication)</li>
  * </ul>
  *
  * @author Sopasakis Pantelis
@@ -42,9 +53,15 @@ public interface MetaInfo extends java.io.Serializable {
      *      A comment on the described entity.
      */
     Set<LiteralValue> getComments();
-
+    /**
+     * Setter for comments as a set.
+     * @param comments
+     *      Comments for the resource
+     * @return
+     *      The current modifiable MetaInfo object.
+     */
     MetaInfo setComments(Set<LiteralValue> comments);
-
+    
     MetaInfo addComment(LiteralValue... comment);
 
     MetaInfo addComment(String... comment);
