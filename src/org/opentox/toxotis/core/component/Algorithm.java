@@ -254,7 +254,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         builder.addParagraph("<small>Other Formats: "
                 + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"
                 + "<a href=\"" + getUri() + "?accept=application/x-turtle" + "\">Turtle</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/n-triples" + "\">Turtle</a>,"
+                + "<a href=\"" + getUri() + "?accept=text/n-triples" + "\">N-Triple</a>,"
                 + "<a href=\"" + getUri() + "?accept=text/uri-list" + "\">Uri-list</a>,"
                 + "</small>", Alignment.left);
 

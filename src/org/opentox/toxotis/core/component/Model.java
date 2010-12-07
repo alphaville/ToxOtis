@@ -4,6 +4,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
@@ -39,6 +40,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private Set<Parameter> parameters;
     private ArrayList<MultiParameter> multiParameters;
     private String localCode;
+    private Serializable actualModel;
     private User createdBy;
 
     public Model(VRI uri) {
@@ -46,6 +48,23 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     }
 
     public Model() {
+    }
+
+    /**
+     * The actual model, serializable object, that encapsulates all necessary
+     * information for the calculated model that was trained by some algorithm.
+     * Can be any implementation of {@link Serializable }, meaning practically
+     * almost anything. Users can implement their own models that can encapsulate
+     * potentially a Weka model file and a PMML representation of the model.
+     * @return
+     *      Model object with which predictions can be done.
+     */
+    public Serializable getActualModel() {
+        return actualModel;
+    }
+
+    public void setActualModel(Serializable actualModel) {
+        this.actualModel = actualModel;
     }
 
     public String getLocalCode() {
