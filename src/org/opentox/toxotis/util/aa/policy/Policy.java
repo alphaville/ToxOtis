@@ -28,6 +28,7 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.https.DeleteHttpsClient;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -127,8 +128,8 @@ public class Policy {
             policy.appendChild(subjectsAll);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(Policy.class).fatal(ex);
-            throw new RuntimeException("Utterly unexpected condition while creating an XML document for an SSO Policy." +
-                    "Definitely a BUG! Please report is ASAP at https://github.com/alphaville/ToxOtis/issues.", ex);
+            throw new RuntimeException("Utterly unexpected condition while creating an XML document for an SSO Policy."
+                    + "Definitely a BUG! Please report is ASAP at https://github.com/alphaville/ToxOtis/issues.", ex);
         }
         policyDocument = doc;
     }
@@ -201,6 +202,9 @@ public class Policy {
     }// </editor-fold>
 
     public static void deleteRemotePolicy(VRI policyServiceUri, String policyName, AuthenticationToken token) throws ToxOtisException {
+        if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
+            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+        }
         //TODO: We need a secure DELETE client here!
         if (policyServiceUri == null) {
             policyServiceUri = Services.SingleSignOn.ssoPolicyOld();
@@ -235,13 +239,20 @@ public class Policy {
      *      to perform the HTTP request you may set it to <code>null</code>.
      * @return
      *      Server's response message
+     * 
      * @throws ToxOtisException
      *      In case a HTTP related error occurs (I/O communication error, or the
      *      remote server is down), the service respondes in an unexpected manner
      *      like a status code 500 or 503 or authentication/authorization fails and
      *      a status code 403 or 401 are returned respectively.
+     * @throws InactiveTokenException
+     *      If the token the user uses is not active (because it has been invalidated,
+     *      expired, or not initialized yet).
      */
     public int publishPolicy(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
+        if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
+            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+        }
         if (policyServer == null) {
             policyServer = Services.SingleSignOn.ssoPolicyOld();
         }
@@ -254,7 +265,7 @@ public class Policy {
             int httpStatus = spc.getResponseCode();
             if (httpStatus != 200) {
                 Logger.getLogger(Policy.class).debug("Policy server at " + policyServer
-                        + " responded with a status code " + httpStatus +" with message \n"+spc.getResponseText(), null);
+                        + " responded with a status code " + httpStatus + " with message \n" + spc.getResponseText(), null);
             }
             return spc.getResponseCode();
         } catch (IOException ex) {
@@ -285,14 +296,21 @@ public class Policy {
      *      A list of policy IDs that are hosted in the SSO service by the user
      *      that is identified by the provided authenticaton token. Note that the IDs of
      *      policies are not URIs.
+     *
      * @throws ToxOtisException
      *      In case authentication/authorization fails, so the client does not have
      *      acceess privileges to the remote service, or the provided URI of the policyService
      *      is not found or the service responds with an error status code or exhibits
      *      some unexpected behavior. According to the OpenTox API, possible status codes
      *      include 200, 401/403 and 500.
+     * @throws InactiveTokenException
+     *      If the token the user uses is not active (because it has been invalidated,
+     *      expired, or not initialized yet).
      */
     public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ToxOtisException {
+        if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
+            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+        }
         IGetClient sgt = null;
         ArrayList<String> listOfPolicyNames = new ArrayList<String>();
         if (policyService == null) {
@@ -360,8 +378,14 @@ public class Policy {
      *      The OpenTox REST API specifies that the range of possible status codes
      *      includes <code>200</code> (OK, Successs), <code>401</code> (Unauthorized)
      *      and <code>500</code> (other unexpected conditions).
+     * @throws InactiveTokenException
+     *      If the token the user uses is not active (because it has been invalidated,
+     *      expired, or not initialized yet).
      */
     public static String getPolicyOwner(VRI serviceUri, VRI policyService, AuthenticationToken token) throws ToxOtisException {
+        if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
+            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+        }
         IGetClient sgt = null;
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();
@@ -401,6 +425,9 @@ public class Policy {
     }
 
     public static Policy parsePolicy(String id, VRI policyService, AuthenticationToken token) throws ToxOtisException {
+        if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
+            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+        }
         IGetClient sgt = null;
         if (policyService == null) {
             policyService = Services.SingleSignOn.ssoPolicy();

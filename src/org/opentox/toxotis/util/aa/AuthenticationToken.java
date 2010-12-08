@@ -284,6 +284,9 @@ public class AuthenticationToken {
      *      is some communication problem.
      */
     public boolean validate() throws ToxOtisException {
+        if (!this.getStatus().equals(TokenStatus.ACTIVE)) {
+            return false;
+        }
         if (token == null || (token != null && token.isEmpty())) {
             return false;
         }
@@ -368,13 +371,22 @@ public class AuthenticationToken {
      * @return
      *      User information as an instance of {@link User }.
      * @throws ToxOtisException
+     *      In case the remote identity (SSO) service is not reachable/accessible
+     *      at the moment or returns a <code>401</code>/<code>403</code> error HTTP
+     *      code implying that the token is not valid.
+     * @throws InactiveTokenException
+     *      If the token the user uses is not active (because it has been invalidated,
+     *      expired, or not initialized yet).
      *
      */
     public User getUser() throws ToxOtisException {
+        if (!this.getStatus().equals(TokenStatus.ACTIVE)) {
+            throw new InactiveTokenException("This token is not active: " + getStatus());
+        }
         InputStream is = null;
         BufferedReader reader = null;
         IPostClient poster = null;
-        User u = new User();
+        User u = new User();        
         try {
             poster = ClientFactory.createPostClient(Services.SingleSignOn.ssoAttributes());
             poster.addPostParameter("subjectid", stringValue());
@@ -505,8 +517,14 @@ public class AuthenticationToken {
      * @throws ToxOtisException
      *      If a connection problem occurs with the remote or the communication is
      *      corrupted.
+     * @throws InactiveTokenException
+     *      If the token the user uses is not active (because it has been invalidated,
+     *      expired, or not initialized yet).
      */
     public boolean authorize(String httpMethod, VRI target) throws ToxOtisException {
+        if (!this.getStatus().equals(TokenStatus.ACTIVE)) {
+            throw new InactiveTokenException("This token is not active: " + getStatus());
+        }
         IPostClient client = null;
 
         client = ClientFactory.createPostClient(Services.SingleSignOn.ssoAuthorize());
@@ -520,8 +538,8 @@ public class AuthenticationToken {
             httpResponseStatus = client.getResponseCode();
         } catch (IOException ex) {
             throw new ToxOtisException(ex);
-        }finally{
-            if (client!=null){
+        } finally {
+            if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
@@ -585,7 +603,6 @@ public class AuthenticationToken {
         sb.append("Status              : " + getStatus());
         return new String(sb);
     }
-
 //    public static void main(String... art) throws Exception{
 //        System.out.println(new AuthenticationToken(new java.io.File("/home/chung/toxotisKeys/my.key")));
 //    }
