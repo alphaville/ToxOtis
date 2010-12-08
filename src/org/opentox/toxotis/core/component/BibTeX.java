@@ -37,7 +37,9 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.opentox.toxotis.util.aa.User;
+import org.opentox.toxotis.util.spiders.BibTeXSprider;
 
 /**
  * Bibliographic reference designed according to the BibTeX specifications. OpenTox
@@ -83,7 +85,38 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     @Override
     protected BibTeX loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+            throw new InactiveTokenException("The Provided token is inactive");
+        }
+        BibTeXSprider spider = new BibTeXSprider(uri, token);
+        BibTeX o = spider.parse();
+        setUri(o.getUri());
+        setAbstract(o.getAbstract());
+        setAddress(o.getAddress());
+        setAnnotation(o.getAnnotation());
+        setAuthor(o.getAuthor());
+        setBibType(o.getBibType());
+        setBookTitle(o.getBookTitle());
+        setChapter(o.getChapter());
+        setCopyright(o.getCopyright());
+        setCreatedBy(o.getCreatedBy());
+        setCrossref(o.getCrossref());
+        setEdition(o.getEdition());
+        setEditor(o.getEditor());
+        setIsbn(o.getIsbn());
+        setIssn(o.getIssn());
+        setJournal(o.getJournal());
+        setKey(o.getKey());
+        setKeywords(o.getKeywords());
+        setPages(o.getPages());
+        setSeries(o.getSeries());
+        setTitle(o.getTitle());
+        setUrl(o.getUrl());
+        setNumber(o.getNumber());
+        setYear(o.getYear());
+        setVolume(o.getVolume());
+        setMeta(o.getMeta());
+        return this;
     }
 
     @Override

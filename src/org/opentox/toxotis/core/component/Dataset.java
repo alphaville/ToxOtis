@@ -11,14 +11,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
+import org.apache.log4j.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTPublishable;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -26,6 +27,7 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 import weka.core.Attribute;
@@ -233,6 +235,9 @@ public class Dataset extends OTPublishable<Dataset> {
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
+        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+            throw new InactiveTokenException("The Provided token is inactive");
+        }
         PostHttpClient client = new PostHttpClient(vri);
         client.setContentType(Media.APPLICATION_RDF_XML);
         client.setMediaType(Media.TEXT_URI_LIST);
@@ -269,7 +274,10 @@ public class Dataset extends OTPublishable<Dataset> {
 
     @Override
     public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+            throw new InactiveTokenException("The Provided token is inactive");
+        }
+        return publishOnline(Services.ideaconsult(), token);
     }
 
     
@@ -321,6 +329,9 @@ public class Dataset extends OTPublishable<Dataset> {
 
     @Override
     protected Dataset loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+            throw new InactiveTokenException("The Provided token is inactive");
+        }
         DatasetSpider spider = new DatasetSpider(uri, token);
         Dataset ds = spider.parse();
         setDataEntries(ds.getDataEntries());
@@ -418,7 +429,7 @@ public class Dataset extends OTPublishable<Dataset> {
                         try {
                             vals[data.attribute(featureName).index()] = data.attribute(featureName).parseDate((String) value.getValue());
                         } catch (ParseException ex) {
-                            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Dataset.class.getName()).error("Parsing Exception for Date in Dataset", ex);
                         }
                     } else if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.nominal)) {
                         //TODO: Nominals may not work, testing is needed.
@@ -433,7 +444,7 @@ public class Dataset extends OTPublishable<Dataset> {
             if (data.checkInstance(valuesInstance)) {
                 data.add(valuesInstance);
             } else {
-                Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Warning! The instance "
+                Logger.getLogger(Dataset.class.getName()).warn("Warning! The instance "
                         + valuesInstance + " is not compatible with the dataset!");
             }
         }
@@ -462,10 +473,14 @@ public class Dataset extends OTPublishable<Dataset> {
     }
 
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
+        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+            throw new InactiveTokenException("The Provided token is inactive");
+        }
         PostHttpClient client = new PostHttpClient(descriptorCalculationAlgorithm);
         client.setMediaType(Media.APPLICATION_RDF_XML);
-        descriptorCalculationAlgorithm.clearToken().appendToken(token);
-        PostHttpClient pc = new PostHttpClient(descriptorCalculationAlgorithm);
+        descriptorCalculationAlgorithm.clearToken();
+        IPostClient pc = new PostHttpClient(descriptorCalculationAlgorithm);
+        pc.authorize(token);
         pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={dataset_uri}
         pc.addPostParameter("ALL", "true");
         pc.setMediaType(Media.TEXT_URI_LIST);

@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.InactiveTokenException;
 
 /**
  * <p align=justify>
@@ -66,10 +67,16 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      *      by the remote service (returns a status code 400), communication error
      *      occur with the remote server or other connection problems or the access
      *      to the service was denied (401 or 403).
+     * @throws InactiveTokenException
+     *      In case the provided token is invalidated (user has logged out), or
+     *      has expired.
      */
     public abstract Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException;
 
     public Future<VRI> publish(final VRI vri, final AuthenticationToken token, ExecutorService executor) throws ToxOtisException {
+        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+            throw new InactiveTokenException("The Provided token is inactive");
+        }
         Callable<VRI> backgroundJob = new Callable<VRI>() {
 
             public VRI call() throws Exception {
@@ -91,6 +98,9 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
     }
 
     public Future<VRI> publish(final VRI vri, final AuthenticationToken token) throws ToxOtisException {
+        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+            throw new InactiveTokenException("The Provided token is inactive");
+        }
         return publish(vri, token, Executors.newSingleThreadExecutor());
     }
 

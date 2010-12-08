@@ -730,8 +730,8 @@ public class MetaInfoImpl implements MetaInfo {
                     setTextAtCursor(createHtmlList(subjects));
         }
         if (creators != null && !creators.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "creator") + "\">Creator" + (subjects.size() > 1 ? "s" : "") + "</a>").
-                    setTextAtCursor(createHtmlList(subjects));
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "creator") + "\">Creator" + (creators.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(creators));
         }
         if (publishers != null && !publishers.isEmpty()) {
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "publisher") + "\">Publisher" + (publishers.size() > 1 ? "s" : "") + "</a>").
@@ -759,7 +759,7 @@ public class MetaInfoImpl implements MetaInfo {
                     setTextAtCursor(createHtmlList2(hasSources));
         }
         if (comments != null && !comments.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "comments") + "\">Comments" + (comments.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor("<a href=\"http://www.w3.org/TR/rdf-schema/#ch_comment\">Comment" + (comments.size() > 1 ? "s" : "") + "</a>").
                     setTextAtCursor(createHtmlList(comments));
         }
         if (date!=null){
