@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -26,6 +25,7 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
 public class CompoundFactory {
 
     private static CompoundFactory factory = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CompoundFactory.class);
 
     /**
      * Returns the CompoundFactory object associated with the current Java application.
@@ -122,8 +122,9 @@ public class CompoundFactory {
             File sourceFile, String fileType, AuthenticationToken token, String service)
             throws ToxOtisException {
         try {
-            PostHttpClient postClient = new PostHttpClient(
-                    new VRI(service).appendToken(token));
+            IPostClient postClient = new PostHttpClient(
+                    new VRI(service));
+            postClient.authorize(token);
             postClient.setPostable(sourceFile);
             postClient.setContentType(fileType);
             postClient.setMediaType(Media.TEXT_URI_LIST.getMime());
@@ -133,7 +134,9 @@ public class CompoundFactory {
             try {
                 responseStatus = postClient.getResponseCode();
             } catch (IOException ex) {
-                Logger.getLogger(CompoundFactory.class.getName()).log(Level.SEVERE, null, ex);
+                String message = "IOException caught while posting data to the service at " + service;
+                logger.warn(message, ex);
+                throw new ToxOtisException(message, ex);
             }
             if (responseStatus == 202) {
                 TaskSpider tskSp = new TaskSpider(newVRI);
@@ -144,10 +147,14 @@ public class CompoundFactory {
                 t.setStatus(Task.Status.COMPLETED);
                 return t;
             } else {
-                throw new ToxOtisException("HTTP Status : " + responseStatus);
+                String message = "HTTP Status : " + responseStatus;
+                logger.debug(message);
+                throw new ToxOtisException(message);
             }
         } catch (URISyntaxException ex) {
-            throw new ToxOtisException(ex);
+            String message = "Service URI is invalid";
+            logger.debug(message, ex);
+            throw new ToxOtisException(message, ex);
         }
     }
 
@@ -178,7 +185,6 @@ public class CompoundFactory {
             throws ToxOtisException {
         return publishFromFile(sourceFile, fileType.getMime(), token, service);
     }
-
 
     public Set<VRI> lookUpComponent(VRI lookUpService, String keyword) {
         throw new UnsupportedOperationException();

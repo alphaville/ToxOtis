@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -33,6 +31,8 @@ public class ModelSpider extends Tarantula<Model> {
 
     private VRI uri;
     private AuthenticationToken token;
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ModelSpider.class);
 
     public ModelSpider(VRI uri) throws ToxOtisException {
         this(uri, (AuthenticationToken) null);
@@ -72,7 +72,7 @@ public class ModelSpider extends Tarantula<Model> {
         try {
             uri = new VRI(resource.getURI());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
     }
 
@@ -82,7 +82,7 @@ public class ModelSpider extends Tarantula<Model> {
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
         this.resource = model.getResource(uri);
     }
@@ -99,7 +99,7 @@ public class ModelSpider extends Tarantula<Model> {
                 User u = token.getUser();
                 m.setCreatedBy(u);
             } catch (ToxOtisException ex) {
-                Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
+                logger.info(null, ex);
             }
         }
 
@@ -111,7 +111,7 @@ public class ModelSpider extends Tarantula<Model> {
             try {
                 m.setDataset(new VRI(itDataset.nextStatement().getObject().as(Resource.class).getURI()));
             } catch (URISyntaxException ex) {
-                Logger.getLogger(ModelSpider.class.getName()).log(Level.SEVERE, null, ex);
+                logger.debug(null, ex);
             }
         }
 

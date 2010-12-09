@@ -1,15 +1,12 @@
 package org.opentox.toxotis.core;
 
 import org.opentox.toxotis.core.component.Dataset;
-import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
@@ -35,6 +32,8 @@ public abstract class OTComponent<T extends OTComponent> implements IOTComponent
     /** Meta information (including DC and OT meta) about the component */
     protected MetaInfo meta = new MetaInfoImpl();
     protected static final String tokenid = "tokenid";
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
 
     /**
      * Constructor for an empty OpenTox Component
@@ -118,13 +117,13 @@ public abstract class OTComponent<T extends OTComponent> implements IOTComponent
             streamWriter = factory.createXMLStreamWriter(writer);
             writeRdf(streamWriter);
         } catch (javax.xml.stream.XMLStreamException ex) {
-            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
+            logger.error("Unexpected Parsing Error!", ex);
         } finally {
             if (streamWriter != null) {
                 try {
                     streamWriter.close();
                 } catch (XMLStreamException ex) {
-                    Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "StAX writer could not close!", ex);
+                    logger.warn("StAX writer could not close!", ex);
                 }
             }
         }
@@ -137,13 +136,13 @@ public abstract class OTComponent<T extends OTComponent> implements IOTComponent
             writer = factory.createXMLStreamWriter(output, "UTF-8");
             writeRdf(writer);
         } catch (javax.xml.stream.XMLStreamException ex) {
-            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "Unexpected Parsing Error!", ex);
+            logger.error("Unexpected Parsing Error!", ex);
         } finally {
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (XMLStreamException ex) {
-                    Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, "StAX writer could not close!", ex);
+                    logger.warn("StAX writer could not close!", ex);
                 }
             }
         }

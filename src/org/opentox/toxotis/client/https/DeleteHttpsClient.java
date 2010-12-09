@@ -3,8 +3,6 @@ package org.opentox.toxotis.client.https;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
@@ -19,6 +17,7 @@ public class DeleteHttpsClient extends AbstractHttpsClient {
 
     /** The method that this client applies */
     public static final String METHOD = "DELETE";
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DeleteHttpsClient.class);
 
     public DeleteHttpsClient(VRI vri) {
         super(vri);

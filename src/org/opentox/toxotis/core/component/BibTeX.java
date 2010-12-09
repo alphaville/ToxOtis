@@ -19,8 +19,6 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -53,6 +51,297 @@ import org.opentox.toxotis.util.spiders.BibTeXSprider;
  */
 public class BibTeX extends OTPublishable<BibTeX>
         implements IHTMLSupport {
+
+    /**
+     * Enumeration for bibliographic types supported by the
+     * Knouf ontology.
+     */
+    public enum BIB_TYPE {
+
+        Article,
+        Book,
+        Conference,
+        Phdthesis,
+        Entry;
+    }
+    /*
+     * WARNING: DO NOT MODIFY THE NAMES OF THE FOLLOWING FIELDS
+     * BECAUSE SOME METHODS IN BIBTEX USE REFLECTIVE LOOKUPS AND COMPARISONS
+     * BASED ON THE NAME OF THE FIELD.
+     */
+    private String m_abstract;
+    private String m_author;
+    private String m_title;
+    private String m_bookTitle;
+    private String m_chapter;
+    private String m_copyright;
+    private String m_edition;
+    private String m_editor;
+    private String m_crossref;
+    private String m_address;
+    private String m_year;
+    private String m_pages;
+    private String m_volume;
+    private String m_number;
+    private String m_journal;
+    private String m_isbn;
+    private String m_issn;
+    private String m_keywords;
+    private String m_key;
+    private String m_annotation;
+    private String m_series;
+    private String m_url;
+    private BIB_TYPE m_bib_type;
+    private User m_createdBy;
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BibTeX.class);
+
+    // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
+    public User getCreatedBy() {
+        return m_createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.m_createdBy = createdBy;
+    }
+
+    public String getAbstract() {
+        return m_abstract;
+    }
+
+    public BibTeX setAbstract(String m_abstract) {
+        this.m_abstract = m_abstract;
+        return this;
+    }
+
+    public String getAuthor() {
+        return m_author;
+    }
+
+    public BibTeX setAuthor(String m_author) {
+        this.m_author = m_author;
+        return this;
+    }
+
+    public BIB_TYPE getBibType() {
+        return m_bib_type;
+    }
+
+    public BibTeX setBibType(BIB_TYPE m_bib_type) {
+        this.m_bib_type = m_bib_type;
+        return this;
+    }
+
+    public String getBookTitle() {
+        return m_bookTitle;
+    }
+
+    public BibTeX setBookTitle(String m_bookTitle) {
+        this.m_bookTitle = m_bookTitle;
+        return this;
+    }
+
+    public String getChapter() {
+        return m_chapter;
+    }
+
+    public BibTeX setChapter(String m_chapter) {
+        this.m_chapter = m_chapter;
+        return this;
+    }
+
+    public String getCopyright() {
+        return m_copyright;
+    }
+
+    public BibTeX setCopyright(String m_copyright) {
+        this.m_copyright = m_copyright;
+        return this;
+    }
+
+    public String getCrossref() {
+        return m_crossref;
+    }
+
+    public BibTeX setCrossref(String m_crossref) {
+        this.m_crossref = m_crossref;
+        return this;
+    }
+
+    public String getEdition() {
+        return m_edition;
+    }
+
+    public BibTeX setEdition(String m_edition) {
+        this.m_edition = m_edition;
+        return this;
+    }
+
+    public String getEditor() {
+        return m_editor;
+    }
+
+    public BibTeX setEditor(String m_editor) {
+        this.m_editor = m_editor;
+        return this;
+    }
+
+    public String getIsbn() {
+        return m_isbn;
+    }
+
+    public BibTeX setIsbn(String isbn) {
+        this.m_isbn = isbn;
+        return this;
+    }
+
+    public String getIssn() {
+        return m_issn;
+    }
+
+    public BibTeX setIssn(String issn) {
+        this.m_issn = issn;
+        return this;
+    }
+
+    public String getJournal() {
+        return m_journal;
+    }
+
+    public BibTeX setJournal(String journal) {
+        this.m_journal = journal;
+        return this;
+    }
+
+    public String getKey() {
+        return m_key;
+    }
+
+    public BibTeX setKey(String key) {
+        this.m_key = key;
+        return this;
+    }
+
+    public String getKeywords() {
+        return m_keywords;
+    }
+
+    public BibTeX setKeywords(String keywords) {
+        this.m_keywords = keywords;
+        return this;
+    }
+
+    public Integer getNumber() {
+        if (m_number == null) {
+            return null;
+        }
+        return Integer.parseInt(m_number);
+    }
+
+    public BibTeX setNumber(Integer number) {
+        if (number == null || (number != null && number < 0)) {
+            this.m_number = null;
+        } else {
+            this.m_number = Integer.toString(number);
+        }
+        return this;
+    }
+
+    public String getPages() {
+        return m_pages;
+    }
+
+    public BibTeX setPages(String pages) {
+        this.m_pages = pages;
+        return this;
+    }
+
+    public Integer getVolume() {
+        if (m_volume == null) {
+            return null;
+        }
+        return Integer.parseInt(m_volume);
+    }
+
+    public BibTeX setVolume(Integer volume) {
+        if (volume == null || (volume != null && volume < 0)) {
+            this.m_volume = null;
+        } else {
+            this.m_volume = Integer.toString(volume);
+        }
+        return this;
+    }
+
+    public Integer getYear() {
+        if (m_year == null) {
+            return null;
+        }
+        return Integer.parseInt(m_year);
+    }
+
+    /**
+     * Set the year of publication. The year is provided as an instance of Integer.
+     * If the supplied value is <code>null</code>, or not-null but non-positive, then
+     * no value is stored in the corresponding field.
+     * @param year
+     *      The year of publication for the BibTeX provided as an Integer object.
+     * @return
+     *      The current updated BibTeX object.
+     */
+    public BibTeX setYear(Integer year) {
+        if (year == null || (year != null && year < 0)) {
+            this.m_year = null;
+        } else {
+            this.m_year = Integer.toString(year);
+        }
+        return this;
+    }
+
+    public String getAddress() {
+        return m_address;
+    }
+
+    public BibTeX setAddress(String address) {
+        this.m_address = address;
+        return this;
+    }
+
+    public String getAnnotation() {
+        return m_annotation;
+    }
+
+    public BibTeX setAnnotation(String annotation) {
+        this.m_annotation = annotation;
+        return this;
+    }
+
+    public String getSeries() {
+        return m_series;
+    }
+
+    public BibTeX setSeries(String m_series) {
+        this.m_series = m_series;
+        return this;
+    }
+
+    public String getTitle() {
+        return m_title;
+    }
+
+    public BibTeX setTitle(String title) {
+        this.m_title = title;
+        return this;
+    }
+
+    public String getUrl() {
+        return m_url;
+    }
+
+    public BibTeX setUrl(String Url) {
+        this.m_url = Url;
+        return this;
+    }// </editor-fold>
+
 
     //TODO: We could use this: http://www.bibtex.org/Convert/ to create HTML representations of BibTeXs!!! ;-)
     public BibTeX() {
@@ -301,295 +590,7 @@ public class BibTeX extends OTPublishable<BibTeX>
     @Deprecated
     public String getPlainText() {        
         return toString();
-    }
-
-    /**
-     * Enumeration for bibliographic types supported by the
-     * Knouf ontology.
-     */
-    public enum BIB_TYPE {
-
-        Article,
-        Book,
-        Conference,
-        Phdthesis,
-        Entry;
-    }
-    /*
-     * WARNING: DO NOT MODIFY THE NAMES OF THE FOLLOWING FIELDS
-     * BECAUSE SOME METHODS IN BIBTEX USE REFLECTIVE LOOKUPS AND COMPARISONS
-     * BASED ON THE NAME OF THE FIELD.
-     */
-    private String m_abstract;
-    private String m_author;
-    private String m_title;
-    private String m_bookTitle;
-    private String m_chapter;
-    private String m_copyright;
-    private String m_edition;
-    private String m_editor;
-    private String m_crossref;
-    private String m_address;
-    private String m_year;
-    private String m_pages;
-    private String m_volume;
-    private String m_number;
-    private String m_journal;
-    private String m_isbn;
-    private String m_issn;
-    private String m_keywords;
-    private String m_key;
-    private String m_annotation;
-    private String m_series;
-    private String m_url;
-    private BIB_TYPE m_bib_type;
-    private User m_createdBy;
-
-    // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
-    public User getCreatedBy() {
-        return m_createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.m_createdBy = createdBy;
-    }
-
-    public String getAbstract() {
-        return m_abstract;
-    }
-
-    public BibTeX setAbstract(String m_abstract) {
-        this.m_abstract = m_abstract;
-        return this;
-    }
-
-    public String getAuthor() {
-        return m_author;
-    }
-
-    public BibTeX setAuthor(String m_author) {
-        this.m_author = m_author;
-        return this;
-    }
-
-    public BIB_TYPE getBibType() {
-        return m_bib_type;
-    }
-
-    public BibTeX setBibType(BIB_TYPE m_bib_type) {
-        this.m_bib_type = m_bib_type;
-        return this;
-    }
-
-    public String getBookTitle() {
-        return m_bookTitle;
-    }
-
-    public BibTeX setBookTitle(String m_bookTitle) {
-        this.m_bookTitle = m_bookTitle;
-        return this;
-    }
-
-    public String getChapter() {
-        return m_chapter;
-    }
-
-    public BibTeX setChapter(String m_chapter) {
-        this.m_chapter = m_chapter;
-        return this;
-    }
-
-    public String getCopyright() {
-        return m_copyright;
-    }
-
-    public BibTeX setCopyright(String m_copyright) {
-        this.m_copyright = m_copyright;
-        return this;
-    }
-
-    public String getCrossref() {
-        return m_crossref;
-    }
-
-    public BibTeX setCrossref(String m_crossref) {
-        this.m_crossref = m_crossref;
-        return this;
-    }
-
-    public String getEdition() {
-        return m_edition;
-    }
-
-    public BibTeX setEdition(String m_edition) {
-        this.m_edition = m_edition;
-        return this;
-    }
-
-    public String getEditor() {
-        return m_editor;
-    }
-
-    public BibTeX setEditor(String m_editor) {
-        this.m_editor = m_editor;
-        return this;
-    }
-
-    public String getIsbn() {
-        return m_isbn;
-    }
-
-    public BibTeX setIsbn(String isbn) {
-        this.m_isbn = isbn;
-        return this;
-    }
-
-    public String getIssn() {
-        return m_issn;
-    }
-
-    public BibTeX setIssn(String issn) {
-        this.m_issn = issn;
-        return this;
-    }
-
-    public String getJournal() {
-        return m_journal;
-    }
-
-    public BibTeX setJournal(String journal) {
-        this.m_journal = journal;
-        return this;
-    }
-
-    public String getKey() {
-        return m_key;
-    }
-
-    public BibTeX setKey(String key) {
-        this.m_key = key;
-        return this;
-    }
-
-    public String getKeywords() {
-        return m_keywords;
-    }
-
-    public BibTeX setKeywords(String keywords) {
-        this.m_keywords = keywords;
-        return this;
-    }
-
-    public Integer getNumber() {
-        if (m_number == null) {
-            return null;
-        }
-        return Integer.parseInt(m_number);
-    }
-
-    public BibTeX setNumber(Integer number) {
-        if (number == null || (number != null && number < 0)) {
-            this.m_number = null;
-        } else {
-            this.m_number = Integer.toString(number);
-        }
-        return this;
-    }
-
-    public String getPages() {
-        return m_pages;
-    }
-
-    public BibTeX setPages(String pages) {
-        this.m_pages = pages;
-        return this;
-    }
-
-    public Integer getVolume() {
-        if (m_volume == null) {
-            return null;
-        }
-        return Integer.parseInt(m_volume);
-    }
-
-    public BibTeX setVolume(Integer volume) {
-        if (volume == null || (volume != null && volume < 0)) {
-            this.m_volume = null;
-        } else {
-            this.m_volume = Integer.toString(volume);
-        }
-        return this;
-    }
-
-    public Integer getYear() {
-        if (m_year == null) {
-            return null;
-        }
-        return Integer.parseInt(m_year);
-    }
-
-    /**
-     * Set the year of publication. The year is provided as an instance of Integer.
-     * If the supplied value is <code>null</code>, or not-null but non-positive, then
-     * no value is stored in the corresponding field.
-     * @param year
-     *      The year of publication for the BibTeX provided as an Integer object.
-     * @return
-     *      The current updated BibTeX object.
-     */
-    public BibTeX setYear(Integer year) {
-        if (year == null || (year != null && year < 0)) {
-            this.m_year = null;
-        } else {
-            this.m_year = Integer.toString(year);
-        }
-        return this;
-    }
-
-    public String getAddress() {
-        return m_address;
-    }
-
-    public BibTeX setAddress(String address) {
-        this.m_address = address;
-        return this;
-    }
-
-    public String getAnnotation() {
-        return m_annotation;
-    }
-
-    public BibTeX setAnnotation(String annotation) {
-        this.m_annotation = annotation;
-        return this;
-    }
-
-    public String getSeries() {
-        return m_series;
-    }
-
-    public BibTeX setSeries(String m_series) {
-        this.m_series = m_series;
-        return this;
-    }
-
-    public String getTitle() {
-        return m_title;
-    }
-
-    public BibTeX setTitle(String title) {
-        this.m_title = title;
-        return this;
-    }
-
-    public String getUrl() {
-        return m_url;
-    }
-
-    public BibTeX setUrl(String Url) {
-        this.m_url = Url;
-        return this;
-    }// </editor-fold>
+    }   
 
     public Individual asIndividual(OntModel model) {
         String bibtexUri = uri != null ? uri.toString() : null;
@@ -906,7 +907,7 @@ public class BibTeX extends OTPublishable<BibTeX>
             try {
                 fis.close();
             } catch (IOException ex) {
-                Logger.getLogger(BibTeX.class.getName()).log(Level.SEVERE, null, ex);
+                logger.warn(null, ex);
             }
         }
     }

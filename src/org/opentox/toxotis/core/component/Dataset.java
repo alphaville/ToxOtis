@@ -13,7 +13,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
-import org.apache.log4j.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.IPostClient;
@@ -50,6 +49,8 @@ public class Dataset extends OTPublishable<Dataset> {
     private long timeDownload = -1;
     private long timeParse = -1;
     private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
 
     /**
      * Constructor for a Dataset object providing its URI.
@@ -430,7 +431,7 @@ public class Dataset extends OTPublishable<Dataset> {
                         try {
                             vals[data.attribute(featureName).index()] = data.attribute(featureName).parseDate((String) value.getValue());
                         } catch (ParseException ex) {
-                            Logger.getLogger(Dataset.class.getName()).error("Parsing Exception for Date in Dataset", ex);
+                            logger.error("Parsing Exception for Date in Dataset", ex);
                         }
                     } else if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.nominal)) {
                         //TODO: Nominals may not work, testing is needed.
@@ -445,7 +446,7 @@ public class Dataset extends OTPublishable<Dataset> {
             if (data.checkInstance(valuesInstance)) {
                 data.add(valuesInstance);
             } else {
-                Logger.getLogger(Dataset.class.getName()).warn("Warning! The instance "
+                logger.warn("Warning! The instance "
                         + valuesInstance + " is not compatible with the dataset!");
             }
         }

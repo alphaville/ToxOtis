@@ -17,7 +17,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.log4j.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -41,6 +40,8 @@ import org.w3c.dom.Element;
  * @author Charalampos Chomenides
  */
 public class Policy {
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Policy.class);
 
     public Policy() {
     }
@@ -127,9 +128,10 @@ public class Policy {
             }
             policy.appendChild(subjectsAll);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(Policy.class).fatal(ex);
-            throw new RuntimeException("Utterly unexpected condition while creating an XML document for an SSO Policy."
-                    + "Definitely a BUG! Please report is ASAP at https://github.com/alphaville/ToxOtis/issues.", ex);
+            String message = "Utterly unexpected condition while creating an XML document for an SSO Policy."
+                    + "Definitely a BUG! Please report is ASAP at https://github.com/alphaville/ToxOtis/issues.";
+            logger.error(message, ex);
+            throw new RuntimeException(message, ex);
         }
         policyDocument = doc;
     }
@@ -264,8 +266,8 @@ public class Policy {
         try {
             int httpStatus = spc.getResponseCode();
             if (httpStatus != 200) {
-                Logger.getLogger(Policy.class).debug("Policy server at " + policyServer
-                        + " responded with a status code " + httpStatus + " with message \n" + spc.getResponseText(), null);
+                logger.debug("Policy server at " + policyServer
+                        + " responded with a status code " + httpStatus + " with message \n" + spc.getResponseText());
             }
             return spc.getResponseCode();
         } catch (IOException ex) {
@@ -275,7 +277,7 @@ public class Policy {
                 try {
                     spc.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(Policy.class).error(ex);
+                    logger.error("IO Exception while closing an HTTPS client", ex);
                     throw new ToxOtisException(ex);
                 }
             }
@@ -341,7 +343,7 @@ public class Policy {
                 throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus);
             }
         } catch (IOException ex) {
-            Logger.getLogger(Policy.class).error(ex);
+            org.slf4j.LoggerFactory.getLogger(Policy.class).error("IO Exception was thrown while communicating with the policy service at " + policyService, ex);
             throw new ToxOtisException(ex);
         } finally {
             if (sgt != null) {
@@ -443,7 +445,7 @@ public class Policy {
             try {
                 responseStatus = sgt.getResponseCode();
             } catch (IOException ex) {
-                Logger.getLogger(Policy.class).error(ex);
+                org.slf4j.LoggerFactory.getLogger(Policy.class).error(null, ex);
                 throw new ToxOtisException(ex);
             }
             if (responseStatus == 200) {

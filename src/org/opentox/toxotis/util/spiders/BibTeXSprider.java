@@ -9,7 +9,6 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.apache.log4j.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -39,6 +38,8 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
      */
     private VRI uri;
 
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BibTeXSprider.class);
+
     private BibTeXSprider() {
     }
 
@@ -50,7 +51,7 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
                 throw new ToxOtisException("Bad URI : Not a BibTeX URI (" + uri + ")");
             }
         } catch (URISyntaxException ex) {
-            Logger.getLogger(BibTeXSprider.class).warn("URI syntax exception thrown for the malformed URI "
+            logger.warn("URI syntax exception thrown for the malformed URI "
                     + resource.getURI() + " found in the RDF graph of the resource at " + uri, ex);
         }
     }
@@ -90,10 +91,10 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
             model = client.getResponseOntModel();
             resource = model.getResource(uri.getStringNoQuery());
         } catch (ToxOtisException ex) {
-            Logger.getLogger(BibTeXSprider.class).trace("", ex);
+            logger.trace("ToxOtisException caught in BibTeXSpider", ex);
             throw ex;
         } catch (IOException ex) {
-            Logger.getLogger(BibTeXSprider.class).debug("I/O Exception while attempting connection to "
+            logger.debug("I/O Exception while attempting connection to "
                     + "the remote BibTeX resource at " + uri, ex);
             throw new ToxOtisException(ex);
         } finally {

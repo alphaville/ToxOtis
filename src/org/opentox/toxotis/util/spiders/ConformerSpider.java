@@ -8,8 +8,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
@@ -23,9 +21,10 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
-public class ConformerSpider extends Tarantula<Conformer>{
+public class ConformerSpider extends Tarantula<Conformer> {
 
     VRI uri;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ConformerSpider.class);
 
     public ConformerSpider(VRI uri) throws ToxOtisException {
         super();
@@ -42,7 +41,7 @@ public class ConformerSpider extends Tarantula<Conformer>{
         try {
             uri = new VRI(resource.getURI());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
     }
 
@@ -52,7 +51,7 @@ public class ConformerSpider extends Tarantula<Conformer>{
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
         this.resource = model.getResource(uri);
     }
@@ -78,5 +77,4 @@ public class ConformerSpider extends Tarantula<Conformer>{
 
         return conformer;
     }
-
 }

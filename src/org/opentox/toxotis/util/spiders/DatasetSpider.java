@@ -8,8 +8,6 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -30,6 +28,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 public class DatasetSpider extends Tarantula<Dataset> {
 
     VRI datasetUri;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DatasetSpider.class);
 
     public DatasetSpider(VRI uri) throws ToxOtisException {
         this(uri, null);
@@ -69,7 +68,7 @@ public class DatasetSpider extends Tarantula<Dataset> {
         try {
             datasetUri = new VRI(resource.getURI());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
     }
 

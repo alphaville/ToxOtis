@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.*;
 import org.opentox.toxotis.core.component.BibTeX;
@@ -37,6 +35,7 @@ public class VRI implements Serializable { // Well tested!
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
     private static final String TOKENID = "tokenid";
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
 
     /**
      * Keywords that appear in OpenTox URIs.
@@ -275,7 +274,7 @@ public class VRI implements Serializable { // Well tested!
         try {
             encodedParamName = URLEncoder.encode(paramName, URL_ENCODING);
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(VRI.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug("Unsupported encoding exception", ex);
         }
         ArrayList<Pair<String, String>> urlParamsClone = new ArrayList<Pair<String, String>>(urlParams);
         for (Pair<String, String> pair : urlParamsClone) {
@@ -641,7 +640,7 @@ public class VRI implements Serializable { // Well tested!
         try {
             doProcessUri(uri);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(VRI.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug("URI Syntax Exception", ex);
         }
     }
 }

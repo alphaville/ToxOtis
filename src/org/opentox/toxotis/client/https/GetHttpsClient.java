@@ -6,8 +6,6 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.IGetClient;
@@ -20,6 +18,8 @@ import org.opentox.toxotis.client.VRI;
  * @author Charalampos Chomenides
  */
 public class GetHttpsClient extends AbstractHttpsClient implements IGetClient{
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GetHttpsClient.class);
    
 
     public GetHttpsClient(VRI vri) {
@@ -71,7 +71,7 @@ public class GetHttpsClient extends AbstractHttpsClient implements IGetClient{
                 try {
                     list.add(new VRI(line));
                 } catch (URISyntaxException ex) {
-                    Logger.getLogger(GetHttpsClient.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.debug("Invalid URI",ex);
                 }
             }
         } catch (ToxOtisException cl) {

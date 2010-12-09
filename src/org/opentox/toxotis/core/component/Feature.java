@@ -12,8 +12,6 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
@@ -44,6 +42,7 @@ public class Feature extends OTPublishable<Feature> {
     private String units;
     private Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
 
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Feature.class);
 
     public Feature() {
         super();
@@ -209,7 +208,7 @@ public class Feature extends OTPublishable<Feature> {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(Feature.class.getName()).log(Level.SEVERE, null, ex);
+            logger.warn(null, ex);
         }
         return null;
     }

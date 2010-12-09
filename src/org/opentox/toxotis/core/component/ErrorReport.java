@@ -7,8 +7,6 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.VRI;
@@ -52,6 +50,8 @@ public class ErrorReport extends OTComponent<ErrorReport>
     private UUID uuid = UUID.randomUUID();
     private static final String DISCRIMINATOR = "error";
     private static Map<Integer, String> errorCodeReference;
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorReport.class);
 
     static {
         errorCodeReference = new HashMap<Integer, String>();
@@ -152,7 +152,7 @@ public class ErrorReport extends OTComponent<ErrorReport>
                 String URI = "http://opentox.org/errorReport/#" + hc;
                 setUri(new VRI(URI));
             } catch (URISyntaxException ex) {
-                Logger.getLogger(ErrorReport.class.getName()).log(Level.SEVERE, null, ex);
+                logger.debug(null, ex);
                 throw new RuntimeException(ex);
             }
         }

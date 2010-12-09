@@ -14,8 +14,6 @@ import java.security.SecureRandom;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import org.opentox.toxotis.ToxOtisException;
 
@@ -93,6 +91,7 @@ public class PasswordFileManager extends Observable {
     /** A dummy variable holding the instance of the singleton. */
     private static PasswordFileManager instanceOfThis = null;
     private double fileCreationProgress = 0;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class);
 
     private static PasswordFileManager getInstance() {
         if (instanceOfThis == null) {
@@ -224,7 +223,7 @@ public class PasswordFileManager extends Observable {
                 }
 
             } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(PasswordFileManager.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(null, ex);
             }
         }
     }
@@ -504,7 +503,7 @@ public class PasswordFileManager extends Observable {
                 try {
                     CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", 1000);
                 } catch (IOException ex) {
-                    Logger.getLogger(PasswordFileManager.class.getName()).log(Level.SEVERE, null, ex);
+                    org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class).warn(null, ex);
                 }
             }
         };

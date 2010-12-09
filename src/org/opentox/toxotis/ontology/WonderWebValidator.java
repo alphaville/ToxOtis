@@ -9,8 +9,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.RequestHeaders;
@@ -38,6 +36,7 @@ public class WonderWebValidator {
     public static final VRI WONDERWEB_VLD;
     private static final String responseTemplate = "<p><strong>%s</strong>: <span class=\"yes\">YES</span>";
     private IStAXWritable stax;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(WonderWebValidator.class);
 
     /**
      * An enumeration of supported OWL specifications.
@@ -120,14 +119,14 @@ public class WonderWebValidator {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(WonderWebValidator.class.getName()).log(Level.SEVERE, null, ex);
+            logger.warn("Unexpected IO Exception", ex);
             throw new ToxOtisException(ex);
         } finally {
             if (pc != null) {
                 try {
                     pc.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(WonderWebValidator.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.warn("Unexpected IO Exception caught while closing connection after POST", ex);
                     throw new ToxOtisException(ex);
                 }
             }

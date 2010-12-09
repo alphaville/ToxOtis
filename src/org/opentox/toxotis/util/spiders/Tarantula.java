@@ -19,8 +19,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
@@ -61,6 +59,7 @@ public abstract class Tarantula<Result> implements Closeable {
      * datamodel (OntModel of Jena).
      */
     protected long parseTime = -1;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Tarantula.class);
 
     /**
      * Constructor of a generic parsing processor with a given data model and
@@ -139,7 +138,7 @@ public abstract class Tarantula<Result> implements Closeable {
                                 new ResourceValue(value.getURI() != null ? new VRI(value.getURI()) : null,
                                 OTClasses.forName(value.getLocalName())));
                     } catch (URISyntaxException ex) {
-                        Logger.getLogger(Tarantula.class.getName()).log(Level.SEVERE, null, ex);
+                        logger.debug(null, ex);
                         throw new RuntimeException(ex);
                     }
                 } else if (node.isLiteral()) {

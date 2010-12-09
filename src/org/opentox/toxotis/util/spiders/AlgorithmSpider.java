@@ -7,8 +7,6 @@ import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -34,6 +32,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      * a private field.
      */
     private VRI uri;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AlgorithmSpider.class);
 
     /**
      * Create a new AlgorithmSpider providing the URI of the algorithm to be
@@ -69,7 +68,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                 throw new ToxOtisException("Bad URI : Not an algorithm URI (" + uri + ")");
             }
         } catch (URISyntaxException ex) {
-            Logger.getLogger(AlgorithmSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
     }
 

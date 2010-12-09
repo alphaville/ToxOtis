@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -48,6 +46,8 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  * @author Charalampos Chomenides
  */
 public class Compound extends DescriptorCaclulation<Compound> {
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
 
     /**
      * Construct a new compound identified by its URI. You should provide a
@@ -278,7 +278,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(Feature.class.getName()).log(Level.SEVERE, null, ex);
+            logger.warn(null, ex);
         }
         return null;
     }

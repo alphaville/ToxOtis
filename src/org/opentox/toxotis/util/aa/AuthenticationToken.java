@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
-import org.apache.log4j.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -46,6 +45,8 @@ public class AuthenticationToken {
     private String encoding = "UTF-8";
     /** Flag used to tell if the token is logged out */
     private boolean logOut = false;
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AuthenticationToken.class);
 
     /**
      * Initialize a new Authentication Token. The constructor also initializes
@@ -352,7 +353,7 @@ public class AuthenticationToken {
                 throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
             }
         } catch (IOException ex) {
-            Logger.getLogger(getClass()).debug(ex);
+            logger.warn(null,ex);
             throw new ToxOtisException(ex);
         } finally {
             if (poster != null) {
@@ -443,7 +444,7 @@ public class AuthenticationToken {
                 try {
                     reader.close();
                 } catch (final IOException ex) {
-                    Logger.getLogger(getClass()).info(ex);
+                    logger.info(null,ex);
                     exception = ex;
                 }
             }
@@ -451,7 +452,7 @@ public class AuthenticationToken {
                 try {
                     is.close();
                 } catch (final IOException ex) {
-                    Logger.getLogger(getClass()).info(ex);
+                    logger.info(null,ex);
                     exception = ex;
                 }
             }
@@ -459,7 +460,7 @@ public class AuthenticationToken {
                 try {
                     poster.close();
                 } catch (final IOException ex) {
-                    Logger.getLogger(getClass()).debug(ex);
+                    logger.warn("IO Exception caught while closing the connection of a POST client",ex);
                     exception = ex;
                 }
             }
@@ -543,7 +544,7 @@ public class AuthenticationToken {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(getClass()).error(ex);
+                    logger.error(null,ex);
                     throw new ToxOtisException(ex);
                 }
             }

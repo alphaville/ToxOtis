@@ -6,8 +6,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -30,6 +28,7 @@ public class TaskSpider extends Tarantula<Task> {
     private VRI vri;
     private AuthenticationToken token;
     private int httpStatus = -1;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TaskSpider.class);
 
     public TaskSpider() {
     }
@@ -81,7 +80,7 @@ public class TaskSpider extends Tarantula<Task> {
                 User u = token.getUser();
                 task.setCreatedBy(u);
             } catch (ToxOtisException ex) {
-                Logger.getLogger(TaskSpider.class.getName()).log(Level.SEVERE, null, ex);
+                logger.info(null, ex);
             }
         }
 
@@ -105,7 +104,7 @@ public class TaskSpider extends Tarantula<Task> {
             try {
                 task.setResultUri(new VRI(resultUri.getString()));
             } catch (URISyntaxException ex) {
-                Logger.getLogger(TaskSpider.class.getName()).log(Level.SEVERE, null, ex);
+                logger.debug(null, ex);
             }
         }
         Statement percentageStmt = resource.getProperty(

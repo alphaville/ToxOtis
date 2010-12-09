@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
@@ -58,6 +56,8 @@ public class OTClasses {
     private static OntologicalClass ms_Thing;
     private static Map<String, Method> ms_methodCache;
 
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTClasses.class);
+
     private synchronized static void initMethodCache() {
         if (ms_methodCache == null) {
             ms_methodCache = new HashMap<String, Method>();
@@ -77,11 +77,11 @@ public class OTClasses {
             try {
                 result.add((OntologicalClass)m.invoke(null));
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(OTClasses.class.getName()).log(Level.SEVERE, null, ex);
+                logger.warn(null, ex);
             } catch (IllegalArgumentException ex) {
-                Logger.getLogger(OTClasses.class.getName()).log(Level.SEVERE, null, ex);
+                logger.warn(null, ex);
             } catch (InvocationTargetException ex) {
-                Logger.getLogger(OTClasses.class.getName()).log(Level.SEVERE, null, ex);
+                logger.warn(null, ex);
             }
         }
         return result;
