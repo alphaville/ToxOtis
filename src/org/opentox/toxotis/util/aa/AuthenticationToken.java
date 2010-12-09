@@ -603,7 +603,7 @@ public class AuthenticationToken {
         sb.append("Status              : " + getStatus());
         return new String(sb);
     }
-//    public static void main(String... art) throws Exception{
-//        System.out.println(new AuthenticationToken(new java.io.File("/home/chung/toxotisKeys/my.key")));
-//    }
+    public static void main(String... art) throws Exception{
+        System.out.println(new AuthenticationToken(new java.io.File("/home/chung/toxotisKeys/my.key")));
+    }
 }

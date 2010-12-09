@@ -73,12 +73,12 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         }
 
         summaryTable.setCellPadding(5).
-                    setCellSpacing(2).
-                    setTableBorder(1).
-                    setColWidth(1, 150).
-                    setColWidth(2, 400);
+                setCellSpacing(2).
+                setTableBorder(1).
+                setColWidth(1, 150).
+                setColWidth(2, 400);
         builder.getDiv().breakLine();
-        
+
         builder.addSubSubSubHeading("Meta Information");
         if (getMeta() != null) {
             builder.addComponent(getMeta().inHtml());
@@ -94,13 +94,46 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         return builder.getDiv();
     }
 
+    /**
+     * Status of the task revealing information about the asynchronous job with
+     * which the task is related and runs on a server.
+     */
     public enum Status {
 
+        /**
+         * The task is still Running in the background as an asynchronous job. This
+         * status means that the task has been submitted to the Execution Pool but has
+         * not completed yet.
+         */
         RUNNING,
+        /**
+         * The task has completed execution successfully. The result can be found under
+         * #resultUri and is accessible via {@link Task#getResultUri() #getResultUri()}.
+         * The corresponding status is either 200 if the result is the URI of a created
+         * resource or 201 if it redirects to some other task (most probably on some
+         * other server)
+         */
         COMPLETED,
+        /**
+         * The task is cancelled by the User.
+         */
         CANCELLED,
+        /**
+         * Task execution was interrupted due to some error related with the asynchronous
+         * job, either due to a bad request by the client, an internal server error or an
+         * error related to a third remote service. In such a case, the task is accompanied
+         * by an error report that provides access to details about the exceptional event.
+         */
         ERROR,
+        /**
+         * Due to large load on the server or issues related to A&A or user quota,
+         * the task was rejected for execution.
+         */
         REJECTED,
+        /**
+         * The task is created and put in an execution queue but is not running yet.
+         * HTTP status codes of queueed tasks is 202.
+         */
         QUEUED;
     }
     private VRI resultUri;
@@ -118,6 +151,11 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         super(uri);
     }
 
+    /**
+     * Retrieve the user which created the task.
+     * @return
+     *      Creator of the task or <code>null</code> if not available.
+     */
     public User getCreatedBy() {
         return createdBy;
     }
@@ -148,6 +186,13 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         return this;
     }
 
+    /**
+     *
+     * Get the percentage of completion of a running task.
+     * 
+     * @return
+     *      Percentage of completion as a number in the range <code>[0, 100]</code>.
+     */
     public float getPercentageCompleted() {
         return percentageCompleted;
     }

@@ -4,11 +4,21 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.hibernate.Hibernate;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.OTOnlineResource;
@@ -41,7 +51,10 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private ArrayList<MultiParameter> multiParameters;
     private String localCode;
     private Serializable actualModel;
+    private byte[] model;
     private User createdBy;
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Model.class);
 
     public Model(VRI uri) {
         super(uri);
@@ -64,7 +77,27 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     }
 
     public void setActualModel(Serializable actualModel) {
-        this.actualModel = actualModel;
+        try {
+            this.actualModel = actualModel;
+            this.model = getBytes(actualModel);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    private static byte[] getBytes(Object obj) throws java.io.IOException {
+        if (obj == null) {
+            return null;
+        }
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(obj);
+        oos.flush();
+        oos.close();
+        bos.close();
+        byte[] data = bos.toByteArray();
+        return data;
     }
 
     public String getLocalCode() {
@@ -228,5 +261,62 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         int hash = 3;
         hash = 71 * hash + (getUri() != null ? getUri().hashCode() : 0);
         return hash;
+    }
+
+    public void setBlob(Blob modelBlob) {
+        this.model = toByteArray(modelBlob);
+        this.actualModel = (Serializable) toObject(model);
+    }
+
+    public static Object toObject(byte[] bytes) {
+        Object object = null;
+        try {
+            object = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(bytes)).readObject();
+        } catch (java.io.IOException ioe) {
+        } catch (java.lang.ClassNotFoundException cnfe) {
+        }
+        return object;
+    }
+
+    public Blob getBlob() throws SerialException, SQLException {
+        if (this.model == null) {
+            return null;
+        }
+        try {
+            return new SerialBlob(model);
+        } catch (SerialException ex) {
+            logger.warn("", ex);
+            throw ex;
+        } catch (SQLException ex) {
+            logger.warn("", ex);
+            throw ex;
+        }
+        
+    }
+
+    private byte[] toByteArray(Blob fromModelBlob) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            return toByteArrayImpl(fromModelBlob, baos);
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    private byte[] toByteArrayImpl(Blob fromModelBlob,
+            ByteArrayOutputStream baos) throws SQLException, IOException {
+        byte buf[] = new byte[4000];
+        int dataSize;
+        InputStream is = fromModelBlob.getBinaryStream();
+        try {
+            while ((dataSize = is.read(buf)) != -1) {
+                baos.write(buf, 0, dataSize);
+            }
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+        return baos.toByteArray();
     }
 }

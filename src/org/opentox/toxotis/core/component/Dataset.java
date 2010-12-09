@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
@@ -344,7 +345,7 @@ public class Dataset extends OTPublishable<Dataset> {
     }
 
     public Set<Feature> getContainedFeatures() {
-        Set<Feature> features = new HashSet<Feature>();
+        Set<Feature> features = new LinkedHashSet<Feature>();
         for (DataEntry dataEntry : getDataEntries()) {
             for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
                 features.add(featureValue.getFeature());
