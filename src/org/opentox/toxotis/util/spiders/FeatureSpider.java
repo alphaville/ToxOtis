@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -31,6 +29,8 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 public class FeatureSpider extends Tarantula<Feature> {
 
     VRI uri;
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FeatureSpider.class);
 
     public FeatureSpider(VRI uri) throws ToxOtisException {
         super();
@@ -63,7 +63,7 @@ public class FeatureSpider extends Tarantula<Feature> {
         try {
             uri = new VRI(resource.getURI());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
     }
 
@@ -73,7 +73,7 @@ public class FeatureSpider extends Tarantula<Feature> {
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
         this.resource = model.getResource(uri);
     }
