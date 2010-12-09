@@ -42,15 +42,15 @@ public class AlgorithmTest {
 
     @Test
     public void testSomeMethod() throws URISyntaxException, ToxOtisException, IOException {
-        Algorithm a = new Algorithm(Services.ntua().augment("algorithm","mlr"));
-        System.out.println(a.getUri());
+        Algorithm algorithm = new Algorithm(Services.NtuaAlgorithms.mlr());
+        System.out.println(algorithm.getUri());
         System.out.println("Authenticating...");
         AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
         System.out.println("Received token for user... "+at.getUser().getMail());
-        a.loadFromRemote(at);
+        algorithm.loadFromRemote(at);
         System.out.println("Algorithm meta-information...");
-        System.out.println(a.getMeta());
-        WonderWebValidator wwv = new WonderWebValidator(a.asOntModel());
+        System.out.println(algorithm.getMeta());
+        WonderWebValidator wwv = new WonderWebValidator(algorithm.asOntModel());
         System.out.println(wwv.validate(WonderWebValidator.OWL_SPECIFICATION.DL)?"Document is OWL-DL valid":"Document not OWL-DL valid!");
         System.out.println("Invalidating token...");
         at.invalidate();

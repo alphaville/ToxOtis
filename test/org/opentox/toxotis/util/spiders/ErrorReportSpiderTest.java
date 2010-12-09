@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
@@ -46,7 +48,7 @@ public class ErrorReportSpiderTest {
          * token or credentials. This will throw an error!
          */
         VRI uri = new VRI(Services.ntua().augment("algorithm", "mlr"));
-        GetHttpClient client = new GetHttpClient();
+        IGetClient client = ClientFactory.createGetClient(uri);
         client.setUri(uri);
         OntModel model = client.getResponseOntModel();
         ErrorReportSpider spider = new ErrorReportSpider(uri, model);

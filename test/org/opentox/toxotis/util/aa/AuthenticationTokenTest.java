@@ -41,7 +41,7 @@ public class AuthenticationTokenTest {
         System.out.println(at.getTokenUrlEncoded());
         System.out.println(at.getTokenCreationTimestamp());
         System.out.println(at.getTokenCreationDate());
-      
+        
         System.out.println(at.getUser());
       
     }

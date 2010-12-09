@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.util.aa.SSLConfiguration;
 import static org.junit.Assert.*;
@@ -39,14 +40,14 @@ public class SecurePostClientTest {
     }
 
     @Test
-    public void testSomeMethod() throws URISyntaxException, ToxOtisException {
+    public void testSomeMethod() throws URISyntaxException, ToxOtisException, IOException {
         SSLConfiguration.initializeSSLConnection();
-        PostHttpsClient p = new PostHttpsClient(new VRI("https://opensso.in-silico.ch/opensso/identity/authenticate"));
-        p.addParameter("username", "Sopasakis");
-        p.addParameter("password", "xxx");
+        IPostClient p = new PostHttpsClient(new VRI("https://opensso.in-silico.ch/opensso/identity/authenticate"));
+        p.addPostParameter("username", "Sopasakis");
+        p.addPostParameter("password", "xxx");
         p.post();
         System.out.println(p.getResponseCode());
-        System.out.println(p.getResponseText());        
+        System.out.println(p.getResponseText());
     }
 
 }

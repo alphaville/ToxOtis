@@ -61,8 +61,8 @@ public class TrainerTest {
 
         Trainer trainer = new Trainer(alg, ds, pf);
 
-        AuthenticationToken at =
-                new AuthenticationToken(new java.io.File("/home/chung/toxotisKeys/my.key")); // << Provide your private key here
+        AuthenticationToken at =null;
+                //new AuthenticationToken(new java.io.File("/home/chung/toxotisKeys/my.key")); // << Provide your private key here
 
         if (at != null) {
             System.out.println(at.stringValue());

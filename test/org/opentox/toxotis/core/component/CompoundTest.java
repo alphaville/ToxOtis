@@ -101,7 +101,7 @@ public class CompoundTest {
 
     @Test
     public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException, ExecutionException {
-        IDescriptorCalculation c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/100"));
+        IDescriptorCalculation c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/10"));
         Future<VRI> t = c.futureCDKPhysChemDescriptors(null, Services.ambitUniPlovdiv().augment("dataset"));
         System.out.println("Waiting for result...");
         System.out.println(t.get());
