@@ -140,13 +140,13 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         builder.append(getName());
         builder.append("\n");
         builder.append("Value : ");
-        builder.append(typedValue.getValue());
+        builder.append(typedValue!=null?typedValue.getValue():"-");
         builder.append("\n");
         builder.append("Scope : ");
         builder.append(scope);
         builder.append("\n");
         builder.append("Type  : ");
-        builder.append(typedValue.getType());
+        builder.append(typedValue!=null?typedValue.getType():"-");
         return new String(builder);
     }
 

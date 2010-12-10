@@ -128,7 +128,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         return conformers;
     }
 
-//TODO: It doesn't work oddly
+
     public Dataset getPropertiesByOnt(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
         Set<VRI> features = FeatureFactory.lookupSameAs(featurePrototype, token);
         return getProperties(token, (VRI[]) features.toArray(new VRI[features.size()]));

@@ -1,5 +1,8 @@
 package org.opentox.toxotis.core.html;
 
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.ontology.LiteralValue;
@@ -88,9 +91,23 @@ public class HTMLUtils {
             if (doLink) {
                 sb.append("</a>");
             }
-            sb.append("</li>\n");
+            sb.append(" </li>\n");
         }
         builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
         return builder.getDiv();
+    }
+
+    public static String linkUrlsInText(String plainText) {
+        String[] fragments = plainText.split("\\s");// space
+        StringBuffer sb = new StringBuffer();
+        for (String word : fragments) {
+            try {
+                URL url = new URL(word);
+                sb.append("<a href=\"" + url + "\">" + url + "</a> ");
+            } catch (MalformedURLException e) {
+                sb.append(word + " ");
+            }
+        }
+        return sb.toString();
     }
 }

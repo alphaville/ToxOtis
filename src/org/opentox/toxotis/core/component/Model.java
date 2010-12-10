@@ -51,7 +51,6 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private Serializable actualModel;
     private byte[] model;
     private User createdBy;
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Model.class);
 
     public Model(VRI uri) {
@@ -289,7 +288,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             logger.warn("", ex);
             throw ex;
         }
-        
+
     }
 
     private byte[] toByteArray(Blob fromModelBlob) {

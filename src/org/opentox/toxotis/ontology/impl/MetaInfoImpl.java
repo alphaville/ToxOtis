@@ -2,7 +2,6 @@ package org.opentox.toxotis.ontology.impl;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.AnnotationProperty;
-import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -14,10 +13,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
-import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
+import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -722,6 +721,7 @@ public class MetaInfoImpl implements MetaInfo {
                     setTextAtCursor(createHtmlList(titles));
         }
         if (descriptions != null && !descriptions.isEmpty()) {
+            System.out.println("Descriptions"+descriptions);
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "description") + "\">Description" + (descriptions.size() > 1 ? "s" : "") + "</a>").
                     setTextAtCursor(createHtmlList(descriptions));
         }
@@ -779,13 +779,13 @@ public class MetaInfoImpl implements MetaInfo {
         if (values.size() == 0) {
             return "";
         } else if (values.size() == 1) {
-            return values.iterator().next().getValueAsString();
+            return HTMLUtils.linkUrlsInText(values.iterator().next().getValueAsString());
         } else {
             StringBuilder builder = new StringBuilder();
             builder.append("<ol>\n");
             for (LiteralValue lv : values) {
                 builder.append("<li>");
-                builder.append(lv.getValueAsString());
+                builder.append(HTMLUtils.linkUrlsInText(lv.getValueAsString()));
                 builder.append("</li>");
             }
             builder.append("</ol>");

@@ -64,12 +64,6 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
             dcmeta.setDate(temp.iterator().next());
         }
 
-
-        /* version info */
-//        temp = retrieveProp(OWL.versionInfo);
-//        dcmeta.setVersionInfo(temp != null ? temp.getValue() : null);
-
-
         /* hasSource */
         temp2 = retrievePropertyNodes(org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(model));
         dcmeta.setHasSources(temp2);
@@ -80,8 +74,9 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
         temp2 = retrievePropertyNodes(RDFS.seeAlso);
         dcmeta.setSeeAlso(temp2);
 
+        temp =retrievePropertyLiterals(model.createAnnotationProperty("http://purl.org/dc/elements/1.1/audience"));
+        dcmeta.setAudiences(temp);
 
-        //TODO: add audiences
         return dcmeta;
     }
 }
