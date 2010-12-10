@@ -1,7 +1,5 @@
 package org.opentox.toxotis.core.component;
 
-import org.opentox.toxotis.core.component.Feature;
-import com.hp.hpl.jena.vocabulary.OWLTest;
 import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,7 +8,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.WonderWebValidator;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
  *
@@ -37,7 +37,7 @@ public class FeatureTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
     public void testLoadRemoteFeature() throws URISyntaxException, ToxOtisException {
         Feature f = new Feature(Services.ideaconsult().augment("feature","22200"));
         f.loadFromRemote();
@@ -48,6 +48,14 @@ public class FeatureTest {
                 wwv.validate(WonderWebValidator.OWL_SPECIFICATION.DL)
                 );
 
+    }
+
+    @Test
+    public void testRdfSerialization() throws Exception{
+        Feature f = new Feature();
+                f.getMeta().addHasSource(new ResourceValue(Services.ntua().augment("algorithm","pls"), OTClasses.Algorithm())).
+                        addIdentifier("abc");
+                f.asOntModel().write(System.out);
     }
 
 
