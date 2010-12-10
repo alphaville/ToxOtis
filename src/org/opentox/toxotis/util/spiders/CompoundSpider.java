@@ -4,8 +4,6 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -22,6 +20,7 @@ import org.opentox.toxotis.core.component.Compound;
 public class CompoundSpider extends Tarantula<Compound> {
 
     VRI uri;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CompoundSpider.class);
 
     public CompoundSpider(VRI uri) throws ToxOtisException {
         super();
@@ -54,7 +53,7 @@ public class CompoundSpider extends Tarantula<Compound> {
         try {
             uri = new VRI(resource.getURI());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
     }
 
@@ -64,7 +63,7 @@ public class CompoundSpider extends Tarantula<Compound> {
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(FeatureSpider.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug(null, ex);
         }
         this.resource = model.getResource(uri);
     }

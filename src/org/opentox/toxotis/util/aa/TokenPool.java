@@ -6,8 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -27,6 +25,7 @@ public class TokenPool {
         }
         return instanceOfThis;
     }
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TokenPool.class);
 
     private TokenPool() {
         SSLConfiguration.initializeSSLConnection();
@@ -54,9 +53,10 @@ public class TokenPool {
      *      no such user is found in the pool.
      */
     public AuthenticationToken getToken(String username) {
-        if (username!=null){
-        return this.pool.get(username);
-        } return null;
+        if (username != null) {
+            return this.pool.get(username);
+        }
+        return null;
     }
 
     public AuthenticationToken login(String username, String password) throws ToxOtisException {
@@ -131,8 +131,7 @@ public class TokenPool {
                 pool.remove(encryptedUserName);
                 return 1;
             } catch (ToxOtisException ex) {
-                Logger.getLogger(TokenPool.class.getName()).log(Level.SEVERE,
-                        "Exception caught while invalidating a token", ex);
+                logger.warn("Exception caught while invalidating a token", ex);
                 return -1;
             }
         } else {
@@ -145,11 +144,10 @@ public class TokenPool {
             try {
                 e.getValue().invalidate();
             } catch (ToxOtisException ex) {
-                Logger.getLogger(TokenPool.class.getName()).log(Level.SEVERE, null, ex);
+                logger.debug("ToxOtis exception caught on token invalidation", ex);
             }
         }
         // Empty pool...
         pool = new HashMap<String, AuthenticationToken>();
     }
-
 }

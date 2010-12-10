@@ -54,6 +54,10 @@ public class DatasetFactory {
      *      of the provided Instances object.
      */
     public static Dataset createFromArff(Instances instances) throws ToxOtisException {
+        if (instances.attribute("compound_uri")==null){
+            throw new ToxOtisException("Cannot create an OpenTox dataset out of this dataset because " +
+                    "'compound_uri' was not found in it's attribute list");
+        }
         Dataset ds = new Dataset();
         Enumeration instancesEnum = instances.enumerateInstances();
         while (instancesEnum.hasMoreElements()) {

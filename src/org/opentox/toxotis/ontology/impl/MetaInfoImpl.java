@@ -532,7 +532,7 @@ public class MetaInfoImpl implements MetaInfo {
         } else {
             Set<ResourceValue> values = new HashSet<ResourceValue>();
             values.add(hasSource);
-            setHasSources(hasSources);
+            setHasSources(values);
         }
         return this;
     }

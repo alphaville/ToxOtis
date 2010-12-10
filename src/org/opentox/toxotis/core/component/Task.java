@@ -79,8 +79,25 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
                 setColWidth(2, 400);
         builder.getDiv().breakLine();
 
-        builder.addSubSubSubHeading("Meta Information");
+        if (getErrorReport() != null) {
+            builder.addSubSubSubHeading("Error Report");
+            HTMLTable errorReportTable = builder.addTable(2);
+            errorReportTable.setAtCursor(new HTMLTextImpl("Actor").formatBold(true)).setTextAtCursor(getErrorReport().getActor() != null ? getErrorReport().getActor() : "Undefined").
+                    setAtCursor(new HTMLTextImpl("Error Code").formatBold(true)).setTextAtCursor(getErrorReport().getErrorCode() != null ? getErrorReport().getErrorCode() : "-").
+                    setAtCursor(new HTMLTextImpl("Message").formatBold(true)).setTextAtCursor(getErrorReport().getMessage() != null ? getErrorReport().getMessage() : "-").
+                    setAtCursor(new HTMLTextImpl("HTTP Code").formatBold(true)).setTextAtCursor(getErrorReport().getHttpStatus() > 0 ? "" + getErrorReport().getHttpStatus() : "-").
+                    setAtCursor(new HTMLTextImpl("Details").formatBold(true)).setAtCursor(new HTMLTextImpl(htmlNormalize(getErrorReport().getDetails() != null ? getErrorReport().getDetails() : "-")).formatPRE(true));
+            errorReportTable.setCellPadding(5).
+                    setCellSpacing(2).
+                    setTableBorder(1).
+                    setColWidth(1, 150).
+                    setColWidth(2, 400);
+            builder.getDiv().breakLine();
+        }
+
+
         if (getMeta() != null) {
+            builder.addSubSubSubHeading("Meta Information");
             builder.addComponent(getMeta().inHtml());
         }
 
@@ -92,6 +109,13 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
                 + "</small>", Alignment.left);
 
         return builder.getDiv();
+    }
+
+    private String htmlNormalize(String in) {
+        if (in == null) {
+            return null;
+        }
+        return in.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     }
 
     /**
