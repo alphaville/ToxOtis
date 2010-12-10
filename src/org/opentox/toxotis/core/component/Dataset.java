@@ -23,6 +23,7 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTPublishable;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -49,7 +50,6 @@ public class Dataset extends OTPublishable<Dataset> {
     private long timeDownload = -1;
     private long timeParse = -1;
     private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
 
     /**
@@ -132,11 +132,14 @@ public class Dataset extends OTPublishable<Dataset> {
         writeDatatypeProperty(writer, OTDatatypeProperties.units());
 
         writer.writeStartElement("ot:Dataset");// #NODE_BASE: Start Base Dataset Node
-        writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_BASE
+        if (getUri() != null) {
+            writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_BASE
+        }
         /* Meta-information about the dataset */
         if (getMeta() != null) {
             getMeta().writeToStAX(writer);
         }
+
         for (DataEntry dataEntry : getDataEntries()) {
             writer.writeStartElement("ot:dataEntry");// #NODE_HAS_DATAENTRY_PROP
             writer.writeStartElement("ot:DataEntry");// #NODE_DE
@@ -164,14 +167,39 @@ public class Dataset extends OTPublishable<Dataset> {
         }
         writer.writeEndElement();// #NODE_BASE: End Base Dataset Node
 
+        if (getMeta() != null) {
+            if (getMeta().getSeeAlso() != null) {
+                for (ResourceValue rv : getMeta().getSeeAlso()) {
+                    if (rv.getOntologicalClass() != null) {
+                        writer.writeEmptyElement(rv.getOntologicalClass().getNameSpace(), rv.getOntologicalClass().getName());
+                        writer.writeAttribute("rdf:about", rv.getUri().toString());
+                    }
+                }
+            }
+            if (getMeta().getHasSources() != null) {
+                for (ResourceValue rv : getMeta().getHasSources()) {
+                    if (rv.getOntologicalClass() != null) {
+                        writer.writeEmptyElement(rv.getOntologicalClass().getNameSpace(), rv.getOntologicalClass().getName());
+                        writer.writeAttribute("rdf:about", rv.getUri().toString());
+                    }
+                }
+            }
+            if (getMeta().getSameAs() != null) {
+                for (ResourceValue rv : getMeta().getSameAs()) {
+                    if (rv.getOntologicalClass() != null) {
+                        writer.writeEmptyElement(rv.getOntologicalClass().getNameSpace(), rv.getOntologicalClass().getName());
+                        writer.writeAttribute("rdf:about", rv.getUri().toString());
+                    }
+                }
+            }
+        }
+
         Set<Feature> containedFeatures = getContainedFeatures();
         Set<OntologicalClass> featureOntologies = null;
         Set<String> sameAsFeatures = new HashSet<String>();
         for (Feature f : containedFeatures) {
             writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
             writer.writeAttribute("rdf:about", f.getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
-
-
             featureOntologies = f.getOntologies();
             boolean explicitTypeDeclaration = false;
             if (featureOntologies != null && !featureOntologies.isEmpty()) {
@@ -237,7 +265,7 @@ public class Dataset extends OTPublishable<Dataset> {
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
-        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+        if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
             throw new InactiveTokenException("The Provided token is inactive");
         }
         PostHttpClient client = new PostHttpClient(vri);
@@ -276,13 +304,11 @@ public class Dataset extends OTPublishable<Dataset> {
 
     @Override
     public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
-        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+        if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
             throw new InactiveTokenException("The Provided token is inactive");
         }
         return publishOnline(Services.ideaconsult(), token);
     }
-
-    
 
     private enum WekaDataTypes {
 
@@ -331,7 +357,7 @@ public class Dataset extends OTPublishable<Dataset> {
 
     @Override
     protected Dataset loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
-        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+        if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
             throw new InactiveTokenException("The Provided token is inactive");
         }
         DatasetSpider spider = new DatasetSpider(uri, token);
@@ -475,7 +501,7 @@ public class Dataset extends OTPublishable<Dataset> {
     }
 
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
-        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+        if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
             throw new InactiveTokenException("The Provided token is inactive");
         }
         PostHttpClient client = new PostHttpClient(descriptorCalculationAlgorithm);

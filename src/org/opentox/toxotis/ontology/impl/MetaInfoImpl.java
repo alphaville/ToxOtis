@@ -52,42 +52,6 @@ public class MetaInfoImpl implements MetaInfo {
             }
             builder.append("\n");
         }
-//        if (title != null) {
-//            builder.append("title       : " + title + "\n");
-//        }
-//        if (description != null) {
-//            builder.append("description : " + description + "\n");
-//        }
-//        if (date != null) {
-//            builder.append("date        : " + date + "\n");
-//        }
-//        if (sameAs != null) {
-//            builder.append("same as     : " + sameAs + "\n");
-//        }
-//        if (seeAlso != null) {
-//            builder.append("see Also    : " + seeAlso + "\n");
-//        }
-//        if (publisher != null) {
-//            builder.append("publisher   : " + publisher + "\n");
-//        }
-//        if (creator != null) {
-//            builder.append("creator     : " + creator + "\n");
-//        }
-//        if (hasSource != null) {
-//            builder.append("has source  : " + hasSource + "\n");
-//        }
-//        if (comment != null && !comment.isEmpty()) {
-//            Iterator<AnyValue<String>> commentIterator = comment.iterator();
-//            while (commentIterator.hasNext()) {
-//                builder.append("comment     : " + commentIterator.next() + "\n");
-//            }
-//        }
-//        if (versionInfo != null) {
-//            builder.append("version info: " + versionInfo + "\n");
-//        }
-//        if (subject != null) {
-//            builder.append("subject     : " + subject + "\n");
-//        }
         return new String(builder);
     }
 
@@ -220,42 +184,66 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
-        for (LiteralValue lv : identifiers) {
-            writeMetaDatumToStAX("dc", "identifier", lv, writer);
+        if (identifiers != null) {
+            for (LiteralValue lv : identifiers) {
+                writeMetaDatumToStAX("dc", "identifier", lv, writer);
+            }
         }
-        for (LiteralValue lv : comments) {
-            writeMetaDatumToStAX("rdfs", "comment", lv, writer);
+        if (comments != null) {
+            for (LiteralValue lv : comments) {
+                writeMetaDatumToStAX("rdfs", "comment", lv, writer);
+            }
         }
-        for (LiteralValue lv : creators) {
-            writeMetaDatumToStAX("dc", "creator", lv, writer);
+        if (creators != null) {
+            for (LiteralValue lv : creators) {
+                writeMetaDatumToStAX("dc", "creator", lv, writer);
+            }
         }
-        for (LiteralValue lv : contributors) {
-            writeMetaDatumToStAX("dc", "contributor", lv, writer);
+        if (contributors != null) {
+            for (LiteralValue lv : contributors) {
+                writeMetaDatumToStAX("dc", "contributor", lv, writer);
+            }
         }
-        writeMetaDatumToStAX("dc", "date", date, writer);
-        for (LiteralValue lv : descriptions) {
-            writeMetaDatumToStAX("dc", "description", lv, writer);
+        if (descriptions != null) {
+            writeMetaDatumToStAX("dc", "date", date, writer);
+            for (LiteralValue lv : descriptions) {
+                writeMetaDatumToStAX("dc", "description", lv, writer);
+            }
         }
-        for (LiteralValue lv : publishers) {
-            writeMetaDatumToStAX("dc", "publisher", lv, writer);
+        if (publishers != null) {
+            for (LiteralValue lv : publishers) {
+                writeMetaDatumToStAX("dc", "publisher", lv, writer);
+            }
         }
-        for (LiteralValue lv : audiences) {
-            writeMetaDatumToStAX("dc", "audience", lv, writer);
+        if (audiences != null) {
+            for (LiteralValue lv : audiences) {
+                writeMetaDatumToStAX("dc", "audience", lv, writer);
+            }
         }
-        for (LiteralValue lv : subjects) {
-            writeMetaDatumToStAX("dc", "subject", lv, writer);
+        if (subjects != null) {
+            for (LiteralValue lv : subjects) {
+                writeMetaDatumToStAX("dc", "subject", lv, writer);
+            }
         }
-        for (LiteralValue lv : titles) {
-            writeMetaDatumToStAX("dc", "title", lv, writer);
+        if (titles != null) {
+            for (LiteralValue lv : titles) {
+                writeMetaDatumToStAX("dc", "title", lv, writer);
+            }
         }
-        for (ResourceValue rv : hasSources) {
-            writeMetaDatumResourceToStAX("ot", "hasSource", rv, writer);
+        if (hasSources != null) {
+            for (ResourceValue rv : hasSources) {
+                writeMetaDatumResourceToStAX("ot", "hasSource", rv, writer);                
+            }
         }
-        for (ResourceValue rv : sameAs) {
-            writeMetaDatumResourceToStAX("owl", "sameAs", rv, writer);
+        if (sameAs != null) {
+            for (ResourceValue rv : sameAs) {
+                writeMetaDatumResourceToStAX("owl", "sameAs", rv, writer);
+            }
         }
-        for (ResourceValue rv : seeAlso) {
-            writeMetaDatumResourceToStAX("rdfs", "seeAlso", rv, writer);
+        if (seeAlso != null) {
+            for (ResourceValue rv : seeAlso) {
+                writeMetaDatumResourceToStAX("rdfs", "seeAlso", rv, writer);               
+            }
         }
 
     }

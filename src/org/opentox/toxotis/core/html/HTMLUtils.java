@@ -97,7 +97,12 @@ public class HTMLUtils {
         return builder.getDiv();
     }
 
+
     public static String linkUrlsInText(String plainText) {
+        /*
+         * Check out the snippet at http://blog.houen.net/java-get-url-from-string/
+         * to potentially improve this code:
+         */
         String[] fragments = plainText.split("\\s");// space
         StringBuffer sb = new StringBuffer();
         for (String word : fragments) {

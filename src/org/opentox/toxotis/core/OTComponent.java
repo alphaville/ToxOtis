@@ -174,6 +174,7 @@ public abstract class OTComponent<T extends OTComponent> implements IOTComponent
         writeAnnotationProperty(writer, DC.subject.getURI());
         writeAnnotationProperty(writer, RDFS.comment.getURI());
         writeAnnotationProperty(writer, DC.identifier.getURI());
+        writeAnnotationProperty(writer, "http://purl.org/dc/elements/1.1/audience");
     }
 
     protected void initRdfWriter(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
