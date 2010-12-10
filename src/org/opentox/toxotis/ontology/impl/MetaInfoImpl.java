@@ -190,19 +190,12 @@ public class MetaInfoImpl implements MetaInfo {
             }
 
         }
-//        if (versionInfo != null) {
-//            resource.addLiteral(OWL.versionInfo.inModel(model).as(Property.class),
-//                    model.createTypedLiteral(versionInfo.getValue()));
-//        }
+
         if (date != null) {
             AnnotationProperty dateProperty = model.createAnnotationProperty(DC.date.getURI());
             resource.addLiteral(dateProperty, date.inModel(model));
         }
 
-//        AnnotationProperty contributorProperty = model.createAnnotationProperty(DC.contributor.getURI());
-//        if (contributors != null && !contributors.isEmpty()) {
-//
-//        }
         return resource;
     }
 
@@ -227,30 +220,44 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
-//        writeMetaDatumToStAX("dc", "identifier", identifier, writer);
-//        if (comment != null && !comment.isEmpty()) {
-//            Iterator<AnyValue<String>> commentIterator = comment.iterator();
-//            while (commentIterator.hasNext()) {
-//                writeMetaDatumToStAX("rdfs", "comment", commentIterator.next(), writer);
-//            }
-//        }
-//
-//        writeMetaDatumToStAX("rdfs", "creator", creator, writer);
-//        if (contributors != null) {
-//            for (AnyValue contrib : contributors) {
-//                writeMetaDatumToStAX("dc", "contributor", contrib, writer);
-//            }
-//        }
-//
-//        writeMetaDatumToStAX("dc", "date", date, writer);
-//        writeMetaDatumToStAX("dc", "description", description, writer);
-//        writeMetaDatumResourceToStAX("ot", "hasSource", hasSource, writer);
-//        writeMetaDatumToStAX("dc", "publisher", publisher, writer);
-//        writeMetaDatumResourceToStAX("owl", "sameAs", sameAs, writer);
-//        writeMetaDatumToStAX("rdfs", "seeAlso", seeAlso, writer);
-//        writeMetaDatumToStAX("dc", "subject", subject, writer);
-//        writeMetaDatumToStAX("dc", "title", title, writer);
-//        writeMetaDatumToStAX("owl", "versionInfo", versionInfo, writer);
+        for (LiteralValue lv : identifiers) {
+            writeMetaDatumToStAX("dc", "identifier", lv, writer);
+        }
+        for (LiteralValue lv : comments) {
+            writeMetaDatumToStAX("rdfs", "comment", lv, writer);
+        }
+        for (LiteralValue lv : creators) {
+            writeMetaDatumToStAX("dc", "creator", lv, writer);
+        }
+        for (LiteralValue lv : contributors) {
+            writeMetaDatumToStAX("dc", "contributor", lv, writer);
+        }
+        writeMetaDatumToStAX("dc", "date", date, writer);
+        for (LiteralValue lv : descriptions) {
+            writeMetaDatumToStAX("dc", "description", lv, writer);
+        }
+        for (LiteralValue lv : publishers) {
+            writeMetaDatumToStAX("dc", "publisher", lv, writer);
+        }
+        for (LiteralValue lv : audiences) {
+            writeMetaDatumToStAX("dc", "audience", lv, writer);
+        }
+        for (LiteralValue lv : subjects) {
+            writeMetaDatumToStAX("dc", "subject", lv, writer);
+        }
+        for (LiteralValue lv : titles) {
+            writeMetaDatumToStAX("dc", "title", lv, writer);
+        }
+        for (ResourceValue rv : hasSources) {
+            writeMetaDatumResourceToStAX("ot", "hasSource", rv, writer);
+        }
+        for (ResourceValue rv : sameAs) {
+            writeMetaDatumResourceToStAX("owl", "sameAs", rv, writer);
+        }
+        for (ResourceValue rv : seeAlso) {
+            writeMetaDatumResourceToStAX("rdfs", "seeAlso", rv, writer);
+        }
+
     }
 
     public Set<LiteralValue> getComments() {
@@ -721,7 +728,7 @@ public class MetaInfoImpl implements MetaInfo {
                     setTextAtCursor(createHtmlList(titles));
         }
         if (descriptions != null && !descriptions.isEmpty()) {
-            System.out.println("Descriptions"+descriptions);
+            System.out.println("Descriptions" + descriptions);
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "description") + "\">Description" + (descriptions.size() > 1 ? "s" : "") + "</a>").
                     setTextAtCursor(createHtmlList(descriptions));
         }
@@ -762,7 +769,7 @@ public class MetaInfoImpl implements MetaInfo {
             table.setTextAtCursor("<a href=\"http://www.w3.org/TR/rdf-schema/#ch_comment\">Comment" + (comments.size() > 1 ? "s" : "") + "</a>").
                     setTextAtCursor(createHtmlList(comments));
         }
-        if (date!=null){
+        if (date != null) {
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "date") + "\">Date</a>").
                     setTextAtCursor(date.getValueAsString());
         }
@@ -771,7 +778,7 @@ public class MetaInfoImpl implements MetaInfo {
                 setTableBorder(1).
                 setColWidth(1, 150).
                 setColWidth(2, 600);
-        
+
         return builder.getDiv();
     }
 
