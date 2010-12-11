@@ -24,8 +24,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.http.PostHttpClient;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
@@ -93,7 +95,6 @@ public class BibTeX extends OTPublishable<BibTeX>
     private String m_url;
     private BIB_TYPE m_bib_type;
     private User m_createdBy;
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BibTeX.class);
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
@@ -342,7 +343,6 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }// </editor-fold>
 
-
     //TODO: We could use this: http://www.bibtex.org/Convert/ to create HTML representations of BibTeXs!!! ;-)
     public BibTeX() {
         super();
@@ -374,7 +374,7 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     @Override
     protected BibTeX loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
-        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
+        if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
             throw new InactiveTokenException("The Provided token is inactive");
         }
         BibTeXSprider spider = new BibTeXSprider(uri, token);
@@ -410,14 +410,11 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
-        if (token != null) {
-            // Replace existing token with the new ones
-            vri.clearToken().appendToken(token);
-        }
-        PostHttpClient pc = new PostHttpClient(vri);
-        pc.setMediaType("text/uri-list");
-        pc.setContentType("application/rdf+xml");
+        IPostClient pc = ClientFactory.createPostClient(vri);
+        pc.setMediaType(Media.TEXT_URI_LIST);
+        pc.setContentType(Media.APPLICATION_RDF_XML);
         pc.setPostable(asOntModel());
+        pc.authorize(token);
         pc.post();
         Task task = new Task();
         try {
@@ -433,10 +430,21 @@ public class BibTeX extends OTPublishable<BibTeX>
                     throw new ToxOtisException("Invalid URI returned from remote service", ex);
                 }
             } else if (status == 202) {// Task
-                //TODO: Handle tasks
-                return null;
+                String taskUriString = pc.getResponseText().trim();
+                try {
+                    VRI taskUri = new VRI(taskUriString);
+                    task.setUri(taskUri);
+                    return task;
+                } catch (URISyntaxException ex) {
+                    String message = "Task URI expected as a response from the remote service at " + vri
+                            + " which responded with status code 202 (Task Created) but the response body is not "
+                            + "a valid URI: " + taskUriString;
+                    logger.debug(message, ex);
+                    throw new ToxOtisException(message, ex);
+                }
+
             } else {
-                throw new ToxOtisException("Status code : '" + status + "' returned from remote service!");
+                throw new ToxOtisException("Status code : '" + status + "' returned from remote service! Remote server says : "+pc.getResponseText());
             }
         } catch (IOException ex) {
             throw new ToxOtisException(ErrorCause.CommunicationError, ex);
@@ -588,9 +596,9 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      Plain text representation of the BibTeX resource.
      */
     @Deprecated
-    public String getPlainText() {        
+    public String getPlainText() {
         return toString();
-    }   
+    }
 
     public Individual asIndividual(OntModel model) {
         String bibtexUri = uri != null ? uri.toString() : null;
@@ -721,6 +729,7 @@ public class BibTeX extends OTPublishable<BibTeX>
                     // skip it
                 } else if (!f.getName().equals("m_author")
                         && !f.getName().equals("m_bib_type")
+                        && !f.getName().equals("logger")
                         && f.get(this) != null) {
                     result.append(",\n");
                     result.append(f.getName().substring(2));

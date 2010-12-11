@@ -20,6 +20,7 @@ import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.ontology.OTDatatypeProperty;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
@@ -37,7 +38,6 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
      * a private field.
      */
     private VRI uri;
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BibTeXSprider.class);
 
     private BibTeXSprider() {
@@ -45,14 +45,21 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
 
     public BibTeXSprider(Resource resource, OntModel model) throws ToxOtisException {
         super(resource, model);
-        try {
-            this.uri = new VRI(resource.getURI());
-            if (!BibTeX.class.equals(uri.getOpenToxType())) {
-                throw new ToxOtisException("Bad URI : Not a BibTeX URI (" + uri + ")");
+        if (resource != null) {
+            try {
+                this.uri = new VRI(resource.getURI());
+                if (!BibTeX.class.equals(uri.getOpenToxType())) {
+                    throw new ToxOtisException("Bad URI : Not a BibTeX URI (" + uri + ")");
+                }
+            } catch (URISyntaxException ex) {
+                logger.warn("URI syntax exception thrown for the malformed URI "
+                        + resource.getURI() + " found in the RDF graph of the resource at " + uri, ex);
             }
-        } catch (URISyntaxException ex) {
-            logger.warn("URI syntax exception thrown for the malformed URI "
-                    + resource.getURI() + " found in the RDF graph of the resource at " + uri, ex);
+        } else {
+            StmtIterator it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Entry().getUri())));
+            if (it.hasNext()) {
+                resource = it.nextStatement().getSubject();
+            }
         }
     }
 
@@ -144,9 +151,7 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
                 String bbType = typeIterator.nextStatement().getObject().as(Resource.class).getURI().replaceAll(KnoufBibTex.NS, "");
                 bibtype = BibTeX.BIB_TYPE.valueOf(bbType);
             } catch (final NullPointerException npe) {
-                
             } catch (final IllegalArgumentException iae) {
-                
             }
         }
 
@@ -248,5 +253,4 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
         }
         return null;
     }
-
 }
