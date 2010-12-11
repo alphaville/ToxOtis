@@ -145,7 +145,9 @@ public class TokenPool {
         AuthenticationToken tokn = pool.get(encryptedUserName);
         if (tokn != null) {
             try {
-                tokn.invalidate();
+                if (tokn.validate()) {
+                    tokn.invalidate();
+                }
                 pool.remove(encryptedUserName);
                 return 1;
             } catch (ToxOtisException ex) {
@@ -160,7 +162,9 @@ public class TokenPool {
     public void logoutAll() {
         for (Map.Entry<String, AuthenticationToken> e : pool.entrySet()) {
             try {
-                e.getValue().invalidate();
+                if (e.getValue().validate()) {
+                    e.getValue().invalidate();
+                }
             } catch (ToxOtisException ex) {
                 logger.debug("ToxOtis exception caught on token invalidation", ex);
             }
