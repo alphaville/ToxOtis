@@ -60,6 +60,30 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
             if (it.hasNext()) {
                 resource = it.nextStatement().getSubject();
             }
+            if (resource == null) {
+                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Article().getUri())));
+                if (it.hasNext()) {
+                    resource = it.nextStatement().getSubject();
+                }
+            }
+            if (resource == null) {
+                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Book().getUri())));
+                if (it.hasNext()) {
+                    resource = it.nextStatement().getSubject();
+                }
+            }
+            if (resource == null) {
+                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Conference().getUri())));
+                if (it.hasNext()) {
+                    resource = it.nextStatement().getSubject();
+                }
+            }
+            if (resource == null) {
+                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Phdthesis().getUri())));
+                if (it.hasNext()) {
+                    resource = it.nextStatement().getSubject();
+                }
+            }
         }
     }
 

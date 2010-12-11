@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -18,6 +20,7 @@ public class TokenPool {
 
     private static TokenPool instanceOfThis;
     private Map<String, AuthenticationToken> pool = new HashMap<String, AuthenticationToken>();
+    private Map<String, User> pool2 = new HashMap<String, User>();
 
     public static TokenPool getInstance() {
         if (instanceOfThis == null) {
@@ -54,20 +57,23 @@ public class TokenPool {
      */
     public AuthenticationToken getToken(String username) {
         if (username != null) {
-            return this.pool.get(username);
+            String hashName = PasswordFileManager.CRYPTO.encrypt(username);
+            return this.pool.get(hashName);
         }
         return null;
     }
 
     public AuthenticationToken login(String username, String password) throws ToxOtisException {
-        if (pool.containsKey(username)) {
-            AuthenticationToken tokenInPool = pool.get(username);
+        String hashName = PasswordFileManager.CRYPTO.encrypt(username);
+        if (pool.containsKey(hashName)) {
+            AuthenticationToken tokenInPool = pool.get(hashName);
             if (tokenInPool.getStatus() != null && AuthenticationToken.TokenStatus.ACTIVE.equals(tokenInPool.getStatus())) {
                 return tokenInPool;
             }
         }
         AuthenticationToken token = new AuthenticationToken(username, password);
         pool.put(PasswordFileManager.CRYPTO.encrypt(username), token);
+        pool2.put(hashName, token.getUser());
         username = null;
         password = null;
         return token;
@@ -104,8 +110,20 @@ public class TokenPool {
         }
         AuthenticationToken token = PasswordFileManager.CRYPTO.authFromFile(credentialsFile);
         pool.put(username, token);
+        pool2.put(username, token.getUser());
         return token;
+    }
 
+    public User getUser(String username) {
+        if (username != null) {
+            String hashName = PasswordFileManager.CRYPTO.encrypt(username);
+            return this.pool2.get(hashName);
+        }
+        return null;
+    }
+
+    public Collection<User> getLoggedIn() {
+        return pool2 != null ? pool2.values() : null;
     }
 
     public AuthenticationToken login(String credentialsFile) throws IOException, ToxOtisException {
