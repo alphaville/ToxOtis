@@ -132,12 +132,16 @@ public class PasswordFileManager extends Observable {
      *      Path where the master key will be stored
      * @param size
      *      Size of your password
+     * @param verbose
+     *      Whether information about the procedure should be output to the console
      * @throws IOException
      *      In case either the random generator or the destination for the master
      *      password are unreachable or a read/write exception occurs.
      */
-    public void createMasterPasswordFile(final String randomGenerator, final String destination, final int size) throws IOException {
-        System.out.println("----- ToxOtis Pasword Generator -----");
+    public void createMasterPasswordFile(final String randomGenerator, final String destination, final int size, boolean verbose) throws IOException {
+        if (verbose) {
+            System.out.println("----- ToxOtis Pasword Generator -----");
+        }
         String passStrength;
         if (size < 50) {
             passStrength = "POOR";
@@ -149,13 +153,14 @@ public class PasswordFileManager extends Observable {
             passStrength = "EXCELECT";
         }
         String rng = randomGenerator != null ? randomGenerator : "Secure RNG (java.security.SecureRandom)";
-        System.out.println("Random number generator : " + rng);
-        System.out.println("Password file           : " + destination);
-        System.out.println("Password Stength        : " + passStrength + " (" + size + ")");
-
+        if (verbose) {
+            System.out.println("Random number generator : " + rng);
+            System.out.println("Password file           : " + destination);
+            System.out.println("Password Stength        : " + passStrength + " (" + size + ")");
+        }
 
         if (randomGenerator != null) {
-            if (randomGenerator.contains("/random")) {
+            if (randomGenerator.contains("/random") && verbose) {
                 System.out.println("\nMore Entropy needed... Move your mouse around the screen to generate some random bits.");
                 System.out.println("This procedure might take a few minutes... You may use /dev/urandom to create a pseudo random key faster");
             }
@@ -351,7 +356,8 @@ public class PasswordFileManager extends Observable {
             out.write(encrypt(username));
             out.write("\n");
             out.write(encrypt(password));
-            out.write("\n--- END PRIVATE KEY ---");
+            out.write("\n--- END PRIVATE KEY ---\n");
+            out.write("#Master Key: " + masterPasswordFile);
         } catch (IOException ex) {
             throw ex;
         } finally {
@@ -501,7 +507,7 @@ public class PasswordFileManager extends Observable {
             @Override
             public void run() {
                 try {
-                    CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", 1000);
+                    CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", 1000, false);
                 } catch (IOException ex) {
                     org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class).warn(null, ex);
                 }

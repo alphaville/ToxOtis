@@ -716,7 +716,6 @@ public class MetaInfoImpl implements MetaInfo {
                     setTextAtCursor(createHtmlList(titles));
         }
         if (descriptions != null && !descriptions.isEmpty()) {
-            System.out.println("Descriptions" + descriptions);
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "description") + "\">Description" + (descriptions.size() > 1 ? "s" : "") + "</a>").
                     setTextAtCursor(createHtmlList(descriptions));
         }
