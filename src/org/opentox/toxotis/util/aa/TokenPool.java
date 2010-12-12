@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import org.opentox.toxotis.ToxOtisException;
 
 /**
@@ -48,7 +47,9 @@ public class TokenPool {
 
     /**
      * Returns the token for a certain user by searching in the pool. If no such
-     * token is found, <code>null</code> is returned.
+     * token is found, <code>null</code> is returned. Note that the token you get,
+     * if not null, might have expired. Always check the status of the token you get
+     * from this method using {@link AuthenticationToken#getStatus() }.
      * @param username
      *      Username for which the token is to be lookep up for.
      * @return
@@ -58,7 +59,8 @@ public class TokenPool {
     public AuthenticationToken getToken(String username) {
         if (username != null) {
             String hashName = PasswordFileManager.CRYPTO.encrypt(username);
-            return this.pool.get(hashName);
+            AuthenticationToken token = this.pool.get(hashName);            
+            return token;
         }
         return null;
     }
@@ -69,6 +71,10 @@ public class TokenPool {
             AuthenticationToken tokenInPool = pool.get(hashName);
             if (tokenInPool.getStatus() != null && AuthenticationToken.TokenStatus.ACTIVE.equals(tokenInPool.getStatus())) {
                 return tokenInPool;
+            } else {
+                if (tokenInPool.validate()) {
+                    tokenInPool.invalidate();
+                }
             }
         }
         AuthenticationToken token = new AuthenticationToken(username, password);
@@ -106,6 +112,10 @@ public class TokenPool {
             AuthenticationToken tokenInPool = pool.get(username);
             if (tokenInPool.getStatus() != null && AuthenticationToken.TokenStatus.ACTIVE.equals(tokenInPool.getStatus())) {
                 return tokenInPool;
+            }else {
+                if (tokenInPool.validate()) {
+                    tokenInPool.invalidate();
+                }
             }
         }
         AuthenticationToken token = PasswordFileManager.CRYPTO.authFromFile(credentialsFile);

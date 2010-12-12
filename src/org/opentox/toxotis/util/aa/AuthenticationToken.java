@@ -39,7 +39,8 @@ public class AuthenticationToken {
     private long tokenCreationTimestamp = -1L;
     /** The token as a String (Non-URL encoded!) */
     private String token;
-    /** Local lifetime of the token. The token (as an object) will expire after 23 hours */
+    /** Local lifetime of the token. The token (as an object) will expire after 23 hours.
+     Note that the real token expires in 24 hours.*/
     private static final long tokenLocalLifeTime = 23 * 3600 * 1000L; // 23hrs
     /** Encoding used to encode tokens received from the SSO server */
     private String encoding = "UTF-8";
