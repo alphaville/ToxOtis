@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
@@ -44,7 +45,13 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private Algorithm algorithm;
     private Feature predictedFeature;
     private Feature dependentFeature;
-    private Set<Feature> independentFeatures;
+    /*
+     * Note: Converted from Set<Feature> to List<Feature> to make sure that the order
+     * is preserved given that the use of LinkedHashSet<?> may guarrantee that fact in
+     * Java but when it comes to SQL (and hibernate) there's no way to certify that a
+     * Set, in general, will respect the initial order in which features are arranged.
+     */
+    private List<Feature> independentFeatures;
     private Set<Parameter> parameters;
     private ArrayList<MultiParameter> multiParameters;
     private String localCode;
@@ -137,11 +144,11 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         this.dependentFeature = dependentFeature;
     }
 
-    public Set<Feature> getIndependentFeatures() {
+    public List<Feature> getIndependentFeatures() {
         return independentFeatures;
     }
 
-    public void setIndependentFeatures(Set<Feature> independentFeatures) {
+    public void setIndependentFeatures(List<Feature> independentFeatures) {
         this.independentFeatures = independentFeatures;
     }
 

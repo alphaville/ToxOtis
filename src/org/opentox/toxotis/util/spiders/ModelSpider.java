@@ -7,7 +7,9 @@ import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
@@ -140,7 +142,7 @@ public class ModelSpider extends Tarantula<Model> {
                 new SimpleSelector(resource,
                 OTObjectProperties.independentVariables().asObjectProperty(model),
                 (RDFNode) null));
-        Set<Feature> indepFeatures = new LinkedHashSet<Feature>();
+        List<Feature> indepFeatures = new ArrayList<Feature>();
         while (itFeature.hasNext()) {
             FeatureSpider fspider = new FeatureSpider(model,
                     itFeature.nextStatement().getObject().as(Resource.class).getURI());
