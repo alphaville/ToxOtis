@@ -4,6 +4,10 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -39,6 +43,18 @@ public class HTMLUtils {
         for (Object o : objects) {
             sb.append("<li>");
             sb.append(o.toString());
+            sb.append("</li>\n");
+        }
+        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
+        return builder.getDiv();
+    }
+
+    public static HTMLContainer createComponentList(Collection<? extends OTComponent> objects, String listTag, String divElement) {
+        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : "_list");
+        StringBuilder sb = new StringBuilder();
+        for (Object o : objects) {
+            sb.append("<li>");
+            sb.append(HTMLUtils.linkUrlsInText(((OTComponent) o).getUri().toString()));
             sb.append("</li>\n");
         }
         builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
@@ -97,22 +113,26 @@ public class HTMLUtils {
         return builder.getDiv();
     }
 
-
     public static String linkUrlsInText(String plainText) {
         /*
          * Check out the snippet at http://blog.houen.net/java-get-url-from-string/
          * to potentially improve this code:
          */
+        Pattern pattern = Pattern.compile("(?:https?|ftps?)://?(?://((?:(([^:@]*):?([^:@]*))?@)?([^:/?#]*)(?::(\\d*))?))?((((?:[^?#/]*/)*)([^?#]*))(?:\\?([^#]*))?(?:#(.*))?)");
         String[] fragments = plainText.split("\\s");// space
         StringBuffer sb = new StringBuffer();
         for (String word : fragments) {
-            try {
-                URL url = new URL(word);
-                sb.append("<a href=\"" + url + "\">" + url + "</a> ");
-            } catch (MalformedURLException e) {
+            Matcher matcher = pattern.matcher(word);
+            if (matcher.find()) {
+                sb.append("<a href=\"" + word + "\">" + word + "</a> ");
+            } else {
                 sb.append(word + " ");
             }
         }
         return sb.toString();
     }
+
+//    public static void main(String... art){
+//        System.out.println(HTMLUtils.linkUrlsInText("a http://localhost.org:3000/ is my URL "));
+//    }
 }

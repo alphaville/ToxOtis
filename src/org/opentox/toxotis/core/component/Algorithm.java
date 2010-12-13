@@ -235,9 +235,6 @@ public class Algorithm extends OTOnlineResource<Algorithm>
                     setAtCursor(new HTMLTextImpl("Default Value").formatBold(true)).
                     setAtCursor(new HTMLTextImpl("Meta information").formatBold(true));
             for (Parameter p : getParameters()) {
-//                HTMLContainer paramMetaInfo = p.getMeta().inHtml();
-//                HTMLTable paramMetaInfoTable = (HTMLTable) paramMetaInfo.getComponents().get(0);
-//                paramMetaInfoTable.setTableBorder(0);
                 parametersTable.setTextAtCursor(p.getName().getValueAsString()).
                         setTextAtCursor(p.getScope().name()).
                         setTextAtCursor(p.getTypedValue() != null ? p.getTypedValue().getValueAsString() : "-").
@@ -253,8 +250,9 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         }
         builder.getDiv().breakLine();
 
-        builder.addSubSubSubHeading("Meta Information");
+        
         if (getMeta() != null) {
+            builder.addSubSubSubHeading("Meta Information");
             builder.addComponent(getMeta().inHtml());
         }
 
