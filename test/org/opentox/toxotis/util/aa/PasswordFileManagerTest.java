@@ -53,7 +53,7 @@ public class PasswordFileManagerTest {
     //@Test
     public void testCreateMasterPass() throws IOException {
         System.out.println("--. Testing Creation of Master Key File");
-        PasswordFileManager.CRYPTO.createMasterPasswordFile(null, "/home/chung/Desktop/alt.key", 100);
+        PasswordFileManager.CRYPTO.createMasterPasswordFile(null, "/home/chung/Desktop/alt.key", 100, false);
     }
 
     //@Test

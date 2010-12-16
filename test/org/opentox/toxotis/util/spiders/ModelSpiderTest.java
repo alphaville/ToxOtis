@@ -8,7 +8,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Model;
+import org.opentox.toxotis.core.component.Parameter;
 
 /**
  *
@@ -49,6 +51,14 @@ public class ModelSpiderTest {
         System.out.println(m.getDependentFeature());
         System.out.println("PREDICTED FEATURE :");
         System.out.println(m.getPredictedFeature());
+        for (Feature f : m.getIndependentFeatures()){
+            System.out.println(f.getUri());
+        }
+
+        for (Parameter p : m.getParameters()){
+            System.out.println(p.getUri());
+        }
+
 
         m.asOntModel().write(System.out);
     }
