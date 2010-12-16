@@ -34,7 +34,7 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
     public HTMLAppendableTableImpl(int nCols, int rowEstimate) {
         this.nCols = nCols;
         this.nRows = rowEstimate;
-        data = new ArrayList<HTMLTableRow>();
+        data = new ArrayList<HTMLTableRow>(nRows);
         // add nRows empty rows
         for (int index = 0; index < rowEstimate; index++) {
             data.add(new HTMLTableRowFixedLength(nCols));

@@ -4,17 +4,43 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
 import java.util.Collection;
 
+/**
+ * An interface for ontological properties used in OpenTox web services.
+ * 
+ * @author Pantlelis Sopasakis
+ */
 public interface OTProperty extends OTResource, java.io.Serializable {
 
+    /**
+     * Returns the namespace of the ontological property or <code>null</code>
+     * if not defined.
+     *
+     * @return
+     *      Namespace of property
+     */
     String getNameSpace();
 
+    /**
+     * Specify a namespace for the ontological property
+     *
+     * @param ns
+     *      Namespace.
+     */
     void setNameSpace(String ns);
 
+    /**
+     * Returns the local name of the ontological property omiiting the namespace
+     * string.
+     *
+     * @return
+     *      local name of the property as a string.
+     */
     String getName();
 
     /**
      * Set the local name of the property (namespace not included).
      * @param name
+     *      local name.
      */
     void setName(String name);
 

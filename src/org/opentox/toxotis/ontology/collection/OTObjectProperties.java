@@ -271,6 +271,7 @@ public class OTObjectProperties {
     public static OTObjectProperty hasSource() {
         if (ms_hasSource == null) {
             OTObjectProperty property = new OTObjectPropertyImpl("hasSource");
+            property.getDomain().add(OTClasses.Task());
             property.getDomain().add(OTClasses.Feature());
             property.getRange().add(OTClasses.Algorithm());
             property.getRange().add(OTClasses.Dataset());

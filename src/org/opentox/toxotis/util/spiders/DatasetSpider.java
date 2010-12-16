@@ -49,7 +49,8 @@ public class DatasetSpider extends Tarantula<Dataset> {
             resource = model.getResource(uri.getStringNoQuery());
             readRemoteTime = System.currentTimeMillis() - timeFlag;
         } catch (final IOException ex) {
-            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
+            throw new ToxOtisException(ErrorCause.CommunicationError,
+                    "Communication Error with the remote service at :" + uri, ex);
         } finally {
             if (client != null) {
                 try {

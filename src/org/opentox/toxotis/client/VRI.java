@@ -643,4 +643,18 @@ public class VRI implements Serializable { // Well tested!
             logger.debug("URI Syntax Exception", ex);
         }
     }
+
+    public String getId() {
+        String residual = getStringNoQuery().replaceAll(getServiceBaseUri().toString(), "").trim();
+        String[] parts = residual.split("/");
+        if (parts.length == 3) {
+            String id = parts[2];
+            if (id.endsWith("/")) {
+                id = id.substring(0, id.length() - 2);
+            }
+            return id;
+        }
+        return null;
+    }
+    
 }

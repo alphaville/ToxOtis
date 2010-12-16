@@ -349,7 +349,9 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setAtCursor(new HTMLTextImpl("Independent Features").formatBold(true)).
                 setAtCursor(HTMLUtils.createComponentList(getIndependentFeatures(), null, null)).
                 setAtCursor(new HTMLTextImpl("Training Algorithm").formatBold(true)).
-                setTextAtCursor(HTMLUtils.linkUrlsInText(getAlgorithm() != null ? getAlgorithm().getUri().toString() : "-"));
+                setTextAtCursor(HTMLUtils.linkUrlsInText(getAlgorithm() != null ? getAlgorithm().getUri().toString() : "-")).
+                setAtCursor(new HTMLTextImpl("Training Dataset").formatBold(true)).
+                setTextAtCursor(HTMLUtils.linkUrlsInText(getDataset() != null ? getDataset().toString() : "-"));
 
         featuresTable.setCellPadding(5).
                 setCellSpacing(2).

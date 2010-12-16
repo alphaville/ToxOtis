@@ -86,6 +86,10 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         return typedValue;
     }
 
+    /**
+     * Is a proxy method for getting the dc:title of the Parameter (if any).
+     * @return
+     */
     public LiteralValue getName() {
         if (getMeta() != null) {
             if (getMeta().getTitles() != null && !getMeta().getTitles().isEmpty()) {

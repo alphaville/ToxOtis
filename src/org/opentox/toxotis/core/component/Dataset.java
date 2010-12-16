@@ -358,7 +358,7 @@ public class Dataset extends OTPublishable<Dataset> {
     @Override
     protected Dataset loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new InactiveTokenException("The Provided token is inactive");
+            throw new InactiveTokenException(ErrorCause.InvalidToken, "The Provided token is inactive");
         }
         DatasetSpider spider = new DatasetSpider(uri, token);
         Dataset ds = spider.parse();
