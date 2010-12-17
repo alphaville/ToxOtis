@@ -11,7 +11,7 @@ import org.opentox.toxotis.core.html.HTMLContainer;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public interface IHTMLSupport  {
+public interface IHTMLSupport {
 
     /**
      * Create an HTML container for the online resource.

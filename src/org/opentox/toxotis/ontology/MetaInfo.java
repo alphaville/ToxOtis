@@ -311,4 +311,12 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
     long getHash();
 
     void setHash(long hash);
+
+    /**
+     * Check whether the meta info object is empty.
+     * @return
+     *      <code>true</code> if the MetaInfo object is empty and <code>false</code>
+     *      otherwise.
+     */
+    boolean isEmpty();
 }

@@ -28,6 +28,7 @@ import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.HTMLUtils;
+import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -72,6 +73,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     }
 
     public Model() {
+        super();
     }
 
     /**
@@ -359,7 +361,25 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setColWidth(1, 150).
                 setColWidth(2, 600);
 
-        if (getMeta() != null) {
+        if (getParameters() != null && getParameters() != null) {
+            builder.addSubSubSubHeading("Model Parameters");
+            HTMLTable parametersTable = builder.addTable(2);
+            parametersTable.setAtCursor(new HTMLTextImpl("Parameter Name").formatBold(true)).setAtCursor(new HTMLTextImpl("Value").formatBold(true));
+            for (Parameter prm : getParameters()) {
+                parametersTable.setAtCursor(new HTMLTagImpl("a", prm.getName().getValueAsString()).addTagAttribute("href", getAlgorithm().getUri().toString()));
+                parametersTable.setAtCursor(prm.getTypedValue() != null
+                        ? new HTMLTagImpl("a", prm.getTypedValue().getValueAsString()).addTagAttribute(
+                        "href", XSD_DATATYPE_LINKS.get(prm.getType().getURI())) : new HTMLTextImpl("-"));
+            }
+            parametersTable.setCellPadding(5).
+                    setCellSpacing(2).
+                    setTableBorder(1).
+                    setColWidth(1, 150).
+                    setColWidth(2, 600);
+
+        }
+
+        if (getMeta() != null && !getMeta().isEmpty()) {
             builder.addSubSubSubHeading("Meta Information");
             builder.addComponent(getMeta().inHtml());
         }

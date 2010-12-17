@@ -804,4 +804,47 @@ public class MetaInfoImpl implements MetaInfo {
             return builder.toString();
         }
     }
+
+    public boolean isEmpty() {
+        if (getAudiences()!=null && !getAudiences().isEmpty()){
+            return false;
+        }
+        if (getComments()!=null && !getComments().isEmpty()){
+            return false;
+        }
+        if (getContributors()!=null && !getContributors().isEmpty()){
+            return false;
+        }
+        if (getCreators()!=null && !getCreators().isEmpty()){
+            return false;
+        }
+        if (getDescriptions()!=null && !getDescriptions().isEmpty()){
+            return false;
+        }
+        if (getHasSources()!=null && !getHasSources().isEmpty()){
+            return false;
+        }
+        if (getIdentifiers()!=null && !getIdentifiers().isEmpty()){
+            return false;
+        }
+        if (getPublishers()!=null && !getPublishers().isEmpty()){
+            return false;
+        }
+        if (getSameAs()!=null && !getSameAs().isEmpty()){
+            return false;
+        }
+        if (getSeeAlso()!=null && !getSeeAlso().isEmpty()){
+            return false;
+        }
+        if (getSubjects()!=null && !getSubjects().isEmpty()){
+            return false;
+        }
+        if (getTitles()!=null && !getTitles().isEmpty()){
+            return false;
+        }
+        if (getDate()!=null){
+            return false;
+        }
+        return true;
+    }
 }

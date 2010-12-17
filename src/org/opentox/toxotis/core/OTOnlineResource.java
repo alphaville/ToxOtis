@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ToxOtisException;
@@ -26,6 +29,22 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  */
 public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> implements IOnlineResource{
 
+    private static final String XSD_DOC_PAGE_TEMPLATE = "http://www.w3.org/TR/xmlschema-2/#%s";
+    protected static Map<String, String> XSD_DATATYPE_LINKS = new HashMap<String, String>();
+    static{
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDstring.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "string"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDint.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "int"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDinteger.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "integer"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDdouble.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "double"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDdate.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "date"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDboolean.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "boolean"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDfloat.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "float"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDtime.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "time"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDlong.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "long"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDshort.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "short"));
+    }
+
+    
     /**
      * Construct an OpenTox online resource providing its URI. This constructor is
      * supposed to be invoked only be subclasses of OTOnlineResource, that is why it
