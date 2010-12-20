@@ -38,6 +38,7 @@ public class TaskRunner implements Callable<Task> {
         task.loadFromRemote();
         float taskHttpStatus = old.getHttpStatus();
         if (taskHttpStatus == 201) { // Created new task
+            System.out.println(task.getResultUri()+" <-- result of created task");
             Task created = new Task(task.getResultUri());
             task = created;
             return updateTask(created);

@@ -1,13 +1,16 @@
 package org.opentox.toxotis.core;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.http.PostHttpClient;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
@@ -25,6 +28,8 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  */
 public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTPublishable<T> implements IDescriptorCalculation {
 
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DescriptorCaclulation.class);
+
     public DescriptorCaclulation() {
         super();
     }
@@ -33,14 +38,11 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
         super(uri);
     }
 
-    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
-        PostHttpClient client = new PostHttpClient(descriptorCalculationAlgorithm);
-        client.authorize(token);
-
-        client.setMediaType(Media.APPLICATION_RDF_XML);
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {        
 
         /** REQUEST */
-        PostHttpClient pc = new PostHttpClient(descriptorCalculationAlgorithm);
+        IPostClient pc = ClientFactory.createPostClient(descriptorCalculationAlgorithm);
+        pc.authorize(token);
         pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={compound_uri}
         if (serviceConfiguration != null) {
             for (int i = 0; i < serviceConfiguration.length; i++) {
@@ -55,27 +57,27 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
 
         try {
             Thread.sleep(4000);
-        } catch (Exception ex) {
-            System.out.println("FAILURE");
+        } catch (InterruptedException ex) {
+            logger.error("Interruption exception while sleeping", ex);
             throw new ToxOtisException(ex);
         }
 
-
         try {
             TaskSpider taskSpider = new TaskSpider(new VRI(taskUri));
-
             return taskSpider.parse();
         } catch (URISyntaxException ex) {
             throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
                     + " returned an invalid task URI : " + taskUri, ex);
         } finally {
             if (pc != null) {
-//                try {
-//                    pc.close();
-//                } catch (IOException ex) {
-//                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, "Client used to perform the POST operation "
-//                            + "at '" + descriptorCalculationAlgorithm.toString() + "' could not close!", ex);
-//                }
+                try {
+                    pc.close();
+                } catch (IOException ex) {
+                    String message = "Client used to perform the POST operation "
+                            + "at '" + descriptorCalculationAlgorithm.toString() + "' could not close!";
+                    logger.error(message, ex);
+                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, message, ex);
+                }
             }
         }
     }
