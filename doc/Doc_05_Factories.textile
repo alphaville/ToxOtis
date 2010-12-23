@@ -60,4 +60,52 @@ for (VRI f : features) {
 
 A list of all ECHA endpoints is provided from "OTEchaEndpoints":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/ontology/collection/OTEchaEndpoints.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/ontology/collection/OTEchaEndpoints.html and a collection of some common features is available through "OTFeatures":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/ontology/collection/OTFeatures.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/ontology/collection/OTFeatures.html .
 
+This factory allows also for new features to be easily created and POSTed to a feature service for publication in a single line of code. Proper authentication/authorization are required most of the times. The invokation of the corresponding method is especially useful when developing model training web services where a prediction feature needs to be created for the model. Here is an example:
+
+<pre>
+Model m = ...;
+Feature predictedFeature = FeatureFactory.createAndPublishFeature(
+                    "Feature created as prediction feature for the RBF NN model "+m.getUri(),
+                    new ResourceValue(m.getUri(), OTClasses.Model()), featureService, token);
+</pre>
+
+
 h3. 2.2. DatasetFactory
+
+DatasetFactory is a class with static methods that facilitates dataset creation and conversion from ARFF files and weka.core.Instances objects into Datasets. Using as a source a File, an InputStream, a Reader or an Instances object, a new Dataset can be created. More, there is a method to create a single DataEntry instance out of a weka.core.Instance object. Here we will provide two examples that users might stubmle across their development. First, the ordinary case of reading from a file:
+
+<pre>
+String filePath = "/path/to/your_file.arff"; // << You path here!
+java.io.File file = new java.io.File(filePath);
+Dataset myDataset = DatasetFactory.createFromArff(file);
+</pre>
+
+The above source code will generate a Dataset out of the given ARFF file or will throw a ToxOtisException in case the ARFF file you provided is not compliant with the ToxOtis requirements. For more details, please read the ToxOtis Documentation about "weka":https://github.com/alphaville/ToxOtis/blob/master/doc/Doc_03_Weka.textile
+
+The second use case concerns the creation of a Dataset object out of an online resource where the ARFF file is available with content negotiation when the client specifies the Header 'Accept: text/x-arff'. Here is an example:
+
+<pre>
+Dataset myDataset = null;
+IGetClient client = ClientFactory.createGetClient(null);
+client.setMediaType(Media.WEKA_ARFF);
+try {
+    int code = client.getResponseCode();
+    if (code == 200) {
+        InputStream stream = client.getRemoteStream();
+        myDataset =DatasetFactory.createFromArff(stream);
+    } else {
+        // Handle Exceptional Event
+    }
+} catch (IOException ex) {
+    // Handle Exceptional Event
+} finally {
+    try {
+        client.close();
+    } catch (IOException ex) {
+        // Cannot close client...
+    }
+}
+</pre>
+
+
+

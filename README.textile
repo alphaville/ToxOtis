@@ -5,7 +5,7 @@ h1. Τοξότης : Core Project
 h2. About
 
 <b>Version:</b>
- + 0.3.0.31, official alpha version
+ + "0.4.3.2":https://opentox.ntua.gr/dev/toxotis/0.4.3.2/, official alpha version. 
 
 <b>Authors:</b>
  + "Sopasakis Pantelis":http://gr.linkedin.com/in/sopasakis
@@ -55,3 +55,5 @@ This project, as well as all other projects developed by the NTUA developers tea
 h2. Stay Tuned
 
 Follow "isToxic":http://twitter.com/isToxic on Twitter and stay tuned with the latest updates!
+
+Beta release of ToxOtis has been scheduled for January 15, 2011!
