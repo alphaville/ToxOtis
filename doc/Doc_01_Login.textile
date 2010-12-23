@@ -193,3 +193,16 @@ System.out.println(tokenPool.size());
 </pre>
 
 The method will output 1 and not 10!
+
+h3. 2.6. Benchmarking
+
+The following results are based on 30 successive measurements. The measurements were carried out on a Linux machine (2.6.31-22-generic kernel, x86_64 GNU/Linux) with 3.8GB of RAM and an Intel Core 2 Duo CPU P8700 @2.53GHz. The SDK ToxOtis was used to perform the measurements (version 0.4.2.23) which includes Weka version 3.6.2 (latest stable version) and Jena version 2.6.2. These libraries run on a Sun™ JVM, version 1.6.0.20 with Java™ SE Runtime Environment (build 1.6.0.20-b02). All measurements are in milliseconds (ms).
+
+| average ping time for opensso.in-silico.ch | 57.9 (0% packet dropout) |
+| Authentication using file | 131.96 |
+| Average Invokation time for the method validate() in AuthenticationToken | 79.0 |
+| Average Invokation time for the method invalidate() in AuthenticationToken | 72.1 |
+| Average Invokation time for the method getUser() in AuthenticationToken | 154.4 |
+| Authorization | 184.1 |
+
+
