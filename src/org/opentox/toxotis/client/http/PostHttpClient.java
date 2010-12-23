@@ -107,7 +107,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      * setContentType}. Since it is not possible to POST entities of different content
      * types to an HTTP server, any invokation to this method will override any previous
      * invokation of {@link PostHttpClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
-     * setPostable(OntModel) } and {@link PostHttpClient#setPostable(java.lang.String)
+     * setPostable(OntModel) } and {@link PostHttpClient#setPostable(java.lang.String, boolean) 
      * setPostable(String)}.
      *
      * @param objectToPost

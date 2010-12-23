@@ -30,9 +30,21 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * The scope of the parameter of an Algorithm that can either be {@link #MANDATORY Mandatory} or
+     * {@link #OPTIONAL Optional}.
+     */
     public enum ParameterScope {
 
+        /**
+         * If a parameter is tagged as 'Optional' then the client does not need to
+         * provide its value explicitly but instead a default value will be used.
+         */
         OPTIONAL,
+        /**
+         * A parameter is mandatory when the user has to provide it's value and no
+         * default values can be assigned to it.
+         */
         MANDATORY;
     };
     /** Typed value for the parameter */
@@ -88,7 +100,10 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
 
     /**
      * Is a proxy method for getting the dc:title of the Parameter (if any).
+     *
      * @return
+     *      Returns the title (name) of this parameter or <code>null</code> if
+     *      not any.
      */
     public LiteralValue getName() {
         if (getMeta() != null) {
@@ -144,13 +159,13 @@ public class Parameter<T> extends OTComponent<Parameter<T>> {
         builder.append(getName());
         builder.append("\n");
         builder.append("Value : ");
-        builder.append(typedValue!=null?typedValue.getValue():"-");
+        builder.append(typedValue != null ? typedValue.getValue() : "-");
         builder.append("\n");
         builder.append("Scope : ");
         builder.append(scope);
         builder.append("\n");
         builder.append("Type  : ");
-        builder.append(typedValue!=null?typedValue.getType():"-");
+        builder.append(typedValue != null ? typedValue.getType() : "-");
         return new String(builder);
     }
 

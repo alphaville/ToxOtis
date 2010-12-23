@@ -3,6 +3,10 @@ package org.opentox.toxotis.factory;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
@@ -10,8 +14,12 @@ import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.TokenPool;
 
@@ -168,7 +176,7 @@ public class FeatureFactory {
             int httpStatus = client.getResponseCode();
             if (httpStatus != 200) {
                 throw new ToxOtisException("Service returned status code :" + httpStatus);
-            }            
+            }
             Set<VRI> result = client.getResponseUriList();
             if (client != null) {
                 try {
@@ -180,6 +188,72 @@ public class FeatureFactory {
             return result;
         } catch (IOException ex) {
             throw new ToxOtisException(ex);
+        }
+    }
+
+    /**
+     * Created and publishes online a new Feature given its title and source (acting
+     * as a reason for its creation).
+     * 
+     * @param title
+     *      Title of the newly created feature
+     * @param hasSource
+     *      An  <code>ot:hasSource</code> reference for the created Feature
+     * @param fetureService
+     *      Feature service URI to which the created feature should be posted
+     * @param token
+     *      Authentication token used to authenticate and authorize the user to
+     *      publish the feature
+     * @return
+     *      The created feature with an updated URI. Use the method {@link Feature#getUri() }
+     *      to obtain the URI of the newly created feature.
+     * @throws ToxOtisException
+     *      In case the publication of the feature is not possible, the process
+     *      is interrupted while waiting for its completion of other unexpected
+     *      exceptional events related to the publication of the feature occur.
+     */
+    public static Feature createAndPublishFeature(String title, ResourceValue hasSource, VRI fetureService, AuthenticationToken token) throws ToxOtisException {
+        MetaInfo mi = new MetaInfoImpl();
+        mi.addTitle(title);
+        mi.addHasSource(hasSource);
+        return createAndPublishFeature(mi, fetureService, token);
+    }
+
+    /**
+     * Created and publishes online a new Feature given its title and source (acting
+     * as a reason for its creation).
+     *
+     * @param metaInfo
+     *      Meta-information about the feature
+     * @param fetureService
+     *      Feature service URI to which the created feature should be posted
+     * @param token
+     *      Authentication token used to authenticate and authorize the user to
+     *      publish the feature
+     * @return
+     *      The created feature with an updated URI. Use the method {@link Feature#getUri() }
+     *      to obtain the URI of the newly created feature.
+     * @throws ToxOtisException
+     *      In case the publication of the feature is not possible, the process
+     *      is interrupted while waiting for its completion of other unexpected
+     *      exceptional events related to the publication of the feature occur.
+     */
+    public static Feature createAndPublishFeature(MetaInfo metaInfo, VRI featureService, AuthenticationToken token) throws ToxOtisException {
+        Feature brandNewFeature = new Feature();
+        brandNewFeature.setMeta(metaInfo);
+        Future<VRI> predictedFeatureUri = brandNewFeature.publish(featureService, token);
+        /* Wait for remote server to respond */
+        try {
+            while (!predictedFeatureUri.isDone()) {
+                Thread.sleep(1000);
+            }
+            VRI resultUri = predictedFeatureUri.get();
+            brandNewFeature.setUri(resultUri);
+            return brandNewFeature;
+        } catch (InterruptedException ex) {
+            throw new ToxOtisException("Interrupted", ex);
+        } catch (ExecutionException ex) {
+            throw new ToxOtisException(ErrorCause.UnknownCauseOfException, ex);
         }
     }
 }

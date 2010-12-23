@@ -10,11 +10,22 @@ public class Pair<K, V> implements java.util.Map.Entry<K, V> {
     private K key;
     private V value;
 
+    /**
+     * Construct a new pair with a <code>key</code> and a <code>value</code>. When a
+     * pair is an element of a map, then keys uniquely identify every element therein.
+     * @param key
+     *      Key of the pair (first argument)
+     * @param value
+     *      Value of the pair (second argument)
+     */
     public Pair(K key, V value) {
         this.key = key;
         this.value = value;
     }
 
+    /**
+     * Dummy constructor which is protected to allow for subclassing of this class.
+     */
     protected Pair() {
     }
 

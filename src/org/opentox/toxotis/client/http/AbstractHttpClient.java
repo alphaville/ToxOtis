@@ -106,6 +106,7 @@ public abstract class AbstractHttpClient implements IClient {
     /**
      * Initiate a connection to the remote location identified by the provided URI and
      * using the already specified header parameters.
+     * 
      * @param uri
      *      The location to which the HTTP connection should be made.
      * @return
@@ -245,7 +246,7 @@ public abstract class AbstractHttpClient implements IClient {
      *      Response status code.
      * @throws ToxOtisException
      *      In case the connection cannot be established because a {@link ToxOtisException }
-     *      is thrown from the method {@link AbstractClient#initializeConnection(java.net.URI)
+     *      is thrown from the method {@link AbstractHttpClient#initializeConnection(java.net.URI)
      *      initializeConnection(URI)}.
      * @throws java.io.IOException
      *      In case some communication error with the remote location occurs during

@@ -115,6 +115,8 @@ public abstract class Job implements Runnable {
     /**
      * Returns a List of Gauges contained in this Job.
      * @return
+     *      List of measuring gauges in the current job or <code>null</code> if no
+     *      gauges have been added.
      */
     public List<Gauge> getGauges() {
         return gauges;
@@ -122,7 +124,9 @@ public abstract class Job implements Runnable {
 
     /**
      * Sets a List of Gauges to replace the current Job's Gauges.
+     *
      * @param counters
+     *      List of gauges for this job.
      */
     public void setGauges(List<Gauge> counters) {
         this.gauges = counters;
@@ -131,6 +135,7 @@ public abstract class Job implements Runnable {
     /**
      * Gets this Job's parameter value.
      * @return
+     *      A comparable parameter that has been specified for this job.
      */
     public Comparable getParameter() {
         return parameter;
@@ -150,6 +155,7 @@ public abstract class Job implements Runnable {
     /**
      * Gets this Job's title value.
      * @return
+     *      Comparable title for this particular job.
      */
     public Comparable getTitle() {
         return title;
@@ -169,6 +175,7 @@ public abstract class Job implements Runnable {
     /**
      * Gets the number of times this Job's work method must be run.
      * @return
+     *      Number of iterations
      */
     public int getNumberIterations() {
         return iterations;
@@ -180,10 +187,11 @@ public abstract class Job implements Runnable {
      * It should be noted that there is always an extra startup run of the work()
      * method whose results are not counted for initialization purposes.
      *
-     * @param accuracy
+     * @param nIter
+     *      Number of iterations for this job.
      */
-    public void setNumberIterations(int accuracy) {
-        this.iterations = accuracy;
+    public void setNumberIterations(int nIter) {
+        this.iterations = nIter;
     }
 
     @Override

@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.client.http.AbstractHttpClient;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
@@ -143,7 +142,8 @@ public interface IClient extends Closeable {
 
     /**
      * Get the targetted URI
-     * @return The target URI
+     * @return
+     *      The target URI
      */
     VRI getUri();
 

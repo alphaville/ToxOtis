@@ -20,6 +20,7 @@ public interface HTMLTableRow {
      * @param index
      *      Index starts from <b>1</b>.
      * @return
+     *      The current modifiable HTML component.
      */
     HTMLComponent get(int index);
 

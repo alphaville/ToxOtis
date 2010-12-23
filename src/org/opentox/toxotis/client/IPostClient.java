@@ -34,8 +34,28 @@ public interface IPostClient extends IClient {
      */
     void post() throws ToxOtisException;
 
+    /**
+     * Specify the Content-type header value that is the MIME of the POSTed entity.
+     * Alternatively users can invoke {@link #addHeaderParameter(java.lang.String, java.lang.String) }
+     * using the Header {@link RequestHeaders#CONTENT_TYPE }.
+     * @param contentType
+     *      The MIME type corresponding to the Content-type value for the
+     *      underlying request as a String.
+     * @return
+     *      The current updated modifiable POST client.
+     */
     IPostClient setContentType(String contentType);
 
+    /**
+     * Specify the Content-type header value that is the MIME of the POSTed entity.
+     * Alternatively users can invoke {@link #addHeaderParameter(java.lang.String, java.lang.String) }
+     * using the Header {@link RequestHeaders#CONTENT_TYPE }.
+     * @param contentType
+     *      The MIME type corresponding to the Content-type value for the
+     *      underlying request as an instance of {@link Media}.
+     * @return
+     *      The current updated modifiable POST client.
+     */
     IPostClient setContentType(Media media);
 
     /**
@@ -70,7 +90,7 @@ public interface IPostClient extends IClient {
      * setContentType}. Since it is not possible to POST entities of different content
      * types to an HTTP server, any invokation to this method will override any previous
      * invokation of {@link PostHttpClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
-     * setPostable(OntModel) } and {@link PostHttpClient#setPostable(java.lang.String)
+     * setPostable(OntModel) } and {@link PostHttpClient#setPostable(java.lang.String, boolean)
      * setPostable(String)}.
      *
      * @param objectToPost

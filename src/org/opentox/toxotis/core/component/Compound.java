@@ -225,7 +225,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
 
     /**
      * This method is not implemented yet!
-     * @param vri
+     * @param uri
      *      Identifier of the location from where the RDF document should be downloaded from
      *      and parsed into a Compound object.
      * @return
