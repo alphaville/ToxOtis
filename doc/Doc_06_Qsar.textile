@@ -1,10 +1,21 @@
 h1. Consuming OpenTox QSAR web services
 
-QSAR services roughly include model training (regression/classification), prediction and dataset preprocessing (filtering, feature selection), so all boild down to the consumption of the Algorithm and Model web services of "OpenTox":http://opentox.org.
+QSAR services roughly include descriptor calculation, model training (regression/classification), prediction and dataset preprocessing (filtering, feature selection), so all boild down to the consumption of the Algorithm and Model web services of "OpenTox":http://opentox.org. However for the special case of descriptor caclulation we have implemented in ToxOtis a special interface, implemented by "Compound":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Compound.java and "Dataset":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Dataset.java. In what follows we provide examples on how to access QSAR-related web services.
 
-h2. Invoke an algorithm service
+h2. 1. Descriptor Calculation
 
-  For the time the only utility that is available for using OpenTox algorithms is the class "Trainer":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/training/Trainer.java. In order to use an algorithm service the user has to provide its URI, parametrize the algorithm and provide the URIs of the training dataset and the prediction feature. In the following example we use the algorithm "svm":http://opentox.ntua.gr:3000/algorithm/svm (running on the NTUA server) to train a predictive regression model:
+  Descriptor calculation in ToxOtis is carried out using the methods defined in "IDescriptorCalculation":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/IDescriptorCalculation.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/IDescriptorCalculation.html and also implemented in the abstract class "DescriptorCalculation":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/DescriptorCaclulation.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/DescriptorCaclulation.html. In the following example, we calculate all physicochemical descriptors for the compound "http://apps.ideaconsult.net:8080/ambit2/compound/100":http://apps.ideaconsult.net:8080/ambit2/compound/100 using TUM's web service based on "CDK":http://sourceforge.net/projects/cdk/. 
+
+<pre>
+IDescriptorCalculation c = new Compound(Services.ideaconsult().augment("compound", 100));
+Future<VRI> t = c.futureCDKPhysChemDescriptors(null, Services.ideaconsult().augment("dataset"));
+</pre>
+
+In the above case, the second line does not block execution, as it runs on a new thread (created by the method "futureCDKPhysChemDescriptors":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/DescriptorCaclulation.html#futureCDKPhysChemDescriptors%28org.opentox.toxotis.util.aa.AuthenticationToken,%20org.opentox.toxotis.client.VRI%29 ). Upon completion, a URI is returned pointing to the created dataset containing the submitted compound and all descriptors that could be calculated. Using this method the execution is carried out in the background and little is outputed about the progress of the asyncronous task (e.g. percentage of completion, etc). Some users might want to invoke the method "calculateDescriptors":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/DescriptorCaclulation.html#calculateDescriptors%28org.opentox.toxotis.client.VRI,%20org.opentox.toxotis.util.aa.AuthenticationToken,%20java.lang.String...%29 which returns a "Task":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Task.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Task.html.
+
+h2. 2. Invoke an algorithm service
+
+  For the time being, the only utility that is available for using OpenTox algorithms is the class "Trainer":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/training/Trainer.java (More tools will be provided in forthcoming versions of ToxOtis including tools for performing predictions). In order to use an algorithm service the user has to provide its URI, parametrize the algorithm and provide the URIs of the training dataset and the prediction feature. In the following example we use the algorithm "svm":http://opentox.ntua.gr:3000/algorithm/svm (running on the NTUA server) to train a predictive regression model:
 
 
 <pre>
