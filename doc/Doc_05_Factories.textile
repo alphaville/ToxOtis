@@ -50,7 +50,7 @@ http://apps.ideaconsult.net:8080/ambit2/feature/20092
 </pre>
 
 
-h4. 2.1.2. Search for a feature using the OT feature ontology based on the ECHA specifications (namespace: http://www.opentox.org/echaEndpoints.owl#). 
+h4. 2.1.2. Search for a feature using the OT feature ontology based on the ECHA specifications.
 
 You can perform a database lookup on a remote feature service providing your search criteria in a very convenient way. For example, say you need to get a list of all features that are <em>sameAs</em> the dissociation constant pKa (otee:Dissociation_constant_pKa). Then using the method <code>lookupSameAs</code>, one has:
 
