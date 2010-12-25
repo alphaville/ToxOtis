@@ -11,24 +11,7 @@ IDescriptorCalculation c = new Compound(Services.ideaconsult().augment("compound
 Future<VRI> t = c.futureCDKPhysChemDescriptors(null, Services.ideaconsult().augment("dataset"));
 </pre>
 
-In the above case, the second line does not block execution, as it runs on a new thread (created by the method "futureCDKPhysChemDescriptors":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/DescriptorCaclulation.html#futureCDKPhysChemDescriptors%28org.opentox.toxotis.util.aa.AuthenticationToken,%20org.opentox.toxotis.client.VRI%29 ). Upon completion, a URI is returned pointing to the created dataset containing the submitted compound and all descriptors that could be calculated. Using this method the execution is carried out in the background and little is outputed about the progress of the asyncronous task (e.g. percentage of completion, etc). Some users might want to invoke the method "calculateDescriptors":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/DescriptorCaclulation.html#calculateDescriptors%28org.opentox.toxotis.client.VRI,%20org.opentox.toxotis.util.aa.AuthenticationToken,%20java.lang.String...%29 which returns a "Task":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Task.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Task.html. One dataset that we created using the above code is:
-
-<pre>
-http://apps.ideaconsult.net:8080/ambit2/dataset/76440
-</pre>
-
-Note that no A&A was involved in the above procedure something that might be a requirement by some descriptor calculation services. In the following example, a dataset is created for the same compound employing a web service provided by "TUM":http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev/algorithm/JOELIB2 that calculated all "JoeLib":http://sourceforge.net/projects/joelib/ molecular descriptors.
-
-<pre>
-IDescriptorCalculation c = new Compound(Services.ideaconsult().augment("compound", 100));
-Future<VRI> t = c.futureJoeLibDescriptors(null, Services.ideaconsult().augment("dataset"));
-</pre>
-
-As a result, one gets the URI of a dataset that contains the compound into consideration and all Joelib descriptors:
-
-<pre>
-http://apps.ideaconsult.net:8080/ambit2/dataset/76442
-</pre>
+In the above case, the second line does not block execution, as it runs on a new thread (created by the method "futureCDKPhysChemDescriptors":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/DescriptorCaclulation.html#futureCDKPhysChemDescriptors%28org.opentox.toxotis.util.aa.AuthenticationToken,%20org.opentox.toxotis.client.VRI%29 ). Upon completion, a URI is returned pointing to the created dataset containing the submitted compound and all descriptors that could be calculated. Using this method the execution is carried out in the background and little is outputed about the progress of the asyncronous task (e.g. percentage of completion, etc). Some users might want to invoke the method "calculateDescriptors":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/DescriptorCaclulation.html#calculateDescriptors%28org.opentox.toxotis.client.VRI,%20org.opentox.toxotis.util.aa.AuthenticationToken,%20java.lang.String...%29 which returns a "Task":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Task.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Task.html.
 
 h2. 2. Invoke an algorithm service
 
