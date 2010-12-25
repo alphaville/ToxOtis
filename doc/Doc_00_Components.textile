@@ -36,11 +36,11 @@ The above attributes are compliant with the <a href="http://zeitkunst.org/bibtex
 
 h4. 2.3. Conformer
 
-A Conformer "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Conformer.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Conformer.html is an identifier of a unique chemical substance up to its 3D characteristics.
+A Conformer "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Conformer.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Conformer.html is an identifier of a unique chemical substance up to its 3D characteristics. The class "Conformer":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Conformer.java does not play yet an important role in ToxOtis. It is an extension of Compound that will be used in special cases as for example to access 3D-sensitive descriptor calculation services or in general services and resources that take inro account the 3D conformation of the chemical substance they cope with.
 
 h4. 2.4. Compound
 
-A Compound "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Compound.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Compound.html is a wrapper for a set of conformers. When used to identify a chemical substance acts as a proxy for a conformer. As it is implemented in ToxOtis, Compound is an implementation of OTPublishable characterized by a list of conformers. A compound acts as proxy for the first conformer in the contained list.
+A Compound "(code)":http://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/core/component/Compound.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/core/component/Compound.html is a wrapper for a set of conformers and also (when used to identify a chemical substance) acts as a proxy for a conformer. Various methods have been implemented to provide access to available properties about a compound.
 
 h4. 2.5. Feature
 
