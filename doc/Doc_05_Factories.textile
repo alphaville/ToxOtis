@@ -49,7 +49,10 @@ http://apps.ideaconsult.net:8080/ambit2/feature/20093
 http://apps.ideaconsult.net:8080/ambit2/feature/20092
 </pre>
 
-h4. 2.1.2. Search for a feature using the OT feature ontology based on the ECHA specifications (namespace: http://www.opentox.org/echaEndpoints.owl#) you can perform a database lookup on a remote feature service. For example, say you need to get a list of all features that are <em>sameAs</em> the dissociation constant pKa (otee:Dissociation_constant_pKa). Then using the method <code>lookupSameAs</code>, one has:
+
+h4. 2.1.2. Search for a feature using the OT feature ontology based on the ECHA specifications (namespace: http://www.opentox.org/echaEndpoints.owl#). 
+
+You can perform a database lookup on a remote feature service providing your search criteria in a very convenient way. For example, say you need to get a list of all features that are <em>sameAs</em> the dissociation constant pKa (otee:Dissociation_constant_pKa). Then using the method <code>lookupSameAs</code>, one has:
 
 <pre>
 Set<VRI> features = FeatureFactory.lookupSameAs(OTEchaEndpoints.DissociationConstantPKa(), null);
@@ -72,7 +75,7 @@ Feature predictedFeature = FeatureFactory.createAndPublishFeature(
 
 h3. 2.2. DatasetFactory
 
-DatasetFactory is a class with static methods that facilitates dataset creation and conversion from ARFF files and weka.core.Instances objects into Datasets. Using as a source a File, an InputStream, a Reader or an Instances object, a new Dataset can be created. More, there is a method to create a single DataEntry instance out of a weka.core.Instance object. Here we will provide two examples that users might stubmle across their development. First, the ordinary case of reading from a file:
+"DatasetFactory":https://github.com/alphaville/ToxOtis/blob/master/src/org/opentox/toxotis/factory/DatasetFactory.java "(doc)":http://opentox.ntua.gr/toxotis/javadoc/org/opentox/toxotis/factory/DatasetFactory.html is a class with static methods that facilitates dataset creation and conversion from ARFF files and weka.core.Instances objects into Datasets. Using as a source a File, an InputStream, a Reader or an Instances object, a new Dataset can be created. More, there is a method to create a single DataEntry instance out of a weka.core.Instance object. Here we will provide two examples that users might stubmle across their development. First, the ordinary case of reading from a "file":http://download.oracle.com/javase/1.5.0/docs/api/java/io/File.html :
 
 <pre>
 String filePath = "/path/to/your_file.arff"; // << You path here!
@@ -80,7 +83,7 @@ java.io.File file = new java.io.File(filePath);
 Dataset myDataset = DatasetFactory.createFromArff(file);
 </pre>
 
-The above source code will generate a Dataset out of the given ARFF file or will throw a ToxOtisException in case the ARFF file you provided is not compliant with the ToxOtis requirements. For more details, please read the ToxOtis Documentation about "weka":https://github.com/alphaville/ToxOtis/blob/master/doc/Doc_03_Weka.textile
+The above source code will generate a Dataset out of the given "ARFF file":http://www.cs.waikato.ac.nz/~ml/weka/arff.html or will throw a ToxOtisException in case the ARFF file you provided is not compliant with the ToxOtis requirements. For more details, please read the ToxOtis Documentation about "weka":https://github.com/alphaville/ToxOtis/blob/master/doc/Doc_03_Weka.textile
 
 The second use case concerns the creation of a Dataset object out of an online resource where the ARFF file is available with content negotiation when the client specifies the Header 'Accept: text/x-arff'. Here is an example:
 
@@ -109,3 +112,8 @@ try {
 
 
 
+h2. 3. References
+
+# "ARFF files":http://www.cs.waikato.ac.nz/~ml/weka/arff.html
+# "OpenTox API version 1.2":http://opentox.org/dev/apis/api-1.2
+# "Factory method pattern":http://en.wikipedia.org/wiki/Factory_method_pattern. Article on Wikipedia.

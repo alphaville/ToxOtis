@@ -84,3 +84,15 @@ Model model = new Model(completedTask.getResultUri());
 model.loadFromRemote();
 </pre>
   
+
+
+h2. 3. References
+
+# "ARFF files":http://www.cs.waikato.ac.nz/~ml/weka/arff.html
+# "OpenTox API version 1.2":http://opentox.org/dev/apis/api-1.2
+# "Chemistry Development Kit":http://sourceforge.net/projects/cdk/
+# "JoeLib project":http://sourceforge.net/projects/joelib/
+# "Algorithm services provided by NTUA":http://opentox.ntua.gr:3000/algorithm, "TUM":http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev/algorithm and "IDEA":http://apps.ideaconsult.net:8080/ambit2/algorithm
+
+
+
