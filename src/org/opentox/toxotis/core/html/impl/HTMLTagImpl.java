@@ -32,8 +32,9 @@ public class HTMLTagImpl extends HTMLExpandableComponentImpl implements HTMLTag 
     }
 
     @Override
-    public void setTag(String tag) {
+    public HTMLTag setTag(String tag) {
         this.tag = tag;
+        return this;
     }
 
     @Override
@@ -47,8 +48,9 @@ public class HTMLTagImpl extends HTMLExpandableComponentImpl implements HTMLTag 
         return this;
     }
 
-    public void setContent(String content) {
+    public HTMLTag setContent(String content) {
         addComponent(new HTMLTextImpl(content));
+        return this;
     }
 
     @Override

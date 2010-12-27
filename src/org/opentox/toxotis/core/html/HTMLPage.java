@@ -6,13 +6,27 @@ package org.opentox.toxotis.core.html;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public interface HTMLPage  {
+public interface HTMLPage {
 
+    /**
+     * Set the header of the HTML page.
+     * @param header
+     *      Header of the page as an instance of {@link HTMLHead }.
+     */
     void setHead(HTMLHead header);
 
+    /**
+     * Getter method for the HTML Head of the HTML page.
+     * @return
+     *      Returns the HTML head of the page.
+     */
     HTMLHead getHTMLHead();
 
-    void setHtmlBody(HTMLBody body);
+    /**
+     *
+     * @param body
+     */
+    HTMLPage setHtmlBody(HTMLBody body);
 
     HTMLBody getHtmlBody();
 }

@@ -6,12 +6,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;   
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.core.component.DataEntry;
 import org.opentox.toxotis.core.component.Dataset;
@@ -54,9 +59,9 @@ public class DatasetFactory {
      *      of the provided Instances object.
      */
     public static Dataset createFromArff(Instances instances) throws ToxOtisException {
-        if (instances.attribute("compound_uri")==null){
-            throw new ToxOtisException("Cannot create an OpenTox dataset out of this dataset because " +
-                    "'compound_uri' was not found in it's attribute list");
+        if (instances.attribute("compound_uri") == null) {
+            throw new ToxOtisException("Cannot create an OpenTox dataset out of this dataset because "
+                    + "'compound_uri' was not found in it's attribute list");
         }
         Dataset ds = new Dataset();
         Enumeration instancesEnum = instances.enumerateInstances();
@@ -67,8 +72,8 @@ public class DatasetFactory {
         try {
             ds.setUri(new VRI(instances.relationName()));
         } catch (URISyntaxException ex) {
-            throw new ToxOtisException("The relation name '"+instances.relationName()+"' is not" +
-                    "a valid dataset URI!",ex);
+            throw new ToxOtisException("The relation name '" + instances.relationName() + "' is not"
+                    + "a valid dataset URI!", ex);
         }
         return ds;
     }

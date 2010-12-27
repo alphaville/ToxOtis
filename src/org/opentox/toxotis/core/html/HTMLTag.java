@@ -7,9 +7,11 @@ package org.opentox.toxotis.core.html;
  */
 public interface HTMLTag extends HTMLExpandableComponent {
 
-    public void setTag(String tag);
+    HTMLTag setTag(String tag);
 
-    public String getTag();
+    String getTag();
 
-    public HTMLTag addTagAttribute(String attribute, String value);
+    HTMLTag addTagAttribute(String attribute, String value);
+
+    HTMLTag setContent(String content);
 }

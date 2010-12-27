@@ -35,8 +35,9 @@ public class HTMLPageImpl extends HTMLExpandableComponentImpl implements HTMLPag
     }
 
     @Override
-    public void setHtmlBody(HTMLBody body) {
+    public HTMLPage setHtmlBody(HTMLBody body) {
         this.body = body;
+        return this;
     }
 
     @Override

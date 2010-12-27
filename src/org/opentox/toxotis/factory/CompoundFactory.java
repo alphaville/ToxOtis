@@ -186,8 +186,7 @@ public class CompoundFactory {
         return publishFromFile(sourceFile, fileType.getMime(), token, service);
     }
 
-    public Set<VRI> lookUpComponent(VRI lookUpService, String keyword) {
-        
+    public Set<VRI> lookUpComponent(VRI lookUpService, String keyword) {        
         throw new UnsupportedOperationException();
     }
 

@@ -1,6 +1,9 @@
 package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,8 +14,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.ToxOtisException;
@@ -27,11 +34,12 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> implements IOnlineResource{
+public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> implements IOnlineResource {
 
     private static final String XSD_DOC_PAGE_TEMPLATE = "http://www.w3.org/TR/xmlschema-2/#%s";
     protected static Map<String, String> XSD_DATATYPE_LINKS = new HashMap<String, String>();
-    static{
+
+    static {
         XSD_DATATYPE_LINKS.put(XSDDatatype.XSDstring.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "string"));
         XSD_DATATYPE_LINKS.put(XSDDatatype.XSDint.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "int"));
         XSD_DATATYPE_LINKS.put(XSDDatatype.XSDinteger.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "integer"));
@@ -44,7 +52,6 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
         XSD_DATATYPE_LINKS.put(XSDDatatype.XSDshort.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "short"));
     }
 
-    
     /**
      * Construct an OpenTox online resource providing its URI. This constructor is
      * supposed to be invoked only be subclasses of OTOnlineResource, that is why it
@@ -82,7 +89,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @see OTComponent#setUri(org.opentox.toxotis.client.VRI)
      */
     public T loadFromRemote() throws ToxOtisException {
-        return loadFromRemote(uri,null);
+        return loadFromRemote(uri, null);
     }
 
     /**
@@ -210,6 +217,33 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
     }
 
     /**
+     *
+     * @param imageMedia
+     * @param token
+     * @return
+     * @throws ToxOtisException
+     */
+    public BufferedImage downloadImage(Media imageMedia, AuthenticationToken token) throws ToxOtisException {
+        if (imageMedia == null) {
+            imageMedia = Media.IMAGE_PNG;
+        }
+        if (!imageMedia.toString().contains("image")) {
+            throw new ToxOtisException(imageMedia + " is not a valid image media type");
+        }
+        BufferedImage image = null;
+        IGetClient client = ClientFactory.createGetClient(uri);
+        client.setMediaType(imageMedia);
+        client.authorize(token);
+        try {
+            InputStream iStream = client.getRemoteStream();
+            image = ImageIO.read(iStream);
+        } catch (IOException ex) {
+            throw new ToxOtisException(ex);
+        }
+        return image;
+    }
+
+    /**
      * Downloads a certain representation of the compound in a specified MIME
      * type.
      * @param destination
@@ -251,10 +285,10 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
                 String line = null;
                 while ((line = remoteReader.readLine()) != null) {
                     bufferedWriter.write(line);
-                    if ((line = remoteReader.readLine()) != null){
+                    if ((line = remoteReader.readLine()) != null) {
                         bufferedWriter.newLine();
                         bufferedWriter.write(line);
-                    }else{
+                    } else {
                         break;
                     }
                 }
@@ -300,13 +334,13 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
             } else if (responseStatus == 403) {
                 throw new ToxOtisException(ErrorCause.AuthenticationFailed,
                         "Client failed to authenticate itself against the SSO service due to "
-                        + "incorrect credentials or due to invalid token. Error thrown by "+newUri);
+                        + "incorrect credentials or due to invalid token. Error thrown by " + newUri);
             } else if (responseStatus == 401) {
                 throw new ToxOtisException(ErrorCause.UnauthorizedUser,
-                        "The client is authenticated but not authorized to perform this operation at "+newUri);
+                        "The client is authenticated but not authorized to perform this operation at " + newUri);
             } else {
                 throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
-                        "The remote service at "+newUri+" returned the unexpected status : " + responseStatus);
+                        "The remote service at " + newUri + " returned the unexpected status : " + responseStatus);
             }
 
         } catch (IOException ex) {
