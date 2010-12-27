@@ -2,7 +2,6 @@ package org.opentox.toxotis.ontology;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
-import java.util.Date;
 import java.util.Set;
 import org.opentox.toxotis.core.IHTMLSupport;
 
@@ -93,7 +92,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * the Digital Object Identifier (DOI) and the International Standard Book Number (ISBN).
      * @return
      *      Identifier as a Typed Value
-     * @see http://dublincore.org/documents/usageguide/elements.shtml
+     * @see <a href="http://dublincore.org/documents/usageguide/elements.shtml">http://dublincore.org/documents/usageguide/elements.shtml</a>
      */
     Set<LiteralValue> getIdentifiers();
 

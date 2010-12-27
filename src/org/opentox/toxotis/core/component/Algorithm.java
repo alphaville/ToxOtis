@@ -52,6 +52,10 @@ public class Algorithm extends OTOnlineResource<Algorithm>
     /** List of multi-parameters */
     private Set<MultiParameter> multiParameters = new LinkedHashSet<MultiParameter>();
 
+    /**
+     * Dummy constructor for an Algorithm object. Creates an algorithm with <code>null</code>
+     * URI and no other characteristics.
+     */
     public Algorithm() {
     }
 

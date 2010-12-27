@@ -221,6 +221,8 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @param imageMedia
      * @param token
      * @return
+     *      A depiction downloaded from the remote compound service (as specified
+     *      by {@link #getUri() } as a BufferedImage.
      * @throws ToxOtisException
      */
     public BufferedImage downloadImage(Media imageMedia, AuthenticationToken token) throws ToxOtisException {

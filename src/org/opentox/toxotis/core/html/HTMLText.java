@@ -66,7 +66,7 @@ public interface HTMLText extends HTMLComponent {
 
     /**
      * Format the text as true-type using the HTML tag <code>&lt;tt&gt;</code>
-     * @param isBold
+     * @param isTrueType 
      *      Whehter the text should be formatted as true-type.
      * @return
      *      The current modifiable updated HTMLText object
@@ -76,7 +76,7 @@ public interface HTMLText extends HTMLComponent {
     /**
      * Encapsulates the formatted text in a <code>pre</code> block using the tag
      * <code>&lt;pre;gt;</code>
-     * @param isBold
+     * @param isPRE 
      *      Whehter the text should be formatted as bold.
      * @return
      *      The current modifiable updated HTMLText object

@@ -45,7 +45,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      * @param uri
      *      The URI of the algorithm to be downloaded and parsed into an {@link
      *      Algorithm } object. You can pick an algorithm URI from the list inside
-     *      {@link OpenToxAlgorithms }; for example {@link
+     *      {@link Services }; for example {@link
      *      org.opentox.toxotis.client.collection.Services.NtuaAlgorithms#mlr() NTUA MLR}
      *      from the {@link Services#ntua() NTUA SERVICES} server.
      *
@@ -79,7 +79,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      * @param uri
      *      The URI of the algorithm to be downloaded and parsed into an {@link
      *      Algorithm } object. You can pick an algorithm URI from the list inside
-     *      {@link OpenToxAlgorithms }; for example {@link 
+     *      {@link Services }; for example {@link
      *      org.opentox.toxotis.client.collection.Services.NtuaAlgorithms#mlr() NTUA MLR}
      *      from the {@link org.opentox.toxotis.client.collection.Services.NtuaAlgorithms
      *      NTUA SERVICES} server.

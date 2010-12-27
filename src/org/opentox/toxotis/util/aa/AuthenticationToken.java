@@ -16,6 +16,7 @@ import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.client.collection.Services.*;
 
 /**
  * <p align=justify>OpenTox specific implementation regarding the token provided by the OpenSSO server.
@@ -78,7 +79,7 @@ public class AuthenticationToken {
 
     /**
      * <p align=justify>Create a new Authentication token providing your credentials.
-     * These credentials are posted to the {@link Services#ssoAuthenticate() SSO AUTH} server
+     * These credentials are posted to the {@link org.opentox.toxotis.client.collection.Services.SingleSignOn#ssoAuthenticate() SSO AUTH} server
      * which (if they are valid) returns a token. This is used to construct a new
      * Authentication Token object. The timestamp of the method invokation is set as
      * the timestamp for the object construction. All data transactions take place

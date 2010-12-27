@@ -36,7 +36,7 @@ import org.opentox.toxotis.ToxOtisException;
  * --- END MASTER KEY ---</pre>
  * <br/>
  * <p align=justify>
- * This can be done using the method {@link PasswordFileManager#createMasterPasswordFile(java.lang.String, java.lang.String, int) }.
+ * This can be done using the method {@link PasswordFileManager#createMasterPasswordFile(java.lang.String, java.lang.String, int, boolean)  }.
  * Store this file somewhere on your machine (We suggest that you made it hidden
  * and specify its permissions properly). Then you can use this file to create an
  * encrypted password file or authenticate yourself against the SSO server providing

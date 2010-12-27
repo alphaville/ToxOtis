@@ -16,6 +16,8 @@ public interface IHTMLSupport {
     /**
      * Create an HTML container for the online resource.
      * @return
+     *      HTMLContainer which can be used to create an HTML representation for
+     *      the component.
      */
     HTMLContainer inHtml();
 }

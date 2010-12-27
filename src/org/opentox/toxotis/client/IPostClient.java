@@ -50,7 +50,7 @@ public interface IPostClient extends IClient {
      * Specify the Content-type header value that is the MIME of the POSTed entity.
      * Alternatively users can invoke {@link #addHeaderParameter(java.lang.String, java.lang.String) }
      * using the Header {@link RequestHeaders#CONTENT_TYPE }.
-     * @param contentType
+     * @param media 
      *      The MIME type corresponding to the Content-type value for the
      *      underlying request as an instance of {@link Media}.
      * @return

@@ -37,6 +37,7 @@ public class OTDatatypeProperties {
     private static OTDatatypeProperty ms_httpStatus;
     private static OTDatatypeProperty ms_message;
     private static OTDatatypeProperty ms_index;
+    private static OTDatatypeProperty ms_duration;
     private static Map<String, Method> ms_methodCache;
 
     private synchronized static void initMethodCache() {
@@ -298,5 +299,15 @@ public class OTDatatypeProperties {
             ms_index = property;
         }
         return ms_index;
+    }
+
+    public static OTDatatypeProperty duration(){
+        if(ms_duration == null){
+           OTDatatypeProperty property = new OTDatatypePropertyImpl("duration");
+            property.getDomain().add(OTClasses.Task());
+            property.getRange().add(XSDDatatype.XSDlong);
+            ms_duration = property;
+        }
+        return ms_duration;
     }
 }

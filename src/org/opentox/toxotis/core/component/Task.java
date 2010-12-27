@@ -68,6 +68,9 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         if (Task.Status.COMPLETED.equals(getStatus())) {
             summaryTable.setAtCursor(new HTMLTextImpl("Result URI").formatBold(true)).setTextAtCursor("<a href=\"" + getResultUri() + "\">" + getResultUri() + "</a>");
         }
+        if (duration != 0) {
+            summaryTable.setAtCursor(new HTMLTextImpl("Duration").formatBold(true)).setTextAtCursor(duration + "ms");
+        }
         if (getCreatedBy() != null) {
             summaryTable.setAtCursor(new HTMLTextImpl("Created by").formatBold(true)).setTextAtCursor("" + getCreatedBy().getUid());
         }
@@ -166,6 +169,7 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
     private ErrorReport errorReport;
     private float httpStatus = -1;
     private User createdBy;
+    private long duration = 0L;
 
     public Task() {
         super();
@@ -173,6 +177,31 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
 
     public Task(VRI uri) {
         super(uri);
+    }
+
+    /**
+     * The duration of the task, that is the overall time since its execution started,
+     * not including the time it was queued.
+     * @return
+     *      The duration of the task in millisenconds or <code>0</code> if no duration
+     *      is assigned.
+     */
+    public long getDuration() {
+        return duration;
+    }
+
+    /**
+     * Setter method for the duration of the task in milliseconds. The time during
+     * which the task was in a queue should not be included in the execution
+     * duration.
+     * @param duration
+     *      The duration of the task in milliseconds
+     * @return
+     *      The current updated modifiable Task object.
+     */
+    public Task setDuration(long duration) {
+        this.duration = duration;
+        return this;
     }
 
     /**
@@ -275,6 +304,9 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         }
         if (errorReport != null) {
             indiv.addProperty(OTObjectProperties.errorReport().asObjectProperty(model), errorReport.asIndividual(model));
+        }
+        if (duration != -1) {
+            indiv.addProperty(OTDatatypeProperties.duration().asDatatypeProperty(model), model.createTypedLiteral(duration, XSDDatatype.XSDlong));
         }
         return indiv;
     }

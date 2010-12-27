@@ -8,6 +8,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.util.Date;
 import java.util.HashSet;
@@ -136,7 +137,11 @@ public class MetaInfoImpl implements MetaInfo {
              */
             ObjectProperty hasSourceProp = OTObjectProperties.hasSource().asObjectProperty(model);
             for (ResourceValue source : hasSources) {
-                resource.addProperty(hasSourceProp, source.inModel(model));
+                Resource sourceResource = source.inModel(model);
+                resource.addProperty(hasSourceProp, sourceResource);
+                if (source.getOntologicalClass() != null) {
+                    source.inModel(model).addProperty(RDF.type, source.getOntologicalClass().inModel(model));
+                }
             }
 
         }
@@ -232,7 +237,7 @@ public class MetaInfoImpl implements MetaInfo {
         }
         if (hasSources != null) {
             for (ResourceValue rv : hasSources) {
-                writeMetaDatumResourceToStAX("ot", "hasSource", rv, writer);                
+                writeMetaDatumResourceToStAX("ot", "hasSource", rv, writer);
             }
         }
         if (sameAs != null) {
@@ -242,7 +247,7 @@ public class MetaInfoImpl implements MetaInfo {
         }
         if (seeAlso != null) {
             for (ResourceValue rv : seeAlso) {
-                writeMetaDatumResourceToStAX("rdfs", "seeAlso", rv, writer);               
+                writeMetaDatumResourceToStAX("rdfs", "seeAlso", rv, writer);
             }
         }
 
@@ -806,43 +811,43 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public boolean isEmpty() {
-        if (getAudiences()!=null && !getAudiences().isEmpty()){
+        if (getAudiences() != null && !getAudiences().isEmpty()) {
             return false;
         }
-        if (getComments()!=null && !getComments().isEmpty()){
+        if (getComments() != null && !getComments().isEmpty()) {
             return false;
         }
-        if (getContributors()!=null && !getContributors().isEmpty()){
+        if (getContributors() != null && !getContributors().isEmpty()) {
             return false;
         }
-        if (getCreators()!=null && !getCreators().isEmpty()){
+        if (getCreators() != null && !getCreators().isEmpty()) {
             return false;
         }
-        if (getDescriptions()!=null && !getDescriptions().isEmpty()){
+        if (getDescriptions() != null && !getDescriptions().isEmpty()) {
             return false;
         }
-        if (getHasSources()!=null && !getHasSources().isEmpty()){
+        if (getHasSources() != null && !getHasSources().isEmpty()) {
             return false;
         }
-        if (getIdentifiers()!=null && !getIdentifiers().isEmpty()){
+        if (getIdentifiers() != null && !getIdentifiers().isEmpty()) {
             return false;
         }
-        if (getPublishers()!=null && !getPublishers().isEmpty()){
+        if (getPublishers() != null && !getPublishers().isEmpty()) {
             return false;
         }
-        if (getSameAs()!=null && !getSameAs().isEmpty()){
+        if (getSameAs() != null && !getSameAs().isEmpty()) {
             return false;
         }
-        if (getSeeAlso()!=null && !getSeeAlso().isEmpty()){
+        if (getSeeAlso() != null && !getSeeAlso().isEmpty()) {
             return false;
         }
-        if (getSubjects()!=null && !getSubjects().isEmpty()){
+        if (getSubjects() != null && !getSubjects().isEmpty()) {
             return false;
         }
-        if (getTitles()!=null && !getTitles().isEmpty()){
+        if (getTitles() != null && !getTitles().isEmpty()) {
             return false;
         }
-        if (getDate()!=null){
+        if (getDate() != null) {
             return false;
         }
         return true;
