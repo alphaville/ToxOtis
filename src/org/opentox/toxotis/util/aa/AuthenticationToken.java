@@ -1,5 +1,6 @@
 package org.opentox.toxotis.util.aa;
 
+import org.opentox.toxotis.core.component.User;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;

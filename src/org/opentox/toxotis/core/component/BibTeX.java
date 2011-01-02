@@ -38,7 +38,6 @@ import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.InactiveTokenException;
-import org.opentox.toxotis.util.aa.User;
 import org.opentox.toxotis.util.spiders.BibTeXSprider;
 
 /**

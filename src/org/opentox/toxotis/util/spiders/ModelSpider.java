@@ -22,7 +22,7 @@ import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.User;
+import org.opentox.toxotis.core.component.User;
 
 /**
  * Downloader and Parser for RDF representation of OpenTox Model resources.

@@ -1,8 +1,6 @@
 package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,11 +12,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.client.collection.Media;
@@ -50,6 +45,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
         XSD_DATATYPE_LINKS.put(XSDDatatype.XSDtime.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "time"));
         XSD_DATATYPE_LINKS.put(XSDDatatype.XSDlong.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "long"));
         XSD_DATATYPE_LINKS.put(XSDDatatype.XSDshort.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "short"));
+        XSD_DATATYPE_LINKS.put(XSDDatatype.XSDanyURI.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "anyURI"));
     }
 
     /**

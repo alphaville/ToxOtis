@@ -34,7 +34,6 @@ import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.User;
 import org.opentox.toxotis.util.spiders.ModelSpider;
 
 /**

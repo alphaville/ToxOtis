@@ -18,7 +18,6 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.User;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
 /**
@@ -186,7 +185,7 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
      *      The duration of the task in millisenconds or <code>0</code> if no duration
      *      is assigned.
      */
-    public long getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
@@ -199,7 +198,11 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
      * @return
      *      The current updated modifiable Task object.
      */
-    public Task setDuration(long duration) {
+    public Task setDuration(Long duration) {
+        if (duration == null) {
+            this.duration = 0;
+            return this;
+        }
         this.duration = duration;
         return this;
     }

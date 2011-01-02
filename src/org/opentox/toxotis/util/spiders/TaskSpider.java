@@ -16,7 +16,7 @@ import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.User;
+import org.opentox.toxotis.core.component.User;
 
 /**
  *
