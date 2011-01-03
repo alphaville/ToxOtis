@@ -11,6 +11,8 @@ import org.opentox.toxotis.core.OTOnlineResource;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
+import org.opentox.toxotis.core.html.HTMLTable;
+import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.EmailValidator;
 
@@ -118,6 +120,25 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
         builder.getDiv().setAlignment(Alignment.justify).breakLine().horizontalSeparator();
         builder.addSubSubHeading("Information about the User");
         builder.getDiv().breakLine().breakLine();
-        throw new UnsupportedOperationException("Not supported yet.");
+
+        HTMLTable dataTable = builder.addTable(2);
+        dataTable.setAtCursor(new HTMLTextImpl("URI").formatBold(true)).setTextAtCursor(uri != null ? uri.toString() : "-").
+                setAtCursor(new HTMLTextImpl("UID").formatBold(true)).setTextAtCursor(getUid()).
+                setAtCursor(new HTMLTextImpl("Name").formatBold(true)).setTextAtCursor(getName() != null ? getName() : "No Name");
+
+        dataTable.setCellPadding(5).
+                setCellSpacing(2).
+                setTableBorder(1).
+                setColWidth(1, 150).
+                setColWidth(2, 400);
+        builder.getDiv().breakLine();
+
+        builder.addParagraph("<small>Other Formats: "
+                + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"
+                + "<a href=\"" + getUri() + "?accept=application/x-turtle" + "\">Turtle</a>,"
+                + "<a href=\"" + getUri() + "?accept=text/n-triples" + "\">N-Triple</a>,"
+                + "<a href=\"" + getUri() + "?accept=text/uri-list" + "\">Uri-list</a>,"
+                + "</small>", Alignment.left);
+        return builder.getDiv();
     }
 }
