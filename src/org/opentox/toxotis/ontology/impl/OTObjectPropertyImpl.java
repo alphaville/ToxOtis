@@ -27,6 +27,11 @@ public class OTObjectPropertyImpl extends OTPropertyImpl implements OTObjectProp
         super(name);
     }
 
+    public OTObjectPropertyImpl(String name, String nameSpace) {
+        super(name, nameSpace);
+    }
+    
+
     @Override
     public Collection<OntologicalClass> getRange() {
         return range;

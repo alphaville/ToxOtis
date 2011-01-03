@@ -31,6 +31,10 @@ public abstract class OTPropertyImpl implements OTProperty {
     public OTPropertyImpl(String name) {
         this.name = name;
     }
+    public OTPropertyImpl(String name, String nameSpace) {
+        this.name = name;
+        this.ns = nameSpace;
+    }
 
     @Override
     public MetaInfo getMetaInfo() {
