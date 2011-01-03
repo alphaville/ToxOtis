@@ -1,10 +1,12 @@
 package org.opentox.toxotis.ontology.collection;
 
+import com.hp.hpl.jena.ontology.HasValueRestriction;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.OWL;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
+import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**
  *
@@ -770,12 +772,27 @@ public class OTRestClasses {
 
     public static OntologicalClass GET_Models() {
         if (ms_GET_Models == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("GET_Models", NS);
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Models", NS) {
+
+                @Override
+                public OntClass inModel(OntModel model) {
+                    OntClass c = super.inModel(model);
+                    HasValueRestriction hvr = model.createHasValueRestriction(null, OTRestObjectProperties.result().asObjectProperty(model), c);
+                    hvr.setHasValue(OTClasses.Model().inModel(model));
+                    return c;
+                }
+            };
             clazz.getSuperClasses().add(GET_Operation());
             clazz.getSuperClasses().add(OperationModel());
             clazz.getSuperClasses().add(OperationResultModel());
             ms_GET_Models = clazz;
         }
         return ms_GET_Models;
+    }
+
+    public static void main(String... args) {
+        SimpleOntModelImpl model = new SimpleOntModelImpl();
+        OTRestClasses.GET_Models().inModel(model);
+        model.write(System.out);
     }
 }
