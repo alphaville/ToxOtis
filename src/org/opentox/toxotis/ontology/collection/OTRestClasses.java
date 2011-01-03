@@ -18,17 +18,17 @@ public class OTRestClasses {
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
     private static OntologicalClass ms_HTTPMethod;
     private static OntologicalClass ms_HTTPStatus;
-    private static OntologicalClass ms_Status_200;
-    private static OntologicalClass ms_Status_201;
-    private static OntologicalClass ms_Status_202;
-    private static OntologicalClass ms_Status_303;
-    private static OntologicalClass ms_Status_400;
-    private static OntologicalClass ms_Status_401;
-    private static OntologicalClass ms_Status_403;
-    private static OntologicalClass ms_Status_404;
-    private static OntologicalClass ms_Status_500;
-    private static OntologicalClass ms_Status_502;
-    private static OntologicalClass ms_Status_503;
+    private static OntologicalClass ms_STATUS_200;
+    private static OntologicalClass ms_STATUS_201;
+    private static OntologicalClass ms_STATUS_202;
+    private static OntologicalClass ms_STATUS_303;
+    private static OntologicalClass ms_STATUS_400;
+    private static OntologicalClass ms_STATUS_401;
+    private static OntologicalClass ms_STATUS_403;
+    private static OntologicalClass ms_STATUS_404;
+    private static OntologicalClass ms_STATUS_500;
+    private static OntologicalClass ms_STATUS_502;
+    private static OntologicalClass ms_STATUS_503;
     private static OntologicalClass ms_InputParameter;
     private static OntologicalClass ms_InputParameterCompound;
     private static OntologicalClass ms_InputParameterDataset;
@@ -56,10 +56,11 @@ public class OTRestClasses {
     private static OntologicalClass ms_DELETE_Feature;
     private static OntologicalClass ms_DELETE_Model;
     private static OntologicalClass ms_DELETE_Task;
-    private static OntologicalClass ms_GETOperation;
+    private static OntologicalClass ms_GET_Operation;
     private static OntologicalClass ms_GET_Algorithm;
     private static OntologicalClass ms_GET_Algorithms;
     private static OntologicalClass ms_GET_Feature;
+    private static OntologicalClass ms_GET_Features;
     private static OntologicalClass ms_GET_Model;
     private static OntologicalClass ms_GET_Models;
     private static OntologicalClass ms_GET_Task;
@@ -81,6 +82,7 @@ public class OTRestClasses {
     private static OntologicalClass ms_OperationResultDataset;
     private static OntologicalClass ms_OperationResultModel;
     private static OntologicalClass ms_OperationResultTask;
+    private static OntologicalClass ms_OperationResultFeature;
     private static OntologicalClass ms_OperationTask;
     private static OntologicalClass ms_POST_Operation;
     private static OntologicalClass ms_PUT_Operation;
@@ -125,94 +127,94 @@ public class OTRestClasses {
         return ms_HTTPStatus;
     }
 
-    public static OntologicalClass Status_200() {
-        if (ms_Status_200 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_200", NS);
+    public static OntologicalClass STATUS_200() {
+        if (ms_STATUS_200 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_200", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_200 = clazz;
+            ms_STATUS_200 = clazz;
         }
-        return ms_Status_200;
+        return ms_STATUS_200;
     }
 
-    public static OntologicalClass Status_201() {
-        if (ms_Status_201 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_201", NS);
+    public static OntologicalClass STATUS_201() {
+        if (ms_STATUS_201 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_201", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_201 = clazz;
+            ms_STATUS_201 = clazz;
         }
-        return ms_Status_201;
+        return ms_STATUS_201;
     }
 
-    public static OntologicalClass Status_202() {
-        if (ms_Status_202 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_202", NS);
+    public static OntologicalClass STATUS_202() {
+        if (ms_STATUS_202 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_202", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_202 = clazz;
+            ms_STATUS_202 = clazz;
         }
-        return ms_Status_202;
+        return ms_STATUS_202;
     }
 
-    public static OntologicalClass Status_303() {
-        if (ms_Status_303 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_303", NS);
+    public static OntologicalClass STATUS_303() {
+        if (ms_STATUS_303 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_303", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_303 = clazz;
+            ms_STATUS_303 = clazz;
         }
-        return ms_Status_303;
+        return ms_STATUS_303;
     }
 
-    public static OntologicalClass Status_400() {
-        if (ms_Status_400 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_400", NS);
+    public static OntologicalClass STATUS_400() {
+        if (ms_STATUS_400 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_400", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_400 = clazz;
+            ms_STATUS_400 = clazz;
         }
-        return ms_Status_400;
+        return ms_STATUS_400;
     }
 
-    public static OntologicalClass Status_401() {
-        if (ms_Status_401 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_401", NS);
+    public static OntologicalClass STATUS_401() {
+        if (ms_STATUS_401 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_401", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_401 = clazz;
+            ms_STATUS_401 = clazz;
         }
-        return ms_Status_401;
+        return ms_STATUS_401;
     }
 
-    public static OntologicalClass Status_403() {
-        if (ms_Status_403 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_403", NS);
+    public static OntologicalClass STATUS_403() {
+        if (ms_STATUS_403 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_403", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_403 = clazz;
+            ms_STATUS_403 = clazz;
         }
-        return ms_Status_403;
+        return ms_STATUS_403;
     }
 
-    public static OntologicalClass Status_404() {
-        if (ms_Status_404 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_404", NS);
+    public static OntologicalClass STATUS_404() {
+        if (ms_STATUS_404 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_404", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_404 = clazz;
+            ms_STATUS_404 = clazz;
         }
-        return ms_Status_404;
+        return ms_STATUS_404;
     }
 
-    public static OntologicalClass Status_500() {
-        if (ms_Status_500 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_500", NS);
+    public static OntologicalClass STATUS_500() {
+        if (ms_STATUS_500 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_500", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_500 = clazz;
+            ms_STATUS_500 = clazz;
         }
-        return ms_Status_500;
+        return ms_STATUS_500;
     }
 
-    public static OntologicalClass Status_502() {
-        if (ms_Status_502 == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Status_502", NS);
+    public static OntologicalClass STATUS_502() {
+        if (ms_STATUS_502 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_502", NS);
             clazz.getSuperClasses().add(HTTPStatus());
-            ms_Status_502 = clazz;
+            ms_STATUS_502 = clazz;
         }
-        return ms_Status_502;
+        return ms_STATUS_502;
     }
 
     public static OntologicalClass InputParameter() {
@@ -431,13 +433,13 @@ public class OTRestClasses {
         return ms_DELETE_Operation;
     }
 
-    public static OntologicalClass GETOperation() {
-        if (ms_GETOperation == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("GETOperation", NS);
+    public static OntologicalClass GET_Operation() {
+        if (ms_GET_Operation == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Operation", NS);
             clazz.getSuperClasses().add(RESTOperation());
-            ms_GETOperation = clazz;
+            ms_GET_Operation = clazz;
         }
-        return ms_GETOperation;
+        return ms_GET_Operation;
     }
 
     public static OntologicalClass OperationAlgorithm() {
@@ -539,6 +541,15 @@ public class OTRestClasses {
         return ms_OperationResultTask;
     }
 
+    public static OntologicalClass OperationResultFeature() {
+        if (ms_OperationResultFeature == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("OperationResultFeature", NS);
+            clazz.getSuperClasses().add(RESTOperation());
+            ms_OperationResultFeature = clazz;
+        }
+        return ms_OperationResultFeature;
+    }
+
     public static OntologicalClass OperationTask() {
         if (ms_OperationTask == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationTask", NS);
@@ -609,11 +620,110 @@ public class OTRestClasses {
         if (ms_GET_Algorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Algorithm", NS);
             clazz.getSuperClasses().add(OperationAlgorithm());
-            clazz.getSuperClasses().add(GETOperation());
+            clazz.getSuperClasses().add(GET_Operation());
             clazz.getSuperClasses().add(OperationResultAlgorithm());
             clazz.getSuperClasses().add(SingleResourceOp());
             ms_GET_Algorithm = clazz;
         }
         return ms_GET_Algorithm;
+    }
+
+    public static OntologicalClass GET_Algorithms() {
+        if (ms_GET_Algorithms == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Algorithm", NS);
+            clazz.getSuperClasses().add(OperationAlgorithm());
+            clazz.getSuperClasses().add(GET_Operation());
+            clazz.getSuperClasses().add(OperationResultAlgorithm());
+            ms_GET_Algorithms = clazz;
+        }
+        return ms_GET_Algorithms;
+    }
+
+    public static OntologicalClass GET_Feature() {
+        if (ms_GET_Feature == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Feature", NS);
+            clazz.getSuperClasses().add(OperationFeature());
+            clazz.getSuperClasses().add(GET_Operation());
+            clazz.getSuperClasses().add(OperationResultFeature());
+            clazz.getSuperClasses().add(SingleResourceOp());
+            ms_GET_Feature = clazz;
+        }
+        return ms_GET_Feature;
+    }
+
+    public static OntologicalClass GET_Features() {
+        if (ms_GET_Features == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Features", NS);
+            clazz.getSuperClasses().add(OperationFeature());
+            clazz.getSuperClasses().add(GET_Operation());
+            clazz.getSuperClasses().add(OperationResultFeature());
+            ms_GET_Features = clazz;
+        }
+        return ms_GET_Features;
+    }
+
+    public static OntologicalClass GET_Task() {
+        if (ms_GET_Task == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Task", NS);
+            clazz.getSuperClasses().add(OperationFeature());
+            clazz.getSuperClasses().add(GET_Operation());
+            clazz.getSuperClasses().add(OperationResultTask());
+            clazz.getSuperClasses().add(SingleResourceOp());
+            ms_GET_Task = clazz;
+        }
+        return ms_GET_Task;
+    }
+
+    public static OntologicalClass GET_Tasks() {
+        if (ms_GET_Tasks == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Tasks", NS);
+            clazz.getSuperClasses().add(OperationFeature());
+            clazz.getSuperClasses().add(GET_Operation());
+            clazz.getSuperClasses().add(OperationResultFeature());
+            ms_GET_Tasks = clazz;
+        }
+        return ms_GET_Tasks;
+    }
+
+    public static OntologicalClass POST_AlgorithmCreateModel() {
+        if (ms_POST_AlgorithmCreateModel == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmCreateModel", NS);
+            clazz.getSuperClasses().add(OperationResultTask());
+            clazz.getSuperClasses().add(OperationResultModel());
+            clazz.getSuperClasses().add(OperationInputDataset());
+            clazz.getSuperClasses().add(POST_Operation());
+            clazz.getSuperClasses().add(OperationAlgorithm());
+            clazz.getSuperClasses().add(SingleResourceOp());
+            ms_POST_AlgorithmCreateModel = clazz;
+        }
+        return ms_POST_AlgorithmCreateModel;
+    }
+
+    public static OntologicalClass POST_AlgorithmProcessCompound() {
+        if (ms_POST_AlgorithmProcessCompound == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmProcessCompound", NS);
+            clazz.getSuperClasses().add(OperationResultTask());
+            clazz.getSuperClasses().add(OperationResultDataset());
+            clazz.getSuperClasses().add(OperationInputCompound());
+            clazz.getSuperClasses().add(POST_Operation());
+            clazz.getSuperClasses().add(OperationAlgorithm());
+            clazz.getSuperClasses().add(SingleResourceOp());
+            ms_POST_AlgorithmProcessCompound = clazz;
+        }
+        return ms_POST_AlgorithmProcessCompound;
+    }
+
+    public static OntologicalClass POST_AlgorithmProcessDataset() {
+        if (ms_POST_AlgorithmProcessDataset == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmProcessDataset", NS);
+            clazz.getSuperClasses().add(OperationResultTask());
+            clazz.getSuperClasses().add(OperationResultDataset());
+            clazz.getSuperClasses().add(OperationInputCompound());
+            clazz.getSuperClasses().add(POST_Operation());
+            clazz.getSuperClasses().add(OperationAlgorithm());
+            clazz.getSuperClasses().add(SingleResourceOp());
+            ms_POST_AlgorithmProcessDataset = clazz;
+        }
+        return ms_POST_AlgorithmProcessDataset;
     }
 }
