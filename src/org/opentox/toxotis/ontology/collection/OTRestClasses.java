@@ -217,6 +217,15 @@ public class OTRestClasses {
         return ms_STATUS_502;
     }
 
+    public static OntologicalClass STATUS_503() {
+        if (ms_STATUS_503 == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("STATUS_503", NS);
+            clazz.getSuperClasses().add(HTTPStatus());
+            ms_STATUS_503 = clazz;
+        }
+        return ms_STATUS_503;
+    }
+
     public static OntologicalClass InputParameter() {
         if (ms_InputParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameter", NS);
@@ -725,5 +734,48 @@ public class OTRestClasses {
             ms_POST_AlgorithmProcessDataset = clazz;
         }
         return ms_POST_AlgorithmProcessDataset;
+    }
+
+    public static OntologicalClass POST_Feature() {
+        if (ms_POST_Feature == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("POST_Feature", NS);
+            clazz.getSuperClasses().add(POST_Operation());
+            clazz.getSuperClasses().add(OperationFeature());
+            ms_POST_Feature = clazz;
+        }
+        return ms_POST_Feature;
+    }
+
+    public static OntologicalClass PUT_Feature() {
+        if (ms_PUT_Feature == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("PUT_Feature", NS);
+            clazz.getSuperClasses().add(PUT_Operation());
+            clazz.getSuperClasses().add(OperationFeature());
+            ms_PUT_Feature = clazz;
+        }
+        return ms_PUT_Feature;
+    }
+
+    public static OntologicalClass GET_Model() {
+        if (ms_GET_Model == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Model", NS);
+            clazz.getSuperClasses().add(GET_Operation());
+            clazz.getSuperClasses().add(OperationModel());
+            clazz.getSuperClasses().add(OperationResultModel());
+            clazz.getSuperClasses().add(SingleResourceOp());
+            ms_GET_Model = clazz;
+        }
+        return ms_GET_Model;
+    }
+
+    public static OntologicalClass GET_Models() {
+        if (ms_GET_Models == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("GET_Models", NS);
+            clazz.getSuperClasses().add(GET_Operation());
+            clazz.getSuperClasses().add(OperationModel());
+            clazz.getSuperClasses().add(OperationResultModel());
+            ms_GET_Models = clazz;
+        }
+        return ms_GET_Models;
     }
 }
