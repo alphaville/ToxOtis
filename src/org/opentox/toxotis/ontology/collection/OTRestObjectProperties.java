@@ -82,13 +82,13 @@ public class OTRestObjectProperties {
         return ms_status;
     }
 
-//    public static OTObjectProperty uri() {
-//        if (ms_uri == null) {
-//            OTObjectProperty clazz = new OTObjectPropertyImpl("uri", NS);
-//            clazz.getDomain().add(OTRestClasses.RESTOperation());
-//            clazz.getDomain().add(OTRestClasses.RESTTemplate());
-//            ms_uri = clazz;
-//        }
-//        return ms_uri;
-//    }
+    public static OTObjectProperty uri() {
+        if (ms_uri == null) {
+            OTObjectProperty clazz = new OTObjectPropertyImpl("uri", NS);
+            clazz.getDomain().add(OTRestClasses.RESTOperation());
+            clazz.getDomain().add(OTRestClasses.RESTTemplate());
+            ms_uri = clazz;
+        }
+        return ms_uri;
+    }
 }

@@ -790,9 +790,50 @@ public class OTRestClasses {
         return ms_GET_Models;
     }
 
-    public static void main(String... args) {
-        SimpleOntModelImpl model = new SimpleOntModelImpl();
-        OTRestClasses.GET_Models().inModel(model);
-        model.write(System.out);
+    public static OntologicalClass RESTTemplate() {
+        if (ms_RESTTemplate == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("RESTTemplate", NS);
+            clazz.getSuperClasses().add(Thing());
+            ms_RESTTemplate = clazz;
+        }
+        return ms_RESTTemplate;
+    }
+
+    public static OntologicalClass AlgorithmTemplate() {
+        if (ms_AlgorithmTemplate == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("AlgorithmTemplate", NS);
+            clazz.getSuperClasses().add(RESTTemplate());
+            ms_AlgorithmTemplate = clazz;
+        }
+        return ms_AlgorithmTemplate;
+    }
+
+    public static OntologicalClass RESTTemplateAttribute() {
+        if (ms_RESTTemplateAttribute == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("RESTTemplateAttribute", NS);
+            clazz.getSuperClasses().add(RESTTemplate());
+            ms_RESTTemplateAttribute = clazz;
+        }
+        return ms_RESTTemplateAttribute;
+    }
+
+    public static OntologicalClass MultiTaskTemplate() {
+        if (ms_MultiTaskTemplate == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("MultiTaskTemplate", NS);
+            clazz.getSuperClasses().add(RESTTemplateAttribute());
+            ms_MultiTaskTemplate = clazz;
+        }
+        return ms_MultiTaskTemplate;
+    }
+
+    public static OntologicalClass TaskTemplate() {
+        if (ms_TaskTemplate == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("TaskTemplate", NS);
+            clazz.getSuperClasses().add(RESTTemplate());
+            ms_TaskTemplate = clazz;
+        }
+        return ms_TaskTemplate;
     }
 }
+
+
