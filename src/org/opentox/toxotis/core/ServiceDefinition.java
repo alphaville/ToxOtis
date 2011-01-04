@@ -2,6 +2,7 @@ package org.opentox.toxotis.core;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.HttpMethods.MethodsEnum;
 import org.opentox.toxotis.ontology.collection.OTRestClasses;
@@ -28,7 +29,37 @@ public class ServiceDefinition {
      * Nested class providing an access point to HttpParameters.
      */
     public class HttpParameter {
-        // Under developement
+        private OntologicalClass paramContent;
+        private String paramName;
+        private boolean paramOptional;
+
+        public HttpParameter() {
+        }
+
+        public OntologicalClass getParamContent() {
+            return paramContent;
+        }
+
+        public void setParamContent(OntologicalClass paramContent) {
+            this.paramContent = paramContent;
+        }
+
+        public String getParamName() {
+            return paramName;
+        }
+
+        public void setParamName(String paramName) {
+            this.paramName = paramName;
+        }
+
+        public boolean isParamOptional() {
+            return paramOptional;
+        }
+
+        public void setParamOptional(boolean paramOptional) {
+            this.paramOptional = paramOptional;
+        }
+                
     }
 
     private Set<OntologicalClass> restClasses;
