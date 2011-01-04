@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
@@ -135,7 +136,7 @@ public class OTClasses {
         if (ms_OpenToxResource == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OpenToxResource");
             clazz.getMetaInfo().addComment("Generic OpenTox Resource");
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(Thing());            
             ms_OpenToxResource = clazz;
         }
         return ms_OpenToxResource;

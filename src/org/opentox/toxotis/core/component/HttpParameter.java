@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTRestClasses;
@@ -17,6 +18,11 @@ import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 
 /**
  *
+ * An HTTP parameter is a component that defines the parameters expected from the client
+ * on a POST request. Every web service through its RDF representation, defined which
+ * parameters it expects, whether these are optional or mandatory and provide some
+ * information about them.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -28,6 +34,11 @@ public class HttpParameter extends OTComponent<HttpParameter> {
     private String paramName;
 
     public HttpParameter() {
+        super();
+    }
+
+    public HttpParameter(VRI uri) {
+        super(uri);
     }
 
     public Set<OntologicalClass> getParamContent() {
@@ -71,7 +82,6 @@ public class HttpParameter extends OTComponent<HttpParameter> {
     public void setParamName(String paramName) {
         this.paramName = paramName;
     }
-    
 
     public Individual asIndividual(OntModel model) {
         String httpParameterUri = getUri() != null ? getUri().toString() : null;
@@ -94,8 +104,9 @@ public class HttpParameter extends OTComponent<HttpParameter> {
         indiv.addLiteral(OTRestDatatypeProperties.paramOptional().asDatatypeProperty(model),
                 model.createTypedLiteral(isParamOptional(), XSDDatatype.XSDboolean));
         /* Name of the parameter */
-        if (getParamName()!=null){
-            indiv.addLiteral(OTRestDatatypeProperties.paramName().asDatatypeProperty(model), model.createTypedLiteral(getParamName(), XSDDatatype.XSDstring));
+        if (getParamName() != null) {
+            indiv.addLiteral(OTRestDatatypeProperties.paramName().asDatatypeProperty(model),
+                    model.createTypedLiteral(getParamName(), XSDDatatype.XSDstring));
         }
         /* Meta information about the HttpParameter */
         if (getMeta() != null) {

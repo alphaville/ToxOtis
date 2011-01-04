@@ -167,7 +167,7 @@ public class LiteralValue<T> implements Serializable {
     @Override
     public int hashCode() {
         if (getHash() <= Integer.MAX_VALUE && getHash() >= Integer.MIN_VALUE) {
-            return (int) hashCode();
+            return (int) getHash();
         } else if (getHash() > Integer.MAX_VALUE) {
             return (int) (Integer.MAX_VALUE - 2 * getHash());
         } else {

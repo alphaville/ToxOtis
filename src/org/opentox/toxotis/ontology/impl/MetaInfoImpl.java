@@ -263,6 +263,9 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     public MetaInfo addComment(String... comment) {
+        if (getComments() == null) {
+            setComments(new HashSet<LiteralValue>());
+        }
         for (String s : comment) {
             addComment(new LiteralValue<String>(s));
         }
