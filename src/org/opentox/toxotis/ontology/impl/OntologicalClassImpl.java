@@ -57,8 +57,9 @@ public class OntologicalClassImpl implements OntologicalClass {
     }
 
     @Override
-    public void setMetaInfo(MetaInfo metaInfo) {
+    public OntologicalClass setMetaInfo(MetaInfo metaInfo) {
         this.metaInfo = metaInfo;
+        return this;
     }
 
     @Override
@@ -67,8 +68,9 @@ public class OntologicalClassImpl implements OntologicalClass {
     }
 
     @Override
-    public void setSuperClasses(Set<OntologicalClass> superClasses) {
+    public OntologicalClass setSuperClasses(Set<OntologicalClass> superClasses) {
         this.superClasses = superClasses;
+        return this;
     }
 
     @Override
@@ -78,8 +80,9 @@ public class OntologicalClassImpl implements OntologicalClass {
     }
 
     @Override
-    public void setDisjointWith(Set<OntologicalClass> disjointWith) {
+    public OntologicalClass setDisjointWith(Set<OntologicalClass> disjointWith) {
         this.disjointWith = disjointWith;
+        return this;
     }
 
     @Override
@@ -88,8 +91,9 @@ public class OntologicalClassImpl implements OntologicalClass {
     }
 
     @Override
-    public void setNameSpace(String ns) {
+    public OntologicalClass setNameSpace(String ns) {
         this.ns = ns;
+        return this;
     }
 
     @Override
@@ -98,8 +102,9 @@ public class OntologicalClassImpl implements OntologicalClass {
     }
 
     @Override
-    public void setName(String name) {
+    public OntologicalClass setName(String name) {
         this.name = name;
+        return this;
     }
 
     @Override
@@ -107,7 +112,8 @@ public class OntologicalClassImpl implements OntologicalClass {
         return ns + name;
     }
 
-    public void setUri(String uri) {
+    public OntologicalClass setUri(String uri) {
+        return this;
     }
 
     @Override

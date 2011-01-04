@@ -1,34 +1,43 @@
 package org.opentox.toxotis.core.component;
 
+import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDF;
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.HttpMethods.MethodsEnum;
 import org.opentox.toxotis.ontology.collection.OTRestClasses;
+import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 
 /**
  * Interface documentation for a web service. OpenTox web services define the supported
  * operations that are available and at the same time provide machine-readable directives
  * for their consumption which can be used to generate human-readable documentation too.
- * Supported HTTP methods, allowed (mandatory and optional) input parameters for the
+ * Corresponding HTTP method, allowed (mandatory and optional) input parameters for the
  * service and information about them as well as possible status codes that might be thrown
  * by the service are included in the definition of the web service.
  * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class RestOperation {
+public class RestOperation extends OTComponent<RestOperation> {
 
     /**
      * Dummy constructor for the class {@link RestOperation } that creates an empty
-     * instance of it. The methods {@link #getMethodsSupported() } and {@link #getRestClasses() }
+     * instance of it. The methods {@link #getMethod() } and {@link #getRestClasses() }
      * will return <code>null</code> if invoked right afterwards.
      */
     public RestOperation() {
     }
     private Set<OntologicalClass> restClasses;
-    private Set<MethodsEnum> methodsSupported;
+    private MethodsEnum method;
     private Set<HttpParameter> httpParameters;
     private Set<HttpStatus> httpStatusCodes;
 
@@ -60,28 +69,19 @@ public class RestOperation {
     }
 
     /**
-     * The set of HTTP methods which are supported by the web service.
+     * The HTTP method which are supported by the web service.
      * @return
-     *      A set of Http Methods as elements of the enumeration {@link MethodsEnum }.
+     *      Http Method as element of the enumeration {@link MethodsEnum }.
      */
-    public Set<MethodsEnum> getMethodsSupported() {
-        return methodsSupported;
+    public MethodsEnum getMethod() {
+        return method;
     }
 
-    public RestOperation setMethodsSupported(Set<MethodsEnum> methodsSupported) {
-        this.methodsSupported = methodsSupported;
+    public RestOperation setMethod(MethodsEnum httpMethod) {
+        this.method = httpMethod;
         return this;
     }
 
-    public RestOperation addMethodsSupported(MethodsEnum... methods) {
-        if (getMethodsSupported() == null) {
-            setMethodsSupported(new HashSet<MethodsEnum>());
-        }
-        for (MethodsEnum me : methods) {
-            getMethodsSupported().add(me);
-        }
-        return this;
-    }
 
     /**
      * Set of input parameters which are expected by the client on POST. These are
@@ -96,6 +96,16 @@ public class RestOperation {
 
     public RestOperation setHttpParameters(Set<HttpParameter> httpParameters) {
         this.httpParameters = httpParameters;
+        return this;
+    }
+
+    public RestOperation addHttpParameters(HttpParameter... httpParameters){
+        if (getHttpParameters() == null){
+            setHttpParameters(new HashSet<HttpParameter>());
+        }
+        for (HttpParameter prm : httpParameters){
+            getHttpParameters().add(prm);
+        }
         return this;
     }
 
@@ -125,5 +135,46 @@ public class RestOperation {
             getHttpStatusCodes().add(status);
         }
         return this;
+    }
+
+    public Individual asIndividual(OntModel model) {
+        String restOperationUri = getUri() != null ? getUri().toString() : null;
+        /* Initialization of an otrs:RESTOperation individual */
+        Individual indiv = model.createIndividual(restOperationUri, OTRestClasses.RESTOperation().inModel(model));
+        /* Ontological Classes that define the type of the REST operation */
+        if (getRestClasses()!=null){
+            for (OntologicalClass oc : getRestClasses()){
+                indiv.addProperty(RDF.type, oc.inModel(model));
+            }
+        }
+        /* Input Parameters for the Rest Operation*/
+        if (getHttpParameters() != null) {
+            Property inputParam = OTRestObjectProperties.inputParam().asObjectProperty(model);
+            for (HttpParameter prm : getHttpParameters()) {
+                indiv.addProperty(inputParam, prm.asIndividual(model));
+            }
+        }
+        /* Corresponding HTTP Method */
+        if (getMethod()!=null){
+            Resource methodResource = getMethod().getResourceValue().inModel(model);
+            indiv.addProperty(OTRestObjectProperties.hasHTTPMethod().asObjectProperty(model), methodResource);
+        }
+        /* Status Codes */
+        if (getHttpStatusCodes()!=null){
+            Property hasHttpStatusProperty = OTRestObjectProperties.hasHTTPStatus().asObjectProperty(model);
+            for (HttpStatus status : getHttpStatusCodes()){
+                System.out.println(status.getHttpStatusClass().getUri());
+                indiv.addProperty(hasHttpStatusProperty, status.asIndividual(model));
+            }
+        }
+        /* Attach meta data */
+        if (getMeta() != null) {
+            getMeta().attachTo(indiv, model);
+        }
+        return indiv;
+    }
+
+    public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

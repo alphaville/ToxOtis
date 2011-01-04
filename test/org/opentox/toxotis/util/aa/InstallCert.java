@@ -45,12 +45,12 @@ public class InstallCert {
      * file to $JAVA_HOME/lib/security. This way the certificate of the openSSO
      * server will be recognized by this application.
      */
-    private static final String outputFile = "insilico_cacert";
+    private static final String outputFile = "my_cacert";
 
 
     public static void main(String... args) throws Exception {
         args = new String[]{
-            "opensso.in-silico.ch"
+            "ambit.uni-plovdiv.bg:8443"
                 };
         String host;
         int port;

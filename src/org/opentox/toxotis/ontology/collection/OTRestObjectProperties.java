@@ -15,6 +15,7 @@ public class OTRestObjectProperties {
 
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
     private static OTObjectProperty ms_hasHTTPMethod;
+    private static OTObjectProperty ms_hasHTTPStatus;
     private static OTObjectProperty ms_inputParam;
     private static OTObjectProperty ms_paramContent;
     private static OTObjectProperty ms_resource;
@@ -31,6 +32,16 @@ public class OTRestObjectProperties {
             ms_hasHTTPMethod = clazz;
         }
         return ms_hasHTTPMethod;
+    }
+
+    public static OTObjectProperty hasHTTPStatus() {
+        if (ms_hasHTTPStatus == null) {
+            OTObjectProperty clazz = new OTObjectPropertyImpl("hasHTTPStatus", NS);
+            clazz.getDomain().add(OTRestClasses.RESTOperation());
+            clazz.getRange().add(OTRestClasses.HTTPStatus());
+            ms_hasHTTPStatus = clazz;
+        }
+        return ms_hasHTTPStatus;
     }
 
     public static OTObjectProperty inputParam() {
@@ -72,8 +83,9 @@ public class OTRestObjectProperties {
                 @Override
                 public ObjectProperty asObjectProperty(OntModel model) {
                     ObjectProperty op = super.asObjectProperty(model);
-                    if (ms_hasRESTOperation == null) {
+                    if (ms_hasRESTOperation == null) {// to avoid StackOverflow
                         op.setInverseOf(hasRESTOperation().asObjectProperty(model));
+                        hasRESTOperation().asObjectProperty(model).setInverseOf(op);
                     }
                     return op;
                 }
@@ -95,6 +107,7 @@ public class OTRestObjectProperties {
                     ObjectProperty op = super.asObjectProperty(model);
                     if (ms_resource == null) {// to avoid StackOverflow
                         op.setInverseOf(resource().asObjectProperty(model));
+                        resource().asObjectProperty(model).setInverseOf(op);
                     }
                     return op;
                 }

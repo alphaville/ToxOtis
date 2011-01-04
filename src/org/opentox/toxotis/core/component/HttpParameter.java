@@ -63,8 +63,19 @@ public class HttpParameter extends OTComponent<HttpParameter> {
         return inputParamClass;
     }
 
-    public void setInputParamClass(Set<OntologicalClass> inputParamClass) {
+    public HttpParameter setInputParamClass(Set<OntologicalClass> inputParamClass) {
         this.inputParamClass = inputParamClass;
+        return this;
+    }
+
+    public HttpParameter addInputParamClass(OntologicalClass... inputParamClass) {
+        if (getInputParamClass() == null) {
+            setInputParamClass(new HashSet<OntologicalClass>());
+        }
+        for (OntologicalClass oc : inputParamClass){
+            getInputParamClass().add(oc);
+        }
+        return this;
     }
 
     public boolean isParamOptional() {

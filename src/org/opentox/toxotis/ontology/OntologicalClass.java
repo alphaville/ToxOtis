@@ -20,27 +20,27 @@ public interface OntologicalClass extends OTResource, java.io.Serializable {
 
     String getNameSpace();
 
-    void setNameSpace(String ns);
+    OntologicalClass setNameSpace(String ns);
 
     String getName();
 
-    void setName(String name);
+    OntologicalClass setName(String name);
 
     MetaInfo getMetaInfo();
 
-    void setMetaInfo(MetaInfo metaInfo);
+    OntologicalClass setMetaInfo(MetaInfo metaInfo);
 
     Set<OntologicalClass> getSuperClasses();
 
-    void setSuperClasses(Set<OntologicalClass> superClasses);
+    OntologicalClass setSuperClasses(Set<OntologicalClass> superClasses);
 
     Set<OntologicalClass> getDisjointWith();
 
     String getUri();
 
-    void setUri(String uri);
+    OntologicalClass setUri(String uri);
 
-    void setDisjointWith(Set<OntologicalClass> disjointWith);
+    OntologicalClass setDisjointWith(Set<OntologicalClass> disjointWith);
 
     OntClass inModel(OntModel model);
 

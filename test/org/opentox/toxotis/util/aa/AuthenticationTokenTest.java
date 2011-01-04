@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.collection.Services;
 
 /**
  *
@@ -36,14 +37,23 @@ public class AuthenticationTokenTest {
 
     @Test
     public void testAcquireToken() throws ToxOtisException, IOException {
+        long start = 0;
+        int n = 20;
+        long sum = 0;
         AuthenticationToken at = new AuthenticationToken(new File("/home/chung/toxotisKeys/my.key")); // << Provide your credentials here
-        System.out.println(at.stringValue());
-        System.out.println(at.getTokenUrlEncoded());
-        System.out.println(at.getTokenCreationTimestamp());
-        System.out.println(at.getTokenCreationDate());
+
+        for (int i = 0; i < n; i++) {
+            start = System.currentTimeMillis();
+            at.authorize("GET", Services.ntua().augment("model"));
+            sum += System.currentTimeMillis() - start;
+            at = new AuthenticationToken(new File("/home/chung/toxotisKeys/my.key")); // << Provide your credentials here
+        }
+
+        double average = sum;
+        average = average/n;
+        System.out.println(average);
         
-        System.out.println(at.getUser());
-      
+
     }
 }
 

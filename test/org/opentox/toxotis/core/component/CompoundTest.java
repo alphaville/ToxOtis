@@ -20,7 +20,9 @@ import org.opentox.toxotis.core.IDescriptorCalculation;
 import org.opentox.toxotis.factory.CompoundFactory;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTFeatures;
+import org.opentox.toxotis.util.TaskRunner;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.SSLConfiguration;
 
 /**
  *
@@ -61,9 +63,9 @@ public class CompoundTest {
     //@Test
     public void testSimilarity() throws Exception {
         Compound c = new Compound(Services.ideaconsult().augment("compound", "480"));
-        Set<VRI> similar = c.getSimilar(0.5, Services.ideaconsult().augment("query","similarity"), null);
-        for (VRI v : similar){
-            System.out.println("similar to : "+v);
+        Set<VRI> similar = c.getSimilar(0.5, Services.ideaconsult().augment("query", "similarity"), null);
+        for (VRI v : similar) {
+            System.out.println("similar to : " + v);
         }
     }
 
@@ -99,10 +101,10 @@ public class CompoundTest {
         c.wrapInDataset(new VRI("myserver.com/dataset/1")).asOntModel().write(System.out);
     }
 
-    @Test
+    //@Test
     public void testCalculateDescriptors() throws ToxOtisException, URISyntaxException, InterruptedException, ExecutionException {
-        IDescriptorCalculation c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/10"));
-            Future<VRI> t = c.futureCDKPhysChemDescriptors(null, Services.ambitUniPlovdiv().augment("dataset"));
+        IDescriptorCalculation c = new Compound(Services.ideaconsult().augment("compound", 100));
+        Future<VRI> t = c.futureJoeLibDescriptors(null, Services.ideaconsult().augment("dataset"));
         System.out.println("Waiting for result...");
         System.out.println(t.get());
     }
@@ -114,12 +116,13 @@ public class CompoundTest {
         System.out.println(ds.getDataEntries().get(0).getFeatureValues().size());
     }
 
-    //@Test
+    @Test
     public void testSmilesAsString() throws Exception {
-        Compound c = new Compound(Services.ideaconsult().augment("compound","100"));
+        SSLConfiguration.initializeSSLConnection();
+        Compound c = new Compound(new VRI("https://ambit.uni-plovdiv.bg:8443/ambit2/compound/100"));
         StringWriter sw = new StringWriter();
         c.download(sw, Media.CHEMICAL_SMILES, null);
         String smilesString = sw.toString();
-        System.out.println(".."+smilesString+"..");
+        System.out.println(".." + smilesString + "..");
     }
 }
