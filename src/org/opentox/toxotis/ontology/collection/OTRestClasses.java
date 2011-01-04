@@ -9,7 +9,8 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**
- *
+ * Collection of ontological classes needed to define the REST interface operations
+ * over a URI that providesa access to web services.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -17,6 +18,7 @@ public class OTRestClasses {
 
     private OTRestClasses() {
     }
+    
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
     private static OntologicalClass ms_HTTPMethod;
     private static OntologicalClass ms_HTTPStatus;
@@ -833,6 +835,15 @@ public class OTRestClasses {
             ms_TaskTemplate = clazz;
         }
         return ms_TaskTemplate;
+    }
+
+    public static OntologicalClass POST_Model() {
+        if (ms_POST_Model == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("POST_Model", NS);
+            clazz.getSuperClasses().add(POST_Operation());
+            ms_POST_Model = clazz;
+        }
+        return ms_POST_Model;
     }
 }
 

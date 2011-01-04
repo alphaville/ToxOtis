@@ -36,12 +36,18 @@ public class LiteralValue<T> implements Serializable {
     private Class<?> clazz = String.class;
     /** XSD datatype for the value */
     private XSDDatatype type = XSDDatatype.XSDstring;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LiteralValue.class);
 
+    /**
+     * Dummy constructor for the class {@link LiteralValue } which initializes a new
+     * instance of it with <code>null</code> value and default class <code>java.lang.String</code>,
+     * or in terms of xsd datatypes, {@link XSDDatatype#XSDstring }.
+     */
     public LiteralValue() {
     }
 
     /**
-     * Create a new typed value
+     * Create a new typed value with given value and XSD datatype.
      * @param value
      *      The value
      * @param type
@@ -150,22 +156,55 @@ public class LiteralValue<T> implements Serializable {
         return isEq;
     }
 
+    /**
+     * Delegates the method {@link #getHash() } herein. It is advisable that you use
+     * the method {@link #getHash() } instead where needed.
+     * @return
+     *      The hashCode value returned by {@link #getHash() } cast as integer. In case
+     *      the result returned by {@link #getHash() } is too big to be cast as an integer
+     *      , then it is adapted within the limits or minimum and maximum integers.
+     */
     @Override
     public int hashCode() {
-        return (int) getHash();
+        if (getHash() <= Integer.MAX_VALUE && getHash() >= Integer.MIN_VALUE) {
+            return (int) hashCode();
+        } else if (getHash() > Integer.MAX_VALUE) {
+            return (int) (Integer.MAX_VALUE - 2 * getHash());
+        } else {
+            return (int) (Integer.MIN_VALUE + 2 * getHash());
+        }
     }
 
+    /**
+     * Creates a typed literal in an ontological data model.
+     * @param model
+     *      Ontological model to be used for the construction of the typed literal.
+     *      This parameter must be <code>not null</code>.
+     * @return
+     *      Returns the typed literal as a Jena object.
+     */
     public Literal inModel(OntModel model) {
         return model.createTypedLiteral(getValue(), getType());
     }
 
-
+    /**
+     * Getter fot the hash code of the current LiteralValue object. Notice that a
+     * difference from the ordinary method {@link #hashCode() } is that the latter
+     * returns the result as an integer while this custom method returns a long hash.
+     * @return
+     *      Long hash code.
+     */
     public long getHash() {
-        long hash =  (value != null ? value.toString().trim().hashCode() : 0)
+        long hash = (value != null ? value.toString().trim().hashCode() : 0)
                 + 7 * (type != null ? type.toString().trim().hashCode() : 0);
         return hash;
     }
 
+    /**
+     * Required so that the class can be persistent using Hibernate. In fact this
+     * method has empty body and does nothing whatsoever.
+     * @param hashCode
+     *      hash code which will not be used anywhere.
+     */
     public void setHash(long hashCode) {/* Do nothing! */ }
-    
 }
