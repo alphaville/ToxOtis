@@ -36,6 +36,7 @@ import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
+import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.opentox.toxotis.util.spiders.BibTeXSprider;
@@ -706,6 +707,9 @@ public class BibTeX extends OTPublishable<BibTeX>
         if (m_url != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasURL().asDatatypeProperty(model),
                     model.createTypedLiteral(m_url, XSDDatatype.XSDanyURI));
+        }
+        if (getRestOperation()!=null){
+            indiv.addProperty(OTRestObjectProperties.hasRESTOperation().asObjectProperty(model), getRestOperation().asIndividual(model));
         }
         return indiv;
     }

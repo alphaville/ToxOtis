@@ -266,8 +266,10 @@ public class Policy {
         try {
             int httpStatus = spc.getResponseCode();
             if (httpStatus != 200) {
-                logger.debug("Policy server at " + policyServer
-                        + " responded with a status code " + httpStatus + " with message \n" + spc.getResponseText());
+                String policyErrorMsg = "Policy server at " + policyServer
+                        + " responded with a status code " + httpStatus + " with message \n" + spc.getResponseText();
+                logger.debug(policyErrorMsg);
+                throw new ToxOtisException(ErrorCause.PolicyCreationError, policyErrorMsg);
             }
             return spc.getResponseCode();
         } catch (IOException ex) {

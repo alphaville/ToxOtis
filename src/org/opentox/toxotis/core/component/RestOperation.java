@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.core.IRestOperation;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -17,17 +18,12 @@ import org.opentox.toxotis.ontology.collection.OTRestClasses;
 import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 
 /**
- * Interface documentation for a web service. OpenTox web services define the supported
- * operations that are available and at the same time provide machine-readable directives
- * for their consumption which can be used to generate human-readable documentation too.
- * Corresponding HTTP method, allowed (mandatory and optional) input parameters for the
- * service and information about them as well as possible status codes that might be thrown
- * by the service are included in the definition of the web service.
+ * An implementation of {@link IRestOperation }
  * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class RestOperation extends OTComponent<RestOperation> {
+public class RestOperation extends OTComponent<RestOperation> implements IRestOperation {
 
     /**
      * Dummy constructor for the class {@link RestOperation } that creates an empty
@@ -82,7 +78,6 @@ public class RestOperation extends OTComponent<RestOperation> {
         return this;
     }
 
-
     /**
      * Set of input parameters which are expected by the client on POST. These are
      * either posted as a {@link Media#APPLICATION_FORM_URL_ENCODED form} or included
@@ -99,11 +94,11 @@ public class RestOperation extends OTComponent<RestOperation> {
         return this;
     }
 
-    public RestOperation addHttpParameters(HttpParameter... httpParameters){
-        if (getHttpParameters() == null){
+    public RestOperation addHttpParameters(HttpParameter... httpParameters) {
+        if (getHttpParameters() == null) {
             setHttpParameters(new HashSet<HttpParameter>());
         }
-        for (HttpParameter prm : httpParameters){
+        for (HttpParameter prm : httpParameters) {
             getHttpParameters().add(prm);
         }
         return this;
@@ -142,8 +137,8 @@ public class RestOperation extends OTComponent<RestOperation> {
         /* Initialization of an otrs:RESTOperation individual */
         Individual indiv = model.createIndividual(restOperationUri, OTRestClasses.RESTOperation().inModel(model));
         /* Ontological Classes that define the type of the REST operation */
-        if (getRestClasses()!=null){
-            for (OntologicalClass oc : getRestClasses()){
+        if (getRestClasses() != null) {
+            for (OntologicalClass oc : getRestClasses()) {
                 indiv.addProperty(RDF.type, oc.inModel(model));
             }
         }
@@ -155,14 +150,14 @@ public class RestOperation extends OTComponent<RestOperation> {
             }
         }
         /* Corresponding HTTP Method */
-        if (getMethod()!=null){
+        if (getMethod() != null) {
             Resource methodResource = getMethod().getResourceValue().inModel(model);
             indiv.addProperty(OTRestObjectProperties.hasHTTPMethod().asObjectProperty(model), methodResource);
         }
         /* Status Codes */
-        if (getHttpStatusCodes()!=null){
+        if (getHttpStatusCodes() != null) {
             Property hasHttpStatusProperty = OTRestObjectProperties.hasHTTPStatus().asObjectProperty(model);
-            for (HttpStatus status : getHttpStatusCodes()){
+            for (HttpStatus status : getHttpStatusCodes()) {
                 System.out.println(status.getHttpStatusClass().getUri());
                 indiv.addProperty(hasHttpStatusProperty, status.asIndividual(model));
             }

@@ -26,6 +26,7 @@ import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.InactiveTokenException;
@@ -156,6 +157,9 @@ public class Algorithm extends OTOnlineResource<Algorithm>
             for (MultiParameter mp : multiParameters) {
                 indiv.addProperty(OTObjectProperties.multiParameter().asObjectProperty(model), mp.asIndividual(model));
             }
+        }
+        if (getRestOperation()!=null){
+            indiv.addProperty(OTRestObjectProperties.hasRESTOperation().asObjectProperty(model), getRestOperation().asIndividual(model));
         }
         return indiv;
     }

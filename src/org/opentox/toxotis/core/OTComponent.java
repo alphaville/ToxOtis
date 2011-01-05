@@ -31,8 +31,8 @@ public abstract class OTComponent<T extends OTComponent> implements IOTComponent
     protected VRI uri;
     /** Meta information (including DC and OT meta) about the component */
     protected MetaInfo meta = new MetaInfoImpl();
+    protected IRestOperation restOperation;
     protected static final String tokenid = "tokenid";
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
 
     /**
@@ -44,6 +44,15 @@ public abstract class OTComponent<T extends OTComponent> implements IOTComponent
     protected OTComponent(VRI uri) {
         this();
         this.uri = uri;
+    }
+
+    public IRestOperation getRestOperation() {
+        return restOperation;
+    }
+
+    public T setRestOperation(IRestOperation restOperation) {
+        this.restOperation = restOperation;
+        return (T) this;
     }
 
     /**
