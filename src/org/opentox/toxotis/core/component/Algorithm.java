@@ -129,7 +129,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
 
     public void setMultiParameters(Set<MultiParameter> multiParameters) {
         this.multiParameters = multiParameters;
-    }
+    }    
 
     @Override
     public Individual asIndividual(OntModel model) {
@@ -157,10 +157,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
             for (MultiParameter mp : multiParameters) {
                 indiv.addProperty(OTObjectProperties.multiParameter().asObjectProperty(model), mp.asIndividual(model));
             }
-        }
-        if (getRestOperation()!=null){
-            indiv.addProperty(OTRestObjectProperties.hasRESTOperation().asObjectProperty(model), getRestOperation().asIndividual(model));
-        }
+        }        
         return indiv;
     }
 

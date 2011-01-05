@@ -2,6 +2,7 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import org.opentox.toxotis.client.VRI;
 
 /**
  * Generic interface for all OpenTox components in ToxOtis that can be represented
@@ -22,5 +23,24 @@ public interface IOTComponent {
      *      The OpenTox component as an individual of a data model.
      */
     public abstract Individual asIndividual(OntModel model);
+
+    /**
+     * Creates a new Ontological Model (uses an instance of {@link SimpleOntModelImpl })
+     * and assigns to it the Individual from the method
+     * {@link OTComponent#asIndividual(com.hp.hpl.jena.ontology.OntModel) asIndividual(OntModel)}.
+     * The ontological model will contain no other information apart from the representation
+     * of the inderlying OpenTox component.
+     * @return
+     *      An ontological model for the current OpenTox component.
+     */
+    public OntModel asOntModel() ;
+
+    /**
+     * Get the URI of the resource (as an instance of {@link VRI }. Anonymous
+     * resources, return <code>null</code>
+     * @return
+     *      URI of the component or <code>null</code> if not any.
+     */
+    public VRI getUri();
 
 }
