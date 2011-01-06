@@ -1,6 +1,8 @@
 package org.opentox.toxotis.core;
 
 import java.util.Set;
+import org.opentox.toxotis.core.component.HttpMediatype;
+import org.opentox.toxotis.core.component.HttpMethod;
 import org.opentox.toxotis.core.component.HttpParameter;
 import org.opentox.toxotis.core.component.HttpStatus;
 import org.opentox.toxotis.core.component.RestOperation;
@@ -51,7 +53,7 @@ public interface IRestOperation extends IOTComponent {
      * @return
      * Http Method as element of the enumeration {@link MethodsEnum }.
      */
-    MethodsEnum getMethod();
+    HttpMethod getMethod();
 
     /**
      * Return the set of ontological classes that describe the underlying resource and
@@ -67,7 +69,16 @@ public interface IRestOperation extends IOTComponent {
 
     RestOperation setHttpStatusCodes(Set<HttpStatus> httpStatusCodes);
 
+    RestOperation setMethod(HttpMethod httpMethod);
+
     RestOperation setMethod(MethodsEnum httpMethod);
 
     RestOperation setRestClasses(Set<OntologicalClass> restClasses);
+
+    Set<HttpMediatype> getMediaTypes();
+
+    IRestOperation setMediaTypes(Set<HttpMediatype> mediaTypes);
+
+    IRestOperation addMediaTypes(HttpMediatype... mediaTypes);
+    
 }

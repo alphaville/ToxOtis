@@ -3,6 +3,7 @@ package org.opentox.toxotis.core.component;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
@@ -111,8 +112,12 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
         }
         if (getRestOperations() != null && !getRestOperations().isEmpty()) {
             ObjectProperty hasRESTOperationProperty = OTRestObjectProperties.hasRESTOperation().asObjectProperty(model);
+            ObjectProperty resourceProperty = OTRestObjectProperties.resource().asObjectProperty(model);
             for (IRestOperation ro : getRestOperations()) {
-                indiv.addProperty(hasRESTOperationProperty, ro.asIndividual(model));
+                Resource restOperationResource = ro.asIndividual(model);
+                indiv.addProperty(hasRESTOperationProperty, restOperationResource);
+                restOperationResource.addProperty(resourceProperty, indiv);
+
             }
         }
         return indiv;

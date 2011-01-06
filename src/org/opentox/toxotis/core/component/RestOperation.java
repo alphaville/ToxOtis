@@ -43,9 +43,11 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
 
 
     private Set<OntologicalClass> restClasses;
-    private MethodsEnum method;
+    private HttpMethod method;
     private Set<HttpParameter> httpParameters;
     private Set<HttpStatus> httpStatusCodes;
+    private Set<HttpMediatype> mediaTypes;
+    
 
     /**
      * Return the set of ontological classes that describe the underlying resource and
@@ -79,12 +81,17 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      * @return
      *      Http Method as element of the enumeration {@link MethodsEnum }.
      */
-    public MethodsEnum getMethod() {
+    public HttpMethod getMethod() {
         return method;
     }
 
-    public RestOperation setMethod(MethodsEnum httpMethod) {
+    public RestOperation setMethod(HttpMethod httpMethod) {
         this.method = httpMethod;
+        return this;
+    }
+
+    public RestOperation setMethod(MethodsEnum httpMethod) {
+        this.method = new HttpMethod(httpMethod);
         return this;
     }
 
@@ -113,6 +120,27 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         }
         return this;
     }
+
+    public Set<HttpMediatype> getMediaTypes() {
+        return mediaTypes;
+    }
+
+    public IRestOperation setMediaTypes(Set<HttpMediatype> mediaTypes) {
+        this.mediaTypes = mediaTypes;
+        return this;
+    }
+
+    public IRestOperation addMediaTypes(HttpMediatype... mediaTypes) {
+        if (getMediaTypes()==null){
+            setMediaTypes(new HashSet<HttpMediatype>(mediaTypes.length));
+        }
+        for (HttpMediatype media : mediaTypes){
+            getMediaTypes().add(media);
+        }
+        return this;
+    }
+
+
 
     /**
      * A set of the status codes that might occur when invoking the service, including
@@ -161,7 +189,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         }
         /* Corresponding HTTP Method */
         if (getMethod() != null) {
-            Resource methodResource = getMethod().getResourceValue().inModel(model);
+            Resource methodResource = getMethod().asIndividual(model);            
             indiv.addProperty(OTRestObjectProperties.hasHTTPMethod().asObjectProperty(model), methodResource);
         }
         /* Status Codes */
@@ -170,6 +198,13 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
             for (HttpStatus status : getHttpStatusCodes()) {
                 System.out.println(status.getHttpStatusClass().getUri());
                 indiv.addProperty(hasHttpStatusProperty, status.asIndividual(model));
+            }
+        }
+        /* Media Types Supported */
+        if (getMediaTypes()!=null){
+            Property hasMediaTypeProperty = OTRestObjectProperties.hasMedia().asObjectProperty(model);
+            for (HttpMediatype media : getMediaTypes()){
+                indiv.addProperty(hasMediaTypeProperty, media.asIndividual(model));
             }
         }
         /* Attach meta data */

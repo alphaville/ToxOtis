@@ -16,6 +16,7 @@ public class OTRestObjectProperties {
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
     private static OTObjectProperty ms_hasHTTPMethod;
     private static OTObjectProperty ms_hasHTTPStatus;
+    private static OTObjectProperty ms_hasMedia;
     private static OTObjectProperty ms_inputParam;
     private static OTObjectProperty ms_paramContent;
     private static OTObjectProperty ms_resource;
@@ -42,6 +43,16 @@ public class OTRestObjectProperties {
             ms_hasHTTPStatus = clazz;
         }
         return ms_hasHTTPStatus;
+    }
+
+    public static OTObjectProperty hasMedia() {
+        if (ms_hasMedia == null) {
+            OTObjectProperty clazz = new OTObjectPropertyImpl("hasMedia", NS);
+            clazz.getDomain().add(OTRestClasses.RESTOperation());
+            clazz.getRange().add(OTRestClasses.MediaType());
+            ms_hasMedia = clazz;
+        }
+        return ms_hasMedia;
     }
 
     public static OTObjectProperty inputParam() {
