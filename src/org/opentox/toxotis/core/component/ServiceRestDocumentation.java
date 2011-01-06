@@ -13,6 +13,7 @@ import org.opentox.toxotis.core.IRestOperation;
 import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.collection.OTRestClasses;
 import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 
 /**
@@ -87,13 +88,24 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
         return getComponent().getUri();
     }
 
+    @Override
+    public Set<OntologicalClass> getOntologicalClasses() {
+        Set<OntologicalClass> classes = component.getOntologicalClasses();
+        classes.add(OTRestClasses.RESTOperation());
+        return classes;
+    }
+
     public Individual asIndividual(OntModel model) {
-        Set<OntologicalClass> oc = component.getOntologicalClasses();
         OntologicalClass classForCoreComponent = null;
-        if (oc != null && !oc.isEmpty()) {
-            classForCoreComponent = oc.iterator().next();
+        if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
+            classForCoreComponent = getOntologicalClasses().iterator().next();
         }
         Individual indiv = model.createIndividual(getUri().toString(), classForCoreComponent.inModel(model));
+        if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
+            for (OntologicalClass oc : getOntologicalClasses()) {
+                indiv.addRDFType(oc.inModel(model));
+            }
+        }
         if (getMeta() != null) {
             getMeta().attachTo(indiv, model);
         }
