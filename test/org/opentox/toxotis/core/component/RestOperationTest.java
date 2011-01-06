@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.opentox.toxotis.core.component;
 
 import java.util.HashSet;
@@ -11,12 +6,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.core.IRestOperation;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.HttpMethods.MethodsEnum;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTRestClasses;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -45,24 +40,20 @@ public class RestOperationTest {
 
     @Test
     public void testCreateRDF() {
-        RestOperation ro = new RestOperation();
+        IRestOperation ro = new RestOperation();
         ro.setMethod(MethodsEnum.POST);
         ro.addRestClasses(OTRestClasses.POST_Operation(), OTRestClasses.OperationAlgorithm(), OTRestClasses.OperationResultTask());
 
         HttpParameter param = new HttpParameter();
         param.addParamContent(OTClasses.Algorithm()).addInputParamClass(OTRestClasses.InputParameterCompound(), OTRestClasses.InputParameterDataset());
         param.setParamName("myParam");
-        param.setParamOptional(true);        
-        ro.addHttpParameters(param);        
-
+        param.setParamOptional(true);
+        ro.addHttpParameters(param);
         ro.addHttpStatusCodes(new HttpStatus(OTRestClasses.STATUS_200().setMetaInfo(new MetaInfoImpl().addDescription("It's client's fault"))));
-        
 
-      
-        ro.asOntModel().write(System.out);       
+        ro.asOntModel().write(System.out);
 
 
 
     }
-
 }

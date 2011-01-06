@@ -73,4 +73,8 @@ public interface IOTComponent<T extends IOTComponent> {
     
     public T addOntologicalClasses(OntologicalClass... ontClasses);
 
+    boolean isEnabled();
+
+    T setEnabled(boolean enabled);
+
 }

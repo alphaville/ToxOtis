@@ -196,7 +196,6 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         if (getHttpStatusCodes() != null) {
             Property hasHttpStatusProperty = OTRestObjectProperties.hasHTTPStatus().asObjectProperty(model);
             for (HttpStatus status : getHttpStatusCodes()) {
-                System.out.println(status.getHttpStatusClass().getUri());
                 indiv.addProperty(hasHttpStatusProperty, status.asIndividual(model));
             }
         }

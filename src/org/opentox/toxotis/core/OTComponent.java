@@ -36,6 +36,8 @@ public abstract class OTComponent<T extends IOTComponent>
     protected MetaInfo meta = new MetaInfoImpl();
     private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
     protected static final String tokenid = "tokenid";
+    /* Every component is enabled by default */
+    private boolean enabled = true;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
 
     /**
@@ -47,6 +49,22 @@ public abstract class OTComponent<T extends IOTComponent>
     protected OTComponent(VRI uri) {
         this();
         this.uri = uri;
+    }
+
+
+    /**
+     * When a component is deleted, then it is disabled.
+     * @return
+     *      <code>true</code> if the component is enabled, or <code>false</code>
+     *      otherwise.
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public T setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        return (T) this;
     }
 
     /**
@@ -227,19 +245,17 @@ public abstract class OTComponent<T extends IOTComponent>
     public T setOntologicalClasses(Set ontClasses) {
         this.ontologies = ontClasses;
         return (T) this;
-    }    
+    }
 
     public T addOntologicalClasses(OntologicalClass... ontClasses) {
-        if (getOntologicalClasses() == null){
+        if (getOntologicalClasses() == null) {
             setOntologicalClasses(new HashSet<OntologicalClass>(ontClasses.length));
         }
-        for (OntologicalClass oc : ontClasses){
+        for (OntologicalClass oc : ontClasses) {
             getOntologicalClasses().add(oc);
         }
         return (T) this;
     }
-
-    
 
     @Override
     public boolean equals(Object obj) {
