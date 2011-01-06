@@ -711,9 +711,6 @@ public class BibTeX extends OTPublishable<BibTeX>
             indiv.addLiteral(KnoufDatatypeProperties.hasURL().asDatatypeProperty(model),
                     model.createTypedLiteral(m_url, XSDDatatype.XSDanyURI));
         }
-        if (getRestOperation()!=null){
-            indiv.addProperty(OTRestObjectProperties.hasRESTOperation().asObjectProperty(model), getRestOperation().asIndividual(model));
-        }
         return indiv;
     }
 

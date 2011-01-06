@@ -230,9 +230,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         if (algorithm != null) {
             indiv.addProperty(OTObjectProperties.algorithm().asObjectProperty(model), algorithm.asIndividual(model));
         }
-        if (getRestOperation()!=null){
-            indiv.addProperty(OTRestObjectProperties.hasRESTOperation().asObjectProperty(model), getRestOperation().asIndividual(model));
-        }
+
         return indiv;
     }
 

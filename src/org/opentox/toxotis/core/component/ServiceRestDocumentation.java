@@ -3,6 +3,7 @@ package org.opentox.toxotis.core.component;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -15,6 +16,10 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 
 /**
+ * Provides a machine-readable documentation for the consumption of all available
+ * services provided including information about diffferent HTTP methods, possible
+ * status codes, input parameters and more. This can be used to generate human-readable
+ * guidelines for the invokation of the web service.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -24,6 +29,12 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
     private final IOTComponent component;
     private Set<IRestOperation> restOperations;
 
+    /**
+     * A <code>ServiceRestDocumentation</code> object should be initialized with
+     * an OpenTox component.
+     * @param component
+     *      An opentox component or an instance of {@link DummyCompo
+     */
     public ServiceRestDocumentation(IOTComponent component) {
         super();
         if (component == null) {
@@ -47,13 +58,33 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
         return restOperations;
     }
 
-    public void setRestOperations(Set<IRestOperation> restOperations) {
+    public ServiceRestDocumentation setRestOperations(Set<IRestOperation> restOperations) {
         this.restOperations = restOperations;
+        return this;
+    }
+
+    public ServiceRestDocumentation addRestOperations(IRestOperation... restOperations) {
+        if (getRestOperations() == null) {
+            setRestOperations(new HashSet<IRestOperation>());
+        }
+        for (IRestOperation rest : restOperations) {
+            getRestOperations().add(rest);
+        }
+        return this;
+    }
+
+    public IOTComponent getComponent() {
+        return component;
     }
 
     @Override
     public MetaInfo getMeta() {
-        return component.getMeta();
+        return getComponent().getMeta();
+    }
+
+    @Override
+    public VRI getUri() {
+        return getComponent().getUri();
     }
 
     public Individual asIndividual(OntModel model) {

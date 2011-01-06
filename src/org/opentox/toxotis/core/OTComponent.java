@@ -34,7 +34,6 @@ public abstract class OTComponent<T extends IOTComponent>
     protected VRI uri;
     /** Meta information (including DC and OT meta) about the component */
     protected MetaInfo meta = new MetaInfoImpl();
-    protected IRestOperation restOperation;
     private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
     protected static final String tokenid = "tokenid";
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
@@ -48,15 +47,6 @@ public abstract class OTComponent<T extends IOTComponent>
     protected OTComponent(VRI uri) {
         this();
         this.uri = uri;
-    }
-
-    public IRestOperation getRestOperation() {
-        return restOperation;
-    }
-
-    public T setRestOperation(IRestOperation restOperation) {
-        this.restOperation = restOperation;
-        return (T) this;
     }
 
     /**
