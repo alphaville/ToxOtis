@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core;
 
+import java.util.Set;
 import org.opentox.toxotis.core.component.Dataset;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.DC;
@@ -7,6 +8,7 @@ import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.io.Serializable;
+import java.util.HashSet;
 import javax.xml.stream.XMLStreamException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
@@ -25,13 +27,15 @@ import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class OTComponent<T extends IOTComponent> implements IOTComponent, IStAXWritable, Serializable {
+public abstract class OTComponent<T extends IOTComponent>
+        implements IOTComponent, IStAXWritable, Serializable {
 
     /** URI of the component */
     protected VRI uri;
     /** Meta information (including DC and OT meta) about the component */
     protected MetaInfo meta = new MetaInfoImpl();
     protected IRestOperation restOperation;
+    private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
     protected static final String tokenid = "tokenid";
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
 
@@ -225,6 +229,27 @@ public abstract class OTComponent<T extends IOTComponent> implements IOTComponen
         writer.writeEmptyElement(OWL.NS, "AnnotationProperty");//1
         writer.writeAttribute("rdf:about", annotationPropertyUri);
     }
+
+    public Set<OntologicalClass> getOntologicalClasses() {
+        return ontologies;
+    }
+
+    public T setOntologicalClasses(Set ontClasses) {
+        this.ontologies = ontClasses;
+        return (T) this;
+    }    
+
+    public T addOntologicalClasses(OntologicalClass... ontClasses) {
+        if (getOntologicalClasses() == null){
+            setOntologicalClasses(new HashSet<OntologicalClass>(ontClasses.length));
+        }
+        for (OntologicalClass oc : ontClasses){
+            getOntologicalClasses().add(oc);
+        }
+        return (T) this;
+    }
+
+    
 
     @Override
     public boolean equals(Object obj) {

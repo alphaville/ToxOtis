@@ -29,6 +29,7 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
     private String hashedPass;
 
     public User() {
+        
     }
 
     public String getHashedPass() {

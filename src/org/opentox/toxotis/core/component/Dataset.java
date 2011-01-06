@@ -200,7 +200,7 @@ public class Dataset extends OTPublishable<Dataset> {
         for (Feature f : containedFeatures) {
             writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
             writer.writeAttribute("rdf:about", f.getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
-            featureOntologies = f.getOntologies();
+            featureOntologies = f.getOntologicalClasses();
             boolean explicitTypeDeclaration = false;
             if (featureOntologies != null && !featureOntologies.isEmpty()) {
                 if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
@@ -318,11 +318,11 @@ public class Dataset extends OTPublishable<Dataset> {
         general;
 
         static WekaDataTypes getFromFeature(Feature feature) {
-            if (feature.getOntologies().contains(OTClasses.NominalFeature())) {
+            if (feature.getOntologicalClasses().contains(OTClasses.NominalFeature())) {
                 return nominal;
-            } else if (feature.getOntologies().contains(OTClasses.StringFeature())) {
+            } else if (feature.getOntologicalClasses().contains(OTClasses.StringFeature())) {
                 return string;
-            } else if (feature.getOntologies().contains(OTClasses.NumericFeature())) {
+            } else if (feature.getOntologicalClasses().contains(OTClasses.NumericFeature())) {
                 return numeric;
             } else {
                 return string;

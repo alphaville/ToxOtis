@@ -2,8 +2,10 @@ package org.opentox.toxotis.core;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import java.util.Set;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.ontology.OntologicalClass;
 
 /**
  * Generic interface for all OpenTox components in ToxOtis that can be represented
@@ -64,5 +66,11 @@ public interface IOTComponent<T extends IOTComponent> {
      * @see MetaInfo Meta Information
      */
     public T setMeta(MetaInfo meta);
+
+    public Set<OntologicalClass> getOntologicalClasses();
+
+    public T setOntologicalClasses(Set<OntologicalClass> ontClasses);
+    
+    public T addOntologicalClasses(OntologicalClass... ontClasses);
 
 }

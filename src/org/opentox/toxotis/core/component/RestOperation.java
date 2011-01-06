@@ -33,10 +33,12 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      */
     public RestOperation() {
         super();
+        addOntologicalClasses(OTRestClasses.RESTOperation());
     }
 
     public RestOperation(VRI uri) {
         super(uri);
+        addOntologicalClasses(OTRestClasses.RESTOperation());
     }
 
 

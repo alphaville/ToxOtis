@@ -36,6 +36,7 @@ import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.InactiveTokenException;
@@ -346,10 +347,12 @@ public class BibTeX extends OTPublishable<BibTeX>
     //TODO: We could use this: http://www.bibtex.org/Convert/ to create HTML representations of BibTeXs!!! ;-)
     public BibTeX() {
         super();
+        addOntologicalClasses(KnoufBibTex.Entry());
     }
 
     public BibTeX(VRI uri) throws ToxOtisException {
         super(uri);
+        addOntologicalClasses(KnoufBibTex.Entry());
         if (uri != null) {
             if (!BibTeX.class.equals(uri.getOpenToxType())) {
                 throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()

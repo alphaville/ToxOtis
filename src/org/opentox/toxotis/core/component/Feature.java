@@ -16,6 +16,7 @@ import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.IOTComponent;
 import org.opentox.toxotis.core.OTPublishable;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -38,18 +39,18 @@ import org.opentox.toxotis.util.spiders.FeatureSpider;
  */
 public class Feature extends OTPublishable<Feature> {
 
-    private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
     private String units;
     private Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Feature.class);
 
     public Feature() {
         super();
+        addOntologicalClasses(OTClasses.Feature());
     }
 
     public Feature(VRI uri) {
         super(uri);
+        addOntologicalClasses(OTClasses.Feature());
     }
 
     public Set<LiteralValue> getAdmissibleValues() {
@@ -58,34 +59,26 @@ public class Feature extends OTPublishable<Feature> {
 
     public void setAdmissibleValues(Set<LiteralValue> admissibleValue) {
         this.admissibleValues = admissibleValue;
-    }
+    }    
 
-    public Set<OntologicalClass> getOntologies() {
-        return ontologies;
-    }
-
-    public void setOntologies(Set<OntologicalClass> ontologies) {
-        this.ontologies = ontologies;
-    }
-
-    public Set<OntologicalClass> getLowLevelOntologies(){
+    public Set<OntologicalClass> getLowLevelOntologies() {
         Set<OntologicalClass> lowLevel = new HashSet<OntologicalClass>();
-        for (OntologicalClass oc : ontologies){
-            if (oc.equals(OTClasses.NominalFeature()) || oc.equals(OTClasses.NumericFeature()) || oc.equals(OTClasses.StringFeature())){
+        for (OntologicalClass oc : getOntologicalClasses()) {
+            if (oc.equals(OTClasses.NominalFeature()) || oc.equals(OTClasses.NumericFeature()) || oc.equals(OTClasses.StringFeature())) {
                 lowLevel.add(oc);
             }
         }
-        if (lowLevel.isEmpty()){
+        if (lowLevel.isEmpty()) {
             lowLevel.add(OTClasses.StringFeature());
         }
         return lowLevel;
     }
 
-    public void setLowLevelOntologies(Set<OntologicalClass> ontologies){
-        if (this.ontologies==null){
-            this.ontologies = ontologies;
-        }else{
-            this.ontologies.addAll(ontologies);
+    public void setLowLevelOntologies(Set<OntologicalClass> ontologies) {
+        if (getOntologicalClasses() == null) {
+            setOntologicalClasses(ontologies);
+        } else {
+            getOntologicalClasses().addAll(ontologies);
         }
     }
 
@@ -102,23 +95,23 @@ public class Feature extends OTPublishable<Feature> {
         String featureUri = getUri() != null ? getUri().getStringNoQuery() : null;
         Resource mainType = null;
         /* Check if the feature is either Numeric or String */
-        if (ontologies != null && !ontologies.isEmpty()) {
-            if (ontologies.contains(OTClasses.StringFeature())) {
+        if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
+            if (getOntologicalClasses().contains(OTClasses.StringFeature())) {
                 mainType = (OTClasses.StringFeature().inModel(model));
-            } else if (ontologies.contains(OTClasses.NumericFeature())) {// << Assuming cannot be StringFeature and NumericFeature at the same time
+            } else if (getOntologicalClasses().contains(OTClasses.NumericFeature())) {// << Assuming cannot be StringFeature and NumericFeature at the same time
                 mainType = (OTClasses.NumericFeature().inModel(model));
             }
         }
         /* If the feature is not Numeric nor String, might be Nominal... */
-        if (mainType == null && (ontologies != null && !ontologies.isEmpty())) {
-            if (ontologies.contains(OTClasses.NominalFeature())) {
+        if (mainType == null && (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty())) {
+            if (getOntologicalClasses().contains(OTClasses.NominalFeature())) {
                 mainType = (OTClasses.NominalFeature().inModel(model));
             }
         }
         Individual indiv = model.createIndividual(featureUri, mainType != null ? mainType : OTClasses.Feature().inModel(model));
         /* Check again if the feature is additionaly nominal */
-        if (ontologies != null && !ontologies.isEmpty()) {
-            if (ontologies.contains(OTClasses.NominalFeature())) {
+        if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
+            if (getOntologicalClasses().contains(OTClasses.NominalFeature())) {
                 indiv.addRDFType(OTClasses.NominalFeature().inModel(model));
             }
         }
@@ -156,9 +149,9 @@ public class Feature extends OTPublishable<Feature> {
             builder.append(meta);
             builder.append("\n");
         }
-        if (!ontologies.isEmpty()) {
+        if (!getOntologicalClasses().isEmpty()) {
             builder.append("Ontological Classes....\n");
-            Iterator<OntologicalClass> i = getOntologies().iterator();
+            Iterator<OntologicalClass> i = getOntologicalClasses().iterator();
             while (i.hasNext()) {
                 builder.append(i.next().getUri());
                 builder.append("\n");
@@ -175,7 +168,7 @@ public class Feature extends OTPublishable<Feature> {
         FeatureSpider fSpider = new FeatureSpider(uri);
         Feature f = fSpider.parse();
         setMeta(f.getMeta());
-        setOntologies(f.getOntologies());
+        setOntologicalClasses(f.getOntologicalClasses());
         setUnits(f.getUnits());
         return this;
     }
@@ -262,7 +255,7 @@ public class Feature extends OTPublishable<Feature> {
         writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
         writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
         writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
-        featureOntologies = getOntologies();
+        featureOntologies = getOntologicalClasses();
         boolean explicitTypeDeclaration = false;
         if (featureOntologies != null && !featureOntologies.isEmpty()) {
             if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
@@ -341,7 +334,4 @@ public class Feature extends OTPublishable<Feature> {
         hash = 19 * hash + (this.getUri() != null ? this.getUri().toString().hashCode() : 0);
         return hash;
     }
-
-   
-
 }

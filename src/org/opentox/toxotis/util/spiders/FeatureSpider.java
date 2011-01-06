@@ -83,13 +83,13 @@ public class FeatureSpider extends Tarantula<Feature> {
         Feature feature = new Feature();
         feature.setMeta(new MetaInfoSpider(resource, model).parse()); // Parse meta-info
         feature.setUri(uri);
-        feature.setOntologies(getOntologicalTypes(resource));
+        feature.setOntologicalClasses(getOntologicalTypes(resource));
         Statement unitsStatement = resource.getProperty(OTDatatypeProperties.units().asDatatypeProperty(model));
         if (unitsStatement != null) {
             feature.setUnits(unitsStatement.getString());
         }
 
-        if (feature.getOntologies() != null && feature.getOntologies().contains(OTClasses.NominalFeature())) {
+        if (feature.getOntologicalClasses() != null && feature.getOntologicalClasses().contains(OTClasses.NominalFeature())) {
             // Gather 'accept' values from the RDF and add them to the feature
             Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
             StmtIterator acceptIt = resource.listProperties(OTDatatypeProperties.acceptValue().asDatatypeProperty(model));

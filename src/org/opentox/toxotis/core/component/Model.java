@@ -70,10 +70,12 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
     public Model(VRI uri) {
         super(uri);
+        addOntologicalClasses(OTClasses.Model());
     }
 
     public Model() {
         super();
+        addOntologicalClasses(OTClasses.Model());
     }
 
     /**

@@ -139,14 +139,14 @@ public class DatasetFactory {
                     LiteralValue value = null;
                     if (attribute.isNumeric()) {
                         value = new LiteralValue<Double>(instance.value(attribute), XSDDatatype.XSDdouble);
-                        feature.getOntologies().add(OTClasses.NumericFeature());
+                        feature.getOntologicalClasses().add(OTClasses.NumericFeature());
                     } else if (attribute.isString() || attribute.isDate()) {
                         value = new LiteralValue<String>(instance.stringValue(attribute), XSDDatatype.XSDstring);
-                        feature.getOntologies().add(OTClasses.StringFeature());
+                        feature.getOntologicalClasses().add(OTClasses.StringFeature());
                     } else if (attribute.isNominal()) {
                         value = new LiteralValue<String>(instance.stringValue(attribute), XSDDatatype.XSDstring);
                         Enumeration nominalValues = attribute.enumerateValues();
-                        feature.getOntologies().add(OTClasses.NominalFeature());
+                        feature.getOntologicalClasses().add(OTClasses.NominalFeature());
                         while (nominalValues.hasMoreElements()) {
                             String nomValue = (String) nominalValues.nextElement();
                             feature.getAdmissibleValues().add(new LiteralValue<String>(nomValue, XSDDatatype.XSDstring));

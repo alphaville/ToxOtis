@@ -172,10 +172,12 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
 
     public Task() {
         super();
+        addOntologicalClasses(OTClasses.Task());
     }
 
     public Task(VRI uri) {
         super(uri);
+        addOntologicalClasses(OTClasses.Task());
     }
 
     /**

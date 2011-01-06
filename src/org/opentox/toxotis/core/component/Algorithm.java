@@ -58,6 +58,8 @@ public class Algorithm extends OTOnlineResource<Algorithm>
      * URI and no other characteristics.
      */
     public Algorithm() {
+        super();
+        addOntologicalClasses(OTClasses.Algorithm());
     }
 
     /**
@@ -67,6 +69,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
      */
     public Algorithm(VRI uri) throws ToxOtisException {
         super(uri);
+        addOntologicalClasses(OTClasses.Algorithm());
         if (uri != null) {
             if (!Algorithm.class.equals(uri.getOpenToxType())) {
                 throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
@@ -129,7 +132,8 @@ public class Algorithm extends OTOnlineResource<Algorithm>
 
     public void setMultiParameters(Set<MultiParameter> multiParameters) {
         this.multiParameters = multiParameters;
-    }    
+    }
+
 
     @Override
     public Individual asIndividual(OntModel model) {
