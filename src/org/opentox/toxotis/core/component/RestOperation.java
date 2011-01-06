@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core.component;
 
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.IRestOperation;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -31,7 +32,14 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      * will return <code>null</code> if invoked right afterwards.
      */
     public RestOperation() {
+        super();
     }
+
+    public RestOperation(VRI uri) {
+        super(uri);
+    }
+
+
     private Set<OntologicalClass> restClasses;
     private MethodsEnum method;
     private Set<HttpParameter> httpParameters;

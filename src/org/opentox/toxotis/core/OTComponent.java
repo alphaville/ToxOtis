@@ -25,7 +25,7 @@ import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class OTComponent<T extends OTComponent> implements IOTComponent, IStAXWritable, Serializable {
+public abstract class OTComponent<T extends IOTComponent> implements IOTComponent, IStAXWritable, Serializable {
 
     /** URI of the component */
     protected VRI uri;

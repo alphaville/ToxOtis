@@ -3,6 +3,7 @@ package org.opentox.toxotis.core;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.MetaInfo;
 
 /**
  * Generic interface for all OpenTox components in ToxOtis that can be represented
@@ -13,7 +14,7 @@ import org.opentox.toxotis.client.VRI;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public interface IOTComponent {
+public interface IOTComponent<T extends IOTComponent> {
 
     /**
      * The OpenTox component as an individual.
@@ -42,5 +43,26 @@ public interface IOTComponent {
      *      URI of the component or <code>null</code> if not any.
      */
     public VRI getUri();
+
+    /**
+     * Obtain meta information about the underlying OpenTox resource/component.
+     * These meta information include various fields of the Dublin Core ontology
+     * (title, identifier), properties from the OpenTox ontology (see
+     * http://opentox.org/data/documents/development/RDF%20Files/OpenToxOntology)
+     * and some elements from other ontologies like rdfs:comment
+     * @return
+     *      Meta information about the resource
+     */
+    public MetaInfo getMeta();
+
+    /**
+     * Set the meta-information of the component
+     * @param meta
+     *      Meta information for the component
+     * @return
+     *      The component itself with the updated meta-information
+     * @see MetaInfo Meta Information
+     */
+    public T setMeta(MetaInfo meta);
 
 }
