@@ -44,13 +44,13 @@ public abstract class OTComponent<T extends IOTComponent>
      * Constructor for an empty OpenTox Component
      */
     protected OTComponent() {
+        setEnabled(true);
     }
 
     protected OTComponent(VRI uri) {
         this();
         this.uri = uri;
     }
-
 
     /**
      * When a component is deleted, then it is disabled.
@@ -78,7 +78,7 @@ public abstract class OTComponent<T extends IOTComponent>
      */
     public MetaInfo getMeta() {
         return meta;
-    }
+    }    
 
     /**
      * Set the meta-information of the component

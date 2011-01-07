@@ -428,6 +428,13 @@ public class Policy {
         }
     }
 
+    public static void deleteAllMyPolicies(VRI policyService, AuthenticationToken token) throws ToxOtisException {
+        ArrayList<String> policies = listPolicyUris(policyService, token);
+        for (String policyName : policies){
+            deleteRemotePolicy(policyService, policyName, token);
+        }
+    }
+
     public static Policy parsePolicy(String id, VRI policyService, AuthenticationToken token) throws ToxOtisException {
         if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
             throw new InactiveTokenException("This token is not active: " + token.getStatus());

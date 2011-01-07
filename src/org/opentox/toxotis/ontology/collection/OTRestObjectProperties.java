@@ -1,10 +1,13 @@
 package org.opentox.toxotis.ontology.collection;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.FunctionalProperty;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.vocabulary.XSD;
 import org.opentox.toxotis.ontology.OTObjectProperty;
 import org.opentox.toxotis.ontology.impl.OTObjectPropertyImpl;
+import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
  *
@@ -14,11 +17,14 @@ import org.opentox.toxotis.ontology.impl.OTObjectPropertyImpl;
 public class OTRestObjectProperties {
 
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
+    private static OTObjectProperty ms_aa;
     private static OTObjectProperty ms_hasHTTPMethod;
     private static OTObjectProperty ms_hasHTTPStatus;
     private static OTObjectProperty ms_hasMedia;
     private static OTObjectProperty ms_inputParam;
     private static OTObjectProperty ms_paramContent;
+    private static OTObjectProperty ms_paramContentOpenTox;
+    private static OTObjectProperty ms_paramContentSimple;
     private static OTObjectProperty ms_resource;
     private static OTObjectProperty ms_hasRESTOperation;
     private static OTObjectProperty ms_result;
@@ -55,6 +61,16 @@ public class OTRestObjectProperties {
         return ms_hasMedia;
     }
 
+    public static OTObjectProperty aa() {
+        if (ms_aa == null) {
+            OTObjectProperty clazz = new OTObjectPropertyImpl("aa", NS);
+            clazz.getDomain().add(OTRestClasses.RESTOperation());
+            clazz.getRange().add(OTRestClasses.AA());
+            ms_aa = clazz;
+        }
+        return ms_aa;
+    }
+
     public static OTObjectProperty inputParam() {
         if (ms_inputParam == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("inputParam", NS);
@@ -80,10 +96,38 @@ public class OTRestObjectProperties {
         if (ms_paramContent == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("paramContent", NS);
             clazz.getDomain().add(OTRestClasses.InputParameter());
-            clazz.getRange().add(OTClasses.OpenToxResource());
             ms_paramContent = clazz;
         }
         return ms_paramContent;
+    }
+
+    public static OTObjectProperty paramContentOpenTox() {
+        if (ms_paramContentOpenTox == null) {
+            OTObjectProperty clazz = new OTObjectPropertyImpl("paramContentOpenTox", NS);
+            clazz.getDomain().add(OTRestClasses.InputParameter());
+            clazz.getDomain().add(OTClasses.OpenToxResource());
+            ms_paramContentOpenTox = clazz;
+        }
+        return ms_paramContentOpenTox;
+    }
+
+    public static OTObjectProperty paramContentSimple() {
+        if (ms_paramContentSimple == null) {
+            OTObjectProperty clazz = new OTObjectPropertyImpl("paramContentSimple", NS);
+            clazz.getDomain().add(OTRestClasses.InputParameter());
+            clazz.getRange().add(new OntologicalClassImpl("string", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("boolean", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("int", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("integer", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("anyURI", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("double", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("float", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("long", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("byte", XSDDatatype.XSD));
+            clazz.getRange().add(new OntologicalClassImpl("date", XSDDatatype.XSD));
+            ms_paramContentSimple = clazz;
+        }
+        return ms_paramContentSimple;
     }
 
     public static OTObjectProperty resource() {

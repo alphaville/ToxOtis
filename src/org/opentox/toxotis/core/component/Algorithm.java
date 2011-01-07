@@ -60,6 +60,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
     public Algorithm() {
         super();
         addOntologicalClasses(OTClasses.Algorithm());
+        setEnabled(true);
     }
 
     /**

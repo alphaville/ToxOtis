@@ -1,5 +1,6 @@
 package org.opentox.toxotis.ontology.collection;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.HasValueRestriction;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -34,12 +35,16 @@ public class OTRestClasses {
     private static OntologicalClass ms_STATUS_502;
     private static OntologicalClass ms_STATUS_503;
     private static OntologicalClass ms_InputParameter;
+    private static OntologicalClass ms_InputParameterOpenTox;
+    private static OntologicalClass ms_InputParameterSimple;
     private static OntologicalClass ms_InputParameterCompound;
     private static OntologicalClass ms_InputParameterDataset;
     private static OntologicalClass ms_InputParameterDatasetService;
     private static OntologicalClass ms_InputParameterFeature;
     private static OntologicalClass ms_InputParameterResultDataset;
     private static OntologicalClass ms_InputParameterTarget;
+    private static OntologicalClass ms_Header;
+    private static OntologicalClass ms_AA;
     private static OntologicalClass ms_MediaType;
     private static OntologicalClass ms_mime_chemical_inchi;
     private static OntologicalClass ms_mime_chemical_mol;
@@ -56,6 +61,7 @@ public class OTRestClasses {
     private static OntologicalClass ms_mime_text_uri_list;
     private static OntologicalClass ms_mime_weka_arff;
     private static OntologicalClass ms_RESTOperation;
+    private static OntologicalClass ms_URLParameter;
     private static OntologicalClass ms_DELETE_Operation;
     private static OntologicalClass ms_DELETE_Feature;
     private static OntologicalClass ms_DELETE_Model;
@@ -239,10 +245,64 @@ public class OTRestClasses {
         return ms_InputParameter;
     }
 
+    public static OntologicalClass InputParameterOpenTox() {
+        if (ms_InputParameterOpenTox == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("InputParameterOpenTox", NS);
+            clazz.getSuperClasses().add(InputParameter());
+            ms_InputParameterOpenTox = clazz;
+        }
+        return ms_InputParameterOpenTox;
+    }
+
+    public static OntologicalClass InputParameterSimple() {
+        if (ms_InputParameterSimple == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("InputParameterSimple", NS);
+            clazz.getSuperClasses().add(InputParameter());
+            ms_InputParameterSimple = clazz;
+        }
+        return ms_InputParameterSimple;
+    }
+
+    public static OntologicalClass Header() {
+        if (ms_Header == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("Header", NS);
+            clazz.getSuperClasses().add(InputParameter());
+            ms_Header = clazz;
+        }
+        return ms_Header;
+    }
+
+    public static OntologicalClass URLParameter() {
+        if (ms_URLParameter == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("URLParameter", NS);
+            clazz.getSuperClasses().add(InputParameter());
+            ms_URLParameter = clazz;
+        }
+        return ms_URLParameter;
+    }
+
+    public static OntologicalClass AA() {
+        if (ms_AA == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("AA", NS){
+
+                @Override
+                public OntClass inModel(OntModel model) {
+                    OntClass c = super.inModel(model);
+                    HasValueRestriction hvr = model.createHasValueRestriction(null, OTRestObjectProperties.inputParam().asObjectProperty(model), c);
+                    hvr.setHasValue(OTRestClasses.Header().inModel(model));
+                    return c;
+                }
+            };
+            clazz.getSuperClasses().add(Thing());
+            ms_AA = clazz;
+        }
+        return ms_AA;
+    }
+
     public static OntologicalClass InputParameterCompound() {
         if (ms_InputParameterCompound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterCompound", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(InputParameterOpenTox());
             ms_InputParameterCompound = clazz;
         }
         return ms_InputParameterCompound;
@@ -251,7 +311,7 @@ public class OTRestClasses {
     public static OntologicalClass InputParameterDataset() {
         if (ms_InputParameterDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterDataset", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(InputParameterOpenTox());
             ms_InputParameterDataset = clazz;
         }
         return ms_InputParameterDataset;
@@ -260,7 +320,7 @@ public class OTRestClasses {
     public static OntologicalClass InputParameterDatasetService() {
         if (ms_InputParameterDatasetService == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterDatasetService", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(InputParameterOpenTox());
             ms_InputParameterDatasetService = clazz;
         }
         return ms_InputParameterDatasetService;
@@ -269,7 +329,7 @@ public class OTRestClasses {
     public static OntologicalClass InputParameterFeature() {
         if (ms_InputParameterFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterFeature", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(InputParameterOpenTox());
             ms_InputParameterFeature = clazz;
         }
         return ms_InputParameterFeature;
@@ -278,7 +338,7 @@ public class OTRestClasses {
     public static OntologicalClass InputParameterResultDataset() {
         if (ms_InputParameterResultDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterResultDataset", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(InputParameterOpenTox());
             ms_InputParameterResultDataset = clazz;
         }
         return ms_InputParameterResultDataset;
@@ -287,7 +347,7 @@ public class OTRestClasses {
     public static OntologicalClass InputParameterTarget() {
         if (ms_InputParameterTarget == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterTarget", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(InputParameterOpenTox());
             ms_InputParameterTarget = clazz;
         }
         return ms_InputParameterTarget;

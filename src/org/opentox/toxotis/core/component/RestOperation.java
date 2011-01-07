@@ -216,4 +216,44 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RestOperation other = (RestOperation) obj;
+        if (this.restClasses != other.restClasses && (this.restClasses == null || !this.restClasses.equals(other.restClasses))) {
+            return false;
+        }
+        if (this.method != other.method && (this.method == null || !this.method.equals(other.method))) {
+            return false;
+        }
+        if (this.httpParameters != other.httpParameters && (this.httpParameters == null || !this.httpParameters.equals(other.httpParameters))) {
+            return false;
+        }
+        if (this.httpStatusCodes != other.httpStatusCodes && (this.httpStatusCodes == null || !this.httpStatusCodes.equals(other.httpStatusCodes))) {
+            return false;
+        }
+        if (this.mediaTypes != other.mediaTypes && (this.mediaTypes == null || !this.mediaTypes.equals(other.mediaTypes))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.restClasses != null ? this.restClasses.hashCode() : 0);
+        hash = 59 * hash + (this.method != null ? this.method.hashCode() : 0);
+        hash = 59 * hash + (this.httpParameters != null ? this.httpParameters.hashCode() : 0);
+        hash = 59 * hash + (this.httpStatusCodes != null ? this.httpStatusCodes.hashCode() : 0);
+        hash = 59 * hash + (this.mediaTypes != null ? this.mediaTypes.hashCode() : 0);
+        return hash;
+    }
+
+    
 }
