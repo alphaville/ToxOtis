@@ -32,6 +32,7 @@ public class HttpParameter extends OTComponent<HttpParameter> {
     private Set<OntologicalClass> inputParamClass;
     private boolean paramOptional;
     private String paramName;
+    private boolean opentoxParameter;
 
     public HttpParameter() {
         super();
@@ -39,6 +40,14 @@ public class HttpParameter extends OTComponent<HttpParameter> {
 
     public HttpParameter(VRI uri) {
         super(uri);
+    }
+
+    public boolean isOpentoxParameter() {
+        return opentoxParameter;
+    }
+
+    public void setOpentoxParameter(boolean opentoxParameter) {
+        this.opentoxParameter = opentoxParameter;
     }
 
     public Set<OntologicalClass> getParamContent() {
@@ -72,7 +81,7 @@ public class HttpParameter extends OTComponent<HttpParameter> {
         if (getInputParamClass() == null) {
             setInputParamClass(new HashSet<OntologicalClass>());
         }
-        for (OntologicalClass oc : inputParamClass){
+        for (OntologicalClass oc : inputParamClass) {
             getInputParamClass().add(oc);
         }
         return this;
@@ -98,15 +107,27 @@ public class HttpParameter extends OTComponent<HttpParameter> {
         String httpParameterUri = getUri() != null ? getUri().toString() : null;
 
         Individual indiv = model.createIndividual(httpParameterUri, OTRestClasses.InputParameter().inModel(model));
-        /* Define Types */
+        /* Define Input Parameter Types */
         if (getInputParamClass() != null) {
             for (OntologicalClass oc : getInputParamClass()) {
                 indiv.addProperty(RDF.type, oc.inModel(model));
             }
         }
+        /* Ontological Classes for the Http Parameter */
+        if (getOntologicalClasses()!=null){
+            for (OntologicalClass oc : getOntologicalClasses()){
+                indiv.addRDFType(oc.inModel(model));
+            }
+        }
         /* Define the REST parameter content */
         if (getParamContent() != null) {
-            Property paramContentProperty = OTRestObjectProperties.paramContent().asObjectProperty(model);
+
+            Property paramContentProperty = null;
+            if (isOpentoxParameter()) {
+                paramContentProperty = OTRestObjectProperties.paramContentOpenTox().asObjectProperty(model);
+            } else {
+                paramContentProperty = OTRestObjectProperties.paramContentSimple().asObjectProperty(model);
+            }
             for (OntologicalClass oc : getParamContent()) {
                 indiv.addProperty(paramContentProperty, oc.inModel(model));
             }

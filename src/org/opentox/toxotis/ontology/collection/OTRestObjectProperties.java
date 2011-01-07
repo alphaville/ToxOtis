@@ -75,7 +75,7 @@ public class OTRestObjectProperties {
         if (ms_inputParam == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("inputParam", NS);
             clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getDomain().add(OTRestClasses.POST_AlgorithmCreateModel());
+            clazz.getDomain().add(OTRestClasses.AA());
             clazz.getRange().add(OTRestClasses.InputParameter());
             ms_inputParam = clazz;
         }

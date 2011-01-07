@@ -1,6 +1,7 @@
 package org.opentox.toxotis.core;
 
 import java.util.Set;
+import org.opentox.toxotis.core.component.AASpecifications;
 import org.opentox.toxotis.core.component.HttpMediatype;
 import org.opentox.toxotis.core.component.HttpMethod;
 import org.opentox.toxotis.core.component.HttpParameter;
@@ -80,5 +81,9 @@ public interface IRestOperation extends IOTComponent {
     IRestOperation setMediaTypes(Set<HttpMediatype> mediaTypes);
 
     IRestOperation addMediaTypes(HttpMediatype... mediaTypes);
+
+//    IRestOperation setAuthentication(AASpecifications authentication);
+//
+//    AASpecifications getAuthentication();
     
 }

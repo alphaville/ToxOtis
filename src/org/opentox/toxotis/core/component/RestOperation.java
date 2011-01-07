@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core.component;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.IRestOperation;
 import com.hp.hpl.jena.ontology.Individual;
@@ -40,14 +41,11 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         super(uri);
         addOntologicalClasses(OTRestClasses.RESTOperation());
     }
-
-
     private Set<OntologicalClass> restClasses;
     private HttpMethod method;
     private Set<HttpParameter> httpParameters;
     private Set<HttpStatus> httpStatusCodes;
     private Set<HttpMediatype> mediaTypes;
-    
 
     /**
      * Return the set of ontological classes that describe the underlying resource and
@@ -131,16 +129,14 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
     }
 
     public IRestOperation addMediaTypes(HttpMediatype... mediaTypes) {
-        if (getMediaTypes()==null){
+        if (getMediaTypes() == null) {
             setMediaTypes(new HashSet<HttpMediatype>(mediaTypes.length));
         }
-        for (HttpMediatype media : mediaTypes){
+        for (HttpMediatype media : mediaTypes) {
             getMediaTypes().add(media);
         }
         return this;
     }
-
-
 
     /**
      * A set of the status codes that might occur when invoking the service, including
@@ -189,7 +185,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         }
         /* Corresponding HTTP Method */
         if (getMethod() != null) {
-            Resource methodResource = getMethod().asIndividual(model);            
+            Resource methodResource = getMethod().asIndividual(model);
             indiv.addProperty(OTRestObjectProperties.hasHTTPMethod().asObjectProperty(model), methodResource);
         }
         /* Status Codes */
@@ -200,9 +196,9 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
             }
         }
         /* Media Types Supported */
-        if (getMediaTypes()!=null){
+        if (getMediaTypes() != null) {
             Property hasMediaTypeProperty = OTRestObjectProperties.hasMedia().asObjectProperty(model);
-            for (HttpMediatype media : getMediaTypes()){
+            for (HttpMediatype media : getMediaTypes()) {
                 indiv.addProperty(hasMediaTypeProperty, media.asIndividual(model));
             }
         }
@@ -215,6 +211,31 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
 
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType) {
+        if (getHttpParameters() == null) {
+            setHttpParameters(new HashSet<HttpParameter>());
+        }
+        HttpParameter httpParam = new HttpParameter().setOntologicalClasses(new HashSet<OntologicalClass>()).
+                addOntologicalClasses(OTRestClasses.InputParameterSimple(), OTRestClasses.Header());
+        httpParam.setParamName(headerName);
+        httpParam.setOpentoxParameter(false);
+        httpParam.setParamOptional(optional);
+        getHttpParameters().add(httpParam);
+        return this;
+    }
+
+    public IRestOperation setProtectedResource(boolean protectedResource) {
+        if (getOntologicalClasses() == null) {
+            setOntologicalClasses(new HashSet<OntologicalClass>());
+        }
+        if (protectedResource) {
+            getOntologicalClasses().add(OTRestClasses.AA());
+        } else {
+            getOntologicalClasses().remove(OTRestClasses.AA());
+        }
+        return this;
     }
 
     @Override
@@ -254,6 +275,4 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         hash = 59 * hash + (this.mediaTypes != null ? this.mediaTypes.hashCode() : 0);
         return hash;
     }
-
-    
 }
