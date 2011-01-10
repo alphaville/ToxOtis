@@ -14,10 +14,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.OTComponent;
+import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.HttpMethods.MethodsEnum;
 import org.opentox.toxotis.ontology.collection.OTRestClasses;
 import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
  * An implementation of {@link IRestOperation }
@@ -213,17 +215,12 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public IRestOperation addUrlParameter(String urlParameterName, boolean optional, XSDDatatype type) {
+        return addUrlParameter(urlParameterName, optional, type, new MetaInfoImpl());
+    }
+
     public IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType) {
-        if (getHttpParameters() == null) {
-            setHttpParameters(new HashSet<HttpParameter>());
-        }
-        HttpParameter httpParam = new HttpParameter().setOntologicalClasses(new HashSet<OntologicalClass>()).
-                addOntologicalClasses(OTRestClasses.InputParameterSimple(), OTRestClasses.Header());
-        httpParam.setParamName(headerName);
-        httpParam.setOpentoxParameter(false);
-        httpParam.setParamOptional(optional);
-        getHttpParameters().add(httpParam);
-        return this;
+        return addSimpleHeader(headerName, optional, xsdType, new MetaInfoImpl());
     }
 
     public IRestOperation setProtectedResource(boolean protectedResource) {
@@ -274,5 +271,33 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         hash = 59 * hash + (this.httpStatusCodes != null ? this.httpStatusCodes.hashCode() : 0);
         hash = 59 * hash + (this.mediaTypes != null ? this.mediaTypes.hashCode() : 0);
         return hash;
+    }
+
+    public IRestOperation addUrlParameter(String urlParameterName, boolean optional, XSDDatatype type, MetaInfo meta) {
+        if (getHttpParameters() == null) {
+            setHttpParameters(new HashSet<HttpParameter>());
+        }
+        HttpParameter httpParam = new HttpParameter().setOntologicalClasses(new HashSet<OntologicalClass>()).
+                addOntologicalClasses(OTRestClasses.InputParameterSimple(), OTRestClasses.URLParameter());
+        httpParam.setParamName(urlParameterName);
+        httpParam.setOpentoxParameter(false);
+        httpParam.setParamOptional(optional);
+        httpParam.setMeta(meta);
+        getHttpParameters().add(httpParam);
+        return this;
+    }
+
+    public IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType, MetaInfo meta) {
+        if (getHttpParameters() == null) {
+            setHttpParameters(new HashSet<HttpParameter>());
+        }
+        HttpParameter httpParam = new HttpParameter().setOntologicalClasses(new HashSet<OntologicalClass>()).
+                addOntologicalClasses(OTRestClasses.InputParameterSimple(), OTRestClasses.Header());
+        httpParam.setParamName(headerName);
+        httpParam.setOpentoxParameter(false);
+        httpParam.setParamOptional(optional);
+        httpParam.setMeta(meta);
+        getHttpParameters().add(httpParam);
+        return this;
     }
 }

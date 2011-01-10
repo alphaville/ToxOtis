@@ -64,7 +64,7 @@ public class Dataset extends OTPublishable<Dataset> {
         super(uri);
         if (uri != null) {
             if (!Dataset.class.equals(uri.getOpenToxType())) {
-                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
+                throw new ToxOtisException(ErrorCause.InvalidDatasetURI, "The provided URI : '" + uri.getStringNoQuery()
                         + "' is not a valid Dataset uri according to the OpenTox specifications.");
             }
         }

@@ -8,10 +8,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.PasswordFileManager;
-
 
 /**
  *
@@ -45,15 +45,14 @@ public class PolicyTest {
         AuthenticationToken at = PasswordFileManager.CRYPTO.authFromFile("/home/chung/toxotisKeys/my.key");
 
         try {
-            System.out.println(at);
-            System.out.println(at.getUser());
-
+//            System.out.println(at);
+//            System.out.println(at.getUser());
+//
             /* CREATE THE POLICY */
             Policy p = new Policy();
-
-            p.setPolicyName("bibtex_14e45f89-1223-43eb-82cc-5aaf674e5e72");
+            p.setPolicyName("22");
             PolicyRule rule = new PolicyRule("rule1");
-            rule.setTargetUri("http://opentox.ntua.gr:3000/bibtex/14e45f89-1223-43eb-82cc-5aaf674e5e72");
+            rule.setTargetUri("http://blabla.uni-plovdiv.bg:8080/ambit2");
             rule.setAllowGet(true);
             rule.setAllowPost(true);
             p.addRule(rule);
@@ -63,29 +62,33 @@ public class PolicyTest {
             p.addSubject(GroupSubject.DEVELOPMENT);
             p.addSubject(GroupSubject.PARTNER);
 
-//        System.out.println( p.getText() );
-            System.out.println(p.publishPolicy(null, at));
+//            System.out.println(p.getText());
+            System.out.println(p.publish(null, at));
+//
+//            System.out.println(at.validate() ? "valid" : "oops: invalid");
+//
+//            ArrayList<String> strings = Policy.listPolicyUris(null, at);
+//            System.out.println(strings);
+//
+//            String usr = Policy.getPolicyOwner(new VRI("http://opentox.ntua.gr:3000/model"), null, at);
+//            System.out.println("The policy Owner is : " + usr);
 
-//        System.out.println(at.validate() ? "valid" : "invalid");
+//            Policy.deleteAllMyPolicies(null, at);
 
-            ArrayList<String> strings = Policy.listPolicyUris(null, at);
-            System.out.println(strings);
+//            final ArrayList<String> list = Policy.listPolicyUris(Services.SingleSignOn.ssoPolicyOld(), at);
+//            for (String pol : list) {
+//                System.out.println(pol);
+//            }
 
-//        String usr = p.getPolicyOwner(new VRI("http://opentox.ntua.gr:3000/model"), null, at);
-//        System.out.println("Policy Owner is : " + usr);       
-
-
-            final ArrayList<String> list = Policy.listPolicyUris(Services.SingleSignOn.ssoPolicyOld(), at);
-            for (String pol : list) {
-                System.out.println(pol);
-            }
+            PolicyManager.parsePolicy("model_94ba7f7e-b7d9-41e3-b32f-5f54c97df92f", null, at);
+//            Policy.deleteRemotePolicy(null, "invalid", at);
 
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             // FINALLY....
             at.invalidate();
-            System.out.println(at.validate() ? "valid" : "invalid");
+            System.out.println(at.validate() ? "token still valid on exit" : "token invalidated");
         }
     }
 }

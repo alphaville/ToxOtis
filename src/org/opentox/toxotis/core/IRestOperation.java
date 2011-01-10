@@ -1,5 +1,6 @@
 package org.opentox.toxotis.core;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import java.util.Set;
 import org.opentox.toxotis.core.component.AASpecifications;
 import org.opentox.toxotis.core.component.HttpMediatype;
@@ -7,6 +8,7 @@ import org.opentox.toxotis.core.component.HttpMethod;
 import org.opentox.toxotis.core.component.HttpParameter;
 import org.opentox.toxotis.core.component.HttpStatus;
 import org.opentox.toxotis.core.component.RestOperation;
+import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.HttpMethods.MethodsEnum;
 
@@ -82,8 +84,13 @@ public interface IRestOperation extends IOTComponent {
 
     IRestOperation addMediaTypes(HttpMediatype... mediaTypes);
 
-//    IRestOperation setAuthentication(AASpecifications authentication);
-//
-//    AASpecifications getAuthentication();
-    
+    IRestOperation addUrlParameter(String urlParameterName, boolean optional, XSDDatatype type);
+
+    IRestOperation addUrlParameter(String urlParameterName, boolean optional, XSDDatatype type, MetaInfo meta);
+
+    IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType);
+
+    IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType, MetaInfo meta);
+
+    IRestOperation setProtectedResource(boolean protectedResource);
 }

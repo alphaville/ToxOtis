@@ -16,7 +16,7 @@ public class SingleSubject extends PolicySubject {
         LDAP_Type = "LDAPUsers";
     }
 
-    private SingleSubject(String subjectName) {
+    public SingleSubject(String subjectName) {
         this();
         setSubjectName(subjectName);
     }

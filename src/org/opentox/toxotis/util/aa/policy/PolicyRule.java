@@ -7,7 +7,7 @@ package org.opentox.toxotis.util.aa.policy;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class PolicyRule {
+public class PolicyRule implements IPolicyRule {
 
     private String name;
     private String serviceName = "iPlanetAMWebAgentService";
@@ -18,64 +18,74 @@ public class PolicyRule {
         this.name = name;
     }
 
+    public IPolicyRule setAllowances(boolean get, boolean post, boolean put, boolean delete) {
+        setAllowGet(get);
+        setAllowPost(post);
+        setAllowPut(put);
+        setAllowDelete(delete);
+        return this;
+    }
 
     public boolean isAllowDelete() {
         return allowDelete;
     }
 
-    public void setAllowDelete(boolean allowDelete) {
+    public IPolicyRule setAllowDelete(boolean allowDelete) {
         this.allowDelete = allowDelete;
+        return this;
     }
 
     public boolean isAllowGet() {
         return allowGet;
     }
 
-    public void setAllowGet(boolean allowGet) {
+    public IPolicyRule setAllowGet(boolean allowGet) {
         this.allowGet = allowGet;
+        return this;
     }
 
     public boolean isAllowPost() {
         return allowPost;
     }
 
-    public void setAllowPost(boolean allowPost) {
+    public IPolicyRule setAllowPost(boolean allowPost) {
         this.allowPost = allowPost;
+        return this;
     }
 
     public boolean isAllowPut() {
         return allowPut;
     }
 
-    public void setAllowPut(boolean allowPut) {
+    public IPolicyRule setAllowPut(boolean allowPut) {
         this.allowPut = allowPut;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public IPolicyRule setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getServiceName() {
         return serviceName;
     }
 
-    public void setServiceName(String serviceName) {
+    public IPolicyRule setServiceName(String serviceName) {
         this.serviceName = serviceName;
+        return this;
     }
 
     public String getTargetUri() {
         return targetUri;
     }
 
-    public void setTargetUri(String targetUri) {
+    public IPolicyRule setTargetUri(String targetUri) {
         this.targetUri = targetUri;
+        return this;
     }
-
-
-
-
 }
