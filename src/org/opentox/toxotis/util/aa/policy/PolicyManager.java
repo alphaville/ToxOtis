@@ -48,7 +48,7 @@ public class PolicyManager {
             sdc = new DeleteHttpsClient(policyServiceUri);
             sdc.addHeaderParameter("id", policyName);
             sdc.addHeaderParameter(SUBJECT_ID, token.stringValue());
-            sdc.authorize(token);
+            sdc.authorize(token);// Redundant (For potent future use)
             sdc.doDelete();
         } finally {
             if (sdc != null) {
@@ -271,19 +271,24 @@ public class PolicyManager {
         return null;
     }
 
-    public static IPolicyWrapper defaultSignleUserPolicy(String policyName, VRI componentUri, AuthenticationToken token) throws ToxOtisException {
-
+    public static IPolicyWrapper defaultSignleUserPolicy(String policyName, VRI componentUri, String userName) {
         Policy pol = new Policy();
         pol.setPolicyName(policyName);
-        pol.addSubject(new SingleSubject(token.getUser().getName()));
+        pol.addSubject(new SingleSubject(userName));
         PolicyRule pr = new PolicyRule("rule_allow_only_creator");
         pr.setTargetUri(componentUri.toString());
         pr.setAllowGet(true);
         pr.setAllowPost(true);
         pr.setAllowPut(true);
         pr.setAllowDelete(true);
+        pol.addRule(pr);
 
         return new PolicyWrapper(pol);
+    }
+
+    public static IPolicyWrapper defaultSignleUserPolicy(String policyName, VRI componentUri, AuthenticationToken token) throws ToxOtisException {
+        return defaultSignleUserPolicy(policyName, componentUri, token.getUser().getUid().split("@")[0]);
+
 
     }
 }

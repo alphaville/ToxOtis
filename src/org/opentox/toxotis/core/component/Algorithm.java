@@ -135,7 +135,6 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         this.multiParameters = multiParameters;
     }
 
-
     @Override
     public Individual asIndividual(OntModel model) {
         Individual indiv = model.createIndividual(getUri().getStringNoQuery(), OTClasses.Algorithm().inModel(model));
@@ -150,7 +149,10 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         if (ontologies != null && !ontologies.isEmpty()) {
             final Iterator<OntologicalClass> ontClassIter = ontologies.iterator();
             while (ontClassIter.hasNext()) {
-                indiv.addRDFType(ontClassIter.next().inModel(model));
+                OntologicalClass oc = ontClassIter.next();
+                if (oc.getName() != null) {
+                    indiv.addRDFType(oc.inModel(model));
+                }
             }
         }
         if (parameters != null) {
@@ -162,7 +164,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
             for (MultiParameter mp : multiParameters) {
                 indiv.addProperty(OTObjectProperties.multiParameter().asObjectProperty(model), mp.asIndividual(model));
             }
-        }        
+        }
         return indiv;
     }
 
@@ -260,7 +262,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         }
         builder.getDiv().breakLine();
 
-        
+
         if (getMeta() != null) {
             builder.addSubSubSubHeading("Meta Information");
             builder.addComponent(getMeta().inHtml());

@@ -46,16 +46,18 @@ public class HttpParameter extends OTComponent<HttpParameter> {
         return opentoxParameter;
     }
 
-    public void setOpentoxParameter(boolean opentoxParameter) {
+    public HttpParameter setOpentoxParameter(boolean opentoxParameter) {
         this.opentoxParameter = opentoxParameter;
+        return this;
     }
 
     public Set<OntologicalClass> getParamContent() {
         return paramContent;
     }
 
-    public void setParamContent(Set<OntologicalClass> paramContent) {
+    public HttpParameter setParamContent(Set<OntologicalClass> paramContent) {
         this.paramContent = paramContent;
+        return this;
     }
 
     public HttpParameter addParamContent(OntologicalClass... paramContents) {
@@ -91,16 +93,18 @@ public class HttpParameter extends OTComponent<HttpParameter> {
         return paramOptional;
     }
 
-    public void setParamOptional(boolean paramOptional) {
+    public HttpParameter setParamOptional(boolean paramOptional) {
         this.paramOptional = paramOptional;
+        return this;
     }
 
     public String getParamName() {
         return paramName;
     }
 
-    public void setParamName(String paramName) {
+    public HttpParameter setParamName(String paramName) {
         this.paramName = paramName;
+        return this;
     }
 
     public Individual asIndividual(OntModel model) {

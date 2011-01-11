@@ -216,6 +216,9 @@ public class HTMLUtils {
         return sb.toString();
     }
 
+    public static String normalizeTextForHtml(String plainText){
+        return plainText.replaceAll("\n", "<br/>").replaceAll("&", "&amp;");
+    }
 
 
 

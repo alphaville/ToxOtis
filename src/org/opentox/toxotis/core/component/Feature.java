@@ -115,6 +115,9 @@ public class Feature extends OTPublishable<Feature> {
                 indiv.addRDFType(OTClasses.NominalFeature().inModel(model));
             }
         }
+        System.out.println("MAIN TYPE IS : "+mainType);
+        System.out.println("ONT CLASS IS: "+indiv.getOntClass());
+
         /* Add admissible values in the RDF graph */
         if (admissibleValues != null && !admissibleValues.isEmpty()) {
             DatatypeProperty accepts = OTDatatypeProperties.acceptValue().asDatatypeProperty(model);
@@ -132,7 +135,7 @@ public class Feature extends OTPublishable<Feature> {
         /* Add meta data */
         if (meta != null) {
             meta.attachTo(indiv, model);
-        }
+        }        
         return indiv;
     }
 

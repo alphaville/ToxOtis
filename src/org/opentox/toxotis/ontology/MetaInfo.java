@@ -66,6 +66,14 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
 
     MetaInfo addComment(String... comment);
 
+    Set<LiteralValue> getRights();
+
+    MetaInfo setRights(Set<LiteralValue> rights);
+
+    MetaInfo addRights(LiteralValue... rights);
+
+    MetaInfo addRights(String... rights);
+
     //// 2. descriptions
     ////
     /**

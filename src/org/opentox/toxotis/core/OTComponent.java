@@ -103,7 +103,7 @@ public abstract class OTComponent<T extends IOTComponent>
      *      An ontological model for the current OpenTox component.
      */
     public OntModel asOntModel() {
-        com.hp.hpl.jena.rdf.model.Model m;
+//        com.hp.hpl.jena.rdf.model.Model m;
         OntModel om = new SimpleOntModelImpl();
         asIndividual(om).inModel(om);
         return om;

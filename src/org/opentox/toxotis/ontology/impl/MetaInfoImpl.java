@@ -37,6 +37,7 @@ public class MetaInfoImpl implements MetaInfo {
     private Set<LiteralValue> creators;
     private Set<LiteralValue> contributors;
     private Set<LiteralValue> audiences;
+    private Set<LiteralValue> rights;
     private LiteralValue date;
     private Set<ResourceValue> sameAs;
     private Set<ResourceValue> seeAlso;
@@ -156,6 +157,13 @@ public class MetaInfoImpl implements MetaInfo {
             AnnotationProperty commentsProp = model.createAnnotationProperty(DC.contributor.getURI());
             for (LiteralValue contributor : contributors) {
                 resource.addLiteral(commentsProp, contributor.inModel(model));
+            }
+
+        }
+        if (rights != null && !rights.isEmpty()) {
+            AnnotationProperty commentsProp = model.createAnnotationProperty(DC.rights.getURI());
+            for (LiteralValue right : rights) {
+                resource.addLiteral(commentsProp, right.inModel(model));
             }
 
         }
@@ -764,6 +772,10 @@ public class MetaInfoImpl implements MetaInfo {
             table.setTextAtCursor("<a href=\"http://www.w3.org/TR/rdf-schema/#ch_comment\">Comment" + (comments.size() > 1 ? "s" : "") + "</a>").
                     setTextAtCursor(createHtmlList(comments));
         }
+        if (rights != null && !rights.isEmpty()) {
+            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "rights") + "\">Copyright Note" + (rights.size() > 1 ? "s" : "") + "</a>").
+                    setTextAtCursor(createHtmlList(rights));
+        }
         if (date != null) {
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "date") + "\">Date</a>").
                     setTextAtCursor(date.getValueAsString());
@@ -781,13 +793,13 @@ public class MetaInfoImpl implements MetaInfo {
         if (values.size() == 0) {
             return "";
         } else if (values.size() == 1) {
-            return HTMLUtils.linkUrlsInText(values.iterator().next().getValueAsString());
+            return HTMLUtils.linkUrlsInText(HTMLUtils.normalizeTextForHtml(values.iterator().next().getValueAsString()));
         } else {
             StringBuilder builder = new StringBuilder();
             builder.append("<ol>\n");
             for (LiteralValue lv : values) {
                 builder.append("<li>");
-                builder.append(HTMLUtils.linkUrlsInText(lv.getValueAsString()));
+                builder.append(HTMLUtils.linkUrlsInText(HTMLUtils.normalizeTextForHtml(lv.getValueAsString())));
                 builder.append("</li>");
             }
             builder.append("</ol>");
@@ -850,9 +862,41 @@ public class MetaInfoImpl implements MetaInfo {
         if (getTitles() != null && !getTitles().isEmpty()) {
             return false;
         }
+        if (getRights() != null && !getRights().isEmpty()) {
+            return false;
+        }
         if (getDate() != null) {
             return false;
         }
         return true;
+    }
+
+    public Set<LiteralValue> getRights() {
+        return this.rights;
+    }
+
+    public MetaInfo setRights(Set<LiteralValue> rights) {
+        this.rights = rights;
+        return this;
+    }
+
+    public MetaInfo addRights(LiteralValue... rights) {
+        if (this.rights == null) {
+            this.rights = new HashSet<LiteralValue>();
+        }
+        for (LiteralValue lv : rights) {
+            this.rights.add(lv);
+        }
+        return this;
+    }
+
+    public MetaInfo addRights(String... rights) {
+        if (this.rights == null) {
+            this.rights = new HashSet<LiteralValue>();
+        }
+        for (String s : rights) {
+            this.rights.add(new LiteralValue<String>(s));
+        }
+        return this;
     }
 }
