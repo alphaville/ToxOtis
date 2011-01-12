@@ -28,6 +28,13 @@
 
     </dependencies>
 
+    <scm>
+        <connection>scm:git:git@github.com:alphaville/ToxOtis.git</connection>
+        <developerConnection>scm:git:git@github.com:alphaville/ToxOtis.git</developerConnection>
+        <url>git@github.com:alphaville/ToxOtis.git</url>
+    </scm>
+
+
     <build>
         <resources>
             <resource>
@@ -49,5 +56,6 @@
             </plugins>
         </pluginManagement>
     </build>
+
 
 </project>

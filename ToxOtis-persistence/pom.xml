@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opentox.toxotis.persistence</groupId>
-    <artifactId>ToxOtis-presistence</artifactId>
+    <artifactId>ToxOtis-persistence</artifactId>
     <packaging>jar</packaging>
-    <version>0.4.12.3</version>
+    <version>0.3</version>
     <name>ToxOtis-persistence</name>
     <url>http://maven.apache.org</url>
 

@@ -83,6 +83,7 @@ public class BenchmarkTest {
 
         Runnable r = new Runnable() {
 
+            @Override
             public void run() {
                 frame2.addWindowListener(new java.awt.event.WindowAdapter() {
 
@@ -127,6 +128,7 @@ public class BenchmarkTest {
         System.out.println("Overall time : "+overallTimer.getMeasurement()+"ms");
         Runnable r = new Runnable() {
 
+            @Override
             public void run() {
                 frame2.addWindowListener(new java.awt.event.WindowAdapter() {
 

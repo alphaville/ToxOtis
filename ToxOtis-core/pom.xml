@@ -9,7 +9,7 @@
     <url>http://maven.apache.org</url>
 
     <parent>
-        <artifactId>ToxOtisProject</artifactId>
+        <artifactId>ToxOtis</artifactId>
         <groupId>org.opentox.toxotis</groupId>
         <version>0.4</version>
         <relativePath>../</relativePath>
