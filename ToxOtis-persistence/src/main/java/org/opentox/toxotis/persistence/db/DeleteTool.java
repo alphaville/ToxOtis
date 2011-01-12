@@ -15,7 +15,7 @@ public class DeleteTool {
 
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DeleteTool.class);
 
-    public static int cancelTask(Session session, VRI taskUri) {
+    public static int cancelTask(Session session, VRI  taskUri) {
         try {
             String sql = "UPDATE Task SET status = 'CANCELLED' WHERE uri = ?";
             Query q = session.createSQLQuery(sql).setString(0, taskUri.toString());

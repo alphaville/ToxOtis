@@ -4,7 +4,7 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.4.12.3</version>
+    <version>0.5-SNAPSHOT</version>
     <name>ToxOtis-core</name>
     <url>http://maven.apache.org</url>
 
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>weka</groupId>
             <artifactId>weka</artifactId>
-            <version>3.6.2</version>
+            <version>3.6.0</version>
         </dependency>
 
         <dependency>
@@ -34,10 +34,9 @@
     </dependencies>
 
     <repositories>
-        <!--AMBIT PLOVDIV REPO-->
         <repository>
-            <id>ambit-plovdiv</id>
-            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
+            <id>ir-dcs-gla</id>
+            <url>http://ir.dcs.gla.ac.uk/~bpiwowar/maven/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

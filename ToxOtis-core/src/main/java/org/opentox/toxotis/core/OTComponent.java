@@ -58,12 +58,10 @@ public abstract class OTComponent<T extends IOTComponent>
      *      <code>true</code> if the component is enabled, or <code>false</code>
      *      otherwise.
      */
-    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
-    @Override
     public T setEnabled(boolean enabled) {
         this.enabled = enabled;
         return (T) this;
@@ -78,7 +76,6 @@ public abstract class OTComponent<T extends IOTComponent>
      * @return
      *      Meta information about the resource
      */
-    @Override
     public MetaInfo getMeta() {
         return meta;
     }    
@@ -91,7 +88,6 @@ public abstract class OTComponent<T extends IOTComponent>
      *      The component itself with the updated meta-information
      * @see MetaInfo Meta Information
      */
-    @Override
     public T setMeta(MetaInfo meta) {
         this.meta = meta;
         return (T) this;
@@ -106,7 +102,6 @@ public abstract class OTComponent<T extends IOTComponent>
      * @return
      *      An ontological model for the current OpenTox component.
      */
-    @Override
     public OntModel asOntModel() {
 //        com.hp.hpl.jena.rdf.model.Model m;
         OntModel om = new SimpleOntModelImpl();
@@ -120,7 +115,6 @@ public abstract class OTComponent<T extends IOTComponent>
      * @return
      *      URI of the component or <code>null</code> if not any.
      */
-    @Override
     public VRI getUri() {
         return uri;
     }
@@ -137,7 +131,6 @@ public abstract class OTComponent<T extends IOTComponent>
         return (T) this;
     }
 
-    @Override
     public void writeRdf(java.io.Writer writer) {
         javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
         javax.xml.stream.XMLStreamWriter streamWriter = null;
@@ -157,7 +150,6 @@ public abstract class OTComponent<T extends IOTComponent>
         }
     }
 
-    @Override
     public void writeRdf(java.io.OutputStream output) {
         javax.xml.stream.XMLOutputFactory factory = org.codehaus.stax2.XMLOutputFactory2.newInstance();
         javax.xml.stream.XMLStreamWriter writer = null;
@@ -246,18 +238,15 @@ public abstract class OTComponent<T extends IOTComponent>
         writer.writeAttribute("rdf:about", annotationPropertyUri);
     }
 
-    @Override
     public Set<OntologicalClass> getOntologicalClasses() {
         return ontologies;
     }
 
-    @Override
     public T setOntologicalClasses(Set ontClasses) {
         this.ontologies = ontClasses;
         return (T) this;
     }
 
-    @Override
     public T addOntologicalClasses(OntologicalClass... ontClasses) {
         if (getOntologicalClasses() == null) {
             setOntologicalClasses(new HashSet<OntologicalClass>(ontClasses.length));

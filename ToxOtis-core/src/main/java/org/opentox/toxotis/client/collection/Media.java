@@ -7,7 +7,6 @@ package org.opentox.toxotis.client.collection;
  */
 public enum Media {
 
-
     /**
      * The default encoding for an HTML form <code>application/x-www-form-urlencoded</code>
      * @see <a href="http://www.w3.org/MarkUp/html-spec/html-spec_8.html#SEC8.2.1">W3C specification</a>

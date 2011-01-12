@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<!--
+WARNING: This is just an example file! You should modify the following properties according to your system,
+database or preferences and rename this file into "hibernate.cfg.xml". The file should be put in this directory
+(i.e. org/opentox/toxotis/persistence/config/hibernate.cfg.xml) to be identified by Hibernate.
+-->
+<hibernate-configuration>
+  <session-factory>
+    <!-- Database connection settings -->
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+    <!-- Using MySQL  -->
+    <property name="connection.url">jdbc:mysql://localhost/toxotis</property>
+    <!-- Database user  -->
+    <property name="connection.username">root</property>
+    <!-- Your password goes here... -->
+    <property name="connection.password">opensess@me</property>
+    <!-- JDBC connection pool (use the built-in) -->
+    <property name="connection.pool_size">5</property>
+    <!-- SQL dialect -->
+    <!--<property name="dialect">org.hibernate.dialect.MySQLDialect</property> -->
+    <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+    <!-- Enable Hibernate's automatic session context management -->
+    <property name="current_session_context_class">thread</property>
+    <!-- Disable the second-level cache  -->
+    <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+    <!-- Echo all executed SQL to stdout -->
+    <property name="show_sql">true</property>
+    <!-- Drop and re-create the database schema on startup -->
+    <property name="hbm2ddl.auto">update</property>
+    <mapping resource="config/LiteralValueMapping.hbm.xml"/>
+    <mapping resource="config/ResourceValue.hbm.xml"/>
+    <mapping resource="config/MetaInfoMapping.hbm.xml"/>
+    <mapping resource="config/OTComponentMapping.hbm.xml"/>
+    <mapping resource="config/OntologicalClassMapping.hbm.xml"/>
+    <mapping resource="config/UserMapping.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>
