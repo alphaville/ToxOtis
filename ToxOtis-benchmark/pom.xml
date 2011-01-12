@@ -9,7 +9,7 @@
     </parent>
     <groupId>org.opentox.toxotis.benchmark</groupId>
     <artifactId>ToxOtis-benchmark</artifactId>
-    <version>0.2.1.0</version>
+    <version>0.2.2-SNAPSHOT</version>
     <name>ToxOtis-benchmark</name>
     <url>http://maven.apache.org</url>
 
@@ -17,7 +17,7 @@
         <dependency>
             <artifactId>ToxOtis-core</artifactId>
             <groupId>org.opentox.toxotis</groupId>
-            <version>0.4.12.3</version>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
 
         <dependency>

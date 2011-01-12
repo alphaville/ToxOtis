@@ -36,8 +36,9 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 public class Persist {
 
     public static void main(String[] args) throws Exception {
-        org.apache.log4j.LogManager.resetConfiguration();
-        org.apache.log4j.PropertyConfigurator.configure("config/log4j.properties");
+//        org.apache.log4j.LogManager.resetConfiguration();
+//        org.apache.log4j.PropertyConfigurator.configure("config/log4j.properties");
+
 
         SessionFactory sf = HibernateUtil.getSessionFactory();
         Session session = sf.openSession();
@@ -81,13 +82,13 @@ public class Persist {
         System.out.println("Done!");
         System.out.println("Authentication Token : \n" + at);
         System.out.println("User:\n" + at.getUser());
-//
-//        System.out.println("Loading Algorithm");
-//        Algorithm algorithm = new Algorithm(Services.ntua().augment("algorithm", "svm")).loadFromRemote(at);
-//        System.out.println("Algorithm Loaded");
-//        System.out.println("Storing Algorithm");
-//        RegisterTool.storeAlgorithm(algorithm, session);
-//        System.out.println("Algorithm registered successfully!\n");
+
+        System.out.println("Loading Algorithm");
+        Algorithm algorithm = new Algorithm(Services.ntua().augment("algorithm", "svm")).loadFromRemote(at);
+        System.out.println("Algorithm Loaded");
+        System.out.println("Storing Algorithm");
+        RegisterTool.storeAlgorithm(algorithm, session);
+        System.out.println("Algorithm registered successfully!\n");
 //
 //        System.out.println("Loading Dataset");
 //        Dataset d = new Dataset(Services.ideaconsult().augment("dataset", "9").addUrlParameter("max", "50")).loadFromRemote();
@@ -127,14 +128,13 @@ public class Persist {
          * http://docs.jboss.org/hibernate/core/3.3/reference/en/html/querycriteria.html
          */
         System.out.println(OTClasses.Algorithm());
-        List resultsFoundInDB = session.createCriteria(Task.class).add(Restrictions.eq("uri", "http://localhost:3000/task/dac56a96-7627-4cd6-9dda-c11083078ccb")).list();
+        List resultsFoundInDB = session.createCriteria(Algorithm.class).list();
 //                add(Restrictions.like("uri", "%svm")).list();
         System.out.println("found " + resultsFoundInDB.size());
         for (Object o : resultsFoundInDB) {
-            Task t = (Task) o;
-            VRI c = t.getUri();
-            System.out.println(c);
-            System.out.println(t.getMeta().getHasSources());
+            Algorithm a = (Algorithm) o;
+            VRI c = a.getUri();
+            System.out.println(c);            
         }
         session.close();
 

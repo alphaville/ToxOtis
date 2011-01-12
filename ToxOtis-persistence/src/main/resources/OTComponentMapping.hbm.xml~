@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <!-- OTComponent container class -->
+    <class discriminator-value="OTComp" dynamic-insert="true" dynamic-update="true" mutable="true" name="org.opentox.toxotis.core.OTComponent" optimistic-lock="version" polymorphism="implicit" select-before-update="false">
+        <id name="uri" type="org.opentox.toxotis.persistence.usertypes.VRIUserType"/>
+        <property name="enabled" type="true_false"/>
+        <!--    Foreign (M2O) key pointing to MetaInformation
+                Question: is unique="true" correct here???
+        -->
+        <many-to-one cascade="all" class="org.opentox.toxotis.ontology.MetaInfo" name="meta" unique="true"/>
+        <!--
+            BibTeX extends OTComponent
+        -->
+        <joined-subclass name="org.opentox.toxotis.core.component.BibTeX">
+            <key column="uri" on-delete="cascade"/>
+            <!-- In general think about 'all-delete-orphan'-->
+            <property name="abstract"/>
+            <property name="address"/>
+            <property name="annotation"/>
+            <property name="author"/>
+            <property name="bibType" type="org.opentox.toxotis.persistence.usertypes.BibTypeUserType">
+            </property>
+            <property name="bookTitle"/>
+            <property name="chapter"/>
+            <property name="copyright"/>
+            <!-- READ http://cut.gd/qDek for further information about the tag <meta>.
+                 -->
+            <property name="crossref">
+                <meta attribute="field-description">
+                    Reference to some other BibTeX entry possible providing its URI of other (global) identifier.
+                </meta>
+            </property>
+            <property name="edition"/>
+            <property name="editor"/>
+            <property length="20" name="isbn"/>
+            <property length="20" name="issn"/>
+            <property name="journal"/>
+            <property column="bibkey" name="key"/>
+            <property name="keywords"/>
+            <property length="20" name="number"/>
+            <property length="20" name="pages"/>
+            <property name="series"/>
+            <property name="title"/>
+            <property name="url"/>
+            <property name="volume"/>
+            <property name="year"/>
+            <many-to-one class="org.opentox.toxotis.core.component.User" name="createdBy"/>
+        </joined-subclass>
+</class>
+</hibernate-mapping>

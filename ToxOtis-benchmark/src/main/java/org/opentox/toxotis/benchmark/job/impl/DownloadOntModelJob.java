@@ -6,6 +6,7 @@ import org.opentox.toxotis.benchmark.job.Job;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 
 /**
  *
@@ -46,6 +47,8 @@ public class DownloadOntModelJob extends Job {
         VRI uri = new VRI(String.format(templatedUri, parameter.toString()));
         System.out.println(uri);
         IGetClient client = ClientFactory.createGetClient(uri);
+        client.setMediaType(Media.APPLICATION_RDF_XML);
+        System.out.println("RESPONSE FROM SERVER : " + client.getResponseCode());
         client.getResponseOntModel();
         client.close();
         timeGauge.stop();

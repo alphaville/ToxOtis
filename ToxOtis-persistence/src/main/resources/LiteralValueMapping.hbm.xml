@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class dynamic-insert="true" dynamic-update="true" name="org.opentox.toxotis.ontology.LiteralValue" select-before-update="false" table="Literal">
+    <!--
+        Index not associated with a Java variable; stands for separating literals
+        coming from different meta-information or in general resources.
+        -->
+    <id name="hash"/>
+    <!--
+        LiteralValues are stored in the database in a table
+        with two columns: VALUE and DATATYPE. Initially the idea was about having
+        these two attributes be a composite primary key that uniquely identifies
+        a literal value but then it became clear that values should be dissociated.
+            -->
+    <property column="VALUE" length="8000" name="valueAsString" type="string"/>
+    <property column="DATATYPE" name="type" type="org.opentox.toxotis.persistence.usertypes.XSDDatatypeUserType"/>
+  </class>
+</hibernate-mapping>
