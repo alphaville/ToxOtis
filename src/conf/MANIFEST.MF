@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Name: org/opentox/toxotis
-Specification-Title: ToxOtis-Persistence module
-Specification-Version: 0.4.12.3 (alpha)
-Specification-Vendor: http://www.opentox.org , OpenTox - An Open Source Predictive Toxicology Framework
-Implementation-Vendor: National Technical University of Athens, School of Chemical Engineering, Automatic Control Laboratory

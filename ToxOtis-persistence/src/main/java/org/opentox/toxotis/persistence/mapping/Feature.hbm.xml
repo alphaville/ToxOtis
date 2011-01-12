@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class dynamic-insert="true" dynamic-update="true" mutable="true" name="org.opentox.toxotis.core.component.Feature" optimistic-lock="dirty" polymorphism="implicit" select-before-update="true">
+    <id column="uri" name="uri" type="org.opentox.toxotis.persistence.usertypes.VRIUserType"/>
+    <property length="50" name="units" type="string"/>
+    <set cascade="all" name="lowLevelOntologies" table="FeatOntol">
+      <key>
+        <column name="featureUri"/>
+      </key>
+      <!--<element column="ont" type="org.opentox.toxotis.persistence.usertypes.OntologicalClassUserType"/>-->
+      <many-to-many class="org.opentox.toxotis.ontology.OntologicalClass">
+        <column name="ontClassUri"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="admissibleValues" table="FeatAdmVal">
+      <key column="featureUri"/>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue"/>
+    </set>
+  </class>
+</hibernate-mapping>

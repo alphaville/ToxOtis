@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.opentox.toxotis</groupId>
+    <artifactId>ToxOtis-core</artifactId>
+    <packaging>jar</packaging>
+    <version>0.4.12.3</version>
+    <name>ToxOtis-core</name>
+    <url>http://maven.apache.org</url>
+
+    <parent>
+        <artifactId>ToxOtisProject</artifactId>
+        <groupId>org.opentox.toxotis</groupId>
+        <version>0.4</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>weka</groupId>
+            <artifactId>weka</artifactId>
+            <version>3.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.cedarsoft.serialization</groupId>
+            <artifactId>stax-mate</artifactId>
+            <version>2.1.0</version>
+            <classifier>all</classifier>
+        </dependency>
+
+
+    </dependencies>
+
+    <repositories>
+        <!--AMBIT PLOVDIV REPO-->
+        <repository>
+            <id>ambit-plovdiv</id>
+            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.1</version>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
+

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class discriminator-value="0" dynamic-insert="true" dynamic-update="true" name="org.opentox.toxotis.ontology.MetaInfo" select-before-update="false" table="MetaInfo">
+    <meta attribute="class-description">This class contains meta-information about resources.</meta>
+    <id column="idx" type="int">
+      <generator class="native"/>
+    </id>
+    <discriminator column="_DISCRIM_" length="1" type="int"/>
+    <set cascade="all" name="comments" table="MiComments">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="titles" table="MiTitles">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="rights" table="MiRights">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="descriptions" table="MiDesc">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="identifiers" table="MiIDs">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="subjects" table="MiSubjects">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="publishers" table="MiPublishers">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="creators" table="MiCreators">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="contributors" table="MiContributors">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="audiences" table="MiAud">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.LiteralValue">
+        <column name="litId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="hasSources" table="MiSources">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.ResourceValue">
+        <column name="rsId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="seeAlso" table="MiSeeAlso">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.ResourceValue">
+        <column name="rsId"/>
+      </many-to-many>
+    </set>
+    <set cascade="all" name="sameAs" table="MiSameAs">
+      <key>
+        <column name="idx"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.ResourceValue">
+        <column name="rsId"/>
+      </many-to-many>
+    </set>
+    <many-to-one cascade="all" name="date">
+      <column name="dateLiteral"/>
+    </many-to-one>
+  </class>
+  <subclass discriminator-value="1" extends="org.opentox.toxotis.ontology.MetaInfo" name="org.opentox.toxotis.ontology.impl.MetaInfoImpl"/>
+</hibernate-mapping>

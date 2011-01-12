@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class discriminator-value="0" dynamic-insert="true" dynamic-update="true" mutable="true" name="org.opentox.toxotis.ontology.OntologicalClass" optimistic-lock="version" polymorphism="implicit" select-before-update="false">
+    <composite-id>
+      <key-property name="nameSpace"/>
+      <key-property name="name"/>
+    </composite-id>
+    <discriminator column="_DISCRIM_" length="1" type="integer"/>
+    <many-to-one cascade="all" class="org.opentox.toxotis.ontology.MetaInfo" name="metaInfo" not-null="false"/>
+    <set cascade="none" name="disjointWith">
+      <key on-delete="noaction">
+        <column name="resource_NS"/>
+        <column length="50" name="resource_name"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.OntologicalClass">
+        <column name="disjointWith_NS"/>
+        <column length="50" name="disjointWith_name"/>
+      </many-to-many>
+    </set>
+    <set cascade="none" name="superClasses">
+      <key on-delete="noaction">
+        <column name="resource_NS"/>
+        <column length="50" name="resource_name"/>
+      </key>
+      <many-to-many class="org.opentox.toxotis.ontology.OntologicalClass">
+        <column name="superclass_NS"/>
+        <column length="50" name="superclass_name"/>
+      </many-to-many>
+    </set>
+  </class>
+  <subclass discriminator-value="1" extends="org.opentox.toxotis.ontology.OntologicalClass" name="org.opentox.toxotis.ontology.impl.OntologicalClassImpl"/>
+</hibernate-mapping>
