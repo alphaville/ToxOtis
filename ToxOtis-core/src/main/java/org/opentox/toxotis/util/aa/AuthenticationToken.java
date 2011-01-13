@@ -412,6 +412,7 @@ public class AuthenticationToken {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
+                System.out.println(line);
                 if (line.equals(String.format(nameKey, "uid"))) {
                     line = reader.readLine();
                     if (line != null) {
@@ -608,7 +609,7 @@ public class AuthenticationToken {
         return new String(sb);
     }
     
-//    public static void main(String... art) throws Exception{
-//        System.out.println(new AuthenticationToken(new java.io.File("/home/chung/toxotisKeys/my.key")));
-//    }
+    public static void main(String... art) throws Exception{
+        System.out.println(new AuthenticationToken("guest","guest").getUser());
+    }
 }
