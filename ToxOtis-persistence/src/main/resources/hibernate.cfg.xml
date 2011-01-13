@@ -5,13 +5,13 @@
     <!-- Database connection settings -->
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
     <!-- Using MySQL  -->
-    <property name="connection.url">jdbc:mysql://localhost/toxotis</property>
+    <property name="connection.url">${toxotis.database.url}</property>
     <!-- Database user  -->
-    <property name="connection.username">chung</property>
+    <property name="connection.username">${toxotis.database.user}</property>
     <!-- Your password goes here... -->
-    <property name="connection.password">abfhs8y</property>
+    <property name="connection.password">${toxotis.database.secret}</property>
     <!-- JDBC connection pool (use the built-in) -->
-    <property name="connection.pool_size">1</property>
+    <property name="connection.pool_size">${toxotis.database.poolsize}</property>
     <!-- SQL dialect -->
     <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
     <!-- Enable Hibernate's automatic session context management -->

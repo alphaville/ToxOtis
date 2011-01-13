@@ -5,19 +5,46 @@
     <parent>
         <artifactId>ToxOtis</artifactId>
         <groupId>org.opentox.toxotis</groupId>
-        <version>0.4</version>
+        <version>0.5.0</version>
     </parent>
     <groupId>org.opentox.toxotis.benchmark</groupId>
     <artifactId>ToxOtis-benchmark</artifactId>
-    <version>0.2.3</version>
+    <version>0.2.4-SNAPSHOT</version>
     <name>ToxOtis-benchmark</name>
+    <description></description>
+    <developers>
+        <developer>
+            <name>Sopasakis Pantelis</name>
+            <organization>NTUA</organization>
+            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <url>https://github.com/alphaville</url>
+        </developer>
+        <developer>
+            <name>Charalampos Chomenides</name>
+            <organization>NTUA</organization>
+            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <url>https://github.com/hampos</url>
+        </developer>
+    </developers>
+    <organization>
+        <name>OpenTox</name>
+        <url>http://opentox.org</url>
+    </organization>
+    <inceptionYear>2011</inceptionYear>
+    <licenses>
+        <license>
+            <name>GNU GPL v3</name>
+            <url>http://www.gnu.org/licenses/gpl.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <url>http://maven.apache.org</url>
 
     <dependencies>
         <dependency>
             <artifactId>ToxOtis-core</artifactId>
             <groupId>org.opentox.toxotis</groupId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.5.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -33,7 +60,6 @@
         <developerConnection>scm:git:git@github.com:alphaville/ToxOtis.git</developerConnection>
         <url>git@github.com:alphaville/ToxOtis.git</url>
     </scm>
-
 
     <build>
         <resources>

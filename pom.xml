@@ -4,7 +4,7 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis</artifactId>
     <packaging>pom</packaging>
-    <version>0.4</version>
+    <version>0.5.0</version>
     <name>ToxOtis</name>
     <description>ToxOtis is a versatile library allowing developers of QSAR application to use the OpenTox web services.</description>
     <developers>

@@ -4,16 +4,43 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.5.1</version>
+    <version>0.5.2-SNAPSHOT</version>
     <name>ToxOtis-core</name>
+    <description></description>
+    <developers>
+        <developer>
+            <name>Sopasakis Pantelis</name>
+            <organization>NTUA</organization>
+            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <url>https://github.com/alphaville</url>
+        </developer>
+        <developer>
+            <name>Charalampos Chomenides</name>
+            <organization>NTUA</organization>
+            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <url>https://github.com/hampos</url>
+        </developer>
+    </developers>
+    <organization>
+        <name>OpenTox</name>
+        <url>http://opentox.org</url>
+    </organization>
+    <inceptionYear>2011</inceptionYear>
+    <licenses>
+        <license>
+            <name>GNU GPL v3</name>
+            <url>http://www.gnu.org/licenses/gpl.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <url>http://maven.apache.org</url>
 
     <parent>
         <artifactId>ToxOtis</artifactId>
         <groupId>org.opentox.toxotis</groupId>
-        <version>0.4</version>
+        <version>0.5.0</version>
         <relativePath>../</relativePath>
-    </parent>
+    </parent>   
 
     <dependencies>
 

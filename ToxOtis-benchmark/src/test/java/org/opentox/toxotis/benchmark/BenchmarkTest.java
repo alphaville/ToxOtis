@@ -39,6 +39,12 @@ public class BenchmarkTest {
     }
 
     @Test
+    public void testNothing(){
+
+    }
+
+
+   // @Test
     public void testSomeMethod() throws CloneNotSupportedException, ToxOtisException, InterruptedException, Exception {
 
         final Benchmark benchmark = new Benchmark("Remote Datasets to Local OntModel objects");// Diagram Title

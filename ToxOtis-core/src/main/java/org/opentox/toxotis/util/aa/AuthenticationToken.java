@@ -609,7 +609,4 @@ public class AuthenticationToken {
         return new String(sb);
     }
     
-    public static void main(String... art) throws Exception{
-        System.out.println(new AuthenticationToken("guest","guest").getUser());
-    }
 }
