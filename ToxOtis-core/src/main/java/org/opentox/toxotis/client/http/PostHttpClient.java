@@ -1,5 +1,6 @@
 package org.opentox.toxotis.client.http;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import org.opentox.toxotis.client.IPostClient;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.RequestHeaders;
@@ -45,6 +47,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     remote stream
      */
     private IStAXWritable staxComponent;
+    public WriteLock postLock = new ReentrantReadWriteLock().writeLock();
 
     public PostHttpClient() {
         super();
@@ -55,15 +58,18 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
         this.vri = vri;
     }
 
+    @Override
     public String getContentType() {
         return contentType;
     }
 
+    @Override
     public PostHttpClient setContentType(String contentType) {
         this.contentType = contentType;
         return this;
     }
 
+    @Override
     public PostHttpClient setContentType(Media media) {
         this.contentType = media.getMime();
         return this;
@@ -78,6 +84,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      * @return
      *      The PostHttpClient with the updated Ontological Model.
      */
+    @Override
     public PostHttpClient setPostable(OntModel model) {
         this.model = model;
         return this;
@@ -92,6 +99,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      * @return
      *      The PostHttpClient with the updated writeable component.
      */
+    @Override
     public PostHttpClient setPostable(IStAXWritable staxWritable) {
         this.staxComponent = staxWritable;
         return this;
@@ -117,6 +125,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      * @throws IllegalArgumentException
      *      In case the provided file does not exist
      */
+    @Override
     public PostHttpClient setPostable(File objectToPost) {
         if (objectToPost != null && !objectToPost.exists()) {
             throw new IllegalArgumentException(new FileNotFoundException("No file was found at the specified path!"));
@@ -125,6 +134,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
         return this;
     }
 
+    @Override
     public PostHttpClient setPostable(String string, boolean binary) {
         if (binary) {
             this.bytesToPost = string;
@@ -142,6 +152,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      * @return This object
      * @throws NullPointerException If paramName is <code>null</code>.
      */
+    @Override
     public PostHttpClient addPostParameter(String paramName, String paramValue) throws NullPointerException {
         if (paramName == null) {
             throw new NullPointerException("paramName must be not null");
@@ -197,6 +208,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     }
 
     /** Initialize a connection to the target URI */
+    @Override
     protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
@@ -244,10 +256,12 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      *      Encapsulates an IOException which might be thrown due to I/O errors
      *      during the data transaction.
      */
+    @Override
     public void post() throws ToxOtisException {
-        initializeConnection(vri.toURI());
+        connect(vri.toURI());
         DataOutputStream wr;
         try {
+            getPostLock().lock(); // LOCK
             wr = new DataOutputStream(con.getOutputStream());
             String query = getParametersAsQuery();
             if (query != null && !query.isEmpty()) {
@@ -272,6 +286,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                         wr.writeChars("\n");
                     }
                 } catch (IOException ex) {
+                    throw new ToxOtisException(ex);
                 } finally {
                     Throwable thr = null;
                     if (br != null) {
@@ -297,6 +312,13 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
             wr.close();
         } catch (final IOException ex) {
             throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
+        } finally {
+            getPostLock().unlock(); // UNLOCK
         }
+    }
+
+    @Override
+    public WriteLock getPostLock() {
+        return postLock;
     }
 }

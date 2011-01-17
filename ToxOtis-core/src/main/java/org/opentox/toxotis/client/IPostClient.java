@@ -2,6 +2,7 @@ package org.opentox.toxotis.client;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.File;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.http.PostHttpClient;
@@ -126,4 +127,6 @@ public interface IPostClient extends IClient {
      * @throws NullPointerException If paramName is <code>null</code>.
      */
     IPostClient addPostParameter(String paramName, String paramValue) throws NullPointerException;
+
+    public WriteLock getPostLock() ;
 }

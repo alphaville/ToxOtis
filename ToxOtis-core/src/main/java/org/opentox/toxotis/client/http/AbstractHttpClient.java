@@ -1,14 +1,16 @@
 package org.opentox.toxotis.client.http;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import org.opentox.toxotis.client.IClient;
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.IPostClient;
@@ -36,11 +38,24 @@ public abstract class AbstractHttpClient implements IClient {
     protected String acceptMediaType = null;
     /** A mapping from parameter names to their corresponding values */
     protected Map<String, String> headerValues = new HashMap<String, String>();
+    private ReentrantReadWriteLock.ReadLock readLock = new ReentrantReadWriteLock().readLock();
+    private ReentrantReadWriteLock.WriteLock connectionLock = new ReentrantReadWriteLock().writeLock();
+
+    @Override
+    public WriteLock getConnectionLock() {
+        return connectionLock;
+    }
+
+    @Override
+    public ReadLock getReadLock() {
+        return readLock;
+    }
 
     /**
      * Get the targetted URI
      * @return The target URI
      */
+    @Override
     public VRI getUri() {
         return vri;
     }
@@ -51,6 +66,7 @@ public abstract class AbstractHttpClient implements IClient {
      * @return
      *      The accepted media type.
      */
+    @Override
     public String getMediaType() {
         return acceptMediaType;
     }
@@ -68,6 +84,7 @@ public abstract class AbstractHttpClient implements IClient {
      * @throws NullPointerException
      *          If any of the arguments is null
      */
+    @Override
     public AbstractHttpClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
         if (paramName == null) {
             throw new NullPointerException("ParamName is null");
@@ -99,8 +116,9 @@ public abstract class AbstractHttpClient implements IClient {
      * @return
      *      This object with an updated header.
      */
+    @Override
     public AbstractHttpClient authorize(AuthenticationToken token) {
-        return token != null ? addHeaderParameter(RequestHeaders.AUTHORIZATION, token.getTokenUrlEncoded()) : this;
+        return token != null ? addHeaderParameter(RequestHeaders.SSO_AUTHORIZATION, token.getTokenUrlEncoded()) : this;
     }
 
     /**
@@ -119,6 +137,15 @@ public abstract class AbstractHttpClient implements IClient {
      */
     protected abstract java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException;
 
+    protected java.net.HttpURLConnection connect(final java.net.URI uri) throws ToxOtisException {
+        connectionLock.lock();
+        try {
+            return initializeConnection(uri);
+        } finally {
+            connectionLock.unlock();
+        }
+    }
+
     /**
      * Get the body of the HTTP response as InputStream.
      * @return
@@ -129,17 +156,23 @@ public abstract class AbstractHttpClient implements IClient {
      *      In case some communication error occurs during the transmission
      *      of the data.
      */
+    @Override
     public java.io.InputStream getRemoteStream() throws ToxOtisException, java.io.IOException {
-        if (con == null) {
-            con = initializeConnection(vri.toURI());
-        }
-        if (con == null) {
-            throw new ToxOtisException(ErrorCause.CommunicationError, "Comminucation Error with the remote");
-        }
-        if (con.getResponseCode() == 200 || con.getResponseCode() == 202 || con.getResponseCode() == 201) {
-            return new java.io.BufferedInputStream(con.getInputStream(), bufferSize);
-        } else {
-            return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);
+        readLock.lock();
+        try {
+            if (con == null) {
+                con = connect(vri.toURI());
+            }
+            if (con == null) {
+                throw new ToxOtisException(ErrorCause.CommunicationError, "Comminucation Error with the remote");
+            }
+            if (con.getResponseCode() == 200 || con.getResponseCode() == 202 || con.getResponseCode() == 201) {
+                return new java.io.BufferedInputStream(con.getInputStream(), bufferSize);
+            } else {
+                return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);
+            }
+        } finally {
+            readLock.unlock();
         }
     }
 
@@ -154,13 +187,15 @@ public abstract class AbstractHttpClient implements IClient {
      * @throws ToxOtisException
      *      In case some communication, server or request error occurs.
      */
+    @Override
     public String getResponseText() throws ToxOtisException {
-        if (con == null) {
-            con = initializeConnection(vri.toURI());
-        }
+        readLock.lock();
         InputStream is = null;
         BufferedReader reader = null;
         try {
+            if (con == null) {
+                con = connect(vri.toURI());
+            }
             is = getRemoteStream();
             reader = new BufferedReader(new InputStreamReader(is));
             String line;
@@ -172,19 +207,24 @@ public abstract class AbstractHttpClient implements IClient {
         } catch (IOException io) {
             throw new ToxOtisException(io);
         } finally {
+            IOException closeException = null;
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
+                    closeException = ex;
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
+                    closeException = ex;
                 }
+            }
+            readLock.unlock();
+            if (closeException != null) {
+                throw new ToxOtisException(closeException);
             }
         }
     }
@@ -202,6 +242,7 @@ public abstract class AbstractHttpClient implements IClient {
      *      (syntactically correct) ontological model, or in case some communication
      *      error will arise.
      */
+    @Override
     public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ToxOtisException {
         return getResponseOntModel("RDF/XML");
     }
@@ -221,7 +262,9 @@ public abstract class AbstractHttpClient implements IClient {
      *      (syntactically correct) ontological model, or in case some communication
      *      error will arise.
      */
+    @Override
     public com.hp.hpl.jena.ontology.OntModel getResponseOntModel(String specification) throws ToxOtisException {
+        readLock.lock();
         if (specification == null) {
             specification = "RDF/XML";
         }
@@ -237,6 +280,8 @@ public abstract class AbstractHttpClient implements IClient {
             throw new ToxOtisException(ErrorCause.CommunicationError,
                     "Cannot read OntModel from " + vri.toString() + "due to communication"
                     + "error with the remote service.", ex);
+        } finally {
+            readLock.unlock();
         }
     }
 
@@ -252,11 +297,19 @@ public abstract class AbstractHttpClient implements IClient {
      *      In case some communication error with the remote location occurs during
      *      the transaction of data.
      */
+    @Override
     public int getResponseCode() throws ToxOtisException, java.io.IOException {
-        if (con == null) {
-            con = initializeConnection(vri.toURI());
+        readLock.lock();
+        int responseCode = 0;
+        try {
+            if (con == null) {
+                con = connect(vri.toURI());
+            }
+            responseCode = con.getResponseCode();
+        } finally {
+            readLock.unlock();
         }
-        return con.getResponseCode();
+        return responseCode;
     }
 
     /**
@@ -266,6 +319,7 @@ public abstract class AbstractHttpClient implements IClient {
      *
      * @see RequestHeaders#ACCEPT
      */
+    @Override
     public AbstractHttpClient setMediaType(String mediaType) {
         this.acceptMediaType = mediaType;
         return this;
@@ -278,6 +332,7 @@ public abstract class AbstractHttpClient implements IClient {
      *      Accepted mediatype
      * @see RequestHeaders#ACCEPT
      */
+    @Override
     public AbstractHttpClient setMediaType(Media mediaType) {
         this.acceptMediaType = mediaType.getMime();
         return this;
@@ -288,6 +343,7 @@ public abstract class AbstractHttpClient implements IClient {
      * @param vri
      *      The URI that will be used by the client to perform the remote connection.
      */
+    @Override
     public AbstractHttpClient setUri(VRI vri) {
         this.vri = vri;
         return this;
@@ -299,6 +355,7 @@ public abstract class AbstractHttpClient implements IClient {
      * @throws java.net.URISyntaxException In case the provided URI is syntactically
      * incorrect.
      */
+    @Override
     public AbstractHttpClient setUri(String uri) throws java.net.URISyntaxException {
         this.vri = new VRI(uri);
         return this;
@@ -311,11 +368,13 @@ public abstract class AbstractHttpClient implements IClient {
      *
      * @throws IOException if an I/O error occurs
      */
+    @Override
     public void close() throws IOException {
         if (con != null) {
             con.disconnect();
         }
     }
+
     /**
      * Get the response of the remote service as a Set of URIs. The media type of
      * the request, as specified by the <code>Accept</code> header is set to
@@ -326,7 +385,9 @@ public abstract class AbstractHttpClient implements IClient {
      *      In case some I/O communication error inhibits the transimittance of
      *      data between the client and the server or a some stream cannot close.
      */
+    @Override
     public java.util.Set<VRI> getResponseUriList() throws ToxOtisException {
+        readLock.lock();
         setMediaType(Media.TEXT_URI_LIST);// Set the mediatype to text/uri-list
         java.util.Set<VRI> setOfUris = new java.util.HashSet<VRI>();
         java.io.InputStreamReader isr = null;
@@ -334,7 +395,7 @@ public abstract class AbstractHttpClient implements IClient {
         java.io.BufferedReader reader = null;
         try {
             if (con == null) {
-                con = initializeConnection(vri.toURI());
+                con = connect(vri.toURI());
             }
             is = getRemoteStream();
             isr = new java.io.InputStreamReader(is);
@@ -353,29 +414,33 @@ public abstract class AbstractHttpClient implements IClient {
         } catch (IOException io) {
             throw new ToxOtisException(ErrorCause.CommunicationError, io);
         } finally {
+            ToxOtisException toxotisException = null;
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    toxotisException = new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
                 }
             }
             if (isr != null) {
                 try {
                     isr.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    toxotisException = new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    toxotisException = new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
                 }
+            }
+            readLock.unlock();
+            if (toxotisException != null) {
+                throw toxotisException;
             }
         }
         return setOfUris;
     }
-
 }

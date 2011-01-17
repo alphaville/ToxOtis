@@ -127,7 +127,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
             model = client.getResponseOntModel();
             resource = model.getResource(uri.getStringNoQuery());
         } catch (IOException ex) {
-            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
+            throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with the remote service at :" + uri, ex);
         } finally { // Have to close the client (disconnect)
             if (client != null) {
                 try {

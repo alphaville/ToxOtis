@@ -1,13 +1,19 @@
 package org.opentox.toxotis.client.https;
 
 import com.hp.hpl.jena.ontology.OntModel;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
@@ -28,6 +34,16 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     private Map<String, String> postParameters = new HashMap<String, String>();
     private String postableString = null;
     private String postableBytes = null;
+    private OntModel model;
+    /** A StAX component that implements the interface {@link IStAXWritable }
+    that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
+    write(OutputStream)} that writes the component to an outputstream pointing to the
+    remote stream
+     */
+    private IStAXWritable staxComponent;
+    /** Arbitrary object to be posted to the remote server s*/
+    private File fileContentToPost = null;
+    public WriteLock postLock = new ReentrantReadWriteLock().writeLock();
 
     public PostHttpsClient() {
         super();
@@ -37,6 +53,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         super(vri);
     }
 
+    @Override
     public PostHttpsClient setPostable(String string, boolean binary) {
         if (binary) {
             this.postableBytes = string;
@@ -46,7 +63,23 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         return this;
     }
 
+    /**
+     * Set an ontological data model which is to be posted to the remote location
+     * as application/rdf+xml. Invokations of this method set automatically the content-type
+     * to application/rdf+xml though it can be overriden afterwards.
+     * @param model
+     *      Ontological Model to be posted
+     * @return
+     *      The PostHttpClient with the updated Ontological Model.
+     */
+    @Override
+    public PostHttpsClient setPostable(OntModel model) {
+        this.model = model;
+        return this;
+    }
+
     /** Initialize a connection to the target URI */
+    @Override
     protected javax.net.ssl.HttpsURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
         try {
             java.net.URL target_url = uri.toURL();
@@ -83,10 +116,12 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
 
     }
 
+    @Override
     public String getContentType() {
         return contentType;
     }
 
+    @Override
     public PostHttpsClient setContentType(String contentType) {
         this.contentType = contentType;
         return this;
@@ -115,41 +150,115 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         return new String(string);
     }
 
+    @Override
     public void post() throws ToxOtisException {
-        initializeConnection(vri.toURI());
+        connect(vri.toURI());
         DataOutputStream wr = null;
         try {
+            getPostLock().lock(); // <<< LOCKed
             wr = new DataOutputStream(con.getOutputStream());
             String parametersQuery = getParametersAsQuery();
             if (parametersQuery != null && !parametersQuery.trim().isEmpty()) {
                 wr.writeBytes(parametersQuery);// POST the parameters
             } else if (postableString != null && !postableString.trim().isEmpty()) {
                 wr.writeChars(postableString);
-            }else if (postableBytes != null && !postableBytes.trim().isEmpty()) {
+            } else if (postableBytes != null && !postableBytes.trim().isEmpty()) {
                 wr.writeBytes(postableBytes);
+            } else if (staxComponent != null) {
+                staxComponent.writeRdf(wr);
+            } else if (model != null) {
+                model.write(wr);
+            } else if (fileContentToPost != null) {
+                FileReader fr = null;
+                BufferedReader br = null;
+                try {
+                    fr = new FileReader(fileContentToPost);
+                    br = new BufferedReader(fr);
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        wr.writeBytes(line);
+                        wr.writeChars("\n");
+                    }
+                } catch (IOException ex) {
+                    throw new ToxOtisException(ex);
+                } finally {
+                    Throwable thr = null;
+                    if (br != null) {
+                        try {
+                            br.close();
+                        } catch (final IOException ex) {
+                            thr = ex;
+                        }
+                    }
+                    if (fr != null) {
+                        try {
+                            fr.close();
+                        } catch (final IOException ex) {
+                            thr = ex;
+                        }
+                    }
+                    if (thr != null) {
+                        throw new ToxOtisException(ErrorCause.StreamCouldNotClose, thr);
+                    }
+                }
             }
             wr.flush();
             wr.close();
         } catch (final IOException ex) {
             throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
+        } finally {
+            getPostLock().unlock(); // <<< UNLOCKed
         }
     }
 
+    @Override
     public PostHttpsClient setContentType(Media media) {
         this.contentType = media.getMime();
         return this;
     }
 
-    public PostHttpsClient setPostable(OntModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    /**
+     * Set a StAX-writeable component to be posted to the remote location
+     * @param staxWritable
+     *      A StAX component that implements the interface {@link IStAXWritable }
+     *      that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
+     *      write(OutputStream)} that writes the component to an outputstream pointing to the remote stream
+     * @return
+     *      The PostHttpClient with the updated writeable component.
+     */
+    @Override
     public PostHttpsClient setPostable(IStAXWritable staxWritable) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.staxComponent = staxWritable;
+        return this;
     }
 
+    /**
+     * Set a file whose contents are to be posted to the remote server specified
+     * in the constructor of this class. If the file is not found under the specified
+     * path, an IllegalArgumentException is thrown. Because the type of the file is
+     * in general unknown and it is not considered to be a good practise to deduce the
+     * file type from the file extension, it is up to the user to specify the content
+     * type of the posted object using the method {@link PostHttpClient#setContentType(java.lang.String)
+     * setContentType}. Since it is not possible to POST entities of different content
+     * types to an HTTP server, any invokation to this method will override any previous
+     * invokation of {@link PostHttpClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
+     * setPostable(OntModel) } and {@link PostHttpClient#setPostable(java.lang.String, boolean)
+     * setPostable(String)}.
+     *
+     * @param objectToPost
+     *      File whose contents are to be posted.
+     * @return
+     *      This post client
+     * @throws IllegalArgumentException
+     *      In case the provided file does not exist
+     */
+    @Override
     public PostHttpsClient setPostable(File objectToPost) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (objectToPost != null && !objectToPost.exists()) {
+            throw new IllegalArgumentException(new FileNotFoundException("No file was found at the specified path!"));
+        }
+        this.fileContentToPost = objectToPost;
+        return this;
     }
 
     /**
@@ -160,6 +269,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
      * @return This object
      * @throws NullPointerException If paramName is <code>null</code>.
      */
+    @Override
     public IPostClient addPostParameter(String paramName, String paramValue) throws NullPointerException {
         if (paramName == null) {
             throw new NullPointerException("paramName must be not null");
@@ -170,5 +280,10 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
             throw new RuntimeException(ex);
         }
         return this;
+    }
+
+    @Override
+    public WriteLock getPostLock() {
+        return postLock;
     }
 }

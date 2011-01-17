@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -60,7 +63,9 @@ public interface IClient extends Closeable {
      *
      * @throws IOException if an I/O error occurs
      */
+    @Override
     void close() throws IOException;
+    
 
     /**
      * Retrieve the specified media type which is the value for the <code>Accept</code>
@@ -191,5 +196,9 @@ public interface IClient extends Closeable {
      * data between the client and the server or a some stream cannot close.
      */
     Set<VRI> getResponseUriList() throws ToxOtisException;
+
+    public WriteLock getConnectionLock() ;
+
+    public ReadLock getReadLock() ;
 
 }

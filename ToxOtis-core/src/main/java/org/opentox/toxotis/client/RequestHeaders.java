@@ -64,6 +64,13 @@ public class RequestHeaders {
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.8">W3C specification for this header</a>
      */
     public static final String AUTHORIZATION = "Authorization";
+
+    /**
+     * Header used within OpenTox for exchanging authorization tokens (between services and
+     * the central SSO server as well)
+     */
+    public static final String SSO_AUTHORIZATION = "subjectid";
+
     /**
      * Used as a modifier to the media-type, to indicate what additional data
      * format transformations such as compression have been applied to the entity-body.

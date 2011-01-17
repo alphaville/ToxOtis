@@ -47,12 +47,14 @@ public class AppTest
         try {
             algorithm = new Algorithm(algorithmMlrUri).loadFromRemote();
         } catch (ToxOtisException ex) {
+            System.out.println(ex.getCode());
             if (!ErrorCause.CommunicationError.equals(ex.getCode()) && !ErrorCause.ConnectionException.equals(ex.getCode())) {
                 logger.error("Exception while ", ex);
                 throw ex;
             }
             logger.warn("It seems that the remote service at "
                     + algorithmMlrUri + " encounters some problems.", ex);
+            return ;
         }
         assertNotNull(algorithm);
         assertNotNull(algorithm.getParameters());

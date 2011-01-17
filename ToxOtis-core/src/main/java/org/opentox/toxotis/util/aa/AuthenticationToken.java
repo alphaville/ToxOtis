@@ -42,13 +42,12 @@ public class AuthenticationToken {
     /** The token as a String (Non-URL encoded!) */
     private String token;
     /** Local lifetime of the token. The token (as an object) will expire after 23 hours.
-     Note that the real token expires in 24 hours.*/
+    Note that the real token expires in 24 hours.*/
     private static final long tokenLocalLifeTime = 23 * 3600 * 1000L; // 23hrs
     /** Encoding used to encode tokens received from the SSO server */
     private String encoding = "UTF-8";
     /** Flag used to tell if the token is logged out */
     private boolean logOut = false;
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AuthenticationToken.class);
 
     /**
@@ -113,7 +112,7 @@ public class AuthenticationToken {
                         + Services.SingleSignOn.ssoAuthenticate(), ex);
             }
             if (status >= 400) {
-                throw new ToxOtisException("Error while authenticating user at "
+                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Error while authenticating user at "
                         + poster.getUri() + ". Status code : " + status);
             }
 
@@ -356,7 +355,7 @@ public class AuthenticationToken {
                 throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
             }
         } catch (IOException ex) {
-            logger.warn(null,ex);
+            logger.warn(null, ex);
             throw new ToxOtisException(ex);
         } finally {
             if (poster != null) {
@@ -390,7 +389,7 @@ public class AuthenticationToken {
         InputStream is = null;
         BufferedReader reader = null;
         IPostClient poster = null;
-        User u = new User();        
+        User u = new User();
         try {
             poster = ClientFactory.createPostClient(Services.SingleSignOn.ssoAttributes());
             poster.addPostParameter("subjectid", stringValue());
@@ -412,7 +411,6 @@ public class AuthenticationToken {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                System.out.println(line);
                 if (line.equals(String.format(nameKey, "uid"))) {
                     line = reader.readLine();
                     if (line != null) {
@@ -423,7 +421,11 @@ public class AuthenticationToken {
                     line = reader.readLine();
                     if (line != null) {
                         line = line.trim();
-                        u.setMail(line.replaceAll(valueKey, ""));
+                        String mail = line.replaceAll(valueKey, "");
+                        if (mail.equals("na")) {
+                            mail = "anonymous@anonymous.org";
+                        }
+                        u.setMail(mail);
                     }
                 } else if (line.equals(String.format(nameKey, "sn"))) {
                     line = reader.readLine();
@@ -448,7 +450,7 @@ public class AuthenticationToken {
                 try {
                     reader.close();
                 } catch (final IOException ex) {
-                    logger.info(null,ex);
+                    logger.info(null, ex);
                     exception = ex;
                 }
             }
@@ -456,7 +458,7 @@ public class AuthenticationToken {
                 try {
                     is.close();
                 } catch (final IOException ex) {
-                    logger.info(null,ex);
+                    logger.info(null, ex);
                     exception = ex;
                 }
             }
@@ -464,7 +466,7 @@ public class AuthenticationToken {
                 try {
                     poster.close();
                 } catch (final IOException ex) {
-                    logger.warn("IO Exception caught while closing the connection of a POST client",ex);
+                    logger.warn("IO Exception caught while closing the connection of a POST client", ex);
                     exception = ex;
                 }
             }
@@ -548,7 +550,7 @@ public class AuthenticationToken {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    logger.error(null,ex);
+                    logger.error(null, ex);
                     throw new ToxOtisException(ex);
                 }
             }
@@ -608,5 +610,4 @@ public class AuthenticationToken {
         sb.append("Status              : " + getStatus());
         return new String(sb);
     }
-    
 }

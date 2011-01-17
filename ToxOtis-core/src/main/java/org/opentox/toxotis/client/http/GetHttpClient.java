@@ -13,6 +13,8 @@ import org.opentox.toxotis.client.VRI;
  */
 public class GetHttpClient extends AbstractHttpClient implements IGetClient {
 
+    
+
     /** Create a new instance of GetHttpClient */
     public GetHttpClient() {
     }
@@ -22,6 +24,7 @@ public class GetHttpClient extends AbstractHttpClient implements IGetClient {
     }
 
     
+    @Override
     protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
@@ -43,6 +46,7 @@ public class GetHttpClient extends AbstractHttpClient implements IGetClient {
             throw new ToxOtisException(ex);
         }
     }
+    
 
     
 }
