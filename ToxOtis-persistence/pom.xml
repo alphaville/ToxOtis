@@ -52,7 +52,7 @@
         <dependency>
             <artifactId>ToxOtis-core</artifactId>
             <groupId>org.opentox.toxotis</groupId>
-            <version>0.5.2-SNAPSHOT</version>
+            <version>0.5.2</version>
         </dependency>
 
         <dependency>

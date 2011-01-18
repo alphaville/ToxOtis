@@ -118,7 +118,7 @@ public abstract class AbstractHttpClient implements IClient {
      */
     @Override
     public AbstractHttpClient authorize(AuthenticationToken token) {
-        return token != null ? addHeaderParameter(RequestHeaders.SSO_AUTHORIZATION, token.getTokenUrlEncoded()) : this;
+        return token != null ? addHeaderParameter(RequestHeaders.SSO_AUTHORIZATION, token.stringValue()) : this;
     }
 
     /**

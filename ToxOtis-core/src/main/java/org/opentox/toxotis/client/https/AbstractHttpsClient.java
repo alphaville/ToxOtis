@@ -240,7 +240,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
 
     @Override
     public AbstractHttpsClient authorize(AuthenticationToken token) {
-        return token != null ? addHeaderParameter(RequestHeaders.SSO_AUTHORIZATION, token.getTokenUrlEncoded()) : this;
+        return token != null ? addHeaderParameter(RequestHeaders.SSO_AUTHORIZATION, token.stringValue()) : this;
     }
 
     @Override
