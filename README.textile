@@ -59,6 +59,7 @@ h3. With Ant
 
 
 h2. Source Code and Javadoc
+
   You can manually download the latest version of the source code of ToxOtis from github either in zip or tar.gz format (click on the "Downloads" button). This is most likely to be a SNAPSHOT version. If you want the source code and/or the javadoc for a particular release version, here is an example source code (just choose the version you prefer):
 
 <pre>
