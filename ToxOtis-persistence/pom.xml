@@ -4,7 +4,7 @@
     <groupId>org.opentox.toxotis.persistence</groupId>
     <artifactId>ToxOtis-persistence</artifactId>
     <packaging>jar</packaging>
-    <version>0.4.2-SNAPSHOT</version>
+    <version>0.4.2</version>
     <name>ToxOtis-persistence</name>
     <description></description>
     <developers>

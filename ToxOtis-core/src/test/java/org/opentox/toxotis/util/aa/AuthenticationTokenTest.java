@@ -35,8 +35,13 @@ public class AuthenticationTokenTest {
     public void tearDown() {
     }
 
+
     @Test
     public void testUser() throws ToxOtisException {
+        /*
+         * Important todo:
+         * export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.22/
+         */
         // The user guest:guest is the public user of OpenTox (like Anonymous)
         try {
             AuthenticationToken at = new AuthenticationToken("guest", "guest");

@@ -5,7 +5,7 @@ h1. Τοξότης : Core Project
 h2. About
 
 <b>Version:</b>
- + "0.4.3.2":https://opentox.ntua.gr/dev/toxotis/0.4.3.2/, official alpha version. 
+ + "0.5.2":http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty/org/opentox/toxotis/ (Available from the "AMBIT":http://ambit.uni-plovdiv.bg:8083/nexus/index.html#view-repositories;thirdparty~browsestorage Maven repository.
 
 <b>Authors:</b>
  + "Sopasakis Pantelis":http://gr.linkedin.com/in/sopasakis
@@ -19,9 +19,64 @@ h2. About
  + You can find full documentation at the "doc":http://github.com/alphaville/ToxOtis/tree/master/doc/ directory including lots of examples. For any questions don't hesitate contact to the authors by sending a message to "alphaville":http://github.com/alphaville or "hampos":http://github.com/hampos (in "github":http://github.com ).
 
 
-h2. Download
+h2. Use ToxOtis
 
-  You can download the source code of ToxOtis from github either in zip or tar.gz format (click on the "Downloads" button). The jar and javadoc files are found online at "https://opentox.ntua.gr/dev/toxotis":https://opentox.ntua.gr/dev/toxotis and are regularly updated. Download the latest version of ToxOtis from that repository; To get the necessary libraries (jar files) you can either read the "Dependencies" section below or easier download what you need from "https://opentox.ntua.gr/dev/toxotis/external_libs":https://opentox.ntua.gr/dev/toxotis/external_libs/ : Download the file 'ToxOtisLibs.zip' unzip it and add all jar files in your classpath.
+h3. With Maven 
+
+   Recently ToxOtis migrated to "Maven":http://maven.apache.org/ so it becomes really easy for you to use ToxOtis in your Maven projects. ToxOtis, since version 0.5.2 (beta)  is deployed on the "AMBIT":http://ambit.uni-plovdiv.bg:8083/nexus/index.html#view-repositories;thirdparty~browsestorage repository as a 3rd-party 'artifact'. So, if you want to include the "core" module of ToxOtis in your project, simply put the following dependency in the pom file of your project:
+
+<pre>
+<dependencies>
+  <!-- ToxOtis Dependency -->
+  <dependency>
+    <groupId>org.opentox.toxotis</groupId>
+    <artifactId>ToxOtis-core</artifactId>
+    <version>0.5.2</version>
+  </dependency>
+  <!-- Other Dependencies you might have... -->
+</dependencide>
+</pre>
+
+and add once the following repository:
+
+<pre>
+<repositories>
+  <!-- ambit-plovdiv repository -->
+  <repository>
+    <id>ambit-plovdiv</id>
+    <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
+    <snapshots>
+      <enabled>false</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+</pre>
+
+
+h3. With Ant
+
+   If you prefer the ant-based ToxOtis the build.xml files are also distributed along with the source code. Alternatively run <code>mvn ant:ant</code> and create your own XML files for ant.
+
+
+h2. Source Code and Javadoc
+  You can manually download the latest version of the source code of ToxOtis from github either in zip or tar.gz format (click on the "Downloads" button). This is most likely to be a SNAPSHOT version. If you want the source code and/or the javadoc for a particular release version, here is an example source code (just choose the version you prefer):
+
+<pre>
+<!-- Dependency for Javadoc -->
+<dependency>
+  <groupId>org.opentox.toxotis</groupId>
+  <artifactId>ToxOtis-core</artifactId>
+  <version>0.5.2</version>
+  <classifier>javadoc</classifier>
+</dependency>
+<!-- Dependency for Sources -->
+<dependency>
+  <groupId>org.opentox.toxotis</groupId>
+  <artifactId>ToxOtis-core</artifactId>
+  <version>0.5.2</version>
+  <classifier>sources</classifier>
+</dependency>
+</pre>
 
 h2. Features
 
@@ -36,24 +91,12 @@ h3. Extensible
 We work on various extensions for ToxOtis including modules that will facilitate external developers towards builing their own web service applications or applications that need to consume OpenTox web services as client. Modules that provide extra security mechanisms and local account management, Hibernate support for ToxOtis to provide persistence for all core ToxOtis objects (Datasets, Algorithms, Models etc), Triple-storage database support (TDB) and lots of other features are under design and construction. The first release of "ToxOtis-Persistence":http://github.com/hampos/ToxOtis-persistence, a persistence module for ToxOtis, provides hibernate support for the core project. 
 
 
-h2. Dependencies
-
-This project depends on the following libraries (Should be downloaded and added in your classpath).
-
-* "Jena, version 2.6.2":http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download : Download Jena from "this link":http://sourceforge.net/projects/jena/files/Jena/Jena-2.6.2/jena-2.6.2.zip/download. [Make sure to download version 2.6.2. otherwise there is no guarantee it will work as expected.]
-
-* "Weka, version 3.6.2":http://sourceforge.net/projects/weka/files/weka-3-6/3.6.2/weka-3-6-2.zip/download : Download weka and add weka.jar in your classpath.
-
-* "JFreeChart 1.0.13":http://sourceforge.net/projects/jfreechart/files/1.%20JFreeChart/1.0.13/jfreechart-1.0.13.tar.gz/download : Download JFreeChart and enjoy free charts.
-
-If you wish, you can download the full set of dependencies (jar files only) from our online repository at "https://opentox.ntua.gr/dev/toxotis/external_libs":https://opentox.ntua.gr/dev/toxotis/external_libs/ and add all jar files in your classpath. All licenses are included in the "/Licenses":https://github.com/alphaville/ToxOtis/tree/master/Licenses directory of this project.
-
 h2. License
 
-This project, as well as all other projects developed by the NTUA developers team under OpeTox, is licensed under the "GNU GPL license version 3":http://www.gnu.org/licenses/gpl.html. There is a considerable debate taking place in the open source community regarding the use of the GPL or LGPL, while a variety of other licenses can be found on the web as well. However it is GNU itself that prompts developers to use GPL (read "this article":http://www.gnu.org/philosophy/why-not-lgpl.html).
+This project, as well as all other projects developed by the NTUA developers team under OpeTox, is licensed under the "GNU GPL license version 3":http://www.gnu.org/licenses/gpl.html. There is a considerable debate taking place in the open source community regarding the use of the GPL or LGPL, while a variety of other licenses can be found on the web as well. However it is GNU itself that prompts developers to use GPL (read "this article":http://www.gnu.org/philosophy/why-not-lgpl.html). The license of this project (ToxOtis) is also inherited by its modules (ToxOtis-core, ToxOtis-persistence and ToxOtis-benchmark).
 
 h2. Stay Tuned
 
 Follow "isToxic":http://twitter.com/isToxic on Twitter and stay tuned with the latest updates!
 
-Beta release of ToxOtis has been scheduled for January 15, 2011!
+
