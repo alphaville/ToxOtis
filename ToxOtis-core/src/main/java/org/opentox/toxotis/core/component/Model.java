@@ -470,7 +470,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setColWidth(1, 150).
                 setColWidth(2, 600);
 
-        if (getParameters() != null && getParameters() != null) {
+        if (getParameters() != null && !getParameters().isEmpty()) {
             builder.addSubSubSubHeading("Model Parameters");
             HTMLTable parametersTable = builder.addTable(2);
             parametersTable.setAtCursor(new HTMLTextImpl("Parameter Name").formatBold(true)).setAtCursor(new HTMLTextImpl("Value").formatBold(true));
