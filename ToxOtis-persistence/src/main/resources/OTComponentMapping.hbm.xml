@@ -164,9 +164,17 @@
                 <index column="indepFeature_idx" type="integer"/>
                 <many-to-many class="org.opentox.toxotis.core.component.Feature" column="featureUri" foreign-key="indepFeatureUri_ref_for_model"/>
             </list>
+            <list cascade="delete" name="dependentFeatures" table="ModelDepFeatures">
+                <key column="modelUri" foreign-key="modelUri_ref_for_dependentParameters"/>
+                <index column="depFeature_idx" type="integer"/>
+                <many-to-many class="org.opentox.toxotis.core.component.Feature" column="featureUri" foreign-key="depFeatureUri_ref_for_model"/>
+            </list>
+            <list cascade="delete" name="predictedFeatures" table="ModelPredFeatures">
+                <key column="modelUri" foreign-key="modelUri_ref_for_predictedParameters"/>
+                <index column="dpredictedFeature_idx" type="integer"/>
+                <many-to-many class="org.opentox.toxotis.core.component.Feature" column="featureUri" foreign-key="predictedFeatureUri_ref_for_model"/>
+            </list>
             <many-to-one class="org.opentox.toxotis.core.component.User" name="createdBy"/>
-            <many-to-one cascade="delete" class="org.opentox.toxotis.core.component.Feature" name="dependentFeature"/>
-            <many-to-one cascade="delete" class="org.opentox.toxotis.core.component.Feature" name="predictedFeature"/>
             <many-to-one cascade="delete" class="org.opentox.toxotis.core.component.Algorithm" name="algorithm"/>
             <property name="localCode" type="string" unique="true"/>
             <property name="dataset" type="org.opentox.toxotis.persistence.usertypes.VRIUserType"/>

@@ -1,3 +1,35 @@
+/*
+ *
+ * ToxOtis
+ *
+ * ToxOtis is the Greek word for Sagittarius, that actually means ‘archer’. ToxOtis
+ * is a Java interface to the predictive toxicology services of OpenTox. ToxOtis is
+ * being developed to help both those who need a painless way to consume OpenTox
+ * services and for ambitious service providers that don’t want to spend half of
+ * their time in RDF parsing and creation.
+ *
+ * Copyright (C) 2009-2010 Pantelis Sopasakis & Charalampos Chomenides
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact:
+ * Pantelis Sopasakis
+ * chvng@mail.ntua.gr
+ * Address: Iroon Politechniou St. 9, Zografou, Athens Greece
+ * tel. +30 210 7723236
+ *
+ */
 package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -5,14 +37,10 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.SimpleSelector;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Blob;
@@ -37,10 +65,8 @@ import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.ontology.MetaInfo;
-import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
-import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.ModelSpider;
 
@@ -58,8 +84,8 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
     private VRI dataset;
     private Algorithm algorithm;
-    private Feature predictedFeature;
-    private Feature dependentFeature;
+    private List<Feature> predictedFeatures;
+    private List<Feature> dependentFeatures;
     /*
      * Note: Converted from Set<Feature> to List<Feature> to make sure that the order
      * is preserved given that the use of LinkedHashSet<?> may guarrantee that fact in
@@ -71,9 +97,9 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private ArrayList<MultiParameter> multiParameters;
     private String localCode;
     private Serializable actualModel;
-    private byte[] model;
+    private byte[] modelBytes;
     private User createdBy;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Model.class);
+    private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Model.class);
 
     public Model(VRI uri) {
         super(uri);
@@ -96,12 +122,31 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return actualModel;
     }
 
-    public void setActualModel(Serializable actualModel) {
+    /**
+     * Set the actual model. This object is converted into an array of bytes using a
+     * <code>ByteArrayOutputStream</code> and an <code>ObjectOutputStream</code>.
+     * 
+     * @param actualModel
+     *      The object which can be used to perform predictions.
+     * @return
+     *      The current updated instance of the model containing the actual model
+     * @throws NotSerializableException
+     *      In case the provided actual model cannot be serialized. This is the case
+     *      when the provided model is an instance of a class which implements
+     *      <code>java.io.Serializable</code> but has some non-serializable fields.
+     *      In that case it is good practise to either exclude these fields from the
+     *      serialization tagging them as <code>transient</code> or replace them with
+     *      other serializable fields if possible
+     *
+     */
+    public Model setActualModel(Serializable actualModel) throws NotSerializableException {
         try {
             this.actualModel = actualModel;
-            this.model = getBytes(actualModel);
+            this.modelBytes = getBytes(actualModel);
+            return this;
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            logger.error("Could not serialize actual model", ex);
+            throw new NotSerializableException(actualModel.getClass().getName());
         }
 
     }
@@ -120,6 +165,12 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return data;
     }
 
+    /**
+     * If the actual model is stored as a file on the file system, this method returns
+     * the pathname for it.
+     * @return
+     *
+     */
     public String getLocalCode() {
         return localCode;
     }
@@ -148,24 +199,47 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return dataset;
     }
 
-    public void setDataset(VRI dataset) {
+    public Model setDataset(VRI dataset) {
         this.dataset = dataset;
+        return this;
     }
 
-    public Feature getDependentFeature() {
-        return dependentFeature;
+    public List<Feature> getDependentFeatures() {
+        return dependentFeatures;
     }
 
-    public void setDependentFeature(Feature dependentFeature) {
-        this.dependentFeature = dependentFeature;
+    public Model setDependentFeatures(List<Feature> dependentFeature) {
+        this.dependentFeatures = dependentFeature;
+        return this;
+    }
+
+    public Model addDependentFeatures(Feature... features) {
+        if (getDependentFeatures() == null) {
+            setDependentFeatures(new ArrayList<Feature>(features.length));
+        }
+        for (Feature f : features) {
+            getDependentFeatures().add(f);
+        }
+        return this;
     }
 
     public List<Feature> getIndependentFeatures() {
         return independentFeatures;
     }
 
-    public void setIndependentFeatures(List<Feature> independentFeatures) {
+    public Model setIndependentFeatures(List<Feature> independentFeatures) {
         this.independentFeatures = independentFeatures;
+        return this;
+    }
+
+    public Model addIndependentFeatures(Feature... features) {
+        if (getIndependentFeatures() == null) {
+            setIndependentFeatures(new ArrayList<Feature>(features.length));
+        }
+        for (Feature f : features) {
+            getIndependentFeatures().add(f);
+        }
+        return this;
     }
 
     public Set<Parameter> getParameters() {
@@ -180,22 +254,34 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return multiParameters;
     }
 
-    public void setMultiParameters(ArrayList<MultiParameter> multiParameters) {
+    public Model setMultiParameters(ArrayList<MultiParameter> multiParameters) {
         this.multiParameters = multiParameters;
+        return this;
     }
 
-    public Feature getPredictedFeature() {
-        return predictedFeature;
+    public List<Feature> getPredictedFeatures() {
+        return predictedFeatures;
     }
 
-    public void setPredictedFeature(Feature predictedFeature) {
-        this.predictedFeature = predictedFeature;
+    public Model setPredictedFeatures(List<Feature> predictedFeature) {
+        this.predictedFeatures = predictedFeature;
+        return this;
+    }
+
+    public Model addPredictedFeatures(Feature... features){
+        if (getPredictedFeatures() == null) {
+            setPredictedFeatures(new ArrayList<Feature>(features.length));
+        }
+        for (Feature f : features) {
+            getPredictedFeatures().add(f);
+        }
+        return this;
     }
 
     @Override
     public Individual asIndividual(OntModel model) {
         String modelUri = getUri() != null ? getUri().getStringNoQuery() : null;
-        
+
         Individual indiv = model.createIndividual(modelUri, OTClasses.Model().inModel(model));
 
         indiv.addComment(model.createTypedLiteral("Representation automatically generated by ToxOtis (http://github.com/alphaville/ToxOtis).",
@@ -217,13 +303,19 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 indiv.addProperty(multiParameterProperty, mp.asIndividual(model));
             }
         }
-        
-        if (dependentFeature != null) {
-            indiv.addProperty(OTObjectProperties.dependentVariables().asObjectProperty(model),dependentFeature.asIndividual(model));
+
+        if (dependentFeatures != null) {
+            Property dependentVariablsProperty = OTObjectProperties.dependentVariables().asObjectProperty(model);
+            for (Feature f : dependentFeatures) {
+                indiv.addProperty(dependentVariablsProperty, f.asIndividual(model));
+            }
         }
 
-        if (predictedFeature != null) {
-            indiv.addProperty(OTObjectProperties.predictedVariables().asObjectProperty(model), new Feature(predictedFeature.getUri()).asIndividual(model));
+        if (predictedFeatures != null) {
+            Property predictedVariablesProperty = OTObjectProperties.predictedVariables().asObjectProperty(model);
+            for (Feature f : predictedFeatures) {
+                indiv.addProperty(predictedVariablesProperty, new Feature(f.getUri()).asIndividual(model));
+            }
         }
 
         if (independentFeatures != null) {
@@ -245,16 +337,17 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return indiv;
     }
 
+    @Override
     protected Model loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
         ModelSpider spider = new ModelSpider(uri, token);
         Model m = spider.parse();
         setAlgorithm(m.getAlgorithm());
         setDataset(m.getDataset());
-        setDependentFeature(m.getDependentFeature());
+        setDependentFeatures(m.getDependentFeatures());
         setIndependentFeatures(m.getIndependentFeatures());
         setMeta(m.getMeta());
         setParameters(m.getParameters());
-        setPredictedFeature(m.getPredictedFeature());
+        setPredictedFeatures(m.getPredictedFeatures());
         setCreatedBy(m.getCreatedBy());
         return this;
     }
@@ -264,6 +357,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Model publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -291,8 +385,8 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     }
 
     public void setBlob(Blob modelBlob) {
-        this.model = toByteArray(modelBlob);
-        this.actualModel = (Serializable) toObject(model);
+        this.modelBytes = toByteArray(modelBlob);
+        this.actualModel = (Serializable) toObject(modelBytes);
     }
 
     public static Object toObject(byte[] bytes) {
@@ -306,11 +400,11 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     }
 
     public Blob getBlob() throws SerialException, SQLException {
-        if (this.model == null) {
+        if (this.modelBytes == null) {
             return null;
         }
         try {
-            return new SerialBlob(model);
+            return new SerialBlob(modelBytes);
         } catch (SerialException ex) {
             logger.warn("", ex);
             throw ex;
@@ -347,9 +441,10 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return baos.toByteArray();
     }
 
+    @Override
     public HTMLContainer inHtml() {
         HTMLDivBuilder builder = new HTMLDivBuilder("jaqpot_model");
-        builder.addComment("Model Representation automatically generated by YAQP");
+        builder.addComment("Model Representation automatically generated by JAQPOT");
         builder.addSubHeading("Model Report");
         builder.addSubSubHeading(uri.toString());
         builder.getDiv().setAlignment(Alignment.justify).breakLine().horizontalSeparator();
@@ -358,11 +453,11 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
         HTMLTable featuresTable = builder.addTable(2);
 
-        featuresTable.setAtCursor(new HTMLTextImpl("Dependent Feature").formatBold(true)).
-                setTextAtCursor(HTMLUtils.linkUrlsInText(getDependentFeature().getUri().toString())).
-                setAtCursor(new HTMLTextImpl("Predicted Feature").formatBold(true)).
-                setTextAtCursor(HTMLUtils.linkUrlsInText(getPredictedFeature() != null ? getPredictedFeature().getUri().toString() : "-")).
-                setAtCursor(new HTMLTextImpl("Independent Features").formatBold(true)).
+        featuresTable.setAtCursor(new HTMLTextImpl("Dependent Feature(s)").formatBold(true)).
+                setAtCursor(getDependentFeatures() != null ? HTMLUtils.createComponentList(getDependentFeatures(), null, null) : new HTMLTextImpl("-")).
+                setAtCursor(new HTMLTextImpl("Predicted Feature(s)").formatBold(true)).
+                setAtCursor(getPredictedFeatures() != null ? HTMLUtils.createComponentList(getPredictedFeatures(), null, null) : new HTMLTextImpl("-")).
+                setAtCursor(getIndependentFeatures() != null ? new HTMLTextImpl("Independent Features").formatBold(true) : new HTMLTextImpl("-")).
                 setAtCursor(HTMLUtils.createComponentList(getIndependentFeatures(), null, null)).
                 setAtCursor(new HTMLTextImpl("Training Algorithm").formatBold(true)).
                 setTextAtCursor(HTMLUtils.linkUrlsInText(getAlgorithm() != null ? getAlgorithm().getUri().toString() : "-")).

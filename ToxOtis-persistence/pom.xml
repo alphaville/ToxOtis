@@ -4,7 +4,7 @@
     <groupId>org.opentox.toxotis.persistence</groupId>
     <artifactId>ToxOtis-persistence</artifactId>
     <packaging>jar</packaging>
-    <version>0.4.2</version>
+    <version>0.4.3-SNAPSHOT</version>
     <name>ToxOtis-persistence</name>
     <description></description>
     <developers>
@@ -52,7 +52,7 @@
         <dependency>
             <artifactId>ToxOtis-core</artifactId>
             <groupId>org.opentox.toxotis</groupId>
-            <version>0.5.2</version>
+            <version>0.5.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -113,31 +113,7 @@
             </resource>
         </resources>
         <pluginManagement>
-
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>java</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <mainClass>
-                            com.mycompany.app.EventManager
-                        </mainClass>
-                        <arguments>
-                            <argument>store</argument>
-                        </arguments>
-                        <includeProjectDependencies>
-                            true
-                        </includeProjectDependencies>
-                    </configuration>
-                </plugin>
+            <plugins>                
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

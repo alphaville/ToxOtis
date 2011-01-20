@@ -1,3 +1,35 @@
+/*
+ *
+ * ToxOtis
+ *
+ * ToxOtis is the Greek word for Sagittarius, that actually means ‘archer’. ToxOtis
+ * is a Java interface to the predictive toxicology services of OpenTox. ToxOtis is
+ * being developed to help both those who need a painless way to consume OpenTox
+ * services and for ambitious service providers that don’t want to spend half of
+ * their time in RDF parsing and creation.
+ *
+ * Copyright (C) 2009-2010 Pantelis Sopasakis & Charalampos Chomenides
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact:
+ * Pantelis Sopasakis
+ * chvng@mail.ntua.gr
+ * Address: Iroon Politechniou St. 9, Zografou, Athens Greece
+ * tel. +30 210 7723236
+ *
+ */
 package org.opentox.toxotis.persistence;
 
 import java.io.File;
@@ -69,69 +101,69 @@ public class Persist {
 
 //        DeleteTool.deleteTask(session, Task.Status.RUNNING, Task.Status.QUEUED);
 
-        System.out.println("Storing Ontological Classes");
-        RegisterTool.storeAllOntClasses(session);
-        System.out.println("Ontological Classes stored successfully!\n");
+//        System.out.println("Storing Ontological Classes");
+//        RegisterTool.storeAllOntClasses(session);
+//        System.out.println("Ontological Classes stored successfully!\n");
+////
+//        System.out.println("Acquiring Token...");
+//        AuthenticationToken at = new AuthenticationToken(new File("/home/chung/toxotisKeys/my.key"));
+//        System.out.println("Done!");
+//        System.out.println("Authentication Token : \n" + at);
+//        System.out.println("User:\n" + at.getUser());
 //
-        System.out.println("Acquiring Token...");
-        AuthenticationToken at = new AuthenticationToken(new File("/home/chung/toxotisKeys/my.key"));
-        System.out.println("Done!");
-        System.out.println("Authentication Token : \n" + at);
-        System.out.println("User:\n" + at.getUser());
-
-        System.out.println("Loading Algorithm");
-        Algorithm algorithm = new Algorithm(Services.ntua().augment("algorithm", "svm")).loadFromRemote(at);
-        System.out.println("Algorithm Loaded");
-        System.out.println("Storing Algorithm");
-        RegisterTool.storeAlgorithm(algorithm, session);
-        System.out.println("Algorithm registered successfully!\n");
+//        System.out.println("Loading Algorithm");
+//        Algorithm algorithm = new Algorithm(Services.ntua().augment("algorithm", "svm")).loadFromRemote(at);
+//        System.out.println("Algorithm Loaded");
+//        System.out.println("Storing Algorithm");
+//        RegisterTool.storeAlgorithm(algorithm, session);
+//        System.out.println("Algorithm registered successfully!\n");
+////
+//        System.out.println("Loading Dataset");
+//        Dataset d = new Dataset(Services.ideaconsult().augment("dataset", "9").addUrlParameter("max", "5")).loadFromRemote();
+//        System.out.println("Dataset Loaded");
+//        System.out.println("Storing Dataset");
+//        RegisterTool.storeDataset(d, session);
+//        System.out.println("Dataset registered successfully!\n");
+////
+//        System.out.println("Loading Model");
+//        Model model = new Model(Services.ntua().augment("model", "934ef1d0-2080-48eb-9f65-f61b830b5783")).loadFromRemote();
+//        model.setActualModel(new java.net.URI("http://in.gr/#asdf"));
+//        System.out.println("Model Loaded");
+//        System.out.println("Storing Model");
+//        RegisterTool.storeModel(model, session);
+//        System.out.println("Model registered successfully!\n");
 //
-        System.out.println("Loading Dataset");
-        Dataset d = new Dataset(Services.ideaconsult().augment("dataset", "9").addUrlParameter("max", "5")).loadFromRemote();
-        System.out.println("Dataset Loaded");
-        System.out.println("Storing Dataset");
-        RegisterTool.storeDataset(d, session);
-        System.out.println("Dataset registered successfully!\n");
+////
+//        System.out.println("Loading Tasks");
+//        Task task_complete = new Task(Services.ntua().augment("task", "68d471ad-0287-4f6e-a200-244d0234e8a1")).loadFromRemote(at);
+//        System.out.println("Task #1 Loaded");
+//        Task task_error = new Task(Services.ntua().augment("task", "0980cbb3-a4a8-4a89-8538-51992d2fc67f")).loadFromRemote(at);
+//        System.out.println("Task #2 Loaded");
+//        System.out.println("Storing Tasks");
+//        RegisterTool.storeTask(session, task_complete);
+//        System.out.println("Task #1 registered successfully!");
+//        RegisterTool.storeTask(session, task_error);
+//        System.out.println("Task #2 registered successfully!");
+//        System.out.println();
 //
-        System.out.println("Loading Model");
-        Model model = new Model(Services.ntua().augment("model", "934ef1d0-2080-48eb-9f65-f61b830b5783")).loadFromRemote();
-        model.setActualModel(new java.net.URI("http://in.gr/#asdf"));
-        System.out.println("Model Loaded");
-        System.out.println("Storing Model");
-        RegisterTool.storeModel(model, session);
-        System.out.println("Model registered successfully!\n");
-
-//
-        System.out.println("Loading Tasks");
-        Task task_complete = new Task(Services.ntua().augment("task", "68d471ad-0287-4f6e-a200-244d0234e8a1")).loadFromRemote(at);
-        System.out.println("Task #1 Loaded");
-        Task task_error = new Task(Services.ntua().augment("task", "0980cbb3-a4a8-4a89-8538-51992d2fc67f")).loadFromRemote(at);
-        System.out.println("Task #2 Loaded");
-        System.out.println("Storing Tasks");
-        RegisterTool.storeTask(session, task_complete);
-        System.out.println("Task #1 registered successfully!");
-        RegisterTool.storeTask(session, task_error);
-        System.out.println("Task #2 registered successfully!");
-        System.out.println();
-
-        BibTeX b = new BibTeX(Services.ntua().augment("bibtex", "1"));
-        b.setAnnotation("asdf");
-        b.setAuthor("gdfgfdg");
-        RegisterTool.storeBibTeX(session, b);
-        /*
-         * For more info about criteria read:
-         * http://docs.jboss.org/hibernate/core/3.3/reference/en/html/querycriteria.html
-         */
-        System.out.println(OTClasses.Algorithm());
-        List resultsFoundInDB = session.createCriteria(Algorithm.class).list();
-//                add(Restrictions.like("uri", "%svm")).list();
-        System.out.println("found " + resultsFoundInDB.size());
-        for (Object o : resultsFoundInDB) {
-            Algorithm a = (Algorithm) o;
-            VRI c = a.getUri();
-            System.out.println(c);
-        }
-        session.close();
+//        BibTeX b = new BibTeX(Services.ntua().augment("bibtex", "1"));
+//        b.setAnnotation("asdf");
+//        b.setAuthor("gdfgfdg");
+//        RegisterTool.storeBibTeX(session, b);
+//        /*
+//         * For more info about criteria read:
+//         * http://docs.jboss.org/hibernate/core/3.3/reference/en/html/querycriteria.html
+//         */
+//        System.out.println(OTClasses.Algorithm());
+//        List resultsFoundInDB = session.createCriteria(Algorithm.class).list();
+////                add(Restrictions.like("uri", "%svm")).list();
+//        System.out.println("found " + resultsFoundInDB.size());
+//        for (Object o : resultsFoundInDB) {
+//            Algorithm a = (Algorithm) o;
+//            VRI c = a.getUri();
+//            System.out.println(c);
+//        }
+//        session.close();
 
     }
 }

@@ -53,6 +53,17 @@
     </distributionManagement>
 
     <profiles>
+
+        <profile>
+            <id>toxotis_properties</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+            </properties>
+        </profile>
+
         <profile>
             <id>release</id>
             <build>
@@ -82,7 +93,7 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>                                        
+                    </plugin>
                 </plugins>
             </build>
         </profile>

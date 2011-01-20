@@ -3,6 +3,9 @@ package org.opentox.toxotis.persistence;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.opentox.toxotis.persistence.util.HibernateUtil;
 
 /**
  * Unit test for simple App.
@@ -33,6 +36,8 @@ public class AppTest
      */
     public void testApp()
     {
-        assertTrue( true );
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        session.close();
     }
 }
