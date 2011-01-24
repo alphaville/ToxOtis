@@ -79,6 +79,7 @@ public class VariableInfo extends OTComponent<VariableInfo> {
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

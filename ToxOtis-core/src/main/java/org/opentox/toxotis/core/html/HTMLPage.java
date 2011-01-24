@@ -55,10 +55,18 @@ public interface HTMLPage {
     HTMLHead getHTMLHead();
 
     /**
-     *
+     *      Set the body of the HTML page.
      * @param body
+     *      The body of the HTML page
+     * @return
+     *      The current HTML page with updated HTML body
      */
     HTMLPage setHtmlBody(HTMLBody body);
 
+    /**
+     * Get the HTML body from the page.
+     * @return
+     *      The HTML body content of the page.
+     */
     HTMLBody getHtmlBody();
 }

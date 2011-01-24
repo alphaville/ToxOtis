@@ -162,6 +162,11 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
         return this;
     }
 
+    /**
+     * Return the current row defined by the cursor on the HTML table.
+     * @return
+     *      The current row on the editable HTML table.
+     */
     @Override
     public HTMLTableRow currentRow() {
         if (cursor == data.size()) {

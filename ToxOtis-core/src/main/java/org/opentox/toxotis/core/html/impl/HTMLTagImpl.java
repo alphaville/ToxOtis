@@ -80,6 +80,7 @@ public class HTMLTagImpl extends HTMLExpandableComponentImpl implements HTMLTag 
         return this;
     }
 
+    @Override
     public HTMLTag setContent(String content) {
         addComponent(new HTMLTextImpl(content));
         return this;

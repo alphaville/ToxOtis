@@ -197,6 +197,7 @@ public class Feature extends OTPublishable<Feature> {
         return new String(builder);
     }
 
+    @Override
     protected Feature loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
         FeatureSpider fSpider = new FeatureSpider(uri);
         Feature f = fSpider.parse();
@@ -253,6 +254,7 @@ public class Feature extends OTPublishable<Feature> {
      * @throws javax.xml.stream.XMLStreamException
      *     In case the serialization is not possible due to syntax errors.
      */
+    @Override
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         initRdfWriter(writer);
 

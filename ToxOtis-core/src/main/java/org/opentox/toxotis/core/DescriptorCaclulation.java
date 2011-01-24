@@ -55,6 +55,7 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  * Abstact class that implements the interface {@link IDescriptorCalculation } offering
  * some facilities for easier calculation of descriptors using a remote DC algorithm.
  * 
+ * @param <T> 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -70,6 +71,7 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
         super(uri);
     }
 
+    @Override
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {        
 
         /** REQUEST */
@@ -114,18 +116,22 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
         }
     }
 
+    @Override
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
         return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL", "true");
     }
 
+    @Override
     public Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
         return futureDescriptors(descriptorCalculationAlgorithm, token, Executors.newSingleThreadExecutor(), serviceConfiguration);
     }
 
+    @Override
     public Future<VRI> futureDescriptors(final VRI descriptorCalculationAlgorithm,
             final AuthenticationToken token, ExecutorService executor, final String... serviceConfiguration) {
         Future<VRI> future = executor.submit(new Callable<VRI>() {
 
+            @Override
             public VRI call() throws Exception {
                 Task t = calculateDescriptors(descriptorCalculationAlgorithm, token, serviceConfiguration);
                 final TaskRunner taskRunner = new TaskRunner(t);
@@ -140,14 +146,17 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
         return future;
     }
 
+    @Override
     public Future<VRI> futureCDKPhysChemDescriptors(AuthenticationToken token, VRI datasetService) throws ToxOtisException {
         return futureDescriptors(Services.DescriptorCalculation.cdkPhysChem(), token, datasetService);
     }
 
+    @Override
     public Future<VRI> futureJoeLibDescriptors(AuthenticationToken token, VRI datasetService) throws ToxOtisException {
         return futureDescriptors(Services.DescriptorCalculation.joelib(), token, datasetService);
     }
 
+    @Override
     public Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, VRI datasetService) throws ToxOtisException {
         ArrayList<String> options = new ArrayList<String>();
         options.add("ALL");

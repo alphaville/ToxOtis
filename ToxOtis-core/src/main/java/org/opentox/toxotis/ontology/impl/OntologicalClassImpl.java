@@ -47,7 +47,7 @@ public class OntologicalClassImpl implements OntologicalClass {
     private MetaInfo metaInfo = new MetaInfoImpl();
     private Set<OntologicalClass> superClasses = new HashSet<OntologicalClass>();
     private Set<OntologicalClass> disjointWith = new HashSet<OntologicalClass>();
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OntologicalClassImpl.class);
+    private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OntologicalClassImpl.class);
 
     /**
      * Contruct an empty instance of OntologicalClass. The namespace is by default
@@ -66,11 +66,7 @@ public class OntologicalClassImpl implements OntologicalClass {
     public OntologicalClassImpl(String name) {
         this();
         if (name == null) {
-            logger.warn("Setting null as the name of an ontological class");
-            StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-            for (StackTraceElement s : ste) {
-                System.out.println(s);
-            }
+            logger.trace("Setting null as the name of an ontological class");
         }
         this.name = name;
     }
@@ -88,10 +84,6 @@ public class OntologicalClassImpl implements OntologicalClass {
         this(name);
         if (namespace != null) {
             setNameSpace(namespace);
-        }
-        StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-        for (StackTraceElement s : ste) {
-            System.out.println(s);
         }
     }
 
@@ -138,10 +130,6 @@ public class OntologicalClassImpl implements OntologicalClass {
     public OntologicalClass setNameSpace(String ns) {
         if (ns == null) {
             logger.warn("Setting null as the namespace of an ontological class");
-            StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-            for (StackTraceElement s : ste) {
-                System.out.println(s);
-            }
         }
         this.ns = ns;
         return this;
@@ -155,11 +143,7 @@ public class OntologicalClassImpl implements OntologicalClass {
     @Override
     public OntologicalClass setName(String name) {
         if (name == null) {
-            logger.warn("Setting null as the namespace of an ontological class");
-            StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-            for (StackTraceElement s : ste) {
-                System.out.println(s);
-            }
+            logger.trace("Setting null as the namespace of an ontological class");
         }
         this.name = name;
         return this;
@@ -170,6 +154,7 @@ public class OntologicalClassImpl implements OntologicalClass {
         return ns + name;
     }
 
+    @Override
     public OntologicalClass setUri(String uri) {
         return this;
     }

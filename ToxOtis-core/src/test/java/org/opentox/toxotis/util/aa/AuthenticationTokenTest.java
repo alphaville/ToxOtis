@@ -56,7 +56,9 @@ public class AuthenticationTokenTest {
         } catch (ToxOtisException ex) {
             ex.printStackTrace();
         } finally {
-            at.invalidate();
+            if (at != null) {
+                at.invalidate();
+            }
         }
 
     }
@@ -66,7 +68,8 @@ public class AuthenticationTokenTest {
         try {
             new AuthenticationToken("wrongUser", "wrongPass");
         } catch (ToxOtisException ex) {
-            if (ErrorCause.CommunicationError.equals(ex.getCode())) {
+            System.out.println(ex.getCode());
+            if (ErrorCause.CommunicationError.equals(ex.getCode()) || ErrorCause.ConnectionException.equals(ex.getCode())) {
                 System.out.println("[WARNING] SSO server seems to be down!");
                 return;
             }
@@ -82,7 +85,7 @@ public class AuthenticationTokenTest {
         try {
             at = new AuthenticationToken("Sopasakis", "abfhs8y");
         } catch (ToxOtisException ex) {
-            if (ErrorCause.CommunicationError.equals(ex.getCode())) {
+            if (ErrorCause.CommunicationError.equals(ex.getCode()) || ErrorCause.ConnectionException.equals(ex.getCode())) {
                 System.out.println("[WARNING] SSO server seems to be down!");
                 return;
             }

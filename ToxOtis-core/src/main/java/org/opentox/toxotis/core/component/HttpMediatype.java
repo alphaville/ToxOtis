@@ -55,6 +55,7 @@ public class HttpMediatype extends OTComponent<HttpMediatype> {
         super(uri);
     }
 
+    @Override
     public Individual asIndividual(OntModel model) {
         String mediaUri = getUri() != null ? getUri().toString() : null;
         OntologicalClass ontClass = null;
@@ -70,6 +71,7 @@ public class HttpMediatype extends OTComponent<HttpMediatype> {
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

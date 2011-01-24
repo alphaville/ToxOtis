@@ -89,6 +89,7 @@ public class MetaInfoImpl implements MetaInfo {
         return new String(builder);
     }
 
+    @Override
     public Resource attachTo(Resource resource, OntModel model) {
         if (identifiers != null && !identifiers.isEmpty()) {
             AnnotationProperty identProp = model.getAnnotationProperty(DC.identifier.getURI());
@@ -228,6 +229,7 @@ public class MetaInfoImpl implements MetaInfo {
         }
     }
 
+    @Override
     public void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         if (identifiers != null) {
             for (LiteralValue lv : identifiers) {
@@ -293,15 +295,18 @@ public class MetaInfoImpl implements MetaInfo {
 
     }
 
+    @Override
     public Set<LiteralValue> getComments() {
         return comments;
     }
 
+    @Override
     public MetaInfo setComments(Set<LiteralValue> comments) {
         this.comments = comments;
         return this;
     }
 
+    @Override
     public MetaInfo addComment(String... comment) {
         if (getComments() == null) {
             setComments(new HashSet<LiteralValue>());
@@ -312,6 +317,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addComment(LiteralValue... comment) {
         if (this.comments != null) {
             for (LiteralValue lvc : comment) {
@@ -327,15 +333,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<LiteralValue> getDescriptions() {
         return this.descriptions;
     }
 
+    @Override
     public MetaInfo setDescriptions(Set<LiteralValue> descriptions) {
         this.descriptions = descriptions;
         return this;
     }
 
+    @Override
     public MetaInfo addDescription(LiteralValue... description) {
         if (getDescriptions() != null) {
             for (LiteralValue lv : description) {
@@ -352,6 +361,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addDescription(String... description) {
         for (String s : description) {
             addDescription(new LiteralValue<String>(s));
@@ -359,15 +369,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<LiteralValue> getIdentifiers() {
         return identifiers;
     }
 
+    @Override
     public MetaInfo setIdentifiers(Set<LiteralValue> identifiers) {
         this.identifiers = identifiers;
         return this;
     }
 
+    @Override
     public MetaInfo addIdentifier(LiteralValue... identifier) {
         if (getIdentifiers() != null) {
             for (LiteralValue lv : identifier) {
@@ -383,6 +396,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addIdentifier(String... identifier) {
         for (String s : identifier) {
             addIdentifier(new LiteralValue<String>(s));
@@ -390,15 +404,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<ResourceValue> getSameAs() {
         return sameAs;
     }
 
+    @Override
     public MetaInfo setSameAs(Set<ResourceValue> values) {
         this.sameAs = values;
         return this;
     }
 
+    @Override
     public MetaInfo addSameAs(ResourceValue value) {
         if (getSameAs() != null) {
             getSameAs().add(value);
@@ -410,15 +427,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<ResourceValue> getSeeAlso() {
         return seeAlso;
     }
 
+    @Override
     public MetaInfo setSeeAlso(Set<ResourceValue> values) {
         this.seeAlso = values;
         return this;
     }
 
+    @Override
     public MetaInfo addSeeAlso(ResourceValue value) {
         if (getSeeAlso() != null) {
             getSeeAlso().add(value);
@@ -430,10 +450,12 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<LiteralValue> getTitles() {
         return titles;
     }
 
+    @Override
     public MetaInfo setTitles(Set<LiteralValue> values) {
         this.titles = values;
         return this;
@@ -444,6 +466,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addTitle(LiteralValue... value) {
         if (getTitles() != null) {
             for (LiteralValue lv : value) {
@@ -459,6 +482,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addTitle(String... value) {
         for (String s : value) {
             addTitle(new LiteralValue<String>(s));
@@ -466,15 +490,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<LiteralValue> getSubjects() {
         return subjects;
     }
 
+    @Override
     public MetaInfo setSubjects(Set<LiteralValue> subjects) {
         this.subjects = subjects;
         return this;
     }
 
+    @Override
     public MetaInfo addSubject(LiteralValue... subject) {
         if (getSubjects() != null) {
             for (LiteralValue lv : subject) {
@@ -490,6 +517,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addSubject(String... subject) {
         for (String x : subject) {
             addSubject(new LiteralValue<String>(x));
@@ -497,15 +525,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<LiteralValue> getPublishers() {
         return publishers;
     }
 
+    @Override
     public MetaInfo setPublishers(Set<LiteralValue> publishers) {
         this.publishers = publishers;
         return this;
     }
 
+    @Override
     public MetaInfo addPublisher(LiteralValue... publisher) {
         if (getPublishers() != null) {
             for (LiteralValue lv : publisher) {
@@ -521,6 +552,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addPublisher(String... publisher) {
         for (String x : publisher) {
             addPublisher(new LiteralValue<String>(x));
@@ -528,15 +560,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<LiteralValue> getCreators() {
         return creators;
     }
 
+    @Override
     public MetaInfo setCreators(Set<LiteralValue> creators) {
         this.creators = creators;
         return this;
     }
 
+    @Override
     public MetaInfo addCreator(LiteralValue... creator) {
         if (getCreators() != null) {
             for (LiteralValue lv : creator) {
@@ -552,6 +587,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addCreator(String... creator) {
         for (String x : creator) {
             addCreator(new LiteralValue<String>(x));
@@ -559,15 +595,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<ResourceValue> getHasSources() {
         return hasSources;
     }
 
+    @Override
     public MetaInfo setHasSources(Set<ResourceValue> hasSources) {
         this.hasSources = hasSources;
         return this;
     }
 
+    @Override
     public MetaInfo addHasSource(ResourceValue hasSource) {
         if (getHasSources() != null) {
             getHasSources().add(hasSource);
@@ -579,15 +618,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<LiteralValue> getContributors() {
         return contributors;
     }
 
+    @Override
     public MetaInfo setContributors(Set<LiteralValue> contributors) {
         this.contributors = contributors;
         return this;
     }
 
+    @Override
     public MetaInfo addContributor(LiteralValue... contributor) {
         if (getContributors() != null) {
             for (LiteralValue lv : contributor) {
@@ -603,6 +645,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addContributor(String... contributor) {
         for (String x : contributor) {
             addContributor(new LiteralValue<String>(x));
@@ -610,15 +653,18 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public Set<LiteralValue> getAudiences() {
         return audiences;
     }
 
+    @Override
     public MetaInfo setAudiences(Set<LiteralValue> audiences) {
         this.audiences = audiences;
         return this;
     }
 
+    @Override
     public MetaInfo addAudience(LiteralValue... audience) {
         if (getAudiences() != null) {
             for (LiteralValue lv : audience) {
@@ -634,6 +680,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addAudience(String... audience) {
         for (String x : audience) {
             addAudience(new LiteralValue<String>(x));
@@ -641,10 +688,12 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public LiteralValue getDate() {
         return date;
     }
 
+    @Override
     public MetaInfo setDate(LiteralValue date) {
         this.date = date;
         return this;
@@ -661,6 +710,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public long getHash() {
         int hash = 3;
         hash = 89 * hash + (this.identifiers != null ? this.identifiers.hashCode() : 0);
@@ -679,6 +729,7 @@ public class MetaInfoImpl implements MetaInfo {
         return hash;
     }
 
+    @Override
     public void setHash(long hash) {
     }
 
@@ -752,6 +803,7 @@ public class MetaInfoImpl implements MetaInfo {
         return hash;
     }
 
+    @Override
     public HTMLContainer inHtml() {
         HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
         HTMLTable table = builder.addTable(2);
@@ -857,6 +909,7 @@ public class MetaInfoImpl implements MetaInfo {
         }
     }
 
+    @Override
     public boolean isEmpty() {
         if (getAudiences() != null && !getAudiences().isEmpty()) {
             return false;
@@ -903,15 +956,18 @@ public class MetaInfoImpl implements MetaInfo {
         return true;
     }
 
+    @Override
     public Set<LiteralValue> getRights() {
         return this.rights;
     }
 
+    @Override
     public MetaInfo setRights(Set<LiteralValue> rights) {
         this.rights = rights;
         return this;
     }
 
+    @Override
     public MetaInfo addRights(LiteralValue... rights) {
         if (this.rights == null) {
             this.rights = new HashSet<LiteralValue>();
@@ -922,6 +978,7 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    @Override
     public MetaInfo addRights(String... rights) {
         if (this.rights == null) {
             this.rights = new HashSet<LiteralValue>();

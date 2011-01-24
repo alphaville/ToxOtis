@@ -237,7 +237,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
             wr.flush();
             wr.close();
         } catch (final IOException ex) {
-            throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
+            throw new ToxOtisException(ErrorCause.ConnectionException,"I/O Exception caught while posting the parameters", ex);
         } finally {
             getPostLock().unlock(); // <<< UNLOCKed
         }

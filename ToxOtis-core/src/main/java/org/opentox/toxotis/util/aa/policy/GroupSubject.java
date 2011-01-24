@@ -32,6 +32,8 @@
  */
 package org.opentox.toxotis.util.aa.policy;
 
+import org.opentox.toxotis.util.LoggingConfiguration;
+
 
 /**
  * A collection of standard groups of Users used to identify certain access levels.
@@ -40,9 +42,22 @@ package org.opentox.toxotis.util.aa.policy;
  */
 public class GroupSubject extends PolicySubject {
 
+    /**
+     * Group of all OpenTox developers.
+     */
     public static final GroupSubject DEVELOPMENT = new GroupSubject("development");
+    /**
+     * Group of all partners in OpenTox.
+     */
     public static final GroupSubject PARTNER = new GroupSubject("partner");
+    /**
+     * All OpenTox members as a group, including the user <code>guest:guest</code>.
+     */
+    public static final GroupSubject MEMBER = new GroupSubject("member");
 
+    /**
+     *
+     */
     public GroupSubject() {
         LDAP_Type = "LDAPGroups";
     }
@@ -52,8 +67,13 @@ public class GroupSubject extends PolicySubject {
         setSubjectName(groupName);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getValue() {
         return "cn=" + getSubjectName() + ", ou=groups, dc=opentox,dc=org";
     }
+
 }

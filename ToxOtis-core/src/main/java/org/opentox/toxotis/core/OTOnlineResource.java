@@ -64,6 +64,9 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> implements IOnlineResource {
 
     private static final String XSD_DOC_PAGE_TEMPLATE = "http://www.w3.org/TR/xmlschema-2/#%s";
+    /**
+     * Assigns a documentation link to each XSDDataType element.
+     */
     protected static Map<String, String> XSD_DATATYPE_LINKS = new HashMap<String, String>();
 
     static {

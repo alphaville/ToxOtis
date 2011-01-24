@@ -52,6 +52,7 @@ public class HttpMethod extends OTComponent<HttpMethod> {
         this.methodEnumElement = method;
     }
 
+    @Override
     public Individual asIndividual(OntModel model) {
         String httpMehtodUri = getUri() != null ? getUri().toString() : null;
         Individual indiv = model.createIndividual(httpMehtodUri, methodEnumElement.getResourceValue().inModel(model));
@@ -61,6 +62,7 @@ public class HttpMethod extends OTComponent<HttpMethod> {
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

@@ -20,6 +20,7 @@ import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.persistence.util.HibernateUtil;
+import org.opentox.toxotis.util.LoggingConfiguration;
 import static org.junit.Assert.*;
 
 /**
@@ -32,7 +33,7 @@ public class RegisterToolTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() throws Exception {        
     }
 
     @AfterClass
@@ -49,6 +50,7 @@ public class RegisterToolTest {
 
     @Test
     public void testSomeMethod() throws ToxOtisException, NotSerializableException {
+        LoggingConfiguration.configureLog4jDefault();
         SessionFactory sf = HibernateUtil.getSessionFactory();
         Session session = sf.openSession();
         final boolean doAlter = true;

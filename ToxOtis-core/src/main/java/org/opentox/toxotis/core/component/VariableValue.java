@@ -44,6 +44,7 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
  *
+ * @param <T> The variable value type for internal storage of the value
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -107,6 +108,7 @@ public class VariableValue<T> extends OTComponent<VariableValue<T>> {
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

@@ -255,7 +255,7 @@ public class FeatureFactory {
      *
      * @param metaInfo
      *      Meta-information about the feature
-     * @param fetureService
+     * @param featureService 
      *      Feature service URI to which the created feature should be posted
      * @param token
      *      Authentication token used to authenticate and authorize the user to

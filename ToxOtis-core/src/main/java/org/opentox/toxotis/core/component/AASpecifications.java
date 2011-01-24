@@ -54,6 +54,7 @@ import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
+ * @deprecated
  */
 @Deprecated
 public class AASpecifications extends OTComponent<AASpecifications> {
@@ -98,6 +99,7 @@ public class AASpecifications extends OTComponent<AASpecifications> {
         return this;
     }
 
+    @Override
     public Individual asIndividual(OntModel model) {
         String aaSpecUri = getUri() != null ? getUri().toString() : null;
         Individual indiv = model.createIndividual(aaSpecUri, OTRestClasses.AA().inModel(model));
@@ -118,6 +120,7 @@ public class AASpecifications extends OTComponent<AASpecifications> {
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

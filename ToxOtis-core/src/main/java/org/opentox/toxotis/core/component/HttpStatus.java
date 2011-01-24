@@ -70,6 +70,7 @@ public class HttpStatus extends OTComponent<HttpStatus> {
         this.httpStatusClass = httpStatusClass;
     }
 
+    @Override
     public Individual asIndividual(OntModel model) {
         String httpStatusUri = getUri() != null ? getUri().toString() : null;
         Individual indiv = model.createIndividual(httpStatusUri, OTRestClasses.HTTPStatus().inModel(model));
@@ -82,6 +83,7 @@ public class HttpStatus extends OTComponent<HttpStatus> {
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

@@ -94,16 +94,52 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     MetaInfo setComments(Set<LiteralValue> comments);
     
+    /**
+     * Add comments to the current instance of MetaInfo
+     * @param comment
+     *      Sequence of comments provided for this MetaInfo object as literal
+     *      value objects.
+     * @return
+     *      The current modifiable MetaInfo object.
+     */
     MetaInfo addComment(LiteralValue... comment);
 
+    /**
+     * Add comments to the current instance of MetaInfo
+     * @param comment
+     *      Sequence of comments provided for this MetaInfo object as plain strings.
+     * @return
+     *      The current modifiable MetaInfo object.
+     */
     MetaInfo addComment(String... comment);
 
+    /**
+     * Copyright notes for the underlying resource.
+     * @return
+     *      Set of copyright notes for the underlying resource for which this
+     *      meta-info element is composed.
+     */
     Set<LiteralValue> getRights();
 
+    /**
+     *
+     * @param rights
+     * @return
+     */
     MetaInfo setRights(Set<LiteralValue> rights);
 
+    /**
+     *
+     * @param rights
+     * @return
+     */
     MetaInfo addRights(LiteralValue... rights);
 
+    /**
+     *
+     * @param rights
+     * @return
+     */
     MetaInfo addRights(String... rights);
 
     //// 2. descriptions
@@ -117,10 +153,27 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     Set<LiteralValue> getDescriptions();
 
+    /**
+     * Provide set of descriptions
+     * @param descriptions
+     *      Set of descriptions as literal values
+     * @return
+     *
+     */
     MetaInfo setDescriptions(Set<LiteralValue> descriptions);
 
+    /**
+     *
+     * @param description
+     * @return
+     */
     MetaInfo addDescription(LiteralValue... description);
 
+    /**
+     *
+     * @param description
+     * @return
+     */
     MetaInfo addDescription(String... description);
 
     /**
@@ -136,10 +189,25 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     Set<LiteralValue> getIdentifiers();
 
+    /**
+     *
+     * @param identifiers
+     * @return
+     */
     MetaInfo setIdentifiers(Set<LiteralValue> identifiers);
 
+    /**
+     *
+     * @param identifier
+     * @return
+     */
     MetaInfo addIdentifier(LiteralValue... identifier);
 
+    /**
+     *
+     * @param identifier
+     * @return
+     */
     MetaInfo addIdentifier(String... identifier);
 
     //// 4. sameAs
@@ -166,8 +234,18 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     Set<ResourceValue> getSameAs(); // TODO: Change this into some other class...
 
+    /**
+     *
+     * @param values
+     * @return
+     */
     MetaInfo setSameAs(Set<ResourceValue> values);
 
+    /**
+     *
+     * @param value
+     * @return
+     */
     MetaInfo addSameAs(ResourceValue value);
 
     //// 5. seeAlso
@@ -184,8 +262,18 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     Set<ResourceValue> getSeeAlso(); // TODO: Change this into some other class...
 
+    /**
+     *
+     * @param values
+     * @return
+     */
     MetaInfo setSeeAlso(Set<ResourceValue> values);
 
+    /**
+     *
+     * @param value
+     * @return
+     */
     MetaInfo addSeeAlso(ResourceValue value);
 
     //// 6. titles (dc:title)
@@ -198,10 +286,25 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     Set<LiteralValue> getTitles();
 
+    /**
+     *
+     * @param values
+     * @return
+     */
     MetaInfo setTitles(Set<LiteralValue> values);
 
+    /**
+     *
+     * @param value
+     * @return
+     */
     MetaInfo addTitle(LiteralValue... value);
 
+    /**
+     *
+     * @param value
+     * @return
+     */
     MetaInfo addTitle(String... value);
 
     //// 7. subjects (dc:subject)
@@ -216,20 +319,54 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     Set<LiteralValue> getSubjects();
 
+    /**
+     *
+     * @param subjects
+     * @return
+     */
     MetaInfo setSubjects(Set<LiteralValue> subjects);
 
+    /**
+     *
+     * @param subject
+     * @return
+     */
     MetaInfo addSubject(LiteralValue... subject);
 
+    /**
+     *
+     * @param subject
+     * @return
+     */
     MetaInfo addSubject(String... subject);
 
     //// 8. publishers
     ////
+    /**
+     *
+     * @return
+     */
     Set<LiteralValue> getPublishers();
 
+    /**
+     *
+     * @param publishers
+     * @return
+     */
     MetaInfo setPublishers(Set<LiteralValue> publishers);
 
+    /**
+     *
+     * @param publisher
+     * @return
+     */
     MetaInfo addPublisher(LiteralValue... publisher);
 
+    /**
+     *
+     * @param publisher
+     * @return
+     */
     MetaInfo addPublisher(String... publisher);
 
     //// 9. creators
@@ -243,42 +380,118 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     Set<LiteralValue> getCreators();
 
+    /**
+     *
+     * @param creators
+     * @return
+     */
     MetaInfo setCreators(Set<LiteralValue> creators);
 
+    /**
+     *
+     * @param creator
+     * @return
+     */
     MetaInfo addCreator(LiteralValue... creator);
 
+    /**
+     *
+     * @param creator
+     * @return
+     */
     MetaInfo addCreator(String... creator);
 
     //// 10. Sources (ot:hasSource)
     ////
+    /**
+     *
+     * @return
+     */
     Set<ResourceValue> getHasSources();
 
+    /**
+     *
+     * @param hasSources
+     * @return
+     */
     MetaInfo setHasSources(Set<ResourceValue> hasSources);
 
+    /**
+     *
+     * @param hasSource
+     * @return
+     */
     MetaInfo addHasSource(ResourceValue hasSource);
 
     //// 11. Contributors
 
+    /**
+     *
+     * @return
+     */
     Set<LiteralValue> getContributors();
 
+    /**
+     *
+     * @param contributors
+     * @return
+     */
     MetaInfo setContributors(Set<LiteralValue> contributors);
 
+    /**
+     *
+     * @param contributor
+     * @return
+     */
     MetaInfo addContributor(LiteralValue... contributor);
 
+    /**
+     *
+     * @param contributor
+     * @return
+     */
     MetaInfo addContributor(String... contributor);
 
 
 
+    /**
+     *
+     * @return
+     */
     Set<LiteralValue> getAudiences();
 
+    /**
+     *
+     * @param audiences
+     * @return
+     */
     MetaInfo setAudiences(Set<LiteralValue> audiences);
 
+    /**
+     *
+     * @param audience
+     * @return
+     */
     MetaInfo addAudience(LiteralValue... audience);
 
+    /**
+     *
+     * @param audience
+     * @return
+     */
     MetaInfo addAudience(String... audience);
 
-    LiteralValue getDate();// used for versioning, timestamping e
+    /**
+     *
+     * @return
+     */
+    LiteralValue getDate();// used for versioning, timestamping 
 
+    /**
+     *
+     * @param date
+     * @return
+     */
     MetaInfo setDate(LiteralValue date);
 
     // --------------------------------------------------------------
@@ -347,8 +560,16 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     void writeToStAX(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException;
 
+    /**
+     *
+     * @return
+     */
     long getHash();
 
+    /**
+     *
+     * @param hash
+     */
     void setHash(long hash);
 
     /**

@@ -39,6 +39,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 /**
  * Declares that a class is supported by the ontology service.
  * 
+ * @param <T>
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -50,6 +51,7 @@ public interface IOntologyServiceSupport<T extends OTOnlineResource> extends IOT
      * found through the lookup services of OpenTox and will be available in the
      * demo applications of OpenTox (ToxPredict and ToxCreate).
      *
+     * @param ontologyService 
      * @param token
      *      An authentication token is needed in case the ontology service
      *

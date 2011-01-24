@@ -136,6 +136,7 @@ public class PasswordFileManager extends Observable {
         super();
         addObserver(new Observer() {
 
+            @Override
             public void update(Observable o, Object arg) {
                 PasswordFileManager.CRYPTO.fileCreationProgress = Double.parseDouble(arg.toString());
             }

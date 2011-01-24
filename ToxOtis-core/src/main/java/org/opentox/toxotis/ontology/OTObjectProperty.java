@@ -61,6 +61,13 @@ public interface OTObjectProperty extends OTProperty {
      */
     Collection<OntologicalClass> getRange();
 
+    /**
+     * Setter method for the range of the current object property. The range is defined
+     * as a collection of ontological classes.
+     * @param range
+     *      Set of ontological classes whose union defines the range of the current
+     *      object property.
+     */
     void setRange(Collection<OntologicalClass> range);
 
     /**

@@ -93,10 +93,27 @@ public class BibTeX extends OTPublishable<BibTeX>
      */
     public enum BIB_TYPE {
 
+        /**
+         * An article
+         */
         Article,
+        /**
+         * A book
+         */
         Book,
+        /**
+         * An oral presentation or a poster presented in a conference or document 
+         * that was presented in a conference by any means. Symposium, workshops and
+         * other similar presentations are also reported here.
+         */
         Conference,
+        /**
+         * A PhD dissertation
+         */
         Phdthesis,
+        /**
+         * A generic BibTeX entry which encapsulates all cases.
+         */
         Entry;
     }
     /*
@@ -630,12 +647,14 @@ public class BibTeX extends OTPublishable<BibTeX>
      * removed in some future distribution. Use {@link BibTeX#toString() } instead.
      * @return
      *      Plain text representation of the BibTeX resource.
+     * @deprecated
      */
     @Deprecated
     public String getPlainText() {
         return toString();
     }
 
+    @Override
     public Individual asIndividual(OntModel model) {
         String bibtexUri = uri != null ? uri.toString() : null;
         Individual indiv = null;

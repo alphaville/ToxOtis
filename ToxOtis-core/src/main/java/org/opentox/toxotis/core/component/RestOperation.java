@@ -89,15 +89,18 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      * @return
      *      Set of ontological classes
      */
+    @Override
     public Set<OntologicalClass> getRestClasses() {
         return restClasses;
     }
 
+    @Override
     public RestOperation setRestClasses(Set<OntologicalClass> restClasses) {
         this.restClasses = restClasses;
         return this;
     }
 
+    @Override
     public RestOperation addRestClasses(OntologicalClass... restClasses) {
         if (this.restClasses == null) {
             this.restClasses = new HashSet<OntologicalClass>();
@@ -113,15 +116,26 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      * @return
      *      Http Method as element of the enumeration {@link MethodsEnum }.
      */
+    @Override
     public HttpMethod getMethod() {
         return method;
     }
 
+    /**
+     *      Update the REST Operation automatic documentation setting the corresponding
+     *      method to which the specifications refer.
+     * @param httpMethod
+     *      HTTP Method object
+     * @return
+     *      The updated modifiable instance of REST operation documentation.
+     */
+    @Override
     public RestOperation setMethod(HttpMethod httpMethod) {
         this.method = httpMethod;
         return this;
     }
 
+    @Override
     public RestOperation setMethod(MethodsEnum httpMethod) {
         this.method = new HttpMethod(httpMethod);
         return this;
@@ -134,15 +148,18 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      * @return
      *      Specifications for the input parameters expected by the client.
      */
+    @Override
     public Set<HttpParameter> getHttpParameters() {
         return httpParameters;
     }
 
+    @Override
     public RestOperation setHttpParameters(Set<HttpParameter> httpParameters) {
         this.httpParameters = httpParameters;
         return this;
     }
 
+    @Override
     public RestOperation addHttpParameters(HttpParameter... httpParameters) {
         if (getHttpParameters() == null) {
             setHttpParameters(new HashSet<HttpParameter>());
@@ -153,15 +170,18 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         return this;
     }
 
+    @Override
     public Set<HttpMediatype> getMediaTypes() {
         return mediaTypes;
     }
 
+    @Override
     public IRestOperation setMediaTypes(Set<HttpMediatype> mediaTypes) {
         this.mediaTypes = mediaTypes;
         return this;
     }
 
+    @Override
     public IRestOperation addMediaTypes(HttpMediatype... mediaTypes) {
         if (getMediaTypes() == null) {
             setMediaTypes(new HashSet<HttpMediatype>(mediaTypes.length));
@@ -181,15 +201,18 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      * @return
      *      Set of ontological classes that describe the available status codes.
      */
+    @Override
     public Set<HttpStatus> getHttpStatusCodes() {
         return httpStatusCodes;
     }
 
+    @Override
     public RestOperation setHttpStatusCodes(Set<HttpStatus> httpStatusCodes) {
         this.httpStatusCodes = httpStatusCodes;
         return this;
     }
 
+    @Override
     public RestOperation addHttpStatusCodes(HttpStatus... httpStatusCodes) {
         if (getHttpStatusCodes() == null) {
             setHttpStatusCodes(new HashSet<HttpStatus>());
@@ -200,6 +223,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         return this;
     }
 
+    @Override
     public Individual asIndividual(OntModel model) {
         String restOperationUri = getUri() != null ? getUri().toString() : null;
         /* Initialization of an otrs:RESTOperation individual */
@@ -243,18 +267,22 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public IRestOperation addUrlParameter(String urlParameterName, boolean optional, XSDDatatype type) {
         return addUrlParameter(urlParameterName, optional, type, new MetaInfoImpl());
     }
 
+    @Override
     public IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType) {
         return addSimpleHeader(headerName, optional, xsdType, new MetaInfoImpl());
     }
 
+    @Override
     public IRestOperation setProtectedResource(boolean protectedResource) {
         if (getOntologicalClasses() == null) {
             setOntologicalClasses(new HashSet<OntologicalClass>());
@@ -305,6 +333,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         return hash;
     }
 
+    @Override
     public IRestOperation addUrlParameter(String urlParameterName, boolean optional, XSDDatatype type, MetaInfo meta) {
         if (getHttpParameters() == null) {
             setHttpParameters(new HashSet<HttpParameter>());
@@ -319,6 +348,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         return this;
     }
 
+    @Override
     public IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType, MetaInfo meta) {
         if (getHttpParameters() == null) {
             setHttpParameters(new HashSet<HttpParameter>());

@@ -52,6 +52,7 @@ public class SimpleOntModelImpl extends OntModelImpl {
         super(OntModelSpec.OWL_DL_MEM);
         Map<String, String> map = new HashMap<String, String>();
         map.put("ota", "http://www.opentox.org/algorithmTypes.owl/#");
+        map.put("otrs", "http://opentox.org/opentox-rest.owl#");
         map.put("ot", OTClasses.NS);
         map.put("dc", DC.NS);
         map.put("bibtex", KnoufBibTex.NS);

@@ -65,6 +65,7 @@ public class DummyComponent extends OTComponent<DummyComponent>{
         addOntologicalClasses(OTClasses.OpenToxResource());
     }
 
+    @Override
     public Individual asIndividual(OntModel om) {
         OntologicalClass ontologicalClass = null;
         if (getOntologicalClasses()!=null && !getOntologicalClasses().isEmpty()){
@@ -78,6 +79,7 @@ public class DummyComponent extends OTComponent<DummyComponent>{
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

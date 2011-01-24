@@ -66,6 +66,7 @@ public class Policy implements IPolicy {
     private String subjectsDescription = "";
     private Document policyDocument = null;
 
+    @Override
     public Element xmlElement(Document doc, Element policies) {
         Element policy = (Element) doc.createElement("Policy");
         policy.setAttribute("name", getPolicyName());
@@ -134,44 +135,54 @@ public class Policy implements IPolicy {
         return actionAVP;
     }
 
+    @Override
     public String getText() {
         PolicyWrapper pw = new PolicyWrapper();
         return pw.getText();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
+    @Override
     public Document getDocument() {
         return policyDocument;
     }
 
+    @Override
     public String getPolicyName() {
         return policyName;
     }
 
+    @Override
     public void setPolicyName(String policyName) {
         this.policyName = policyName;
     }
 
+    @Override
     public void addRule(IPolicyRule rule) {
         rules.add(rule);
     }
 
+    @Override
     public void addSubject(PolicySubject subject) {
         subjects.add(subject);
     }
 
+    @Override
     public String getSubjectsCollectionName() {
         return subjectsCollectionName;
     }
 
+    @Override
     public void setSubjectsCollectionName(String subjectsCollectionName) {
         this.subjectsCollectionName = subjectsCollectionName;
     }
 
+    @Override
     public String getSubjectsDescription() {
         return subjectsDescription;
     }
 
+    @Override
     public void setSubjectsDescription(String subjectsDescription) {
         this.subjectsDescription = subjectsDescription;
     }// </editor-fold>
@@ -199,6 +210,7 @@ public class Policy implements IPolicy {
      *      If the token the user uses is not active (because it has been invalidated,
      *      expired, or not initialized yet).
      */
+    @Override
     public int publish(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
         PolicyWrapper pw = new PolicyWrapper(this);
         return pw.publish(policyServer, token);

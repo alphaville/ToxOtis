@@ -77,7 +77,7 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      * @param vri
      *      URI of the service that is responsible for the publication of
      *      this kind of resources.
-     * @param token
+     * @param token 
      *      Provide an authentication token. If you think that the service does not
      *      require auhtentication/authorization, you can leave this field <code>null</code> or
      *      you can provide an empty authentication token. If the provided URI
@@ -111,6 +111,7 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
         }
         Callable<VRI> backgroundJob = new Callable<VRI>() {
 
+            @Override
             public VRI call() throws Exception {
                 Task t = publishOnline(vri, token);
                 while (t.getStatus().equals(Task.Status.RUNNING)) {

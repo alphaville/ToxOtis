@@ -134,6 +134,7 @@ public class Dataset extends OTPublishable<Dataset> {
      * @throws XMLStreamException
      *      In case the serialization is not possible due to syntax errors.
      */
+    @Override
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
         initRdfWriter(writer);
 

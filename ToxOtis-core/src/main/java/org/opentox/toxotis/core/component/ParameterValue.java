@@ -105,6 +105,7 @@ public class ParameterValue extends OTComponent<ParameterValue> {  // ot:Paramet
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

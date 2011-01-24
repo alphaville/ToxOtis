@@ -245,6 +245,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         return this;
     }
 
+    @Override
     public Algorithm publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
             throw new InactiveTokenException("The Provided token is inactive");

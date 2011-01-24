@@ -50,6 +50,7 @@ public class PolicyRule implements IPolicyRule {
         this.name = name;
     }
 
+    @Override
     public IPolicyRule setAllowances(boolean get, boolean post, boolean put, boolean delete) {
         setAllowGet(get);
         setAllowPost(post);
@@ -58,64 +59,78 @@ public class PolicyRule implements IPolicyRule {
         return this;
     }
 
+    @Override
     public boolean isAllowDelete() {
         return allowDelete;
     }
 
+    @Override
     public IPolicyRule setAllowDelete(boolean allowDelete) {
         this.allowDelete = allowDelete;
         return this;
     }
 
+    @Override
     public boolean isAllowGet() {
         return allowGet;
     }
 
+    @Override
     public IPolicyRule setAllowGet(boolean allowGet) {
         this.allowGet = allowGet;
         return this;
     }
 
+    @Override
     public boolean isAllowPost() {
         return allowPost;
     }
 
+    @Override
     public IPolicyRule setAllowPost(boolean allowPost) {
         this.allowPost = allowPost;
         return this;
     }
 
+    @Override
     public boolean isAllowPut() {
         return allowPut;
     }
 
+    @Override
     public IPolicyRule setAllowPut(boolean allowPut) {
         this.allowPut = allowPut;
         return this;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public IPolicyRule setName(String name) {
         this.name = name;
         return this;
     }
 
+    @Override
     public String getServiceName() {
         return serviceName;
     }
 
+    @Override
     public IPolicyRule setServiceName(String serviceName) {
         this.serviceName = serviceName;
         return this;
     }
 
+    @Override
     public String getTargetUri() {
         return targetUri;
     }
 
+    @Override
     public IPolicyRule setTargetUri(String targetUri) {
         this.targetUri = targetUri;
         return this;

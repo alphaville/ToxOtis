@@ -96,6 +96,7 @@ public class MultiParameter extends OTComponent<MultiParameter> {
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

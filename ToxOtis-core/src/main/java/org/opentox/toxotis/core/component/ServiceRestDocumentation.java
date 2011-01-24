@@ -128,6 +128,7 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
         return classes;
     }
 
+    @Override
     public Individual asIndividual(OntModel model) {
         OntologicalClass classForCoreComponent = null;
         if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
@@ -155,6 +156,7 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

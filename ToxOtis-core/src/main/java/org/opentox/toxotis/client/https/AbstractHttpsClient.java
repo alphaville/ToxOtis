@@ -119,7 +119,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
      *          If any of the arguments is null
      */
     @Override
-    public AbstractHttpsClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
+    public AbstractHttpsClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException {
         if (paramName == null) {
             throw new NullPointerException("ParamName is null");
         }

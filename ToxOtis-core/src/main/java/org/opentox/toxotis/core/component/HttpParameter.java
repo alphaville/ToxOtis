@@ -139,6 +139,7 @@ public class HttpParameter extends OTComponent<HttpParameter> {
         return this;
     }
 
+    @Override
     public Individual asIndividual(OntModel model) {
         String httpParameterUri = getUri() != null ? getUri().toString() : null;
 
@@ -183,6 +184,7 @@ public class HttpParameter extends OTComponent<HttpParameter> {
         return indiv;
     }
 
+    @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
