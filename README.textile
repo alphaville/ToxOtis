@@ -5,7 +5,7 @@ h1. Τοξότης : Core Project
 h2. About
 
 <b>Version:</b>
- + "0.5.2":http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty/org/opentox/toxotis/ (Available from the "AMBIT":http://ambit.uni-plovdiv.bg:8083/nexus/index.html#view-repositories;thirdparty~browsestorage Maven repository.
+ + "0.5.3":http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty/org/opentox/toxotis/ (Available from the "AMBIT":http://ambit.uni-plovdiv.bg:8083/nexus/index.html#view-repositories;thirdparty~browsestorage Maven repository.
 
 <b>Authors:</b>
  + "Sopasakis Pantelis":http://gr.linkedin.com/in/sopasakis
@@ -34,7 +34,7 @@ h3. With Maven
     <version>0.5.2</version>
   </dependency>
   <!-- Other Dependencies you might have... -->
-</dependencide>
+</dependencies>
 </pre>
 
 and add once the following repository:
@@ -52,6 +52,80 @@ and add once the following repository:
 </repositories>
 </pre>
 
+As an example we provide here a template pom.xml file you can use in your project if you need to make use of ToxOtis-Persistence:
+
+<pre>
+<project    xmlns="http://maven.apache.org/POM/4.0.0" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.mygroup.myproject</groupId>
+    <artifactId>ProjectId</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>NameOfMyProject</name>
+    <url>http://myproject.com/myPage#home</url>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+	<!-- 
+		Maven will automatically download ToxOtis-persitence ( with 
+		all its dependencies (like ToxOtis-core ) from the ambit-plovdiv
+		repository (see below at the repositories section).
+	-->
+        <dependency>
+            <groupId>org.opentox.toxotis.persistence</groupId>
+            <artifactId>ToxOtis-persistence</artifactId>
+            <version>0.4.3</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <!-- AMBIT PLOVDIV REPO -->
+        <repository>
+            <id>ambit-plovdiv</id>
+            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>bc-public</id>
+            <name>Public Maven Repository at Brockmann-Consult</name>
+            <url>http://www.brockmann-consult.de/mvn/os</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.1</version>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>        
+    </build>
+</project>
+</pre>
 
 h3. With Ant
 
@@ -94,7 +168,8 @@ We work on various extensions for ToxOtis including modules that will facilitate
 
 h2. License
 
-This project, as well as all other projects developed by the NTUA developers team under OpeTox, is licensed under the "GNU GPL license version 3":http://www.gnu.org/licenses/gpl.html. There is a considerable debate taking place in the open source community regarding the use of the GPL or LGPL, while a variety of other licenses can be found on the web as well. However it is GNU itself that prompts developers to use GPL (read "this article":http://www.gnu.org/philosophy/why-not-lgpl.html). The license of this project (ToxOtis) is also inherited by its modules (ToxOtis-core, ToxOtis-persistence and ToxOtis-benchmark).
+ This project, as well as all other projects developed by the NTUA developers team under OpeTox, is licensed under the "GNU GPL license version 3":http://www.gnu.org/licenses/gpl.html. There is a considerable debate taking place in the open source community regarding the use of the GPL or LGPL, while a variety of other licenses can be found on the web as well. However it is GNU itself that prompts developers to use GPL (read "this article":http://www.gnu.org/philosophy/why-not-lgpl.html). The license of this project (ToxOtis) is also inherited by its modules (ToxOtis-core, ToxOtis-persistence and ToxOtis-benchmark).
+ Information about the licenses of the project are also provided in its "pom.xml file":https://github.com/alphaville/ToxOtis/blob/master/pom.xml including information about the involved developers and organizations.
 
 h2. Stay Tuned
 
