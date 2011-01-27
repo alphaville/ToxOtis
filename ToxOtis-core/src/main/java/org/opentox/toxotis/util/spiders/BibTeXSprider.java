@@ -41,14 +41,21 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.ErrorReport;
+import org.opentox.toxotis.exceptions.impl.BadRequestException;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.NotFound;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.ontology.OTDatatypeProperty;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
@@ -75,13 +82,13 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
     private BibTeXSprider() {
     }
 
-    public BibTeXSprider(Resource resource, OntModel model) throws ToxOtisException {
+    public BibTeXSprider(Resource resource, OntModel model) throws ServiceInvocationException {
         super(resource, model);
         if (resource != null) {
             try {
                 this.uri = new VRI(resource.getURI());
                 if (!BibTeX.class.equals(uri.getOpenToxType())) {
-                    throw new ToxOtisException("Bad URI : Not a BibTeX URI (" + uri + ")");
+                    throw new BadRequestException("Bad URI : Not a BibTeX URI (" + uri + ")");
                 }
             } catch (URISyntaxException ex) {
                 logger.warn("URI syntax exception thrown for the malformed URI "
@@ -119,11 +126,11 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
         }
     }
 
-    public BibTeXSprider(VRI uri) throws ToxOtisException {
+    public BibTeXSprider(VRI uri) throws ServiceInvocationException {
         this(uri, (AuthenticationToken) null);
     }
 
-    public BibTeXSprider(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    public BibTeXSprider(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         this.uri = uri;
         IGetClient client = ClientFactory.createGetClient(uri);
         client.authorize(token);
@@ -136,48 +143,49 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
                 ErrorReport er = ersp.parse();
 
                 if (status == 403) {
-                    throw new ToxOtisException(ErrorCause.AuthenticationFailed,
-                            "Access denied to : '" + uri + "'", er);
+                    ForbiddenRequest fr = new ForbiddenRequest("Access denied to : '" + uri + "'");
+                    fr.setErrorReport(er);
+                    throw fr;
                 }
                 if (status == 401) {
-                    throw new ToxOtisException(ErrorCause.UnauthorizedUser,
-                            "User is not authorized to access : '" + uri + "'", er);
+                    Unauthorized unauth = new Unauthorized("User is not authorized to access : '" + uri + "'");
+                    unauth.setErrorReport(er);
+                    throw unauth;
                 }
                 if (status == 404) {
-                    throw new ToxOtisException(ErrorCause.BibTexNotFoundInDatabase,
-                            "The following algorithm was not found : '" + uri + "'", er);
+                    NotFound notFound = new NotFound("The following algorithm was not found : '" + uri + "'");
+                    notFound.setErrorReport(er);
+                    throw notFound;
                 } else {
-                    throw new ToxOtisException(ErrorCause.CommunicationError,
-                            "Communication Error with : '" + uri + "'", er);
+                    ConnectionException connectionException = new ConnectionException("Communication Error with : '" + uri + "'");
+                    connectionException.setErrorReport(er);
+                    throw connectionException;
+
                 }
             }
             model = client.getResponseOntModel();
             resource = model.getResource(uri.getStringNoQuery());
-        } catch (ToxOtisException ex) {
-            logger.trace("ToxOtisException caught in BibTeXSpider", ex);
+        } catch (ServiceInvocationException ex) {
+            logger.trace("ServiceInvocationException caught in BibTeXSpider", ex);
             throw ex;
-        } catch (IOException ex) {
-            logger.debug("I/O Exception while attempting connection to "
-                    + "the remote BibTeX resource at " + uri, ex);
-            throw new ToxOtisException(ex);
         } finally {
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    throw new ConnectionException(ex);
                 }
             }
         }
     }
 
     @Override
-    public BibTeX parse() throws ToxOtisException {
+    public BibTeX parse() throws ServiceInvocationException {
         if (resource == null) {
             resource = getresource(model);
         }
         if (resource == null) {
-            throw new ToxOtisException(ErrorCause.ImproperBibTexResource, "Could not parse the BibTex resource because no "
+            throw new BadRequestException("Could not parse the BibTex resource because no "
                     + "bibtex entity (Article, Book, Conference, etc) was found.");
         }
 
@@ -211,7 +219,13 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
             }
         }
 
-        BibTeX bibtex = new BibTeX(uri);
+        BibTeX bibtex = null;
+        try {
+            bibtex = new BibTeX(uri);
+        } catch (ToxOtisException ex) {
+            logger.warn("Invalid bibtex URI!!!", ex);
+            throw new BadRequestException("The URI " + uri + " is not a valid bibtex URI!", ex);
+        }
         bibtex.setBibType(bibtype != null ? bibtype : BibTeX.BIB_TYPE.Entry);
         bibtex.setAbstract(hasAbstract);
         bibtex.setAuthor(author);
@@ -232,7 +246,7 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
             try {
                 bibtex.setYear(Integer.parseInt(year));
             } catch (NumberFormatException ex) {
-                throw new ToxOtisException(ErrorCause.NumberExpected, ex);
+                throw new BadRequestException("Number was expected", ex);
             }
         }
 
@@ -240,7 +254,7 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
             try {
                 bibtex.setVolume(Integer.parseInt(volume));
             } catch (NumberFormatException ex) {
-                throw new ToxOtisException(ErrorCause.NumberExpected, ex);
+                throw new BadRequestException("Number was expected", ex);
             }
         }
 
@@ -248,7 +262,7 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
             try {
                 bibtex.setNumber(Integer.parseInt(number));
             } catch (NumberFormatException ex) {
-                throw new ToxOtisException(ErrorCause.NumberExpected, ex);
+                throw new BadRequestException("Number was expected", ex);
             }
         }
 

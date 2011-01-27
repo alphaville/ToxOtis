@@ -37,10 +37,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.InactiveTokenException;
 
 /**
  * <p align=justify>
@@ -103,26 +103,29 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      *      In case the provided token is invalidated (user has logged out), or
      *      has expired.
      */
-    public abstract Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException;
+    public abstract Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException;
 
-    public Future<VRI> publish(final VRI vri, final AuthenticationToken token, ExecutorService executor) throws ToxOtisException {
-        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
-            throw new InactiveTokenException("The Provided token is inactive");
+    public Future<VRI> publish(final VRI vri, final AuthenticationToken token, ExecutorService executor) throws ServiceInvocationException {
+        if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
+
         Callable<VRI> backgroundJob = new Callable<VRI>() {
 
             @Override
             public VRI call() throws Exception {
                 Task t = publishOnline(vri, token);
+
                 while (t.getStatus().equals(Task.Status.RUNNING)) {
                     t.loadFromRemote();
                     Thread.sleep(100);
                 }
                 if (!Task.Status.COMPLETED.equals(t.getStatus())) {
-                    throw new ToxOtisException("Task failed! This entity was not published online "
+                    throw new ServiceInvocationException("Task failed! This entity was not published online "
                             + "due to some unexpected error. Error Report : " + t.getErrorReport());
                 }
                 return t.getResultUri();
+
             }
         };
         Future<VRI> future = executor.submit(backgroundJob);
@@ -130,13 +133,12 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
         return future;
     }
 
-    public Future<VRI> publish(final VRI vri, final AuthenticationToken token) throws ToxOtisException {
-        if (token!=null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())){
-            throw new InactiveTokenException("The Provided token is inactive");
+    public Future<VRI> publish(final VRI vri, final AuthenticationToken token) throws ServiceInvocationException {
+        if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
         return publish(vri, token, Executors.newSingleThreadExecutor());
     }
-
 
     /**
      * Publish the component to a standard (default) server. The resource will be posted to the
@@ -160,12 +162,12 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      *      be available applying the method {@link Task#getResultUri() } on the returned
      *      task. In any case, the service's response will be wrapped in a {@link Task }
      *      object.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case of invalid credentials, if the POSTed resource is not acceptable
      *      by the remote service (returns a status code 400), communication error
      *      occur with the remote server or other connection problems or the access
      *      to the service was denied (401 or 403).
      * @see OTPublishable#publishOnline(org.opentox.toxotis.client.VRI, org.opentox.toxotis.util.aa.AuthenticationToken) alternative method
      */
-    public abstract Task publishOnline(AuthenticationToken token) throws ToxOtisException;
+    public abstract Task publishOnline(AuthenticationToken token) throws ServiceInvocationException;
 }

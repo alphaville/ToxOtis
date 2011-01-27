@@ -40,14 +40,15 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.DataEntry;
 import org.opentox.toxotis.core.component.Dataset;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -62,34 +63,29 @@ public class DatasetSpider extends Tarantula<Dataset> {
     VRI datasetUri;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DatasetSpider.class);
 
-    public DatasetSpider(VRI uri) throws ToxOtisException {
+    public DatasetSpider(VRI uri) throws ServiceInvocationException {
         this(uri, null);
     }
 
-    public DatasetSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    public DatasetSpider(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         super();
         long timeFlag = System.currentTimeMillis();
         this.datasetUri = uri;
         IGetClient client = ClientFactory.createGetClient(uri);
+        client.setMediaType(Media.APPLICATION_RDF_XML);
         client.authorize(token); // << OpenTox API 1.2. 
-        try {
-            client.setMediaType(Media.APPLICATION_RDF_XML);
-            client.setUri(uri);
+        try {            
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
             model = client.getResponseOntModel();
             resource = model.getResource(uri.getStringNoQuery());
             readRemoteTime = System.currentTimeMillis() - timeFlag;
-        } catch (final IOException ex) {
-            throw new ToxOtisException(ErrorCause.CommunicationError,
-                    "Communication Error with the remote service at :" + uri, ex);
         } finally {
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
-                            "Error while trying to close the stream "
+                    throw new ConnectionException("Error while trying to close the stream "
                             + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
                 }
             }
@@ -117,7 +113,7 @@ public class DatasetSpider extends Tarantula<Dataset> {
     }
 
     @Override
-    public Dataset parse() throws ToxOtisException {
+    public Dataset parse() throws ServiceInvocationException  {
         long timeFlag = System.currentTimeMillis();
         Dataset dataset = new Dataset();
         dataset.setUri(datasetUri);

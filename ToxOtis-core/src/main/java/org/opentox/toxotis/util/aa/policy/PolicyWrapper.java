@@ -47,15 +47,16 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -73,7 +74,6 @@ public class PolicyWrapper implements IPolicyWrapper {
             "-//Sun Java System Access Manager7.1 2006Q3 Admin CLI DTD//EN";
     private static final String _DocTypeSystem =
             "jar://com/sun/identity/policy/policyAdmin.dtd";
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PolicyWrapper.class);
 
     public PolicyWrapper() {
@@ -97,10 +97,10 @@ public class PolicyWrapper implements IPolicyWrapper {
     }
 
     public IPolicyWrapper addPolicies(Policy... pols) {
-        if (this.pols == null){
+        if (this.pols == null) {
             this.pols = new HashSet<Policy>();
         }
-        for (Policy p : pols ){
+        for (Policy p : pols) {
             this.pols.add(p);
         }
         return this;
@@ -150,9 +150,9 @@ public class PolicyWrapper implements IPolicyWrapper {
     }
 
     @Override
-    public int publish(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
+    public int publish(VRI policyServer, AuthenticationToken token) throws ServiceInvocationException {
         if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
-            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+            throw new ForbiddenRequest("This token is not active: " + token.getStatus());
         }
 
         if (policyServer == null) {
@@ -169,21 +169,19 @@ public class PolicyWrapper implements IPolicyWrapper {
                 String policyErrorMsg = "Policy server at " + policyServer
                         + " responded with a status code " + httpStatus + " with message \n" + spc.getResponseText();
                 logger.debug(policyErrorMsg);
-                throw new ToxOtisException(ErrorCause.PolicyCreationError, policyErrorMsg);
+                throw new RemoteServiceException(policyErrorMsg);
             }
             return spc.getResponseCode();
-        } catch (IOException ex) {
-            throw new ToxOtisException("Communication error with the SSO policy server at " + policyServer, ex);
         } finally {
             if (spc != null) {
                 try {
                     spc.close();
                 } catch (IOException ex) {
-                    logger.error("IO Exception while closing an HTTPS client", ex);
-                    throw new ToxOtisException(ex);
+                    String message = "IO Exception while closing an HTTPS client";
+                    logger.error(message, ex);
+                    throw new ConnectionException(message, ex);
                 }
             }
         }
     }
-
 }

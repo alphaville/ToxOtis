@@ -43,7 +43,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.IHTMLSupport;
 import org.opentox.toxotis.core.OTOnlineResource;
@@ -54,6 +53,9 @@ import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -61,7 +63,6 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.opentox.toxotis.util.spiders.AlgorithmSpider;
 
 /**
@@ -99,6 +100,9 @@ public class Algorithm extends OTOnlineResource<Algorithm>
      * Create a new instance of Algorithm providing its identifier as a {@link VRI }.
      * @param uri
      *      The URI of the algorithm as a {@link VRI }.
+     * @throws ToxOtisException
+     *      In case the provided URI is not a valid algorithm URI according to the
+     *      OpenTox specifications.
      */
     public Algorithm(VRI uri) throws ToxOtisException {
         super(uri);
@@ -224,7 +228,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
      *      In case the input stream does not provide a valid data model for
      *      an algorithm
      */
-    public Algorithm loadFromRemote(InputStream stream, VRI uri) throws ToxOtisException {
+    public Algorithm loadFromRemote(InputStream stream, VRI uri) throws ServiceInvocationException {
         com.hp.hpl.jena.ontology.OntModel om = new SimpleOntModelImpl();
         om.read(stream, null);
         AlgorithmSpider spider = new AlgorithmSpider(null, om);
@@ -233,9 +237,9 @@ public class Algorithm extends OTOnlineResource<Algorithm>
     }
 
     @Override
-    protected Algorithm loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    protected Algorithm loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new InactiveTokenException("The Provided token is inactive");
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
         AlgorithmSpider spider = new AlgorithmSpider(uri, token);
         Algorithm algorithm = spider.parse();
@@ -246,9 +250,9 @@ public class Algorithm extends OTOnlineResource<Algorithm>
     }
 
     @Override
-    public Algorithm publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException {
+    public Algorithm publishToOntService(VRI ontologyService, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new InactiveTokenException("The Provided token is inactive");
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
         throw new UnsupportedOperationException("Not supported yet.");
     }

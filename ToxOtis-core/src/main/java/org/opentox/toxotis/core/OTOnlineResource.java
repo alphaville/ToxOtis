@@ -47,13 +47,17 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
-import org.opentox.toxotis.ErrorCause;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.NotFound;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.spiders.ErrorReportSpider;
 
 /**
  * Any OTComponent that can be available online and has a URL.
@@ -113,13 +117,13 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @return
      *      An OpenTox component as an instance of <code>T</code>, i.e. of the
      *      same type with the object performing the request.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the Ontological Model cannot be downloaded from the specified
      *      online resource.
      * @see OTComponent#getUri()
      * @see OTComponent#setUri(org.opentox.toxotis.client.VRI)
      */
-    public T loadFromRemote() throws ToxOtisException {
+    public T loadFromRemote() throws ServiceInvocationException {
         return loadFromRemote(uri, null);
     }
 
@@ -134,15 +138,15 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      permission to download the resource.
      * @return
      *      Parsed instance of the component.
-     * @throws ToxOtisException
-     *      A ToxOtisException is thrown in case the remote resource is unreachable,
+     * @throws ServiceInvocationException
+     *      A ServiceInvocationException is thrown in case the remote resource is unreachable,
      *      the service responds with an unexpected or error status code (500, 503, 400 etc)
      *      or other potent communication error occur during the connection or the
      *      transaction of data. A ToxOtis exception is also thrown in case of insufficient
      *      priviledges to access the resource or if the submitted token is stale or
      *      in general invalid.
      */
-    public T loadFromRemote(AuthenticationToken authentication) throws ToxOtisException {
+    public T loadFromRemote(AuthenticationToken authentication) throws ServiceInvocationException {
         VRI authenticatedUri = new VRI(uri);
         return loadFromRemote(authenticatedUri, authentication);
     }
@@ -167,7 +171,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      or other potent communication error occur during the connection or the
      *      transaction of data.
      */
-    protected abstract T loadFromRemote(VRI vri, AuthenticationToken token) throws ToxOtisException;
+    protected abstract T loadFromRemote(VRI vri, AuthenticationToken token) throws ServiceInvocationException;
 
     /**
      * Downloads a certain representation of the compound in a specified MIME
@@ -179,13 +183,13 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @param token
      *      Token used for authenticating the client against the remote compound
      *      service (You can set it to <code>null</code>).
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public void download(String destination, Media media, AuthenticationToken token) throws ToxOtisException {
+    public void download(String destination, Media media, AuthenticationToken token) throws ServiceInvocationException {
         download(new File(destination), media, token);
     }
 
@@ -205,13 +209,13 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public void download(OutputStream destination, Media media, AuthenticationToken token) throws ToxOtisException {
+    public void download(OutputStream destination, Media media, AuthenticationToken token) throws ServiceInvocationException {
         OutputStreamWriter writer = new OutputStreamWriter(destination);
         download(writer, media, token);
         try {
             writer.close();
         } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+            throw new ConnectionException("IOException while trying to close the output stream writer", ex);
         }
     }
 
@@ -231,18 +235,18 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public void download(File destination, Media media, AuthenticationToken token) throws ToxOtisException {
+    public void download(File destination, Media media, AuthenticationToken token) throws ServiceInvocationException {
         FileWriter writer = null;
         try {
             writer = new FileWriter(destination);
         } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+            throw new ServiceInvocationException(ex);
         }
         download(writer, media, token);
         try {
             writer.close();
         } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+            throw new ServiceInvocationException(ex);
         }
     }
 
@@ -255,12 +259,12 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      by {@link #getUri() } as a BufferedImage.
      * @throws ToxOtisException
      */
-    public BufferedImage downloadImage(Media imageMedia, AuthenticationToken token) throws ToxOtisException {
+    public BufferedImage downloadImage(Media imageMedia, AuthenticationToken token) throws ServiceInvocationException {
         if (imageMedia == null) {
             imageMedia = Media.IMAGE_PNG;
         }
         if (!imageMedia.toString().contains("image")) {
-            throw new ToxOtisException(imageMedia + " is not a valid image media type");
+            throw new ServiceInvocationException(imageMedia + " is not a valid image media type");
         }
         BufferedImage image = null;
         IGetClient client = ClientFactory.createGetClient(uri);
@@ -270,7 +274,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
             InputStream iStream = client.getRemoteStream();
             image = ImageIO.read(iStream);
         } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+            throw new ServiceInvocationException(ex);
         }
         return image;
     }
@@ -291,21 +295,14 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public void download(Writer destination, Media media, AuthenticationToken token) throws ToxOtisException {
-        VRI newUri = new VRI(getUri());
-        if (token != null) {
-            newUri.clearToken().appendToken(token);
-        }
+    public void download(Writer destination, Media media, AuthenticationToken token) throws ServiceInvocationException {
+        VRI newUri = new VRI(getUri());        
         IGetClient client = ClientFactory.createGetClient(newUri);
         client.setMediaType(media.getMime());
         client.authorize(token);
         try {
-            int responseStatus;
-            try {
-                responseStatus = client.getResponseCode();
-            } catch (IOException ex) {
-                throw new ToxOtisException(ex);
-            }
+            int responseStatus = client.getResponseCode();
+
             if (responseStatus == 200) {
                 /* REMOTE STREAM */
                 InputStream remote = client.getRemoteStream();
@@ -357,26 +354,27 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
                 }
                 if (failure != null) {
                     if (failure instanceof IOException) {
-                        throw new ToxOtisException(ErrorCause.StreamCouldNotClose, failure);
+                        throw new ServiceInvocationException("Stream could not close", failure);
                     } else {
                         throw new RuntimeException(failure);
                     }
                 }
 
             } else if (responseStatus == 403) {
-                throw new ToxOtisException(ErrorCause.AuthenticationFailed,
+                throw new ForbiddenRequest(
                         "Client failed to authenticate itself against the SSO service due to "
                         + "incorrect credentials or due to invalid token. Error thrown by " + newUri);
             } else if (responseStatus == 401) {
-                throw new ToxOtisException(ErrorCause.UnauthorizedUser,
+                throw new Unauthorized(
                         "The client is authenticated but not authorized to perform this operation at " + newUri);
-            } else {
-                throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
-                        "The remote service at " + newUri + " returned the unexpected status : " + responseStatus);
+            } else if (responseStatus == 400) {
+                throw new NotFound("The compound you requested was not found at the remote location : '"+newUri+"'");
+            }else {
+                throw new ServiceInvocationException("The remote service at " + newUri + " returned the unexpected status : " + responseStatus);
             }
 
         } catch (IOException ex) {
-            throw new ToxOtisException("Remote stream from '" + newUri.getStringNoQuery() + "' is not readable!", ex);
+            throw new ServiceInvocationException("Remote stream from '" + newUri.getStringNoQuery() + "' is not readable!", ex);
         }
     }
 }

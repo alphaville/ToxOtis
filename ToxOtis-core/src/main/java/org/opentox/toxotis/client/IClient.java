@@ -40,7 +40,7 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.*;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
@@ -112,11 +112,8 @@ public interface IClient extends Closeable {
      * InputStream for the remote HTTP response
      * @throws ToxOtisException
      * In case an error status code is received from the remote location.
-     * @throws java.io.IOException
-     * In case some communication error occurs during the transmission
-     * of the data.
      */
-    InputStream getRemoteStream() throws ToxOtisException, IOException;
+    InputStream getRemoteStream() throws ServiceInvocationException;
 
     /**
      * Get the HTTP status of the response
@@ -125,11 +122,8 @@ public interface IClient extends Closeable {
      * @throws ToxOtisException
      * In case the connection cannot be established because a {@link ToxOtisException }
      * is thrown while a connection is attempted to the remote service.
-     * @throws java.io.IOException
-     * In case some communication error with the remote location occurs during
-     * the transaction of data.
      */
-    int getResponseCode() throws ToxOtisException, IOException;
+    int getResponseCode() throws ServiceInvocationException;
 
     /**
      * If possible, get the ontological model provided in the response. This assumes
@@ -144,7 +138,7 @@ public interface IClient extends Closeable {
      * (syntactically correct) ontological model, or in case some communication
      * error will arise.
      */
-    OntModel getResponseOntModel() throws ToxOtisException;
+    OntModel getResponseOntModel() throws ServiceInvocationException;
 
     /**
      * If possible, get the ontological model provided in the response. This assumes
@@ -161,7 +155,7 @@ public interface IClient extends Closeable {
      * (syntactically correct) ontological model, or in case some communication
      * error will arise.
      */
-    OntModel getResponseOntModel(String specification) throws ToxOtisException;
+    OntModel getResponseOntModel(String specification) throws ServiceInvocationException;
 
     /**
      * Get the response body as a String in the format specified in the Accept header
@@ -174,7 +168,7 @@ public interface IClient extends Closeable {
      * @throws ToxOtisException
      * In case some communication, server or request error occurs.
      */
-    String getResponseText() throws ToxOtisException;
+    String getResponseText() throws ServiceInvocationException;
 
     /**
      * Get the targetted URI
@@ -226,7 +220,7 @@ public interface IClient extends Closeable {
      * In case some I/O communication error inhibits the transimittance of
      * data between the client and the server or a some stream cannot close.
      */
-    Set<VRI> getResponseUriList() throws ToxOtisException;
+    Set<VRI> getResponseUriList() throws ServiceInvocationException;
 
     public WriteLock getConnectionLock() ;
 

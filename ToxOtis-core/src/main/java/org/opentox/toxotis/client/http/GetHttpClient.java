@@ -32,11 +32,13 @@
  */
 package org.opentox.toxotis.client.http;
 
+import java.io.IOException;
 import org.opentox.toxotis.client.IGetClient;
 import java.util.Map;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.InternalServerError;
 
 /**
  * A client that performs GET requests.
@@ -44,8 +46,6 @@ import org.opentox.toxotis.client.VRI;
  * @author Charalampos Chomenides
  */
 public class GetHttpClient extends AbstractHttpClient implements IGetClient {
-
-    
 
     /** Create a new instance of GetHttpClient */
     public GetHttpClient() {
@@ -55,13 +55,17 @@ public class GetHttpClient extends AbstractHttpClient implements IGetClient {
         setUri(uri);
     }
 
-    
     @Override
-    protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
+    protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ConnectionException, InternalServerError {
+        if (uri == null) {
+            throw new NullPointerException("Null Pointer while initializing connection (in GetHttpClient). The input "
+                    + "argument 'uri' to the method GetHttpClient#initializeConnection(java.net.URI)::java.net.HttpURLConnection "
+                    + "should not be null.");
+        }
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
-            java.net.URL dataset_url = uri.toURL();
-            con = (java.net.HttpURLConnection) dataset_url.openConnection();
+            java.net.URL url = uri.toURL();
+            con = (java.net.HttpURLConnection) url.openConnection();
             con.setDoInput(true);
             con.setUseCaches(false);
             con.setRequestMethod(METHOD);
@@ -74,12 +78,12 @@ public class GetHttpClient extends AbstractHttpClient implements IGetClient {
                 }
             }
             return con;
-        } catch (final Exception ex) {
-            throw new ToxOtisException(ex);
+        } catch (final IOException ex) {
+            throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
+        } catch (final Exception unexpectedException) {
+            throw new InternalServerError("Unexpected condition while attempting to "
+                    + "establish a connection to '" + uri + "'", unexpectedException);
         }
     }
-    
-
-    
 }
 

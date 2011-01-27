@@ -36,9 +36,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.InternalServerError;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  *
@@ -59,7 +61,7 @@ public class DeleteHttpsClient extends AbstractHttpsClient {
     }
 
     @Override
-    protected HttpsURLConnection initializeConnection(URI uri) throws ToxOtisException {
+    protected HttpsURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
             java.net.URL target_url = uri.toURL();
             con = (javax.net.ssl.HttpsURLConnection) target_url.openConnection();
@@ -73,24 +75,25 @@ public class DeleteHttpsClient extends AbstractHttpsClient {
                 }
             }
             return con;
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+        } catch (final IOException ex) {
+            throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
+        } catch (final Exception unexpectedException) {
+            throw new InternalServerError("Unexpected condition while attempting to "
+                    + "establish a connection to '" + uri + "'", unexpectedException);
         }
     }
 
-    public void doDelete() throws ToxOtisException {
+    public void doDelete() throws ServiceInvocationException {
         if (con == null) {
             con = initializeConnection(vri.toURI());
             try {
                 int code = con.getResponseCode();
                 if (code != 200) {
-                    throw new ToxOtisException("DELETE failed on '" + vri.clearToken() + "'. The remote service responded "
+                    throw new RemoteServiceException("DELETE failed on '" + vri.clearToken() + "'. The remote service responded "
                             + "with status code " + code);
                 }
             } catch (IOException ex) {
-                throw new ToxOtisException(ErrorCause.ConnectionException, "Connection Exception while trying to reach "
-                        + "the remote service at '" + vri.clearToken() + "' to apply a DELETE method.\n"
-                        + "Exception occured while attempting to read the status code from the response header!", ex);
+                throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
             }
         }
     }

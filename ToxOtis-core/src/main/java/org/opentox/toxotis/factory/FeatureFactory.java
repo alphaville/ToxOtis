@@ -37,14 +37,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.exceptions.IServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -85,16 +88,12 @@ public class FeatureFactory {
      * @return a Set of Feature URIs that are <code>same as</code> the ECHA endpoint provided.
      */
     public static Set<VRI> lookupSameAs(
-            VRI service, OntologicalClass echaEndpoint, AuthenticationToken token)
-            throws ToxOtisException {
+            VRI service, OntologicalClass echaEndpoint, AuthenticationToken token) throws ServiceInvocationException {
         IGetClient client = ClientFactory.createGetClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
         int responseStatus;
-        try {
-            responseStatus = client.getResponseCode();
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
-        }
+        responseStatus = client.getResponseCode();
+
         if (responseStatus == 200) {
             Set<VRI> featureUris = client.getResponseUriList();
             Set<VRI> features = new HashSet<VRI>();
@@ -103,15 +102,15 @@ public class FeatureFactory {
             }
             return features;
         } else if (responseStatus == 403) {
-            throw new ToxOtisException(ErrorCause.AuthenticationFailed,
-                    "Client failed to authenticate itself against the SSO service due to "
+            throw new ForbiddenRequest("Authentication Faile: "
+                    + "Client failed to authenticate itself against the SSO service due to "
                     + "incorrect credentials or due to invalid token");
         } else if (responseStatus == 401) {
-            throw new ToxOtisException(ErrorCause.UnauthorizedUser,
-                    "The client is authenticated but not authorized to perform this operation");
+            throw new Unauthorized("UnauthorizedUser: "
+                    + "The client is authenticated but not authorized to perform this operation");
         } else {
-            throw new ToxOtisException(ErrorCause.UnknownCauseOfException,
-                    "The remote service at " + service + "returned the unexpected status : " + responseStatus);
+            throw new ServiceInvocationException("UnknownCauseOfException: "
+                    + "The remote service at " + service + "returned the unexpected status : " + responseStatus);
         }
     }
 
@@ -134,8 +133,7 @@ public class FeatureFactory {
      * @return a Set of Feature URIs that are <code>same as</code> the ECHA endpoint provided.
      */
     public static Set<VRI> lookupSameAs(
-            OntologicalClass echaEndpoint, AuthenticationToken token)
-            throws ToxOtisException {
+            OntologicalClass echaEndpoint, AuthenticationToken token) throws ServiceInvocationException {
         return lookupSameAs(Services.ideaconsult().augment("feature"), echaEndpoint, token);
     }
 
@@ -163,7 +161,7 @@ public class FeatureFactory {
      *      either due to authentication/authorization failure of due to other unexpected
      *      conditions (e.g. error 500 or 503).
      */
-    public static Set<VRI> listAllFeatures(VRI featureService, int max, AuthenticationToken token) throws ToxOtisException {
+    public static Set<VRI> listAllFeatures(VRI featureService, int max, AuthenticationToken token) throws ServiceInvocationException {
         return listAllFeatures(featureService, 1, max, token);
     }
 
@@ -190,35 +188,31 @@ public class FeatureFactory {
      *      either due to authentication/authorization failure of due to other unexpected
      *      conditions (e.g. error 500 or 503).
      */
-    public static Set<VRI> listAllFeatures(VRI featureService, int page, int pagesize, AuthenticationToken token)
-            throws ToxOtisException {
-        try {
-            VRI featureServiceWithToken = new VRI(featureService).clearToken().
-                    appendToken(token).removeUrlParameter("page").removeUrlParameter("pagesize");
-            if (page > 0) {
-                featureServiceWithToken.addUrlParameter("page", page);
-            }
-            if (pagesize > 0) {
-                featureServiceWithToken.addUrlParameter("pagesize", pagesize);
-            }
-            IGetClient client = ClientFactory.createGetClient(featureServiceWithToken);
-            client.setMediaType(Media.TEXT_URI_LIST);
-            int httpStatus = client.getResponseCode();
-            if (httpStatus != 200) {
-                throw new ToxOtisException("Service returned status code :" + httpStatus);
-            }
-            Set<VRI> result = client.getResponseUriList();
-            if (client != null) {
-                try {
-                    client.close();
-                } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
-                }
-            }
-            return result;
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+    public static Set<VRI> listAllFeatures(VRI featureService, int page, int pagesize, AuthenticationToken token) throws ServiceInvocationException {
+        VRI featureServiceWithToken = new VRI(featureService).clearToken().
+                appendToken(token).removeUrlParameter("page").removeUrlParameter("pagesize");
+        if (page > 0) {
+            featureServiceWithToken.addUrlParameter("page", page);
         }
+        if (pagesize > 0) {
+            featureServiceWithToken.addUrlParameter("pagesize", pagesize);
+        }
+        IGetClient client = ClientFactory.createGetClient(featureServiceWithToken);
+        client.setMediaType(Media.TEXT_URI_LIST);
+        int httpStatus = client.getResponseCode();
+        if (httpStatus != 200) {
+            throw new ServiceInvocationException("Service returned status code :" + httpStatus);
+        }
+        Set<VRI> result = client.getResponseUriList();
+        if (client != null) {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                throw new ConnectionException(ex);
+            }
+        }
+        return result;
+
     }
 
     /**
@@ -227,6 +221,8 @@ public class FeatureFactory {
      * 
      * @param title
      *      Title of the newly created feature
+     * @param units
+     *      Units for the created feature
      * @param hasSource
      *      An  <code>ot:hasSource</code> reference for the created Feature
      * @param fetureService
@@ -242,11 +238,11 @@ public class FeatureFactory {
      *      is interrupted while waiting for its completion of other unexpected
      *      exceptional events related to the publication of the feature occur.
      */
-    public static Feature createAndPublishFeature(String title, ResourceValue hasSource, VRI fetureService, AuthenticationToken token) throws ToxOtisException {
+    public static Feature createAndPublishFeature(String title, String units, ResourceValue hasSource, VRI fetureService, AuthenticationToken token) throws ServiceInvocationException {
         MetaInfo mi = new MetaInfoImpl();
         mi.addTitle(title);
         mi.addHasSource(hasSource);
-        return createAndPublishFeature(mi, fetureService, token);
+        return createAndPublishFeature(mi, units, fetureService, token);
     }
 
     /**
@@ -255,6 +251,8 @@ public class FeatureFactory {
      *
      * @param metaInfo
      *      Meta-information about the feature
+     * @param units
+     *      Units for the created feature
      * @param featureService 
      *      Feature service URI to which the created feature should be posted
      * @param token
@@ -268,9 +266,11 @@ public class FeatureFactory {
      *      is interrupted while waiting for its completion of other unexpected
      *      exceptional events related to the publication of the feature occur.
      */
-    public static Feature createAndPublishFeature(MetaInfo metaInfo, VRI featureService, AuthenticationToken token) throws ToxOtisException {
+    public static Feature createAndPublishFeature(MetaInfo metaInfo,
+            String units, VRI featureService, AuthenticationToken token) throws ServiceInvocationException {
         Feature brandNewFeature = new Feature();
         brandNewFeature.setMeta(metaInfo);
+        brandNewFeature.setUnits(units);
         Future<VRI> predictedFeatureUri = brandNewFeature.publish(featureService, token);
         /* Wait for remote server to respond */
         try {
@@ -281,9 +281,12 @@ public class FeatureFactory {
             brandNewFeature.setUri(resultUri);
             return brandNewFeature;
         } catch (InterruptedException ex) {
-            throw new ToxOtisException("Interrupted", ex);
+            throw new RuntimeException("Interrupted", ex);
         } catch (ExecutionException ex) {
-            throw new ToxOtisException(ErrorCause.UnknownCauseOfException, ex);
+            if (ex.getCause() != null && ex.getCause() instanceof ServiceInvocationException) {
+                throw (ServiceInvocationException) ex.getCause();
+            }
+            throw new ServiceInvocationException(ex);
         }
     }
 }

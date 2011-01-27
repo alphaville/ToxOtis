@@ -68,7 +68,7 @@ public class LiteralValue<T> implements Serializable {
     private Class<?> clazz = String.class;
     /** XSD datatype for the value */
     private XSDDatatype type = XSDDatatype.XSDstring;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LiteralValue.class);
+    private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LiteralValue.class);
 
     /**
      * Dummy constructor for the class {@link LiteralValue } which initializes a new
@@ -180,7 +180,7 @@ public class LiteralValue<T> implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (LiteralValue.class != obj.getClass()) {
+        if (this.getClass() != obj.getClass()) {
             return false;
         }
         final LiteralValue<T> other = (LiteralValue<T>) obj;

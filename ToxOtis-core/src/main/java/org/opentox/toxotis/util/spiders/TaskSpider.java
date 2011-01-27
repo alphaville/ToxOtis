@@ -38,17 +38,21 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  *
@@ -65,11 +69,11 @@ public class TaskSpider extends Tarantula<Task> {
     public TaskSpider() {
     }
 
-    public TaskSpider(VRI vri) throws ToxOtisException {
+    public TaskSpider(VRI vri) throws ServiceInvocationException {
         this(vri, (AuthenticationToken) null);
     }
 
-    public TaskSpider(VRI vri, AuthenticationToken token) throws ToxOtisException {
+    public TaskSpider(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
         this.vri = vri;
         this.token = token;
         IGetClient client = ClientFactory.createGetClient(vri);
@@ -81,15 +85,13 @@ public class TaskSpider extends Tarantula<Task> {
             httpStatus = status;
             model = client.getResponseOntModel();
             resource = model.getResource(vri.getStringNoQuery());
-        } catch (IOException ex) {
-            throw new ToxOtisException("Communication Error with the remote service at :" + vri, ex);
         } finally {
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
-                            "Error while trying to close the stream "
+                    throw new ConnectionException(
+                            "StreamCouldNotClose: Error while trying to close the stream "
                             + "with the remote location at :'" + ((vri != null)
                             ? vri.clearToken().toString() : null) + "'", ex);
                 }
@@ -102,7 +104,7 @@ public class TaskSpider extends Tarantula<Task> {
     }
 
     @Override
-    public Task parse() throws ToxOtisException {
+    public Task parse() throws ServiceInvocationException {
         Task task = new Task(vri);
         task.setMeta(new MetaInfoSpider(resource, model).parse());
         task.setHttpStatus(httpStatus);
@@ -112,7 +114,11 @@ public class TaskSpider extends Tarantula<Task> {
                 User u = token.getUser();
                 task.setCreatedBy(u);
             } catch (ToxOtisException ex) {
+                logger.info("BAD USER EMAIL!!!");
+                throw new RemoteServiceException("User with RFC-invalid email returned from remote SSO service");
+            } catch (ServiceInvocationException ex) {
                 logger.info(null, ex);
+                throw ex;
             }
         }
 

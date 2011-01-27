@@ -35,7 +35,7 @@ package org.opentox.toxotis.client;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.File;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.core.IStAXWritable;
@@ -65,7 +65,7 @@ public interface IPostClient extends IClient {
      * Encapsulates an IOException which might be thrown due to I/O errors
      * during the data transaction.
      */
-    void post() throws ToxOtisException;
+    void post() throws ServiceInvocationException;
 
     /**
      * Specify the Content-type header value that is the MIME of the POSTed entity.

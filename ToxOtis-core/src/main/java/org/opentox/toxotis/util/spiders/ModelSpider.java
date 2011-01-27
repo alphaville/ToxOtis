@@ -43,8 +43,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
@@ -52,9 +50,12 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  * Downloader and Parser for RDF representation of OpenTox Model resources.
@@ -68,11 +69,11 @@ public class ModelSpider extends Tarantula<Model> {
 
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ModelSpider.class);
 
-    public ModelSpider(VRI uri) throws ToxOtisException {
+    public ModelSpider(VRI uri) throws ServiceInvocationException,ToxOtisException {
         this(uri, (AuthenticationToken) null);
     }
 
-    public ModelSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    public ModelSpider(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         super();
         this.uri = uri;
         this.token = token;
@@ -80,21 +81,18 @@ public class ModelSpider extends Tarantula<Model> {
         client.authorize(token);
         try {
             client.setMediaType(Media.APPLICATION_RDF_XML);
-            client.setUri(uri);
+//            client.setUri(uri);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
             uri.clearToken(); // << Token no needed any more!
             model = client.getResponseOntModel();
             resource = model.getResource(uri.toString());
-        } catch (final IOException ex) {
-            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
         } finally {
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
-                            "Error while trying to close the stream "
+                    throw new ConnectionException("StreamCouldNotClose: Error while trying to close the stream "
                             + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
                 }
             }
@@ -122,7 +120,7 @@ public class ModelSpider extends Tarantula<Model> {
     }
 
     @Override
-    public Model parse() throws ToxOtisException {
+    public Model parse() throws ServiceInvocationException {
         Model m = new Model();
 
         m.setUri(uri);

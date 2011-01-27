@@ -67,6 +67,7 @@ public class VRI implements Serializable { // Well tested!
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
     private static final String TOKENID = "tokenid";
+    private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
 
     /**

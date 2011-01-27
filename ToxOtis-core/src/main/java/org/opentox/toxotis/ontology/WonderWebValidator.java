@@ -41,11 +41,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.IStAXWritable;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  * <p align=justify width=80%>
@@ -119,7 +120,7 @@ public class WonderWebValidator {
         this.stax = stax;
     }
 
-    public boolean validate(OWL_SPECIFICATION specification) throws ToxOtisException {
+    public boolean validate(OWL_SPECIFICATION specification) throws ServiceInvocationException {
         PostHttpClient pc = new PostHttpClient(WONDERWEB_VLD);
         Writer result = new StringWriter();
         PrintWriter printWriter = new PrintWriter(result);
@@ -152,14 +153,15 @@ public class WonderWebValidator {
 
         } catch (IOException ex) {
             logger.warn("Unexpected IO Exception", ex);
-            throw new ToxOtisException(ex);
+            throw new ConnectionException(ex);
         } finally {
             if (pc != null) {
                 try {
                     pc.close();
                 } catch (IOException ex) {
-                    logger.warn("Unexpected IO Exception caught while closing connection after POST", ex);
-                    throw new ToxOtisException(ex);
+                    String message = "Unexpected IO Exception caught while closing connection after POST";
+                    logger.warn(message, ex);
+                    throw new ConnectionException(message, ex);
                 }
             }
             if (printWriter != null) {

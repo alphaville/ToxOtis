@@ -42,9 +42,9 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.net.URISyntaxException;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.ErrorReport;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -111,7 +111,7 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
     }
 
     @Override
-    public ErrorReport parse() throws ToxOtisException {
+    public ErrorReport parse() {
         ErrorReport errorReport = new ErrorReport();
         if (resource != null) {
             try {
@@ -138,12 +138,17 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
             errorReport.setErrorCode(errorCode.getString());
         }
 
-        Literal details = resource.getProperty(
-                OTDatatypeProperties.details().asDatatypeProperty(model)).getObject().as(Literal.class);
+        
+        
+            Statement detailsStmt = resource.getProperty(OTDatatypeProperties.details().asDatatypeProperty(model));
+            if (detailsStmt != null) {
+                Literal details = detailsStmt.getObject().as(Literal.class);
 
-        if (details != null) {
-            errorReport.setDetails(details.getString());
-        }
+                if (details != null) {
+                    errorReport.setDetails(details.getString());
+                }
+            }
+        
 
         Literal message = resource.getProperty(
                 OTDatatypeProperties.message().asDatatypeProperty(model)).getObject().as(Literal.class);

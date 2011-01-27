@@ -54,8 +54,6 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
@@ -65,13 +63,14 @@ import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
-import org.opentox.toxotis.ontology.collection.OTClasses;
-import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.opentox.toxotis.util.spiders.BibTeXSprider;
 
 /**
@@ -425,9 +424,9 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     @Override
-    protected BibTeX loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    protected BibTeX loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new InactiveTokenException("The Provided token is inactive");
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
         BibTeXSprider spider = new BibTeXSprider(uri, token);
         BibTeX o = spider.parse();
@@ -461,7 +460,7 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     @Override
-    public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
         IPostClient pc = ClientFactory.createPostClient(vri);
         pc.setMediaType(Media.TEXT_URI_LIST);
         pc.setContentType(Media.APPLICATION_RDF_XML);
@@ -469,39 +468,35 @@ public class BibTeX extends OTPublishable<BibTeX>
         pc.authorize(token);
         pc.post();
         Task task = new Task();
-        try {
-            int status = pc.getResponseCode();
-            if (status == 200) {// BibTeX returned
-                try {
-                    // BibTeX returned
-                    task.setResultUri(new VRI(pc.getResponseText()));
-                    task.setStatus(Task.Status.COMPLETED);
-                    task.setPercentageCompleted(100);
-                    return task;
-                } catch (URISyntaxException ex) {
-                    throw new ToxOtisException("Invalid URI returned from remote service", ex);
-                }
-            } else if (status == 202) {// Task
-                String taskUriString = pc.getResponseText().trim();
-                try {
-                    VRI taskUri = new VRI(taskUriString);
-                    task.setUri(taskUri);
-                    return task;
-                } catch (URISyntaxException ex) {
-                    String message = "Task URI expected as a response from the remote service at " + vri
-                            + " which responded with status code 202 (Task Created) but the response body is not "
-                            + "a valid URI: " + taskUriString;
-                    logger.debug(message, ex);
-                    throw new ToxOtisException(message, ex);
-                }
 
-            } else {
-                throw new ToxOtisException("Status code : '" + status + "' returned from remote service! Remote server says : "+pc.getResponseText());
+        int status = pc.getResponseCode();
+        if (status == 200) {// BibTeX returned
+            try {
+                // BibTeX returned
+                task.setResultUri(new VRI(pc.getResponseText()));
+                task.setStatus(Task.Status.COMPLETED);
+                task.setPercentageCompleted(100);
+                return task;
+            } catch (URISyntaxException ex) {
+                throw new RemoteServiceException("Invalid URI returned from remote service", ex);
             }
-        } catch (IOException ex) {
-            throw new ToxOtisException(ErrorCause.CommunicationError, ex);
-        }
+        } else if (status == 202) {// Task
+            String taskUriString = pc.getResponseText().trim();
+            try {
+                VRI taskUri = new VRI(taskUriString);
+                task.setUri(taskUri);
+                return task;
+            } catch (URISyntaxException ex) {
+                String message = "Task URI expected as a response from the remote service at " + vri
+                        + " which responded with status code 202 (Task Created) but the response body is not "
+                        + "a valid URI: " + taskUriString;
+                logger.debug(message, ex);
+                throw new RemoteServiceException(message, ex);
+            }
 
+        } else {
+            throw new RemoteServiceException("Status code : '" + status + "' returned from remote service! Remote server says : " + pc.getResponseText());
+        }
 
     }
 
@@ -528,7 +523,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @see BibTeX#publishOnline(org.opentox.toxotis.client.VRI, org.opentox.toxotis.util.aa.AuthenticationToken)  alternative method
      */
     @Override
-    public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
+    public Task publishOnline(AuthenticationToken token) throws ServiceInvocationException {
         VRI bibTexService = getBibTexService();
         if (token != null) {// Append tokenid to the list of URL parameters
             bibTexService.appendToken(token);
@@ -658,15 +653,16 @@ public class BibTeX extends OTPublishable<BibTeX>
     public Individual asIndividual(OntModel model) {
         String bibtexUri = uri != null ? uri.toString() : null;
         Individual indiv = null;
-        try {
-            OntologicalClass bibTypeClass = KnoufBibTex.Entry();
-            if (m_bib_type != null) {
+
+        OntologicalClass bibTypeClass = KnoufBibTex.Entry();
+        if (m_bib_type != null) {
+            try {
                 bibTypeClass = KnoufBibTex.forName(m_bib_type.toString());
+            } catch (ToxOtisException ex) {
+                throw new RuntimeException("Serialization to Individual is not possible - Severe BUG!",ex);
             }
-            indiv = model.createIndividual(bibtexUri, bibTypeClass.inModel(model));
-        } catch (ToxOtisException ex) {
-            throw new RuntimeException("");
         }
+        indiv = model.createIndividual(bibtexUri, bibTypeClass.inModel(model));
 
         indiv.addComment(model.createTypedLiteral("Individual automatically generated by ToxOtis",
                 XSDDatatype.XSDstring));

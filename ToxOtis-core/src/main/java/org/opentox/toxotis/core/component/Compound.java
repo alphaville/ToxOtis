@@ -47,17 +47,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.DescriptorCaclulation;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.factory.FeatureFactory;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -145,7 +149,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503.
      */
-    public Set<Conformer> listConformers(AuthenticationToken token) throws ToxOtisException {
+    public Set<Conformer> listConformers(AuthenticationToken token) throws ServiceInvocationException {
         VRI newUri = new VRI(uri).augment("conformer");
         if (token != null) {
             newUri.appendToken(token);
@@ -155,13 +159,17 @@ public class Compound extends DescriptorCaclulation<Compound> {
         Set<VRI> uriList = client.getResponseUriList();
         Set<Conformer> conformers = new HashSet<Conformer>();
         for (VRI confUri : uriList) {
-            conformers.add(new Conformer(new VRI(confUri)));
+            try {
+                conformers.add(new Conformer(new VRI(confUri)));
+            } catch (ToxOtisException ex) {
+                throw new RemoteServiceException("Remote service returned the URI : "+confUri+" which is " +
+                        "not a valid conformer URI");
+            }
         }
         return conformers;
     }
 
-
-    public Dataset getPropertiesByOnt(OntologicalClass featurePrototype, AuthenticationToken token) throws ToxOtisException {
+    public Dataset getPropertiesByOnt(OntologicalClass featurePrototype, AuthenticationToken token) throws ServiceInvocationException {
         Set<VRI> features = FeatureFactory.lookupSameAs(featurePrototype, token);
         return getProperties(token, (VRI[]) features.toArray(new VRI[features.size()]));
     }
@@ -186,7 +194,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      */
-    public LiteralValue<?> getProperty(Feature feature, AuthenticationToken token) throws ToxOtisException {
+    public LiteralValue<?> getProperty(Feature feature, AuthenticationToken token) throws ServiceInvocationException {
         /**
          *TODO: Should this request include the uri parameters for the feature?
          */
@@ -219,12 +227,12 @@ public class Compound extends DescriptorCaclulation<Compound> {
         return null;
     }
 
-    public LiteralValue getProperty(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    public LiteralValue getProperty(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         Feature tempFeat = new Feature(uri);
         return getProperty(tempFeat, token);
     }
 
-    public Dataset getProperties(AuthenticationToken token, VRI... featureUris) throws ToxOtisException {
+    public Dataset getProperties(AuthenticationToken token, VRI... featureUris) throws ServiceInvocationException {
         VRI dsUri = new VRI(getUri());
         for (VRI featureUri : featureUris) {
             dsUri.addUrlParameter("feature_uris[]", featureUri.toString());
@@ -269,12 +277,12 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      transaction of data.
      */
     @Override
-    protected Compound loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    protected Compound loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
         /** Handle provided token */
         if (token != null) {
             // Replace existing token with the new one
@@ -286,37 +294,34 @@ public class Compound extends DescriptorCaclulation<Compound> {
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
         client.post();
         int status;
-        try {
-            status = client.getResponseCode();
-            if (status == 200) {
-                Task readyTask = new Task();
-                readyTask.setPercentageCompleted(100);
-                readyTask.setStatus(Task.Status.COMPLETED);
-                try {
-                    readyTask.setResultUri(new VRI(client.getResponseText()));
-                    return readyTask;
-                } catch (URISyntaxException ex) {
-                    throw new ToxOtisException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
-                            + "'. Received status code 200 and messaage:" + client.getResponseText());
-                }
-            } else if (status == 202) {
-                try {
-                    VRI taskUri = new VRI(client.getResponseText());
-                    TaskSpider tskSpider = new TaskSpider(taskUri);
-                    return tskSpider.parse();
-                } catch (URISyntaxException ex) {
-                    throw new ToxOtisException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
-                            + "'. Received status code 202 and messaage:" + client.getResponseText());
-                }
+        status = client.getResponseCode();
+        if (status == 200) {
+            Task readyTask = new Task();
+            readyTask.setPercentageCompleted(100);
+            readyTask.setStatus(Task.Status.COMPLETED);
+            try {
+                readyTask.setResultUri(new VRI(client.getResponseText()));
+                return readyTask;
+            } catch (URISyntaxException ex) {
+                throw new RemoteServiceException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
+                        + "'. Received status code 200 and messaage:" + client.getResponseText());
             }
-        } catch (IOException ex) {
-            logger.warn(null, ex);
+        } else if (status == 202) {
+            try {
+                VRI taskUri = new VRI(client.getResponseText());
+                TaskSpider tskSpider = new TaskSpider(taskUri);
+                return tskSpider.parse();
+            } catch (URISyntaxException ex) {
+                throw new RemoteServiceException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
+                        + "'. Received status code 202 and messaage:" + client.getResponseText());
+            }
         }
+
         return null;
     }
 
     @Override
-    public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
+    public Task publishOnline(AuthenticationToken token) throws ServiceInvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -333,7 +338,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      * @throws ToxOtisException
      *      In case the remote service responds with an error status code.
      */
-    public Set<VRI> listAvailableFeatures() throws ToxOtisException {
+    public Set<VRI> listAvailableFeatures() throws ServiceInvocationException {
         VRI featuresUri = new VRI(uri).augment("feature");
         GetHttpClient client = new GetHttpClient(featuresUri);
         Set<VRI> availableUris = new HashSet<VRI>();
@@ -365,7 +370,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      status code like 500 or 503).
      *
      */
-    public ImageIcon getDepictionFromRemote(AuthenticationToken token) throws ToxOtisException {
+    public ImageIcon getDepictionFromRemote(AuthenticationToken token) throws ServiceInvocationException {
         ImageIcon depiction;
         try {
             StringWriter writer = new StringWriter();
@@ -374,7 +379,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
             depiction = new ImageIcon(new URL(Services.Depiction.ideaCdkImage().
                     addUrlParameter("query", smiles).appendToken(token).toString()));
         } catch (MalformedURLException ex) {
-            throw new ToxOtisException(ex);
+            throw new ServiceInvocationException(ex);
         }
         return depiction;
     }
@@ -395,7 +400,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      In case the provided URI is not a valid dataset URI (does not comply
      *      with the OpenTox standards).
      */
-    public Dataset wrapInDataset(VRI datasetUri) throws ToxOtisException {
+    public Dataset wrapInDataset(VRI datasetUri) throws ToxOtisException, ServiceInvocationException {
         Dataset ds = new Dataset(datasetUri);
         ds.getDataEntries().add(new DataEntry(this, new ArrayList<FeatureValue>()));
         return ds;
@@ -428,7 +433,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      like 400 (bad request/bad smiles string) or 500 (internal error of
      *      the server) or if authentication or authorization fails.
      */
-    public Set<VRI> getSimilar(double similarity, VRI service, AuthenticationToken token) throws ToxOtisException {
+    public Set<VRI> getSimilar(double similarity, VRI service, AuthenticationToken token) throws ServiceInvocationException {
         /** Download the string representation of a */
         StringWriter smilesWriter = new StringWriter();
         download(smilesWriter, Media.CHEMICAL_SMILES, token);
@@ -440,24 +445,22 @@ public class Compound extends DescriptorCaclulation<Compound> {
         try {
             client = new GetHttpClient(similarityService);
             client.setMediaType(Media.TEXT_URI_LIST);
-            try {
+            
                 int status = client.getResponseCode();
                 if (status != 200) { // TODO: Tasks??? 201? 202?
-                    throw new ToxOtisException("Received a status code '" + status + "' from the service at"
+                    throw new RemoteServiceException("Received a status code '" + status + "' from the service at"
                             + similarityService.clearToken());
                 }
-            } catch (IOException ex) {
-                throw new ToxOtisException(ErrorCause.ConnectionException, ex);
-            }
+            
             resultSet = client.getResponseUriList();
-        } catch (ToxOtisException ex) {
+        } catch (ServiceInvocationException ex) {
             throw ex;
         } finally {
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    throw new ConnectionException("Stream Could Not Close", ex);
                 }
             }
         }
@@ -481,7 +484,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      like 400 (bad request/bad smiles string) or 500 (internal error of
      *      the server) or if authentication or authorization fails.
      */
-    public Set<VRI> getSimilar(double similarity, AuthenticationToken token) throws ToxOtisException {
+    public Set<VRI> getSimilar(double similarity, AuthenticationToken token) throws ServiceInvocationException {
         return getSimilar(similarity, Services.ideaconsult().augment("query", "similarity"), token);
     }
 }

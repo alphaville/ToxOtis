@@ -36,13 +36,22 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Compound;
+import org.opentox.toxotis.core.component.ErrorReport;
+import org.opentox.toxotis.exceptions.impl.BadRequestException;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.InternalServerError;
+import org.opentox.toxotis.exceptions.impl.NotFound;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 
 /**
  * Downloader and parser for a compound resource available in RDF.
@@ -54,7 +63,7 @@ public class CompoundSpider extends Tarantula<Compound> {
     VRI uri;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CompoundSpider.class);
 
-    public CompoundSpider(VRI uri) throws ToxOtisException {
+    public CompoundSpider(VRI uri) throws ServiceInvocationException, ToxOtisException {
         super();
         this.uri = uri;
         IGetClient client = ClientFactory.createGetClient(uri);
@@ -62,18 +71,40 @@ public class CompoundSpider extends Tarantula<Compound> {
             client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
             client.setUri(uri);
             int status = client.getResponseCode();
-            assessHttpStatus(status, uri);
+            if (status != 200) {
+                OntModel om = client.getResponseOntModel();
+                ErrorReportSpider ersp = new ErrorReportSpider(om);
+                ErrorReport er = ersp.parse();
+
+                if (status == 403) {
+                    ForbiddenRequest fr = new ForbiddenRequest("Access denied to : '" + uri + "'");
+                    fr.setErrorReport(er);
+                    throw fr;
+                }
+                if (status == 401) {
+                    Unauthorized unauth = new Unauthorized("User is not authorized to access : '" + uri + "'");
+                    unauth.setErrorReport(er);
+                    throw unauth;
+                }
+                if (status == 404) {
+                    NotFound notFound = new NotFound("The following algorithm was not found : '" + uri + "'");
+                    notFound.setErrorReport(er);
+                    throw notFound;
+                } else {
+                    ConnectionException connectionException = new ConnectionException("Communication Error with : '" + uri + "'");
+                    connectionException.setErrorReport(er);
+                    throw connectionException;
+
+                }
+            }
             model = client.getResponseOntModel();
             resource = model.getResource(uri.toString());
-        } catch (IOException ex) {
-            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
         } finally { // Have to close the client (disconnect)
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
-                            "Error while trying to close the stream "
+                    throw new ConnectionException("Error while trying to close the stream "
                             + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
                 }
             }
@@ -101,8 +132,14 @@ public class CompoundSpider extends Tarantula<Compound> {
     }
 
     @Override
-    public Compound parse() throws ToxOtisException {
-        Compound compound = new Compound(uri);
+    public Compound parse() throws ServiceInvocationException {
+        Compound compound = null;
+        try {
+            compound = new Compound(uri);
+        } catch (ToxOtisException ex) {
+            throw new BadRequestException("Not a valid compound URI : '"+uri+"'. " +
+                    "Parsing of remote resource won't continue!",ex);
+        }
         compound.setMeta(new MetaInfoSpider(resource, model).parse());
         return compound;
     }

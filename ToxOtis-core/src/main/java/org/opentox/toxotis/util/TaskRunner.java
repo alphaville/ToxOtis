@@ -33,9 +33,9 @@
 package org.opentox.toxotis.util;
 
 import java.util.concurrent.Callable;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.Task.Status;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  * Reloads a task until its status is no longer {@link Status#RUNNING }.
@@ -66,7 +66,7 @@ public class TaskRunner implements Callable<Task> {
         this.delay = delay;
     }
 
-    private Task updateTask(Task old) throws ToxOtisException {
+    private Task updateTask(Task old) throws ServiceInvocationException  {
         task.loadFromRemote();
         float taskHttpStatus = old.getHttpStatus();
         if (taskHttpStatus == 201) { // Created new task
@@ -88,7 +88,7 @@ public class TaskRunner implements Callable<Task> {
         }
     }
 
-    public Task call() throws ToxOtisException {
+    public Task call() throws ServiceInvocationException {
         task.loadFromRemote();
         return updateTask(task);
     }

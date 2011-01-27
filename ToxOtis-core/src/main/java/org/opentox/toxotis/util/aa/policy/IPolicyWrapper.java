@@ -32,8 +32,8 @@
  */
 package org.opentox.toxotis.util.aa.policy;
 
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.w3c.dom.Document;
 
@@ -73,6 +73,6 @@ public interface IPolicyWrapper {
      * If the token the user uses is not active (because it has been invalidated,
      * expired, or not initialized yet).
      */
-    int publish(VRI policyServer, AuthenticationToken token) throws ToxOtisException;
+    int publish(VRI policyServer, AuthenticationToken token) throws ServiceInvocationException;
 
 }

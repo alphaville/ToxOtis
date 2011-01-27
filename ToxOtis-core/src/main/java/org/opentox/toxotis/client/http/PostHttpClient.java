@@ -42,16 +42,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.IStAXWritable;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.InternalServerError;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  * A client used to perform POST operations. It is used to perform POST requests in
@@ -241,7 +243,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
 
     /** Initialize a connection to the target URI */
     @Override
-    protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
+    protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws InternalServerError, ConnectionException {
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
             java.net.URL target = uri.toURL();
@@ -272,8 +274,11 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                         Integer.toString(getParametersAsQuery().getBytes().length));
             }
             return con;
-        } catch (final Exception ex) {
-            throw new ToxOtisException(ex);
+        } catch (final IOException ex) {
+            throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
+        } catch (final Exception unexpectedException) {
+            throw new InternalServerError("Unexpected condition while attempting to "
+                    + "establish a connection to '" + uri + "'", unexpectedException);
         }
     }
 
@@ -289,7 +294,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      *      during the data transaction.
      */
     @Override
-    public void post() throws ToxOtisException {
+    public void post() throws ServiceInvocationException {
         connect(vri.toURI());
         DataOutputStream wr;
         try {
@@ -318,7 +323,8 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                         wr.writeChars("\n");
                     }
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
+                    throw new ConnectionException("Unable to post data to the remote service at '" + getUri() + "' - The connection dropped "
+                            + "unexpectidly while POSTing.", ex);
                 } finally {
                     Throwable thr = null;
                     if (br != null) {
@@ -336,14 +342,18 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                         }
                     }
                     if (thr != null) {
-                        throw new ToxOtisException(ErrorCause.StreamCouldNotClose, thr);
+                        ConnectionException connExc = new ConnectionException("Stream could not close", thr);
+                        connExc.setActor(getUri() != null ? getUri().toString() : "N/A");
                     }
                 }
             }
             wr.flush();
             wr.close();
         } catch (final IOException ex) {
-            throw new ToxOtisException("I/O Exception caught while posting the parameters", ex);
+            ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the " +
+                    "remote web service located at '"+getUri()+"'", ex);
+            postException.setActor(getUri() != null ? getUri().toString() : "N/A");
+            throw postException;
         } finally {
             getPostLock().unlock(); // UNLOCK
         }

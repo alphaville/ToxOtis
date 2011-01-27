@@ -41,13 +41,15 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.IClient;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.SSLConfiguration;
@@ -153,6 +155,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
      * @throws ToxOtisException
      *      If the provided URI is not secure (https)
      */
+    
     @Override
     public AbstractHttpsClient setUri(VRI vri) throws ToxOtisException {
         if (vri != null) {
@@ -164,9 +167,9 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
         return this;
     }
 
-    protected abstract javax.net.ssl.HttpsURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException;
+    protected abstract javax.net.ssl.HttpsURLConnection initializeConnection(final java.net.URI uri) throws ServiceInvocationException;
 
-    protected javax.net.ssl.HttpsURLConnection connect(final java.net.URI uri) throws ToxOtisException {
+    protected javax.net.ssl.HttpsURLConnection connect(final java.net.URI uri) throws ServiceInvocationException{
         connectionLock.lock();
         try {
             return initializeConnection(uri);
@@ -175,24 +178,46 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
         }
     }
 
+    protected InputStream getConnectionInputStream() throws ConnectionException {
+        if (con == null) {
+            throw new NullPointerException("No connection established");
+        }
+        InputStream is = null;
+        try {
+            is = con.getInputStream();
+        } catch (IOException ex) {
+            ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
+                    + "the server. Cannot initialize an InputStream to " + getUri(), ex);
+            connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
+            throw connectionExc;
+        }
+        return is;
+    }
+
     /** Get the normal stream of the response (body) */
     @Override
-    public java.io.InputStream getRemoteStream() throws ToxOtisException, java.io.IOException {
-        readLock.lock();
+    public java.io.InputStream getRemoteStream() throws ConnectionException, ServiceInvocationException {
+//        readLock.lock();       
         try {
             if (con == null) {
                 con = connect(vri.toURI());
             }
             if (con == null) {
-                throw new ToxOtisException(ErrorCause.CommunicationError, "Comminucation Error with the remote");
+                ConnectionException badConnection = new ConnectionException("Cannot establish connection to " + getUri());
+                badConnection.setActor(vri != null ? vri.toString() : "N/A");
+                badConnection.setDetails("An instance of java.net.HttpURLConnection was attempted but the connection failed. Null "
+                        + "connection returned. The remote resource at '" + getUri() + "' seems not to be responding. The stream could "
+                        + "not open.");
+                throw badConnection;
             }
-            if (con.getResponseCode() == 200 || con.getResponseCode() == 202 || con.getResponseCode() == 201) {
-                return new java.io.BufferedInputStream(con.getInputStream(), bufferSize);
+            int connectionResponseCode = getResponseCode();
+            if (connectionResponseCode == 200 || connectionResponseCode == 202 || connectionResponseCode == 201) {
+                return new java.io.BufferedInputStream(getConnectionInputStream(), bufferSize);
             } else {
                 return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);
             }
         } finally {
-            readLock.unlock();
+//            readLock.unlock();
         }
     }
 
@@ -204,8 +229,8 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
      *      In case some communication, server or request error occurs.
      */
     @Override
-    public String getResponseText() throws ToxOtisException {
-        readLock.lock();
+    public String getResponseText() throws ServiceInvocationException {
+//        readLock.lock();
         InputStream is = null;
         BufferedReader reader = null;
         try {
@@ -221,7 +246,10 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
             }
             return new String(sb);
         } catch (IOException io) {
-            throw new ToxOtisException(io);
+            ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
+                    + "the server. Cannot read input stream to " + getUri(), io);
+            connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
+            throw connectionExc;
         } finally {
             IOException closeException = null;
             if (reader != null) {
@@ -238,25 +266,32 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
                     closeException = ex;
                 }
             }
-            readLock.unlock();
+//            readLock.unlock();
             if (closeException != null) {
-                throw new ToxOtisException(closeException);
+                ConnectionException connExc = new ConnectionException("Stream could not close", closeException);
+                connExc.setActor(getUri() != null ? getUri().toString() : "N/A");
+                throw connExc;
             }
         }
     }
 
     /** Get the response status */
     @Override
-    public int getResponseCode() throws ToxOtisException, java.io.IOException {
-        readLock.lock();
+    public int getResponseCode() throws ConnectionException, ServiceInvocationException  {
+//        readLock.lock();
         int responseCode = 0;
         try {
             if (con == null) {
-                con = connect(vri.toURI());
+                connect(getUri().toURI());
             }
             responseCode = con.getResponseCode();
+        } catch (IOException ex) {
+            ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
+                    + "the server", ex);
+            connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
+            throw connectionExc;
         } finally {
-            readLock.unlock();
+//            readLock.unlock();
         }
         return responseCode;
     }
@@ -274,13 +309,13 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
     }
 
     @Override
-    public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ToxOtisException {
+    public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ServiceInvocationException {        
         return getResponseOntModel("RDF/XML");
     }
 
     @Override
-    public com.hp.hpl.jena.ontology.OntModel getResponseOntModel(String specification) throws ToxOtisException {
-        readLock.lock();
+    public com.hp.hpl.jena.ontology.OntModel getResponseOntModel(String specification) throws ServiceInvocationException {
+//        readLock.lock();
         if (specification == null) {
             specification = "RDF/XML";
         }
@@ -292,12 +327,14 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
                 is.close();
             }
             return om;
-        } catch (final Exception ex) {
-            throw new ToxOtisException(ErrorCause.CommunicationError,
-                    "Cannot read OntModel from " + vri.toString() + "due to communication"
-                    + "error with the remote service.", ex);
+        } catch (final ServiceInvocationException ex) {
+            throw ex;
+        } catch (Exception ex) {// Exception to become something more specific
+            ex.printStackTrace();
+            throw new RemoteServiceException("Remote service at '" + getUri() + "' did not provide a valid "
+                    + "RDF representation. The returned representation cannot be parsed", ex);
         } finally {
-            readLock.unlock();
+//            readLock.unlock();
         }
     }
 
@@ -324,8 +361,8 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
      *      data between the client and the server or a some stream cannot close.
      */
     @Override
-    public java.util.Set<VRI> getResponseUriList() throws ToxOtisException {
-        readLock.lock();
+    public java.util.Set<VRI> getResponseUriList() throws ServiceInvocationException {
+//        readLock.lock();
         setMediaType(Media.TEXT_URI_LIST);// Set the mediatype to text/uri-list
         java.util.Set<VRI> setOfUris = new java.util.HashSet<VRI>();
         java.io.InputStreamReader isr = null;
@@ -343,40 +380,44 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
                 try {
                     setOfUris.add(new VRI(line));
                 } catch (URISyntaxException ex) {
-                    throw new ToxOtisException(ErrorCause.InvalidUriReturnedFromRemote,
+                    throw new RemoteServiceException(
                             "The server returned an invalid URI : '" + line + "'", ex);
                 }
             }
-        } catch (final ToxOtisException cl) {
-            throw cl;
         } catch (IOException io) {
-            throw new ToxOtisException(ErrorCause.CommunicationError, io);
+            ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
+                    + "the server", io);
+            connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
+            throw connectionExc;
         } finally {
-            ToxOtisException toxotisException = null;
+            ServiceInvocationException serviceInvocationException = null;
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException ex) {
-                    toxotisException = new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    serviceInvocationException = new ConnectionException("The stream reader (SR) over the connection to the "
+                            + "remote service at '" + getUri() + "' cannot close gracefully", ex);
                 }
             }
             if (isr != null) {
                 try {
                     isr.close();
                 } catch (IOException ex) {
-                    toxotisException = new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    serviceInvocationException = new ConnectionException("The input stream reader (ISR) over the connection to the "
+                            + "remote service at '" + getUri() + "' cannot close gracefully", ex);
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    toxotisException = new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    serviceInvocationException = new ConnectionException("The input stream (IS) over the connection to the "
+                            + "remote service at '" + getUri() + "' cannot close gracefully", ex);
                 }
             }
-            readLock.unlock();
-            if (toxotisException != null) {
-                throw toxotisException;
+//            readLock.unlock();
+            if (serviceInvocationException != null) {
+                throw serviceInvocationException;
             }
         }
         return setOfUris;

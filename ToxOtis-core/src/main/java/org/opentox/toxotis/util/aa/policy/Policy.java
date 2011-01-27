@@ -34,10 +34,9 @@ package org.opentox.toxotis.util.aa.policy;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -211,7 +210,7 @@ public class Policy implements IPolicy {
      *      expired, or not initialized yet).
      */
     @Override
-    public int publish(VRI policyServer, AuthenticationToken token) throws ToxOtisException {
+    public int publish(VRI policyServer, AuthenticationToken token) throws ServiceInvocationException  {
         PolicyWrapper pw = new PolicyWrapper(this);
         return pw.publish(policyServer, token);
     }

@@ -40,7 +40,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 
 /**
  * Serves as a pool of tokens you can use in your project to best manage your tokens
@@ -98,7 +99,7 @@ public class TokenPool {
         return null;
     }
 
-    public AuthenticationToken login(String username, String password) throws ToxOtisException {
+    public AuthenticationToken login(String username, String password) throws ToxOtisException, ServiceInvocationException {
         String hashName = PasswordFileManager.CRYPTO.encrypt(username);
         if (pool.containsKey(hashName)) {
             AuthenticationToken tokenInPool = pool.get(hashName);
@@ -128,7 +129,7 @@ public class TokenPool {
      * @throws IOException
      * @throws ToxOtisException
      */
-    public AuthenticationToken login(File credentialsFile) throws IOException, ToxOtisException {
+    public AuthenticationToken login(File credentialsFile) throws IOException, ToxOtisException, ServiceInvocationException {
         FileReader fr = new FileReader(credentialsFile);
         BufferedReader br = new BufferedReader(fr);
         String username = null;
@@ -169,7 +170,7 @@ public class TokenPool {
         return pool2 != null ? pool2.values() : null;
     }
 
-    public AuthenticationToken login(String credentialsFile) throws IOException, ToxOtisException {
+    public AuthenticationToken login(String credentialsFile) throws IOException, ToxOtisException, ServiceInvocationException {
         return login(new File(credentialsFile));
     }
 
@@ -183,7 +184,7 @@ public class TokenPool {
      *      In particular returns <code>1</code> if the user has a token in the pool and
      *      it is successfully invalidated, <code>-1</code>
      */
-    public int logout(String username) {
+    public int logout(String username) throws ServiceInvocationException {
         String encryptedUserName = PasswordFileManager.CRYPTO.encrypt(username);
         AuthenticationToken tokn = pool.get(encryptedUserName);
         if (tokn != null) {
@@ -193,7 +194,7 @@ public class TokenPool {
                 }
                 pool.remove(encryptedUserName);
                 return 1;
-            } catch (ToxOtisException ex) {
+            } catch (Exception ex) {
                 logger.warn("Exception caught while invalidating a token", ex);
                 return -1;
             }
@@ -202,14 +203,14 @@ public class TokenPool {
         }
     }
 
-    public void logoutAll() {
+    public void logoutAll() throws ServiceInvocationException {
         for (Map.Entry<String, AuthenticationToken> e : pool.entrySet()) {
             try {
                 if (e.getValue().validate()) {
                     e.getValue().invalidate();
                 }
-            } catch (ToxOtisException ex) {
-                logger.debug("ToxOtis exception caught on token invalidation", ex);
+            } catch (ServiceInvocationException ex) {
+                logger.debug("Exception caught on token invalidation", ex);
             }
         }
         // Empty pool...

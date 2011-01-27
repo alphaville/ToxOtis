@@ -47,6 +47,7 @@ public class OntologicalClassImpl implements OntologicalClass {
     private MetaInfo metaInfo = new MetaInfoImpl();
     private Set<OntologicalClass> superClasses = new HashSet<OntologicalClass>();
     private Set<OntologicalClass> disjointWith = new HashSet<OntologicalClass>();
+    private static final long serialVersionUID = 2954714099334L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OntologicalClassImpl.class);
 
     /**

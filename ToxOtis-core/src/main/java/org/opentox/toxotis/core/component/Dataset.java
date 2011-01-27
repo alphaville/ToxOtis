@@ -44,15 +44,19 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTPublishable;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -60,7 +64,6 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.opentox.toxotis.util.spiders.DatasetSpider;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 import weka.core.Attribute;
@@ -92,11 +95,11 @@ public class Dataset extends OTPublishable<Dataset> {
      *      In case the provided URI is not a valid dataset URI according to the
      *      OpenTox specifications.
      */
-    public Dataset(VRI uri) throws ToxOtisException {
+    public Dataset(VRI uri) throws ServiceInvocationException {
         super(uri);
         if (uri != null) {
             if (!Dataset.class.equals(uri.getOpenToxType())) {
-                throw new ToxOtisException(ErrorCause.InvalidDatasetURI, "The provided URI : '" + uri.getStringNoQuery()
+                throw new ServiceInvocationException("The provided URI : '" + uri.getStringNoQuery()
                         + "' is not a valid Dataset uri according to the OpenTox specifications.");
             }
         }
@@ -297,9 +300,9 @@ public class Dataset extends OTPublishable<Dataset> {
     }
 
     @Override
-    public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new InactiveTokenException("The Provided token is inactive");
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
         PostHttpClient client = new PostHttpClient(vri);
         client.setContentType(Media.APPLICATION_RDF_XML);
@@ -307,12 +310,8 @@ public class Dataset extends OTPublishable<Dataset> {
         client.setPostable(asOntModel());
         client.post();
         int status;
-        try {
-            status = client.getResponseCode();
-        } catch (final IOException ex) {
-            throw new ToxOtisException(ErrorCause.CommunicationError,
-                    "Could not read the stream from '" + vri.getStringNoQuery() + "'", ex);
-        }
+        status = client.getResponseCode();
+
         Task dsUpload = new Task();
         String remoteResult = client.getResponseText();
         if (status == 202) {
@@ -336,9 +335,9 @@ public class Dataset extends OTPublishable<Dataset> {
     }
 
     @Override
-    public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
+    public Task publishOnline(AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new InactiveTokenException("The Provided token is inactive");
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
         return publishOnline(Services.ideaconsult(), token);
     }
@@ -389,9 +388,9 @@ public class Dataset extends OTPublishable<Dataset> {
     }
 
     @Override
-    protected Dataset loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    protected Dataset loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new InactiveTokenException(ErrorCause.InvalidToken, "The Provided token is inactive");
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
         DatasetSpider spider = new DatasetSpider(uri, token);
         Dataset ds = spider.parse();
@@ -533,9 +532,9 @@ public class Dataset extends OTPublishable<Dataset> {
         return timeParse;
     }
 
-    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new InactiveTokenException("The Provided token is inactive");
+            throw new ForbiddenRequest("The Provided token is inactive");
         }
         PostHttpClient client = new PostHttpClient(descriptorCalculationAlgorithm);
         client.setMediaType(Media.APPLICATION_RDF_XML);
@@ -551,7 +550,7 @@ public class Dataset extends OTPublishable<Dataset> {
             TaskSpider taskSpider = new TaskSpider(new VRI(taskUri));
             return taskSpider.parse();
         } catch (URISyntaxException ex) {
-            throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
+            throw new RemoteServiceException("The remote service at " + descriptorCalculationAlgorithm
                     + " returned an invalid task URI : " + taskUri, ex);
         }
     }

@@ -42,14 +42,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.collection.Services.*;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.InternalServerError;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 
 /**
  * <p align=justify>OpenTox specific implementation regarding the token provided by the OpenSSO server.
@@ -127,7 +132,7 @@ public class AuthenticationToken {
      *      error code other than expected (e.g. encounters some internal error
      *      and returns a status code 500).
      */
-    public AuthenticationToken(String username, String password) throws ToxOtisException {
+    public AuthenticationToken(String username, String password) throws ServiceInvocationException {
         this();
         IPostClient poster = ClientFactory.createPostClient(Services.SingleSignOn.ssoAuthenticate());
         try {
@@ -139,13 +144,17 @@ public class AuthenticationToken {
             int status = 0;
             try {
                 status = poster.getResponseCode();
-            } catch (IOException ex) {
-                throw new ToxOtisException(ErrorCause.CommunicationError, "Communication error with the service at "
-                        + Services.SingleSignOn.ssoAuthenticate(), ex);
+            } catch (ServiceInvocationException ex) {
+                throw ex;
             }
+
             if (status >= 400) {
-                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Error while authenticating user at "
-                        + poster.getUri() + ". Status code : " + status);
+                if (status == 401) {
+                    throw new Unauthorized("Unauthorized User using username:"
+                            + username + " and password:" + (password != null ? "YES" : "NO"));
+                } else if (status == 403) {
+                    throw new ForbiddenRequest("Forbidden");
+                }
             }
 
             String response = poster.getResponseText();
@@ -159,7 +168,11 @@ public class AuthenticationToken {
                 try {
                     poster.close();
                 } catch (final IOException ex) {
-                    throw new ToxOtisException(ex);
+                    ConnectionException conectionException = new ConnectionException("Cannot close connection to "
+                            + Services.SingleSignOn.ssoAuthenticate(), ex);
+                    conectionException.setActor(Services.SingleSignOn.ssoAuthenticate().toString());
+                    conectionException.setHttpStatus(500);
+                    throw conectionException;
                 }
             }
         }
@@ -194,8 +207,8 @@ public class AuthenticationToken {
      *      error code other than expected (e.g. encounters some internal error
      *      and returns a status code 500).
      */
-    public AuthenticationToken(File file) throws IOException, ToxOtisException {
-        this(PasswordFileManager.CRYPTO.authFromFile(file));
+    public AuthenticationToken(File file) throws IOException {
+//        this(PasswordFileManager.CRYPTO.authFromFile(file));
     }
 
     /**
@@ -318,7 +331,7 @@ public class AuthenticationToken {
      *      In case an error status is received from the remote service or there
      *      is some communication problem.
      */
-    public boolean validate() throws ToxOtisException {
+    public boolean validate() throws ServiceInvocationException {
         if (!this.getStatus().equals(TokenStatus.ACTIVE)) {
             return false;
         }
@@ -333,12 +346,12 @@ public class AuthenticationToken {
             int status = poster.getResponseCode();
             String message = (poster.getResponseText()).trim();
             if (status != 200 && status != 401) {
-                throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoValidate());
+                throw new ServiceInvocationException("Status code " + status + " received from " + Services.SingleSignOn.ssoValidate());
             } else if (status == 401) {
                 if (!message.equals("boolean=false")) {
                     return false;
                 } else {
-                    throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoValidate());
+                    throw new ServiceInvocationException("Status code " + status + " received from " + Services.SingleSignOn.ssoValidate());
                 }
             }
 
@@ -347,15 +360,12 @@ public class AuthenticationToken {
             } else {
                 return false;
             }
-        } catch (IOException ex) {
-            throw new ToxOtisException("Exception caught while communicating with the "
-                    + "token validation service at :" + Services.SingleSignOn.ssoValidate().toString(), ex);
         } finally {
             if (poster != null) {
                 try {
                     poster.close();
                 } catch (final IOException ex) {
-                    throw new ToxOtisException(ex);
+                    throw new ServiceInvocationException(ex);
                 }
             }
         }
@@ -369,7 +379,7 @@ public class AuthenticationToken {
      *      In case an error status is received from the remote service or there
      *      is some communication problem.
      */
-    public void invalidate() throws ToxOtisException {
+    public void invalidate() throws ServiceInvocationException {
         if (TokenStatus.INACTIVE.equals(getStatus())) {
             return;
         }
@@ -384,17 +394,14 @@ public class AuthenticationToken {
             poster.post();
             int status = poster.getResponseCode();
             if (status != 200) {
-                throw new ToxOtisException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
+                throw new ServiceInvocationException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
             }
-        } catch (IOException ex) {
-            logger.warn(null, ex);
-            throw new ToxOtisException(ex);
         } finally {
             if (poster != null) {
                 try {
                     poster.close();
                 } catch (final IOException ex) {
-                    throw new ToxOtisException(ex);
+                    throw new ServiceInvocationException(ex);
                 }
             }
         }
@@ -414,9 +421,9 @@ public class AuthenticationToken {
      *      expired, or not initialized yet).
      *
      */
-    public User getUser() throws ToxOtisException {
+    public User getUser() throws ServiceInvocationException, ToxOtisException {
         if (!this.getStatus().equals(TokenStatus.ACTIVE)) {
-            throw new InactiveTokenException("This token is not active: " + getStatus());
+            throw new ForbiddenRequest("This token is not active: " + getStatus());
         }
         InputStream is = null;
         BufferedReader reader = null;
@@ -429,12 +436,12 @@ public class AuthenticationToken {
             int status = poster.getResponseCode();
             if (status != 200) {
                 if (status == 401) {
-                    throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access the resource at : '" + poster.getUri() + "'. Status is " + status);
+                    throw new Unauthorized("User is not authorized to access the resource at : '" + poster.getUri() + "'. Status is " + status);
                 }
                 if (status == 403) {
-                    throw new ToxOtisException(ErrorCause.UnauthorizedUser, "Permission is denied to : '" + poster.getUri() + "'. Status is " + status);
+                    throw new ForbiddenRequest("Permission is denied to : '" + poster.getUri() + "'. Status is " + status);
                 }
-                throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service '" + poster.getUri() + "' returned status code " + status);
+                throw new RemoteServiceException("Service '" + poster.getUri() + "' returned status code " + status);
             }
             final String valueKey = "userdetails.attribute.value=";
             final String nameKey = "userdetails.attribute.name=%s";
@@ -475,7 +482,7 @@ public class AuthenticationToken {
             }
 
         } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+            throw new ServiceInvocationException(ex);
         } finally {
             IOException exception = null;
             if (reader != null) {
@@ -503,7 +510,7 @@ public class AuthenticationToken {
                 }
             }
             if (exception != null) {
-                throw new ToxOtisException(exception);
+                throw new ServiceInvocationException(exception);
             }
 
         }
@@ -560,9 +567,9 @@ public class AuthenticationToken {
      *      If the token the user uses is not active (because it has been invalidated,
      *      expired, or not initialized yet).
      */
-    public boolean authorize(String httpMethod, VRI target) throws ToxOtisException {
+    public boolean authorize(String httpMethod, VRI target) throws ServiceInvocationException {
         if (!this.getStatus().equals(TokenStatus.ACTIVE)) {
-            throw new InactiveTokenException("This token is not active: " + getStatus());
+            throw new ForbiddenRequest("This token is not active: " + getStatus());
         }
         IPostClient client = null;
 
@@ -575,15 +582,13 @@ public class AuthenticationToken {
         int httpResponseStatus = -1;
         try {
             httpResponseStatus = client.getResponseCode();
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
         } finally {
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
                     logger.error(null, ex);
-                    throw new ToxOtisException(ex);
+                    throw new ServiceInvocationException(ex);
                 }
             }
         }
@@ -614,11 +619,11 @@ public class AuthenticationToken {
      *      If a connection problem occurs with the remote or the communication is
      *      corrupted or the provided target is not a valid URI.
      */
-    public boolean authorize(String httpMethod, String target) throws ToxOtisException {
+    public boolean authorize(String httpMethod, String target) throws ServiceInvocationException {
         try {
             return authorize(httpMethod, new VRI(target));
         } catch (URISyntaxException ex) {
-            throw new ToxOtisException(ex);
+            throw new ServiceInvocationException(ex);
         }
     }
 
@@ -641,5 +646,9 @@ public class AuthenticationToken {
         sb.append("\n");
         sb.append("Status              : " + getStatus());
         return new String(sb);
+    }
+
+    public static void main(String... args) throws ServiceInvocationException {
+        new AuthenticationToken("guest", "guest3");
     }
 }

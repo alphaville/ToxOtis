@@ -40,10 +40,10 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.util.ArrayList;
 import java.util.List;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.core.component.DataEntry;
 import org.opentox.toxotis.core.component.FeatureValue;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
@@ -61,7 +61,7 @@ public class DataEntrySpider extends Tarantula<DataEntry>{
     }
 
     @Override
-    public DataEntry parse() throws ToxOtisException {
+    public DataEntry parse() throws ServiceInvocationException  {
         DataEntry dataEntry = new DataEntry();
         StmtIterator conformerIt = model.listStatements(
                     new SimpleSelector(resource,

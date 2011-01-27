@@ -259,7 +259,7 @@ public class OTObjectProperties {
 
     public static OTObjectProperty trace() {
         if (ms_trace == null) {
-            OTObjectProperty property = new OTObjectPropertyImpl("values");
+            OTObjectProperty property = new OTObjectPropertyImpl("trace");
             property.getDomain().add(OTClasses.DataEntry());
             property.getRange().add(OTClasses.FeatureValuePair());
             property.getMetaInfo().addDescription("Some other ErrorReport corresponding "

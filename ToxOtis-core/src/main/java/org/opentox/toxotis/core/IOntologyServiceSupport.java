@@ -32,8 +32,8 @@
  */
 package org.opentox.toxotis.core;
 
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
@@ -64,5 +64,5 @@ public interface IOntologyServiceSupport<T extends OTOnlineResource> extends IOT
      *      semantically malformed or because the remote service experiences some
      *      internal errors (e.g. error 500 or 503).
      */
-    T publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException;
+    T publishToOntService(VRI ontologyService, AuthenticationToken token) throws ServiceInvocationException;
 }

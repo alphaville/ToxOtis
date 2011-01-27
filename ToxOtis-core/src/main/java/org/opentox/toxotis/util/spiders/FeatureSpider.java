@@ -42,13 +42,14 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
@@ -64,26 +65,23 @@ public class FeatureSpider extends Tarantula<Feature> {
 
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FeatureSpider.class);
 
-    public FeatureSpider(VRI uri) throws ToxOtisException {
+    public FeatureSpider(VRI uri) throws ServiceInvocationException {
         super();
         this.uri = uri;
         IGetClient client = ClientFactory.createGetClient(uri);
         try {
             client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
-            client.setUri(uri);
+//            client.setUri(uri);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
             model = client.getResponseOntModel();
             resource = model.getResource(uri.toString());
-        } catch (final IOException ex) {
-            throw new ToxOtisException("Communication Error with the remote service at :" + uri, ex);
         } finally {
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
-                            "Error while trying to close the stream "
+                    throw new ConnectionException( "Error while trying to close the stream "
                             + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
                 }
             }

@@ -52,6 +52,7 @@ import org.opentox.toxotis.core.html.impl.HTMLParagraphImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
+import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
@@ -215,6 +216,9 @@ public class ErrorReport extends OTComponent<ErrorReport>
         if (httpStatus != 0) {
             indiv.addLiteral(OTDatatypeProperties.httpStatus().asDatatypeProperty(model),
                     model.createTypedLiteral(httpStatus, XSDDatatype.XSDint));
+        }
+        if (errorCause!=null){
+            indiv.addProperty(OTObjectProperties.trace().asObjectProperty(model), errorCause.asIndividual(model));
         }
         return indiv;
     }

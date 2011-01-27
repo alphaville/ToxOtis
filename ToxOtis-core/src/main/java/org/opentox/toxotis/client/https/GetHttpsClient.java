@@ -38,10 +38,12 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.InternalServerError;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  *
@@ -61,78 +63,31 @@ public class GetHttpsClient extends AbstractHttpsClient implements IGetClient{
     }
 
     @Override
-    protected HttpsURLConnection initializeConnection(URI uri) throws ToxOtisException {
+    protected HttpsURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
             java.net.URL target_url = uri.toURL();
             con = (javax.net.ssl.HttpsURLConnection) target_url.openConnection();
             con.setRequestMethod(METHOD);
             con.setDoInput(true);
+            con.setDoOutput(true);
             con.setUseCaches(false);
-            if (acceptMediaType != null) {
-                con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
-            }
             if (!headerValues.isEmpty()) {
                 for (Map.Entry<String, String> e : headerValues.entrySet()) {
                     con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
             }
+            if (acceptMediaType != null) {
+                con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
+            }
             return con;
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+        } catch (final IOException ex) {
+            throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
+        } catch (final Exception unexpectedException) {
+            throw new InternalServerError("Unexpected condition while attempting to "
+                    + "establish a connection to '" + uri + "'", unexpectedException);
         }
     }
 
 
-    /** Get the result as a URI list */
-    @Override
-    public Set<VRI> getResponseUriList() throws ToxOtisException {
-        java.util.Set<VRI> list = new java.util.HashSet<VRI>();
-        java.io.InputStreamReader isr = null;
-        java.io.InputStream is = null;
-        java.io.BufferedReader reader = null;
-        try {
-            if (con == null) {
-                con = initializeConnection(vri.toURI());
-            }
-            is = getRemoteStream();
-            isr = new java.io.InputStreamReader(is);
-            reader = new java.io.BufferedReader(isr);
-            String line;
-            while ((line = reader.readLine()) != null) {
-                try {
-                    list.add(new VRI(line));
-                } catch (URISyntaxException ex) {
-                    logger.debug("Invalid URI",ex);
-                }
-            }
-        } catch (ToxOtisException cl) {
-            throw cl;
-        } catch (IOException io) {
-            throw new ToxOtisException(io);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
-                }
-            }
-            if (isr != null) {
-                try {
-                    isr.close();
-                } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
-                }
-            }
-        }
-        return list;
-    }
-
+    
 }

@@ -40,11 +40,15 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.net.URISyntaxException;
-import org.opentox.toxotis.ToxOtisException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Conformer;
+import org.opentox.toxotis.exceptions.impl.BadRequestException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
@@ -58,7 +62,7 @@ public class ConformerSpider extends Tarantula<Conformer> {
     VRI uri;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ConformerSpider.class);
 
-    public ConformerSpider(VRI uri) throws ToxOtisException {
+    public ConformerSpider(VRI uri) throws ToxOtisException, ServiceInvocationException {
         super();
         this.uri = uri;
         IGetClient client = ClientFactory.createGetClient(uri);
@@ -89,8 +93,14 @@ public class ConformerSpider extends Tarantula<Conformer> {
     }
 
     @Override
-    public Conformer parse() throws ToxOtisException {
-        Conformer conformer = new Conformer(uri);
+    public Conformer parse() throws ServiceInvocationException {
+        Conformer conformer;
+        try {
+            conformer = new Conformer(uri);
+        } catch (ToxOtisException ex) {
+            throw new BadRequestException("Not a valid conformer URI : '"+uri+"'. " +
+                    "Parsing of remote resource won't continue!",ex);
+        }
         StmtIterator it = model.listStatements(
                 new SimpleSelector(null,
                 OTObjectProperties.dataEntry().asObjectProperty(model), (RDFNode) null));

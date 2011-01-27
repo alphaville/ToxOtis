@@ -37,8 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
@@ -76,7 +75,7 @@ public class KnoufBibTex {
         try {
             Method method = ms_methodCache.get(name);
             if (method == null) {
-                throw new ToxOtisException(ErrorCause.KnoufBibTexClassNotFound, "BibTeX class : '" + name
+                throw new ToxOtisException("KnoufBibTexClassNotFound: BibTeX class : '" + name
                         + "' not found in the cache");
             }
             OntologicalClass oc = (OntologicalClass) method.invoke(null);

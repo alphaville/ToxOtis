@@ -34,8 +34,6 @@ package org.opentox.toxotis.training;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
@@ -45,6 +43,7 @@ import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
@@ -92,7 +91,7 @@ public class Trainer {
         this.predictionFeature = predictionFeature;
     }
 
-    public Task train(AuthenticationToken token) throws ToxOtisException {
+    public Task train(AuthenticationToken token) throws ServiceInvocationException {
         /** Handle provided token */
         VRI vri = algorithm.getUri();
         IPostClient client = ClientFactory.createPostClient(vri);
@@ -124,10 +123,8 @@ public class Trainer {
                 task.setResultUri(new VRI(response));
                 return task;
             }
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
         } catch (URISyntaxException ex) {
-            throw new ToxOtisException(ErrorCause.TrainingError, response);
+            throw new ServiceInvocationException("TrainingError: Bad URI returned", ex);
         }
     }
 }

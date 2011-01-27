@@ -37,8 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.OTDatatypeProperty;
 import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
 
@@ -99,7 +98,7 @@ public class KnoufDatatypeProperties {
         try {
             Method method = ms_methodCache.get(name);
             if (method == null) {
-                throw new ToxOtisException(ErrorCause.KnoufDatatypePropertyNotFound, "The property '"
+                throw new ToxOtisException("KnoufDatatypePropertyNotFound: The property '"
                         + name + "' was not found in the Knouf ontology");
             }
             OTDatatypeProperty oc = (OTDatatypeProperty) method.invoke(null);

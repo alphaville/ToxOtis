@@ -34,9 +34,9 @@ package org.opentox.toxotis.core;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
@@ -74,7 +74,7 @@ public interface IDescriptorCalculation {
      *      client and the descriptor calculation service or the stream cannot
      *      open or close.
      */
-    Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException;
+    Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ServiceInvocationException;
 
     /**
      * Calculates all available descriptors using a remote descriptor calculation
@@ -96,7 +96,7 @@ public interface IDescriptorCalculation {
      *      client and the descriptor calculation service or the stream cannot
      *      open or close.
      */
-    Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException;
+    Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ServiceInvocationException;
 
     /**
      * Use a remote Service to calculate (some or all available) descriptors for a
@@ -149,11 +149,11 @@ public interface IDescriptorCalculation {
      *      A <code>Future</code> result of an asynchronous job initiated
      * @throws ToxOtisException
      */
-    Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, VRI datasetService) throws ToxOtisException;
+    Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, VRI datasetService) throws ServiceInvocationException;
 
-    Future<VRI> futureJoeLibDescriptors(AuthenticationToken token, VRI datasetService) throws ToxOtisException;
+    Future<VRI> futureJoeLibDescriptors(AuthenticationToken token, VRI datasetService) throws ServiceInvocationException;
 
-    Future<VRI> futureCDKPhysChemDescriptors(AuthenticationToken token, VRI datasetService) throws ToxOtisException;
+    Future<VRI> futureCDKPhysChemDescriptors(AuthenticationToken token, VRI datasetService) throws ServiceInvocationException;
 
-    Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException;
+    Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ServiceInvocationException;
 }

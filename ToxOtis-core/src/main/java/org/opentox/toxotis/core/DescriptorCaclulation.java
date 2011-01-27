@@ -39,14 +39,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.TaskRunner;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TaskSpider;
@@ -72,7 +71,7 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
     }
 
     @Override
-    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {        
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ServiceInvocationException {
 
         /** REQUEST */
         IPostClient pc = ClientFactory.createPostClient(descriptorCalculationAlgorithm);
@@ -93,14 +92,14 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
             Thread.sleep(4000);
         } catch (InterruptedException ex) {
             logger.error("Interruption exception while sleeping", ex);
-            throw new ToxOtisException(ex);
+            throw new ServiceInvocationException(ex);
         }
 
         try {
             TaskSpider taskSpider = new TaskSpider(new VRI(taskUri));
             return taskSpider.parse();
         } catch (URISyntaxException ex) {
-            throw new ToxOtisException("The remote service at " + descriptorCalculationAlgorithm
+            throw new ServiceInvocationException("The remote service at " + descriptorCalculationAlgorithm
                     + " returned an invalid task URI : " + taskUri, ex);
         } finally {
             if (pc != null) {
@@ -110,19 +109,19 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
                     String message = "Client used to perform the POST operation "
                             + "at '" + descriptorCalculationAlgorithm.toString() + "' could not close!";
                     logger.error(message, ex);
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, message, ex);
+                    throw new ServiceInvocationException(message, ex);
                 }
             }
         }
     }
 
     @Override
-    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ToxOtisException {
+    public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ServiceInvocationException {
         return calculateDescriptors(descriptorCalculationAlgorithm, token, "ALL", "true");
     }
 
     @Override
-    public Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ToxOtisException {
+    public Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ServiceInvocationException {
         return futureDescriptors(descriptorCalculationAlgorithm, token, Executors.newSingleThreadExecutor(), serviceConfiguration);
     }
 
@@ -147,17 +146,17 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
     }
 
     @Override
-    public Future<VRI> futureCDKPhysChemDescriptors(AuthenticationToken token, VRI datasetService) throws ToxOtisException {
+    public Future<VRI> futureCDKPhysChemDescriptors(AuthenticationToken token, VRI datasetService) throws ServiceInvocationException {
         return futureDescriptors(Services.DescriptorCalculation.cdkPhysChem(), token, datasetService);
     }
 
     @Override
-    public Future<VRI> futureJoeLibDescriptors(AuthenticationToken token, VRI datasetService) throws ToxOtisException {
+    public Future<VRI> futureJoeLibDescriptors(AuthenticationToken token, VRI datasetService) throws ServiceInvocationException {
         return futureDescriptors(Services.DescriptorCalculation.joelib(), token, datasetService);
     }
 
     @Override
-    public Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, VRI datasetService) throws ToxOtisException {
+    public Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, VRI datasetService) throws ServiceInvocationException {
         ArrayList<String> options = new ArrayList<String>();
         options.add("ALL");
         options.add("true");

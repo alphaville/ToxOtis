@@ -32,6 +32,7 @@
  */
 package org.opentox.toxotis.util.aa.policy;
 
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.util.aa.SSLConfiguration;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,15 +43,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.https.DeleteHttpsClient;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.InactiveTokenException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -67,9 +70,9 @@ public class PolicyManager {
         SSLConfiguration.initializeSSLConnection();
     }
 
-    public static void deleteRemotePolicy(VRI policyServiceUri, String policyName, AuthenticationToken token) throws ToxOtisException {
+    public static void deleteRemotePolicy(VRI policyServiceUri, String policyName, AuthenticationToken token) throws ServiceInvocationException {
         if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
-            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+            throw new ForbiddenRequest("This token is not active: " + token.getStatus());
         }
         //TODO: We need a secure DELETE client here!
         if (policyServiceUri == null) {
@@ -87,7 +90,7 @@ public class PolicyManager {
                 try {
                     sdc.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    throw new ConnectionException("Stream could not close", ex);
                 }
             }
         }
@@ -99,7 +102,7 @@ public class PolicyManager {
      * @param token
      * @throws ToxOtisException
      */
-    public static void deleteAllMyPolicies(VRI policyService, AuthenticationToken token) throws ToxOtisException {
+    public static void deleteAllMyPolicies(VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
         ArrayList<String> policies = listPolicyUris(policyService, token);
         for (String policyName : policies) {
             deleteRemotePolicy(policyService, policyName, token);
@@ -134,9 +137,9 @@ public class PolicyManager {
      *      If the token the user uses is not active (because it has been invalidated,
      *      expired, or not initialized yet).
      */
-    public static String getPolicyOwner(VRI serviceUri, VRI policyService, AuthenticationToken token) throws ToxOtisException {
+    public static String getPolicyOwner(VRI serviceUri, VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
         if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
-            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+            throw new ForbiddenRequest("This token is not active: " + token.getStatus());
         }
         IGetClient sgt = null;
         if (policyService == null) {
@@ -157,20 +160,18 @@ public class PolicyManager {
                 }
                 return response + "@" + policyService.getServiceBaseUri().getHost();
             } else if (responseStatus == 403) {
-                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
+                throw new ForbiddenRequest("User is not authenticated!");
             } else if (responseStatus == 401) {
-                throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to perform the request!");
+                throw new Unauthorized("User is not authorized to perform the request!");
             } else {
-                throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus);
+                throw new ServiceInvocationException("Service returned status code : " + responseStatus);
             }
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
         } finally {
             if (sgt != null) {
                 try {
                     sgt.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    throw new ConnectionException("Stream Could Not Close", ex);
                 }
             }
         }
@@ -201,9 +202,9 @@ public class PolicyManager {
      *      If the token the user uses is not active (because it has been invalidated,
      *      expired, or not initialized yet).
      */
-    public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ToxOtisException {
+    public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
         if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
-            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+            throw new ForbiddenRequest("This token is not active: " + token.getStatus());
         }
         IGetClient sgt = null;
         ArrayList<String> listOfPolicyNames = new ArrayList<String>();
@@ -230,19 +231,20 @@ public class PolicyManager {
                     }
                 }
             } else if (responseStatus == 403) {
-                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
+                throw new ForbiddenRequest("Authentication Failed - User is not authenticated!");
             } else {
-                throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus);
+                throw new ServiceInvocationException("Service returned status code : " + responseStatus);
             }
         } catch (IOException ex) {
-            org.slf4j.LoggerFactory.getLogger(Policy.class).error("IO Exception was thrown while communicating with the policy service at " + policyService, ex);
-            throw new ToxOtisException(ex);
+            String message = "IO Exception was thrown while communicating with the policy service at " + policyService;
+            org.slf4j.LoggerFactory.getLogger(Policy.class).error(message, ex);
+            throw new ConnectionException(message, ex);
         } finally {
             if (sgt != null) {
                 try {
                     sgt.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    throw new ConnectionException("Stream could not close", ex);
                 }
             }
         }
@@ -250,9 +252,9 @@ public class PolicyManager {
     }
 
     // TODO: Return PolicyWrapper instead of Policy
-    public static IPolicyWrapper parsePolicy(String id, VRI policyService, AuthenticationToken token) throws ToxOtisException {
+    public static IPolicyWrapper parsePolicy(String id, VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
         if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
-            throw new InactiveTokenException("This token is not active: " + token.getStatus());
+            throw new ForbiddenRequest("This token is not active: " + token.getStatus());
         }
         IGetClient sgt = null;
         if (policyService == null) {
@@ -266,12 +268,8 @@ public class PolicyManager {
 
             // PROCESS RESPONSE
             int responseStatus = 0;
-            try {
-                responseStatus = sgt.getResponseCode();
-            } catch (IOException ex) {
-                org.slf4j.LoggerFactory.getLogger(Policy.class).error(null, ex);
-                throw new ToxOtisException(ex);
-            }
+            responseStatus = sgt.getResponseCode();
+
             if (responseStatus == 200) {
 //                System.out.println(sgt.getResponseText());
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -286,17 +284,17 @@ public class PolicyManager {
                 }
 
             } else if (responseStatus == 403) {
-                throw new ToxOtisException(ErrorCause.AuthenticationFailed, "User is not authenticated!");
+                throw new ForbiddenRequest("Authentication Failed - User is not authenticated!");
             } else {
                 String responseText = sgt.getResponseText();
-                throw new ToxOtisException(ErrorCause.UnknownCauseOfException, "Service returned status code : " + responseStatus + " and message:\n" + responseText);
+                throw new ServiceInvocationException("Service returned status code : " + responseStatus + " and message:\n" + responseText);
             }
         } finally {
             if (sgt != null) {
                 try {
                     sgt.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose, ex);
+                    throw new ConnectionException("Stream could not close", ex);
                 }
             }
         }
@@ -315,13 +313,13 @@ public class PolicyManager {
         pr.setAllowDelete(true);
         pol.addRule(pr);
 
+
         return new PolicyWrapper(pol);
     }
 
-    public static IPolicyWrapper defaultSignleUserPolicy(String policyName, VRI componentUri, AuthenticationToken token) throws ToxOtisException {
+    public static IPolicyWrapper defaultSignleUserPolicy(String policyName, VRI componentUri, AuthenticationToken token)
+            throws ToxOtisException, ServiceInvocationException   {
         return defaultSignleUserPolicy(policyName, componentUri, token.getUser().getUid().split("@")[0]);
-
-
     }
 }
 

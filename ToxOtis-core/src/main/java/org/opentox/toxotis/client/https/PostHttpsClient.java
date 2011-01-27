@@ -40,18 +40,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
+import javax.net.ssl.HttpsURLConnection;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.IStAXWritable;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.InternalServerError;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  *
@@ -112,14 +115,13 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
 
     /** Initialize a connection to the target URI */
     @Override
-    protected javax.net.ssl.HttpsURLConnection initializeConnection(final java.net.URI uri) throws ToxOtisException {
+    protected HttpsURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
             java.net.URL target_url = uri.toURL();
             con = (javax.net.ssl.HttpsURLConnection) target_url.openConnection();
             con.setRequestMethod(METHOD);
-            con.setAllowUserInteraction(false);
             con.setDoInput(true);
-            con.setDoOutput(true); // allow data to be posted
+            con.setDoOutput(true);
             con.setUseCaches(false);
             if (contentType != null) {
                 con.setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
@@ -132,20 +134,13 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
                     con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
             }
-            /* If there are some parameters to be posted, then the POST will
-             * declare the posted data as application/x-form-urlencoded.
-             */
-            if (!postParameters.isEmpty()) {
-                setContentType(Media.APPLICATION_FORM_URL_ENCODED);
-                con.setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
-                con.setRequestProperty(RequestHeaders.CONTENT_LENGTH,
-                        Integer.toString(getParametersAsQuery().getBytes().length));
-            }
             return con;
-        } catch (IOException ex) {
-            throw new ToxOtisException(ex);
+        } catch (final IOException ex) {
+            throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
+        } catch (final Exception unexpectedException) {
+            throw new InternalServerError("Unexpected condition while attempting to "
+                    + "establish a connection to '" + uri + "'", unexpectedException);
         }
-
     }
 
     @Override
@@ -183,23 +178,23 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     }
 
     @Override
-    public void post() throws ToxOtisException {
+    public void post() throws ServiceInvocationException {
         connect(vri.toURI());
-        DataOutputStream wr = null;
+        DataOutputStream wr;
         try {
-            getPostLock().lock(); // <<< LOCKed
+            getPostLock().lock(); // LOCK
             wr = new DataOutputStream(con.getOutputStream());
-            String parametersQuery = getParametersAsQuery();
-            if (parametersQuery != null && !parametersQuery.trim().isEmpty()) {
-                wr.writeBytes(parametersQuery);// POST the parameters
-            } else if (postableString != null && !postableString.trim().isEmpty()) {
-                wr.writeChars(postableString);
-            } else if (postableBytes != null && !postableBytes.trim().isEmpty()) {
-                wr.writeBytes(postableBytes);
-            } else if (staxComponent != null) {
-                staxComponent.writeRdf(wr);
+            String query = getParametersAsQuery();
+            if (query != null && !query.isEmpty()) {
+                wr.writeBytes(getParametersAsQuery());// POST the parameters
             } else if (model != null) {
                 model.write(wr);
+            } else if (staxComponent != null) {
+                staxComponent.writeRdf(wr);
+            } else if (postableString != null) {
+                wr.writeChars(postableString);
+            } else if (postableBytes != null) {
+                wr.writeBytes(postableBytes);
             } else if (fileContentToPost != null) {
                 FileReader fr = null;
                 BufferedReader br = null;
@@ -212,7 +207,8 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
                         wr.writeChars("\n");
                     }
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ex);
+                    throw new ConnectionException("Unable to post data to the remote service at '" + getUri() + "' - The connection dropped "
+                            + "unexpectidly while POSTing.", ex);
                 } finally {
                     Throwable thr = null;
                     if (br != null) {
@@ -230,16 +226,20 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
                         }
                     }
                     if (thr != null) {
-                        throw new ToxOtisException(ErrorCause.StreamCouldNotClose, thr);
+                        ConnectionException connExc = new ConnectionException("Stream could not close", thr);
+                        connExc.setActor(getUri() != null ? getUri().toString() : "N/A");
                     }
                 }
             }
             wr.flush();
             wr.close();
         } catch (final IOException ex) {
-            throw new ToxOtisException(ErrorCause.ConnectionException,"I/O Exception caught while posting the parameters", ex);
+            ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the " +
+                    "remote web service located at '"+getUri()+"'", ex);
+            postException.setActor(getUri() != null ? getUri().toString() : "N/A");
+            throw postException;
         } finally {
-            getPostLock().unlock(); // <<< UNLOCKed
+            getPostLock().unlock(); // UNLOCK
         }
     }
 

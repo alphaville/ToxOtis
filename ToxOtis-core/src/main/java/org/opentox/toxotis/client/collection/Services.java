@@ -42,8 +42,8 @@ import org.opentox.toxotis.client.VRI;
  */
 public class Services {
 
-    private static final String _NTUA_SERVICES = "http://opentox.ntua.gr:3000/%s";
-    private static final String _AMBIT_PLOVDIV = "http://ambit.uni-plovdiv.bg:8080/ambit2/%s";
+    private static final String _NTUA_SERVICES = "http://opentox.ntua.gr:4000/%s";
+    private static final String _AMBIT_PLOVDIV = "https://ambit.uni-plovdiv.bg:8443/ambit2/%s";
     private static final String _IDEACONSULT = "http://apps.ideaconsult.net:8080/ambit2/%s";
     private static final String _TUM_DEV = "http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev/%s";
     public static final String SSO_HOST = "opensso.in-silico.ch";

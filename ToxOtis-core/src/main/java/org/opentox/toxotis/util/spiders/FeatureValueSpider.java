@@ -38,8 +38,8 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -56,17 +56,17 @@ public class FeatureValueSpider extends Tarantula<FeatureValue> {
     }
 
     @Override
-    public FeatureValue parse() throws ToxOtisException {
+    public FeatureValue parse() throws ServiceInvocationException {
         Statement featureResourceStatement = resource.getProperty(OTObjectProperties.feature().asObjectProperty(model));
         if (featureResourceStatement == null) {
-            throw new ToxOtisException("Error while parsing a feature value node: No features where assigned to the feature value node!");
+            throw new ServiceInvocationException("Error while parsing a feature value node: No features where assigned to the feature value node!");
         }
         Resource featureResource = featureResourceStatement.getResource();
         FeatureSpider fSpider = new FeatureSpider(featureResource, model);
         Feature feature = fSpider.parse();
         Statement valueStatement = resource.getProperty(OTDatatypeProperties.value().asDatatypeProperty(model));
         if (valueStatement == null) {
-            throw new ToxOtisException("Error while parsing a feature value node: No value is assigned to the feature value node!");
+            throw new ServiceInvocationException("Error while parsing a feature value node: No value is assigned to the feature value node!");
         }
         Literal value = valueStatement.getObject().as(Literal.class);
         FeatureValue fValue;

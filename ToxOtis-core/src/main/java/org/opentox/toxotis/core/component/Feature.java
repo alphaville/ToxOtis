@@ -44,18 +44,24 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.IOTComponent;
 import org.opentox.toxotis.core.OTPublishable;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.InternalServerError;
+import org.opentox.toxotis.exceptions.impl.MethodNotAllowed;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.spiders.ErrorReportSpider;
 import org.opentox.toxotis.util.spiders.FeatureSpider;
 
 /**
@@ -91,7 +97,7 @@ public class Feature extends OTPublishable<Feature> {
 
     public void setAdmissibleValues(Set<LiteralValue> admissibleValue) {
         this.admissibleValues = admissibleValue;
-    }    
+    }
 
     public Set<OntologicalClass> getLowLevelOntologies() {
         Set<OntologicalClass> lowLevel = new HashSet<OntologicalClass>();
@@ -165,7 +171,7 @@ public class Feature extends OTPublishable<Feature> {
         /* Add meta data */
         if (meta != null) {
             meta.attachTo(indiv, model);
-        }        
+        }
         return indiv;
     }
 
@@ -198,7 +204,7 @@ public class Feature extends OTPublishable<Feature> {
     }
 
     @Override
-    protected Feature loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    protected Feature loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         FeatureSpider fSpider = new FeatureSpider(uri);
         Feature f = fSpider.parse();
         setMeta(f.getMeta());
@@ -208,40 +214,60 @@ public class Feature extends OTPublishable<Feature> {
     }
 
     @Override
-    public Task publishOnline(VRI vri, AuthenticationToken token) throws ToxOtisException {
-        /** Handle provided token */
-        if (token != null) {
-            // Replace existing token with the new one
-            vri.removeUrlParameter("tokenid").addUrlParameter("tokenid", token.stringValue());
-        }
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {        
         PostHttpClient client = new PostHttpClient(vri);
-        client.setContentType("application/rdf+xml");
+        client.authorize(token);
+        client.setContentType(Media.APPLICATION_RDF_XML);
         client.setPostable(asOntModel());
         client.setMediaType("text/uri-list");
         client.post();
-        int status;
-        try {
-            status = client.getResponseCode();
-            if (status == 200) {
-                Task readyTask = new Task();
-                readyTask.setPercentageCompleted(100);
-                readyTask.setStatus(Task.Status.COMPLETED);
-                try {
-                    readyTask.setResultUri(new VRI(client.getResponseText()));
-                    return readyTask;
-                } catch (URISyntaxException ex) {
-                    throw new ToxOtisException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
-                            + "'. Received status code 200 and messaage:");
-                }
+        int status = client.getResponseCode();
+        if (status == 200) {
+            Task readyTask = new Task();
+            readyTask.setPercentageCompleted(100);
+            readyTask.setStatus(Task.Status.COMPLETED);
+            try {
+                readyTask.setResultUri(new VRI(client.getResponseText()));
+                return readyTask;
+            } catch (URISyntaxException ex) {
+                String message = client.getResponseText();
+                throw new ServiceInvocationException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
+                        + "'. Received status code 200 and message:" + message, ex);
             }
-        } catch (IOException ex) {
-            logger.warn(null, ex);
+        } else {            
+            ErrorReport remoteServiceErrorReport = null;
+//            try {
+//                OntModel om = client.getResponseOntModel();
+//                if (om != null) {
+//                    remoteServiceErrorReport = new ErrorReportSpider(om).parse();
+//                }
+//            } catch (ServiceInvocationException ex) {
+//                System.out.println(ex);
+//            }catch (Exception ex){
+//                ex.printStackTrace();
+//            }
+
+            if (status == 405) {
+                MethodNotAllowed methodNotAllowed = new MethodNotAllowed("Method not allowed on the URI " + getUri());
+                methodNotAllowed.setErrorReport(remoteServiceErrorReport);
+                throw methodNotAllowed;
+            } else if (status == 401) {
+                System.out.println("401!!!");
+                throw new ForbiddenRequest();
+            } else if (status == 403) {
+                System.out.println("403!!!");
+                throw new Unauthorized();
+            }else{
+                throw new ServiceInvocationException();
+            }
+
+            //TODO: Important! If status!=200 throw proper exceptions
         }
-        return null;
+
     }
 
     @Override
-    public Task publishOnline(AuthenticationToken token) throws ToxOtisException {
+    public Task publishOnline(AuthenticationToken token) throws ServiceInvocationException {
         return publishOnline(Services.ideaconsult().augment("feature"), token);
     }
 

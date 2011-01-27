@@ -30,10 +30,8 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.util.aa;
+package org.opentox.toxotis.exceptions;
 
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.core.component.ErrorReport;
 
 /**
@@ -41,47 +39,33 @@ import org.opentox.toxotis.core.component.ErrorReport;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class InactiveTokenException extends ToxOtisException {
+public interface IServiceInvocationException {
+
+    String getActor();
+
+    int getHttpStatus();
+
+    String getMessage();
+
+    String getDetails();
 
     /**
-     * Creates a new instance of <code>InactiveTokenException</code> without detail message.
+     * Returns the error report related to the current exception that is received
+     * by some other remote service. This error report is a child error report
+     * of the error report returned by {@link #asErrorReport() }.
+     * @return
      */
-    public InactiveTokenException() {
-    }
+    ErrorReport getErrorReport();
 
-    /**
-     * Constructs an instance of <code>InactiveTokenException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public InactiveTokenException(String msg) {
-        super(msg);
-    }
+    ErrorReport asErrorReport();
 
-    public InactiveTokenException(ErrorCause cause, String message, ErrorReport remoteErrorReport) {
-        super(cause, message, remoteErrorReport);
-    }
+    String errorCode();
 
-    public InactiveTokenException(String message, ErrorReport remoteErrorReport) {
-        super(message, remoteErrorReport);
-    }
+    void setActor(String actor);
 
-    public InactiveTokenException(Throwable cause) {
-        super(cause);
-    }
+    void setHttpStatus(int httpStatus);
 
-    public InactiveTokenException(ErrorCause cause, String explanation, Throwable throwable) {
-        super(cause, explanation, throwable);
-    }
+    void setDetails(String details);
 
-    public InactiveTokenException(ErrorCause cause, Throwable throwable) {
-        super(cause, throwable);
-    }
-
-    public InactiveTokenException(ErrorCause cause, String exaplanation) {
-        super(cause, exaplanation);
-    }
-
-    public InactiveTokenException(String string, Exception ex) {
-        super(string, ex);
-    }
+    void setErrorReport(ErrorReport errorReport);
 }

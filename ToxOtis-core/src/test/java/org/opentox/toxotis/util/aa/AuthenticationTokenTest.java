@@ -1,17 +1,19 @@
 package org.opentox.toxotis.util.aa;
 
-import java.net.URISyntaxException;
+import java.io.File;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.ErrorCause;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.exceptions.IClientException;
+import org.opentox.toxotis.exceptions.ISecurityException;
+import org.opentox.toxotis.exceptions.IUnauthorized;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 
 /**
  *
@@ -39,7 +41,7 @@ public class AuthenticationTokenTest {
     }
 
     @Test
-    public void testUser() throws ToxOtisException {
+    public void testUser() throws Exception {
         /*
          * Important todo:
          * export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.22/
@@ -53,8 +55,8 @@ public class AuthenticationTokenTest {
             assertEquals("Guest", userGuest.getName());
             assertEquals("guest@opensso.in-silico.ch", userGuest.getUid());
             at.invalidate();
-        } catch (ToxOtisException ex) {
-            ex.printStackTrace();
+        } catch (ServiceInvocationException ex) {
+            System.out.println(ex.getDetails());
         } finally {
             if (at != null) {
                 at.invalidate();
@@ -64,36 +66,55 @@ public class AuthenticationTokenTest {
     }
 
     @Test
-    public void testGetUserWrongCredentials() throws ToxOtisException {
+    public void testGetUserWrongCredentials() throws Exception {
         try {
             new AuthenticationToken("wrongUser", "wrongPass");
-        } catch (ToxOtisException ex) {
-            System.out.println(ex.getCode());
-            if (ErrorCause.CommunicationError.equals(ex.getCode()) || ErrorCause.ConnectionException.equals(ex.getCode())) {
-                System.out.println("[WARNING] SSO server seems to be down!");
-                return;
-            }
-            assertEquals(ErrorCause.AuthenticationFailed, ex.getCode());
+        } catch (ServiceInvocationException ex) {
+            assertTrue(ex instanceof IClientException);
+            assertTrue(ex instanceof ISecurityException);
+            assertTrue(ex instanceof IUnauthorized);
             return;
         }
         fail("Should have failed (Wrong credentials provided)");
     }
 
     @Test
-    public void testSecureDatasetService() throws ToxOtisException, URISyntaxException {
+    public void testAuthenticationFromFile() throws Exception {
+        File passwordFile = new File(System.getProperty("user.home")+"/toxotisKeys/my.key");
+        AuthenticationToken at = new AuthenticationToken(passwordFile);
+        at.invalidate();
+    }
+
+    @Test
+    public void testGetStatus() throws Exception {
+        assertEquals(AuthenticationToken.TokenStatus.DEAD, new AuthenticationToken().getStatus());
+        AuthenticationToken token = new AuthenticationToken("guest", "guest");
+        assertEquals(AuthenticationToken.TokenStatus.ACTIVE,token.getStatus());
+        token.invalidate();
+        assertEquals(AuthenticationToken.TokenStatus.INACTIVE, token.getStatus());
+    }
+
+    @Test
+    public void testGetUser() throws Exception {
+        AuthenticationToken guest = new AuthenticationToken("guest", "guest");
+        User u = guest.getUser();
+        assertEquals("guest@opensso.in-silico.ch", u.getUid());
+        assertEquals("Guest", u.getName());
+        assertEquals("anonymous@anonymous.org", u.getMail());
+    }
+
+    @Test
+    public void testSecureDatasetService() throws Exception {
         AuthenticationToken at = null;
         try {
-            at = new AuthenticationToken("Sopasakis", "abfhs8y");
-        } catch (ToxOtisException ex) {
-            if (ErrorCause.CommunicationError.equals(ex.getCode()) || ErrorCause.ConnectionException.equals(ex.getCode())) {
-                System.out.println("[WARNING] SSO server seems to be down!");
-                return;
-            }
-            assertEquals(ErrorCause.AuthenticationFailed, ex.getCode());
+            at = new AuthenticationToken("guest", "guest");
+        } catch (ServiceInvocationException ex) {
+            ex.printStackTrace();
             return;
         }
-        int maxCompounds = 1;
-        Dataset ds = new Dataset(new VRI("https://ambit.uni-plovdiv.bg:8443/ambit2/dataset/6").addUrlParameter("max", maxCompounds)).loadFromRemote(at);
+        int maxCompounds = 2;
+        Dataset ds = new Dataset(new VRI("https://ambit.uni-plovdiv.bg:8443/ambit2/dataset/54").addUrlParameter("max", maxCompounds)).loadFromRemote(at);
+//        Dataset ds = new Dataset(new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/6").addUrlParameter("max", maxCompounds)).loadFromRemote(at);
         assertEquals(maxCompounds, ds.getInstances().numInstances());
         at.invalidate();
     }

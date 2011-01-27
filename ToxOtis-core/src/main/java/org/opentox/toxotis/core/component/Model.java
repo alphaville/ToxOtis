@@ -52,7 +52,6 @@ import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.IHTMLSupport;
 import org.opentox.toxotis.core.OTOnlineResource;
@@ -64,6 +63,7 @@ import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -99,6 +99,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private Serializable actualModel;
     private byte[] modelBytes;
     private User createdBy;
+    private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Model.class);
 
     public Model(VRI uri) {
@@ -338,7 +339,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     }
 
     @Override
-    protected Model loadFromRemote(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    protected Model loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         ModelSpider spider = new ModelSpider(uri, token);
         Model m = spider.parse();
         setAlgorithm(m.getAlgorithm());
@@ -358,7 +359,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     }
 
     @Override
-    public Model publishToOntService(VRI ontologyService, AuthenticationToken token) throws ToxOtisException {
+    public Model publishToOntService(VRI ontologyService, AuthenticationToken token) throws ServiceInvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

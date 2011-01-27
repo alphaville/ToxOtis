@@ -85,7 +85,7 @@ public class ResourceValue implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (ResourceValue.class != obj.getClass()) {
+        if (this.getClass() != obj.getClass()) {
             return false;
         }
         final ResourceValue other = (ResourceValue) obj;

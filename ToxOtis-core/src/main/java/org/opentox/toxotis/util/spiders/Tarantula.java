@@ -51,9 +51,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.NotFound;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -115,9 +118,9 @@ public abstract class Tarantula<Result> implements Closeable {
      *
      * @return
      *      The parsed object.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      */
-    public abstract Result parse() throws ToxOtisException;
+    public abstract Result parse() throws ServiceInvocationException;
 
     protected Set<LiteralValue> retrievePropertyLiterals(Property prop) {
         Set<LiteralValue> results = new HashSet<LiteralValue>();
@@ -287,18 +290,18 @@ public abstract class Tarantula<Result> implements Closeable {
         return readRemoteTime;
     }
 
-    protected void assessHttpStatus(int status, VRI actionUri) throws ToxOtisException {
+    protected void assessHttpStatus(int status, VRI actionUri) throws ServiceInvocationException {
         if (status == 403) {
-            throw new ToxOtisException(ErrorCause.AuthenticationFailed, "Access denied to : '" + actionUri + "' (status 403)");
+            throw new ForbiddenRequest("Access denied to : '" + actionUri + "' (status 403)");
         }
         if (status == 401) {
-            throw new ToxOtisException(ErrorCause.UnauthorizedUser, "User is not authorized to access : '" + actionUri + "' (status 401)");
+            throw new Unauthorized("User is not authorized to access : '" + actionUri + "' (status 401)");
         }
         if (status == 404) {
-            throw new ToxOtisException(ErrorCause.TaskNotFoundError, "The following task was not found : '" + actionUri + "' (status 404)");
+            throw new NotFound("The following task was not found : '" + actionUri + "' (status 404)");
         }
         if (status != 200 && status != 202 && status != 201) {
-            throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with : '" + actionUri + "'. status = " + status);
+            throw new ConnectionException("Communication Error with : '" + actionUri + "'. status = " + status);
         }
     }
 }

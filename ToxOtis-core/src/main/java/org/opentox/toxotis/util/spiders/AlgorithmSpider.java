@@ -39,8 +39,6 @@ import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.opentox.toxotis.ErrorCause;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
@@ -48,6 +46,12 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Algorithm;
 import org.opentox.toxotis.core.component.ErrorReport;
+import org.opentox.toxotis.exceptions.impl.BadRequestException;
+import org.opentox.toxotis.exceptions.impl.ConnectionException;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
+import org.opentox.toxotis.exceptions.impl.NotFound;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
@@ -88,16 +92,16 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      *      404 (Algorithm not found on the server), 500 (Some internal server error
      *      occured) or other exceptional status code.
      */
-    public AlgorithmSpider(VRI uri) throws ToxOtisException {
+    public AlgorithmSpider(VRI uri) throws ServiceInvocationException {
         this(uri, null);
     }
 
-    public AlgorithmSpider(Resource resource, OntModel model) throws ToxOtisException {
+    public AlgorithmSpider(Resource resource, OntModel model) throws BadRequestException {
         super(resource, model);
         try {
             uri = new VRI(resource.getURI());
             if (!Algorithm.class.equals(uri.getOpenToxType())) {
-                throw new ToxOtisException("Bad URI : Not an algorithm URI (" + uri + ")");
+                throw new BadRequestException("Bad URI : Not an algorithm URI (" + uri + ")");
             }
         } catch (URISyntaxException ex) {
             logger.debug(null, ex);
@@ -124,7 +128,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      *      404 (Algorithm not found on the server), 500 (Some internal server error
      *      occured) or other exceptional status code.
      */
-    public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ToxOtisException {
+    public AlgorithmSpider(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         super();
         this.uri = uri;
         IGetClient client = ClientFactory.createGetClient(uri);
@@ -141,31 +145,34 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                 ErrorReport er = ersp.parse();
 
                 if (status == 403) {
-                    throw new ToxOtisException(ErrorCause.AuthenticationFailed,
-                            "Access denied to : '" + uri + "'", er);
+                    ForbiddenRequest fr = new ForbiddenRequest("Access denied to : '" + uri + "'");
+                    fr.setErrorReport(er);
+                    throw fr;
                 }
                 if (status == 401) {
-                    throw new ToxOtisException(ErrorCause.UnauthorizedUser,
-                            "User is not authorized to access : '" + uri + "'", er);
+                    Unauthorized unauth =  new Unauthorized("User is not authorized to access : '" + uri + "'");
+                    unauth.setErrorReport(er);
+                    throw unauth;
                 }
                 if (status == 404) {
-                    throw new ToxOtisException(ErrorCause.AlgorithmNotFound,
-                            "The following algorithm was not found : '" + uri + "'", er);
+                    NotFound notFound = new NotFound("The following algorithm was not found : '" + uri + "'");
+                    notFound.setErrorReport(er);
+                    throw notFound;
                 } else {
-                    throw new ToxOtisException(ErrorCause.CommunicationError,
-                            "Communication Error with : '" + uri + "'", er);
+                    ConnectionException connectionException = new ConnectionException("Communication Error with : '" + uri + "'");
+                    connectionException.setErrorReport(er);
+                    throw connectionException;
+
                 }
             }
             model = client.getResponseOntModel();
             resource = model.getResource(uri.getStringNoQuery());
-        } catch (IOException ex) {
-            throw new ToxOtisException(ErrorCause.CommunicationError, "Communication Error with the remote service at :" + uri, ex);
         } finally { // Have to close the client (disconnect)
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ToxOtisException(ErrorCause.StreamCouldNotClose,
+                    throw new ConnectionException(
                             "Error while trying to close the stream "
                             + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
                 }
@@ -174,7 +181,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
     }
 
     @Override
-    public Algorithm parse() throws ToxOtisException {
+    public Algorithm parse() throws ServiceInvocationException {
         Algorithm algorithm = null;
         try {
             algorithm = new Algorithm(uri.getStringNoQuery());
@@ -182,7 +189,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
             throw new RuntimeException(ex);
         }
         if (algorithm == null) {
-            throw new ToxOtisException("Make sure that the URI you provided holds a valid representation of an OpenTox algorithm.");
+            throw new ServiceInvocationException("Make sure that the URI you provided holds a valid representation of an OpenTox algorithm.");
         }
         algorithm.setOntologies(getOTATypes(resource));
         MetaInfoSpider metaSpider = new MetaInfoSpider(model, uri.getStringNoQuery());

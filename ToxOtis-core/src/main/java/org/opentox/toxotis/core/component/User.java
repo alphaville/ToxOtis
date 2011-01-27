@@ -36,7 +36,6 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.IHTMLSupport;
 import org.opentox.toxotis.core.OTOnlineResource;
@@ -45,6 +44,7 @@ import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.EmailValidator;
 
@@ -91,9 +91,9 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
      *      specifications of RFC 2822.
      * @see EmailValidator
      */
-    public void setMail(String mail) throws ToxOtisException {
+    public void setMail(String mail) throws org.opentox.toxotis.exceptions.impl.ToxOtisException {
         if (!EmailValidator.validate(mail)) {
-            throw new ToxOtisException("Bad email address according to RFC 2822 : '" + mail + "'");
+            throw new org.opentox.toxotis.exceptions.impl.ToxOtisException("Bad email address according to RFC 2822 : '" + mail + "'");
         }
         this.mail = mail;
 
@@ -133,7 +133,7 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
     }
 
     @Override
-    protected User loadFromRemote(VRI vri, AuthenticationToken token) throws ToxOtisException {
+    protected User loadFromRemote(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -47,7 +47,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 import javax.crypto.BadPaddingException;
-import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 
 /**
  * <p align=justify>
@@ -123,6 +124,7 @@ public class PasswordFileManager extends Observable {
     /** A dummy variable holding the instance of the singleton. */
     private static PasswordFileManager instanceOfThis = null;
     private double fileCreationProgress = 0;
+    private static final Random RNG = new Random();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class);
 
     private static PasswordFileManager getInstance() {
@@ -235,7 +237,7 @@ public class PasswordFileManager extends Observable {
         } else {// randomGenerator == null
             try {
                 SecureRandom secureRand = SecureRandom.getInstance("SHA1PRNG");
-                secureRand.setSeed(new Random().nextLong());
+                secureRand.setSeed(RNG.nextLong());
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < size; i++) {
                     builder.append(secureRand.nextDouble());
@@ -427,7 +429,7 @@ public class PasswordFileManager extends Observable {
      *      is not valid.
      * @see PasswordFileManager#authFromFile(java.io.File) authFromFile(File)
      */
-    public synchronized AuthenticationToken authFromFile(String filePath) throws IOException, ToxOtisException {
+    public synchronized AuthenticationToken authFromFile(String filePath) throws IOException, ToxOtisException, ServiceInvocationException {
         initializeMasterPassword();
         File file = new File(filePath);
         if (!file.exists()) {
@@ -459,7 +461,7 @@ public class PasswordFileManager extends Observable {
      *      is not valid.
      * @see PasswordFileManager#authFromFile(java.lang.String) authFromFile(String)
      */
-    public synchronized AuthenticationToken authFromFile(File file) throws IOException, ToxOtisException {
+    public synchronized AuthenticationToken authFromFile(File file) throws IOException, ToxOtisException, ServiceInvocationException {
         initializeMasterPassword();
         FileReader fr = new FileReader(file);
         BufferedReader br = null;
