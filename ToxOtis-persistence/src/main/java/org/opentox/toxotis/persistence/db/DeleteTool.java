@@ -32,11 +32,15 @@
  */
 package org.opentox.toxotis.persistence.db;
 
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.persistence.util.HibernateUtil;
 
 /**
  *
@@ -47,10 +51,18 @@ public class DeleteTool {
 
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DeleteTool.class);
 
-    public static int cancelTask(Session session, VRI  taskUri) {
+    public static int cancelTask(VRI taskUri, ThreadLocal<Session> local) {
+        Session session = local.get();
+        if (session == null) {
+            session = HibernateUtil.getSessionFactory().openSession();
+            session.setCacheMode(CacheMode.IGNORE);
+        }
+        local.set(session);
+        session.setFlushMode(FlushMode.COMMIT);
         try {
             String sql = "UPDATE Task SET status = 'CANCELLED' WHERE uri = ?";
             Query q = session.createSQLQuery(sql).setString(0, taskUri.toString());
+            session.flush();
             return q.executeUpdate();
         } catch (HibernateException ex) {
             logger.warn("Cancellation of task with URI " + taskUri
@@ -63,6 +75,14 @@ public class DeleteTool {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        } finally {
+            try {
+                session.close();
+                local.set(null);
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
         }
     }
 
@@ -73,27 +93,45 @@ public class DeleteTool {
      * @param session
      * @param taskUri
      */
-    public static void deleteTask(Session session, VRI taskUri) {
+    public static int deleteTask(VRI taskUri) {
+
+        Session session = null;        
+            session = HibernateUtil.getSessionFactory().openSession();
+            session.setCacheMode(CacheMode.IGNORE);
+        session.setFlushMode(FlushMode.COMMIT);
+        Transaction transaction = null;
         Task t = new Task(taskUri);
         t.setMeta(null);
         t.setCreatedBy(null);
         t.setResultUri(null);
         t.setStatus(null);
+        t.setDuration(null);
+        t.setErrorReport(null);
+        t.setOntologicalClasses(null);
         try {
-            session.beginTransaction();
-            session.delete(t);
-            session.getTransaction().commit();
+            transaction = session.beginTransaction();
+            String sql = "DELETE FROM Task WHERE uri = ?";
+            Query q = session.createSQLQuery(sql).setString(0, taskUri.toString());
+            return q.executeUpdate();
         } catch (RuntimeException ex) {
             logger.warn("Deletion of task with URI " + taskUri
                     + " failed. Logging the corresponding exception for details", ex);
             try {
-                if (session.getTransaction().isActive()) {
-                    session.getTransaction().rollback();
+                if (transaction != null) {
+                    transaction.rollback();
                 }
             } catch (Throwable rte) {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        } finally {
+            try {
+                session.close();
+                //local.set(null);
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
         }
     }
 

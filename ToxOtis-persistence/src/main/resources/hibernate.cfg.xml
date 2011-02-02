@@ -1,36 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration
-SYSTEM "src/main/resources/hibernate-configuration-3.0.dtd">
-<!-- PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://svn.compass-project.org/svn/compass/trunk/lib/hibernate/hibernate-configuration-3.0.dtd" -->
+PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://svn.compass-project.org/svn/compass/trunk/lib/hibernate/hibernate-configuration-3.0.dtd">
+<!-- SYSTEM "src/main/resources/hibernate-configuration-3.0.dtd" -->
 <hibernate-configuration>
-  <session-factory>
-    <!-- Database connection settings -->
-    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-    <!-- Using MySQL  -->
-    <property name="connection.url">${toxotis.database.url}</property>
-    <!-- Database user  -->
-    <property name="connection.username">${toxotis.database.user}</property>
-    <!-- Your password goes here... -->
-    <property name="connection.password">${toxotis.database.secret}</property>
-    <!-- JDBC connection pool (use the built-in) -->
-    <property name="connection.pool_size">${toxotis.database.poolsize}</property>
-    <!-- SQL dialect -->
-    <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
-    <!-- Enable Hibernate's automatic session context management -->
-    <property name="current_session_context_class">thread</property>
-    <!-- Disable the second-level cache  -->
-    <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
-    <!-- Echo all executed SQL to stdout -->
-    <property name="show_sql">false</property>
-    <!-- Drop and re-create the database schema on startup -->
-    <property name="hbm2ddl.auto">update</property>
-    <mapping resource="LiteralValueMapping.hbm.xml"/>
-    <mapping resource="ResourceValue.hbm.xml"/>
-    <mapping resource="MetaInfoMapping.hbm.xml"/>
-    <mapping resource="OntologicalClassMapping.hbm.xml"/>
-    <mapping resource="UserMapping.hbm.xml"/>
-    <mapping resource="OTComponentMapping.hbm.xml"/>
-<!--
+    <session-factory>
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <!-- Using MySQL  -->
+        <property name="connection.url">${toxotis.database.url}</property>
+        <!-- Database user  -->
+        <property name="connection.username">${toxotis.database.user}</property>
+        <!-- Your password goes here... -->
+        <property name="connection.password">${toxotis.database.secret}</property>
+        
+        <!-- JDBC connection pool (use the built-in) -->
+        <!--<property name="connection.pool_size">${toxotis.database.poolsize}</property>-->
+
+        <!-- configuration pool via c3p0-->
+        <property name="c3p0.acquire_increment">1</property>
+        <property name="c3p0.idle_test_period">150</property> <!-- seconds -->
+        <property name="c3p0.max_size">400</property>
+        <property name="c3p0.max_statements">0</property>
+        <property name="c3p0.min_size">50</property>
+        <property name="c3p0.timeout">150</property> <!-- seconds -->
+        <property name="c3p0.autoCommitOnClose">true</property> <!-- seconds -->
+
+
+        <property name="hibernate.jdbc.use_scrollable_resultset">true</property>
+        <!--<property name="hibernate.cache.use_query_cache">false</property>
+        <property name="hibernate.cache.use_second_level_cache">false</property>-->
+
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.connection.isolation">1</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">false</property>
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+        <mapping resource="LiteralValueMapping.hbm.xml"/>
+        <mapping resource="ResourceValue.hbm.xml"/>
+        <mapping resource="MetaInfoMapping.hbm.xml"/>
+        <mapping resource="OntologicalClassMapping.hbm.xml"/>
+        <mapping resource="UserMapping.hbm.xml"/>
+        <mapping resource="OTComponentMapping.hbm.xml"/>
+        <!--
 -->
-  </session-factory>
+    </session-factory>
 </hibernate-configuration>

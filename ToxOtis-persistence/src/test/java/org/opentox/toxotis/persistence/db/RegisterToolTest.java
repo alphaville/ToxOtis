@@ -1,24 +1,60 @@
+/*
+ *
+ * ToxOtis
+ *
+ * ToxOtis is the Greek word for Sagittarius, that actually means ‘archer’. ToxOtis
+ * is a Java interface to the predictive toxicology services of OpenTox. ToxOtis is
+ * being developed to help both those who need a painless way to consume OpenTox
+ * services and for ambitious service providers that don’t want to spend half of
+ * their time in RDF parsing and creation.
+ *
+ * Copyright (C) 2009-2010 Pantelis Sopasakis & Charalampos Chomenides
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact:
+ * Pantelis Sopasakis
+ * chvng@mail.ntua.gr
+ * Address: Iroon Politechniou St. 9, Zografou, Athens Greece
+ * tel. +30 210 7723236
+ *
+ */
 package org.opentox.toxotis.persistence.db;
 
-import java.io.NotSerializableException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashSet;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.ITable;
+import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.ToxOtisException;
-import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.core.component.Algorithm;
-import org.opentox.toxotis.core.component.Feature;
-import org.opentox.toxotis.core.component.Model;
-import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.persistence.util.HibernateUtil;
 import org.opentox.toxotis.util.LoggingConfiguration;
 import static org.junit.Assert.*;
@@ -29,11 +65,25 @@ import static org.junit.Assert.*;
  */
 public class RegisterToolTest {
 
+    private static Throwable failure = null;
+    private static final ThreadLocal<Session> local = new ThreadLocal<Session>();
+
+    private static Session getCurrentSession() {
+        Session s = local.get();
+        if (s == null) {
+            s = HibernateUtil.getSessionFactory().openSession();
+            s.setCacheMode(CacheMode.IGNORE);
+        }
+        local.set(s);
+        return s;
+    }
+
     public RegisterToolTest() {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {        
+    public static void setUpClass() throws Exception {
+        LoggingConfiguration.configureLog4j(RegisterTool.class.getClassLoader().getResource("log4j.properties"));
     }
 
     @AfterClass
@@ -41,57 +91,117 @@ public class RegisterToolTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+    }
+
+    protected IDatabaseConnection getConnection() throws Exception {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection jdbcConnection = DriverManager.getConnection(
+                "jdbc:mysql://localhost/toxotis?useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8", "root", "opensess@me");
+        return new DatabaseConnection(jdbcConnection);
     }
 
     @After
     public void tearDown() {
     }
 
+    public static void closeSession() throws HibernateException {
+        Session s = (Session) local.get();
+        if (s != null) {
+            s.close();
+        }
+        local.set(null);
+    }
+
     @Test
-    public void testSomeMethod() throws ToxOtisException, NotSerializableException {
-        LoggingConfiguration.configureLog4jDefault();
-        SessionFactory sf = HibernateUtil.getSessionFactory();
-        Session session = sf.openSession();
-        final boolean doAlter = true;
+    public void testTaskWriteRead() throws Exception {
+        System.out.println("Single-threaded write/read in the database");
+        doTaskWriteRead();
+    }
 
+    @Test
+    public void multiThreadedTest() throws Exception {
+        System.out.println("Multi-threaded write/read in the database");
+        int poolSize = 50;
+        int folds = poolSize+10;
+        final ExecutorService es = Executors.newFixedThreadPool(poolSize);
+        for (int i = 1; i <= folds; i++) {
+            es.submit(new Runnable() {
 
-        if (doAlter) {
-            try {
-                Connection c = session.connection();
-                Statement stmt = c.createStatement();
-                stmt.addBatch("ALTER TABLE FeatOntol DROP PRIMARY KEY");
-                stmt.addBatch("ALTER TABLE FeatOntol ADD `ID_W` INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
-                stmt.addBatch("ALTER TABLE OTComponent ADD `created` TIMESTAMP NOT NULL DEFAULT NOW()");
-                stmt.addBatch("ALTER TABLE User ADD `created` TIMESTAMP NOT NULL DEFAULT NOW()");
-                stmt.executeBatch();
-            } catch (HibernateException hbe) {
-                hbe.printStackTrace();
-            } catch (SQLException sqle) {
-                System.err.println("Info: Alter failed (Probably not an error!)");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                @Override
+                public void run() {
+                    try {
+                        new RegisterToolTest().doTaskWriteRead();
+                    } catch (final Throwable ex) {
+                        failure = ex;
+                        ex.printStackTrace();
+                    }
+                }
+            });
         }
 
-        RegisterTool.storeAllOntClasses(session);
-        
-        Model model = new Model(Services.ntua().augment("model", "1"));
-        model.addPredictedFeatures(
-                new Feature(Services.ideaconsult().augment("feature", "X1")),
-                new Feature(Services.ideaconsult().augment("feature", "X2")),
-                new Feature(Services.ideaconsult().augment("feature", "X3")));
-        model.addIndependentFeatures(
-                new Feature(Services.ideaconsult().augment("feature", "100")),
-                new Feature(Services.ideaconsult().augment("feature", "101")),
-                new Feature(Services.ideaconsult().augment("feature", "102")));
-        model.setAlgorithm(new Algorithm(Services.ntua().augment("algorithm", "xyz")));
-        model.setDataset(Services.ideaconsult().augment("dataset", "10"));
-        model.setActualModel(new HashSet());
-        model.addOntologicalClasses(OTClasses.Algorithm());
+        es.shutdown();
+        while (!es.isTerminated()) {
+            Thread.sleep(100);
+        }
 
-        RegisterTool.storeModel(model, session);
+        if (failure != null) {
+            fail();
+        }
+
+    }
+
+    public void doTaskWriteRead() throws Exception {
+        String sql = "SELECT percentageCompleted FROM Task WHERE uri=\"%s\"";
+        IDatabaseConnection c = getConnection();
+        String uid = UUID.randomUUID().toString();
+        Task task = new Task(new VRI("http://alphaville:4000/task/" + uid));
+        task.setStatus(Task.Status.QUEUED);
+        task.setPercentageCompleted(0.0f);
+        task.setHttpStatus(202);
+        new RegisterTool().storeTask(task, local);
+
+        ITable table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
+        assertEquals(1, table.getRowCount());
+        assertEquals(new Float(0f), table.getValue(0, "percentageCompleted"));
+
+        task.setStatus(Task.Status.RUNNING);
+        for (float i = 1; i <= 99; i++) {
+            task.setPercentageCompleted(i);
+            new RegisterTool().storeTask(task, local);
+
+            table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
+            assertEquals(1, table.getRowCount());
+            assertEquals(new Float(i), table.getValue(0, "percentageCompleted"));
+
+
+            Query q = getCurrentSession().createQuery("FROM Task where uri = :uri");
+            q.setParameter("uri", task.getUri());
+            Task foundTask = (Task) q.uniqueResult();
+            assertEquals(i, foundTask.getPercentageCompleted());
+            closeSession();
+        }
+
+        task.setStatus(Task.Status.COMPLETED);
+        task.setPercentageCompleted(100);
+        task.setResultUri(new VRI("http://someserver.com/dataset/1432"));
+
+        new RegisterTool().storeTask(task, local);
+
+        table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
+        assertEquals(1, table.getRowCount());
+        assertEquals(new Float(100), table.getValue(0, "percentageCompleted"));
+
+
+        Task foundTask = (Task) getCurrentSession().createCriteria(Task.class).
+                add(Restrictions.eq("uri", task.getUri())).uniqueResult();
+        assertNotNull(foundTask);
+        assertEquals(foundTask.getUri(), task.getUri());
+        assertEquals(foundTask.getPercentageCompleted(), 100.0f);
+        closeSession();
         
+
+        c.close();
 
     }
 }

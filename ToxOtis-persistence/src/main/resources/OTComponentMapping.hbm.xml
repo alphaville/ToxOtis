@@ -2,7 +2,15 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <!-- OTComponent container class -->
-    <class discriminator-value="OTComp" dynamic-insert="true" dynamic-update="true" mutable="true" name="org.opentox.toxotis.core.OTComponent" optimistic-lock="version" polymorphism="implicit" select-before-update="false">
+    <class
+        discriminator-value="OTComp"
+        dynamic-insert="false"
+        dynamic-update="false"
+        mutable="true"
+        name="org.opentox.toxotis.core.OTComponent"
+        optimistic-lock="version"
+        polymorphism="implicit"
+        select-before-update="false">
         <id name="uri" type="org.opentox.toxotis.persistence.usertypes.VRIUserType"/>
         <property name="enabled" type="true_false"/>
         <!--    Foreign (M2O) key pointing to MetaInformation
@@ -97,14 +105,14 @@
         <!--
             Task extends OTComponent
         -->
-        <joined-subclass name="org.opentox.toxotis.core.component.Task" table="Task">
+        <joined-subclass name="org.opentox.toxotis.core.component.Task" table="Task" >
             <key column="uri" foreign-key="uri_in_task_references_OTComponent" on-delete="cascade"/>
             <property name="resultUri" type="org.opentox.toxotis.persistence.usertypes.VRIUserType"/>
             <property name="httpStatus" precision="1" type="float"/>
             <property name="percentageCompleted" precision="2" type="float"/>
             <property name="status" type="org.opentox.toxotis.persistence.usertypes.TaskStatusUserType"/>
             <property name="duration" type="long"/>
-            <many-to-one cascade="all" class="org.opentox.toxotis.core.component.ErrorReport" foreign-key="errReport_in_task" name="errorReport"/>
+            <many-to-one cascade="none" class="org.opentox.toxotis.core.component.ErrorReport" foreign-key="errReport_in_task" name="errorReport"/>
             <many-to-one class="org.opentox.toxotis.core.component.User" name="createdBy"/>
         </joined-subclass>
         <!--

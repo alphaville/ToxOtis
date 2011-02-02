@@ -33,8 +33,17 @@
 package org.opentox.toxotis.persistence.db;
 
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.core.component.*;
 import org.opentox.toxotis.ontology.OntologicalClass;
@@ -42,6 +51,9 @@ import org.opentox.toxotis.ontology.collection.OTAlgorithmTypes;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.ontology.LiteralValue;
+import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.persistence.util.HibernateUtil;
 
 /**
  * Class with static methods useful for storing objects in the database. Note that
@@ -54,27 +66,39 @@ import org.opentox.toxotis.core.component.User;
 public class RegisterTool {
 
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(RegisterTool.class);
+    private final ThreadLocal local = new ThreadLocal();
 
     private static void preprocessComponent(OTComponent component) {
         component.getUri().clearToken();
     }
 
-    public static void storeUser(User user, Session session) {
+    public static void storeUser(User user) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        session.setFlushMode(FlushMode.COMMIT);
         try {
-            session.beginTransaction();
+            transaction = session.beginTransaction();
             session.saveOrUpdate(user);
-            session.getTransaction().commit();
+            transaction.commit();
+
             session.clear();
         } catch (RuntimeException ex) {
             logger.warn("Storage of User failed. Logging the corresponding exception for details", ex);
             try {
-                if (session.getTransaction().isActive()) {
-                    session.getTransaction().rollback();
+                if (transaction != null) {
+                    transaction.rollback();
                 }
             } catch (Throwable rte) {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        } finally {
+            try {
+                session.close();
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
         }
     }
 
@@ -105,14 +129,43 @@ public class RegisterTool {
         }
     }
 
-    public static void storeModel(Model model, Session session) {
+    public static void storeFeature(Feature feature) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        session.setFlushMode(FlushMode.COMMIT);
+        try {
+            preprocessComponent(feature);
+            transaction = session.beginTransaction();
+            session.saveOrUpdate(feature);
+            transaction.commit();
+        } catch (RuntimeException ex) {
+            logger.warn("Storage of Model failed. Logging the corresponding exception for details", ex);
+            try {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+            } catch (Throwable rte) {
+                logger.error("Cannot rollback", rte);
+            }
+            throw ex;
+        } finally {
+            try {
+                session.close();
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
+        }
+    }
+
+    public static void storeModel(Model model) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        session.setFlushMode(FlushMode.COMMIT);
         try {
             preprocessComponent(model);
-            session.beginTransaction();
-            if (model.getAlgorithm() != null) {
-                session.saveOrUpdate(model.getAlgorithm());
-            }
-            session.flush();
+            transaction = session.beginTransaction();
+
             session.evict(model.getAlgorithm());
 
             if (model.getParameters() != null) {
@@ -125,11 +178,11 @@ public class RegisterTool {
 
             if (model.getIndependentFeatures() != null) {
                 for (Feature ft : model.getIndependentFeatures()) {
-                    session.saveOrUpdate(ft);
-                    session.flush();
+                    storeFeature(ft);
                     session.evict(ft);
                 }
             }
+
             if (model.getCreatedBy() != null) {
                 session.saveOrUpdate(model.getCreatedBy());
                 session.flush();
@@ -147,12 +200,12 @@ public class RegisterTool {
                 for (Feature predictedFeature : model.getPredictedFeatures()) {
                     session.saveOrUpdate(predictedFeature);
                     session.flush();
-                    session.evict(model.getPredictedFeatures());
+                    session.evict(predictedFeature);
                 }
             }
 
             session.saveOrUpdate(model);
-            session.getTransaction().commit();
+            transaction.commit();
             session.clear();
         } catch (StaleObjectStateException ex) {
             logger.error("Serious exception that cannot be recovered! Stale Object!!!!");
@@ -165,15 +218,22 @@ public class RegisterTool {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            logger.warn("Storage of User failed. Logging the corresponding exception for details", ex);
+            logger.warn("Storage of Model failed. Logging the corresponding exception for details", ex);
             try {
-                if (session.getTransaction().isActive()) {
-                    session.getTransaction().rollback();
+                if (transaction != null) {
+                    transaction.rollback();
                 }
             } catch (Throwable rte) {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        } finally {
+            try {
+                session.close();
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
         }
     }
 
@@ -222,33 +282,104 @@ public class RegisterTool {
         }
     }
 
-    public static void storeTask(Session session, Task task) {
+    public static void storeErrorReport(ErrorReport er) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        session.setFlushMode(FlushMode.COMMIT);
         try {
-            preprocessComponent(task);
-            session.beginTransaction();
-            User createdBy = task.getCreatedBy();
-            if (createdBy != null) {
-                session.saveOrUpdate(createdBy);
-            }
-            ErrorReport er = task.getErrorReport();
-            if (er != null) {
-                session.saveOrUpdate(er);
-                session.flush();
-                session.evict(er);
-            }
-            session.saveOrUpdate(task);
-            session.getTransaction().commit();
-            session.clear();
+            transaction = session.beginTransaction();
+            session.saveOrUpdate(er);
+            transaction.commit();
         } catch (RuntimeException ex) {
-            logger.warn("Storage of Task failed. Logging the corresponding exception for details", ex);
+            logger.warn("Storage of Error Report failed. Logging the corresponding exception for details", ex);
             try {
-                if (session.getTransaction().isActive()) {
-                    session.getTransaction().rollback();
+                if (transaction != null) {
+                    transaction.rollback();
                 }
             } catch (Throwable rte) {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        } finally {
+            try {
+                session.close();
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
+        }
+    }
+
+    public static void storeMetaData(MetaInfo meta) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        session.setFlushMode(FlushMode.COMMIT);
+        try {
+            //TODO: Code for storing meta data!
+        } catch (RuntimeException ex) {
+            logger.warn("Storage of MetaInfo failed. Logging the corresponding exception for details", ex);
+            try {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+            } catch (Throwable rte) {
+                logger.error("Cannot rollback", rte);
+            }
+            throw ex;
+        } finally {
+            try {
+                session.close();
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
+        }
+
+    }
+
+    public synchronized void storeTask(Task task, ThreadLocal<Session> local) {
+        Session session = local.get();
+        if (session == null) {
+            session = HibernateUtil.getSessionFactory().openSession();
+            session.setCacheMode(CacheMode.IGNORE);
+        }
+        local.set(session);
+        Transaction transaction = null;
+        session.setFlushMode(FlushMode.COMMIT);
+
+        try {
+            transaction = session.beginTransaction();
+            User createdBy = task.getCreatedBy();
+            if (createdBy != null) {
+                session.saveOrUpdate(createdBy);
+                session.evict(createdBy);
+            }
+            ErrorReport er = task.getErrorReport();
+            if (er != null) {
+                session.saveOrUpdate(er);
+                session.evict(er);
+            }
+            session.saveOrUpdate(task);
+            transaction.commit();
+
+        } catch (RuntimeException ex) {
+            logger.warn("Storage of Task failed. Logging the corresponding exception for details.", ex);
+            try {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+            } catch (Throwable rte) {
+                logger.error("Cannot rollback", rte);
+            }
+            throw ex;
+        } finally {
+            try {
+                session.close();
+                local.set(null);
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
         }
     }
 
