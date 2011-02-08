@@ -95,6 +95,7 @@ public class ServiceInvocationException extends Exception implements IServiceInv
         StringBuilder errorDetailsMessage = new StringBuilder();
         if (details != null) {
             errorDetailsMessage.append(details);
+            errorDetailsMessage.append("\n");
         }
         StackTraceElement[] stackTRace = getStackTrace();
         if (stackTRace != null) {

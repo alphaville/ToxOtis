@@ -34,6 +34,7 @@ package org.opentox.toxotis.ontology;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
+import java.util.HashSet;
 import java.util.Set;
 import org.opentox.toxotis.core.IHTMLSupport;
 
@@ -73,6 +74,7 @@ import org.opentox.toxotis.core.IHTMLSupport;
  * @see http://dublincore.org/documents/usageguide/elements.shtml
  */
 public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
+    
 
     //// 1. comments
     ////
@@ -84,7 +86,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      A comment on the described entity.
      */
-    Set<LiteralValue> getComments();
+    HashSet<LiteralValue> getComments();
     /**
      * Setter for comments as a set.
      * @param comments
@@ -119,7 +121,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      Set of copyright notes for the underlying resource for which this
      *      meta-info element is composed.
      */
-    Set<LiteralValue> getRights();
+    HashSet<LiteralValue> getRights();
 
     /**
      *
@@ -151,7 +153,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      Description as a typed value
      */
-    Set<LiteralValue> getDescriptions();
+    HashSet<LiteralValue> getDescriptions();
 
     /**
      * Provide set of descriptions
@@ -187,7 +189,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      Identifier as a Typed Value
      * @see <a href="http://dublincore.org/documents/usageguide/elements.shtml">http://dublincore.org/documents/usageguide/elements.shtml</a>
      */
-    Set<LiteralValue> getIdentifiers();
+    HashSet<LiteralValue> getIdentifiers();
 
     /**
      *
@@ -232,7 +234,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      A link to a resource that resembles the described entity
      *
      */
-    Set<ResourceValue> getSameAs(); // TODO: Change this into some other class...
+    HashSet<ResourceValue> getSameAs(); // TODO: Change this into some other class...
 
     /**
      *
@@ -260,7 +262,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      A reference to some other entity as a typed value.
      */
-    Set<ResourceValue> getSeeAlso(); // TODO: Change this into some other class...
+    HashSet<ResourceValue> getSeeAlso(); // TODO: Change this into some other class...
 
     /**
      *
@@ -284,7 +286,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      Tile as a Typed Value
      */
-    Set<LiteralValue> getTitles();
+    HashSet<LiteralValue> getTitles();
 
     /**
      *
@@ -317,7 +319,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      Subject as a typed value
      */
-    Set<LiteralValue> getSubjects();
+    HashSet<LiteralValue> getSubjects();
 
     /**
      *
@@ -346,7 +348,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *
      * @return
      */
-    Set<LiteralValue> getPublishers();
+    HashSet<LiteralValue> getPublishers();
 
     /**
      *
@@ -378,7 +380,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      Creator as a typed value
      */
-    Set<LiteralValue> getCreators();
+    HashSet<LiteralValue> getCreators();
 
     /**
      *
@@ -407,7 +409,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *
      * @return
      */
-    Set<ResourceValue> getHasSources();
+    HashSet<ResourceValue> getHasSources();
 
     /**
      *
@@ -429,7 +431,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *
      * @return
      */
-    Set<LiteralValue> getContributors();
+    HashSet<LiteralValue> getContributors();
 
     /**
      *
@@ -458,7 +460,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *
      * @return
      */
-    Set<LiteralValue> getAudiences();
+    HashSet<LiteralValue> getAudiences();
 
     /**
      *

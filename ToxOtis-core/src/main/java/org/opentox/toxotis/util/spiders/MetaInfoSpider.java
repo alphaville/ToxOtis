@@ -37,6 +37,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import java.util.HashSet;
 import java.util.Set;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;

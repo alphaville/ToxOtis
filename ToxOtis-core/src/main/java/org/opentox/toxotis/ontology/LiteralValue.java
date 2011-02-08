@@ -67,7 +67,8 @@ public class LiteralValue<T> implements Serializable {
     private T value;
     private Class<?> clazz = String.class;
     /** XSD datatype for the value */
-    private XSDDatatype type = XSDDatatype.XSDstring;
+    private transient XSDDatatype type = XSDDatatype.XSDstring;
+    private String serializableTypeUri;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LiteralValue.class);
 
     /**
@@ -75,7 +76,7 @@ public class LiteralValue<T> implements Serializable {
      * instance of it with <code>null</code> value and default class <code>java.lang.String</code>,
      * or in terms of xsd datatypes, {@link XSDDatatype#XSDstring }.
      */
-    public LiteralValue() {
+    public LiteralValue() {        
     }
 
     /**
@@ -87,7 +88,7 @@ public class LiteralValue<T> implements Serializable {
      */
     public LiteralValue(final T value, final XSDDatatype type) {
         this.value = value;
-        this.type = type;
+        setType(type);
         if (value != null) {
             this.clazz = value.getClass();
         }
@@ -105,10 +106,11 @@ public class LiteralValue<T> implements Serializable {
             this.clazz = value.getClass();
         }
         if (value.getClass().equals(java.util.Date.class)) {
-            this.type = XSDDatatype.XSDdateTime; // << According to the OpenTox API dc:date should be xsd:datetime
+            setType(XSDDatatype.XSDdateTime); // << According to the OpenTox API dc:date should be xsd:datetime
         } else {
-            this.type = (XSDDatatype) TypeMapper.getInstance().getTypeByClass(value.getClass());
+            setType((XSDDatatype) TypeMapper.getInstance().getTypeByClass(value.getClass()));
         }
+
     }
 
     /**
@@ -117,11 +119,18 @@ public class LiteralValue<T> implements Serializable {
      *      The type of the value
      */
     public XSDDatatype getType() {
+        if (type == null && serializableTypeUri != null) {
+            type = (XSDDatatype) TypeMapper.getInstance().getTypeByName(serializableTypeUri);
+        }
         return type;
     }
 
     public void setType(XSDDatatype type) {
         this.type = type;
+        if (type != null) {
+            this.serializableTypeUri = type.getURI();
+        }
+       
     }
 
     public void setValue(T value) {
@@ -180,13 +189,17 @@ public class LiteralValue<T> implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (this.getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final LiteralValue<T> other = (LiteralValue<T>) obj;
-        boolean isEq = getHash() == other.getHash();
-        return isEq;
+        if (this.toString() != other.toString() && (this.toString() == null || !this.toString().equals(other.toString()))) {
+            return false;
+        }        
+        return true;
     }
+
+    
 
     /**
      * Delegates the method {@link #getHash() } herein. It is advisable that you use
@@ -199,7 +212,7 @@ public class LiteralValue<T> implements Serializable {
     @Override
     public int hashCode() {
 //        if (getHash() <= Integer.MAX_VALUE && getHash() >= Integer.MIN_VALUE) {
-            return (int) getHash();
+        return (int) getHash();
 //        } else if (getHash() > Integer.MAX_VALUE) {
 //            return (int) (Integer.MAX_VALUE - 2 * getHash());
 //        } else {
@@ -227,8 +240,8 @@ public class LiteralValue<T> implements Serializable {
      *      Long hash code.
      */
     public long getHash() {
-        long hash = (value != null ? value.toString().trim().hashCode() : 0)
-                + 7 * (type != null ? type.toString().trim().hashCode() : 0);
+        long hash = (value != null ? value.hashCode() : 0)
+                + 7 * (type != null ? type.hashCode() : 0);
         return hash;
     }
 

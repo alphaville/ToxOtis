@@ -236,27 +236,29 @@ public class Feature extends OTPublishable<Feature> {
             }
         } else {            
             ErrorReport remoteServiceErrorReport = null;
-//            try {
-//                OntModel om = client.getResponseOntModel();
-//                if (om != null) {
-//                    remoteServiceErrorReport = new ErrorReportSpider(om).parse();
-//                }
-//            } catch (ServiceInvocationException ex) {
-//                System.out.println(ex);
-//            }catch (Exception ex){
-//                ex.printStackTrace();
-//            }
+            try {
+                OntModel om = client.getResponseOntModel();
+                if (om != null) {
+                    remoteServiceErrorReport = new ErrorReportSpider(om).parse();
+                }
+            } catch (ServiceInvocationException ex) {
+                //No Error Report - No problem!
+            }
 
             if (status == 405) {
                 MethodNotAllowed methodNotAllowed = new MethodNotAllowed("Method not allowed on the URI " + getUri());
                 methodNotAllowed.setErrorReport(remoteServiceErrorReport);
                 throw methodNotAllowed;
-            } else if (status == 401) {
-                System.out.println("401!!!");
-                throw new ForbiddenRequest();
             } else if (status == 403) {
-                System.out.println("403!!!");
-                throw new Unauthorized();
+                ForbiddenRequest forbidden = new ForbiddenRequest();
+                forbidden.setDetails("The operation you tried to perform is forbidden");
+                forbidden.setErrorReport(remoteServiceErrorReport);
+                throw forbidden;
+            } else if (status == 401) {
+                Unauthorized unauth = new Unauthorized("You are not authorized to perform this request.");
+                unauth.setActor("Client");
+                unauth.setErrorReport(remoteServiceErrorReport);
+                throw unauth;
             }else{
                 throw new ServiceInvocationException();
             }

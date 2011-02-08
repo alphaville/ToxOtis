@@ -120,6 +120,9 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
                 throw new RuntimeException(ex);
             }
         }
+        if (resource == null){
+            return null;//nothing to parse!
+        }
         errorReport.setMeta(new MetaInfoSpider(resource, model).parse());
 
         Statement httpStatusStmt = resource.getProperty(

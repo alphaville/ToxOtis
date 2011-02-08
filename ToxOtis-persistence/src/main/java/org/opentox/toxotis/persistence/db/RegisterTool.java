@@ -66,14 +66,22 @@ import org.opentox.toxotis.persistence.util.HibernateUtil;
 public class RegisterTool {
 
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(RegisterTool.class);
-    private final ThreadLocal local = new ThreadLocal();
+    private ThreadLocal<Session> local = null;
 
-    private static void preprocessComponent(OTComponent component) {
+    public RegisterTool() {
+    }
+
+    public RegisterTool(ThreadLocal<Session> local) {
+        this();
+        this.local = local;
+    }
+
+    private void preprocessComponent(OTComponent component) {
         component.getUri().clearToken();
     }
 
-    public static void storeUser(User user) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public void storeUser(User user) {
+        Session session = getSession();
         Transaction transaction = null;
         session.setFlushMode(FlushMode.COMMIT);
         try {
@@ -93,16 +101,12 @@ public class RegisterTool {
             }
             throw ex;
         } finally {
-            try {
-                session.close();
-            } catch (HibernateException ex) {
-                logger.error("Cannot close session", ex);
-                throw ex;
-            }
+            closeSession(session);
         }
     }
 
-    public static void storeAlgorithm(Algorithm algorithm, Session session) {
+    public void storeAlgorithm(Algorithm algorithm) {
+        Session session = getSession();
         try {
             session.beginTransaction();
             preprocessComponent(algorithm);
@@ -126,11 +130,13 @@ public class RegisterTool {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        }finally{
+            closeSession(session);
         }
     }
 
-    public static void storeFeature(Feature feature) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public void storeFeature(Feature feature) {
+        Session session = getSession();
         Transaction transaction = null;
         session.setFlushMode(FlushMode.COMMIT);
         try {
@@ -149,17 +155,12 @@ public class RegisterTool {
             }
             throw ex;
         } finally {
-            try {
-                session.close();
-            } catch (HibernateException ex) {
-                logger.error("Cannot close session", ex);
-                throw ex;
-            }
+            closeSession(session);
         }
     }
 
-    public static void storeModel(Model model) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public void storeModel(Model model) {
+        Session session = getSession();
         Transaction transaction = null;
         session.setFlushMode(FlushMode.COMMIT);
         try {
@@ -228,16 +229,12 @@ public class RegisterTool {
             }
             throw ex;
         } finally {
-            try {
-                session.close();
-            } catch (HibernateException ex) {
-                logger.error("Cannot close session", ex);
-                throw ex;
-            }
+            closeSession(session);
         }
     }
 
-    public static void storeDataset(Dataset dataset, Session session) {
+    public void storeDataset(Dataset dataset) {
+        Session session = getSession();
         try {
             preprocessComponent(dataset);
             session.beginTransaction();
@@ -279,11 +276,13 @@ public class RegisterTool {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        } finally{
+            closeSession(session);
         }
     }
 
-    public static void storeErrorReport(ErrorReport er) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public void storeErrorReport(ErrorReport er) {
+        Session session = getSession();
         Transaction transaction = null;
         session.setFlushMode(FlushMode.COMMIT);
         try {
@@ -301,17 +300,12 @@ public class RegisterTool {
             }
             throw ex;
         } finally {
-            try {
-                session.close();
-            } catch (HibernateException ex) {
-                logger.error("Cannot close session", ex);
-                throw ex;
-            }
+            closeSession(session);
         }
     }
 
-    public static void storeMetaData(MetaInfo meta) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public void storeMetaData(MetaInfo meta) {
+        Session session = getSession();
         Transaction transaction = null;
         session.setFlushMode(FlushMode.COMMIT);
         try {
@@ -327,23 +321,43 @@ public class RegisterTool {
             }
             throw ex;
         } finally {
+            closeSession(session);
+        }
+
+    }
+
+    private synchronized Session getSession() {
+        Session session = null;
+        if (local != null) {
+            session = local.get();
+            if (session == null) {
+                session = HibernateUtil.getSessionFactory().openSession();
+                session.setCacheMode(CacheMode.IGNORE);
+            }
+            local.set(session);
+        } else {
+            session = HibernateUtil.getSessionFactory().openSession();
+            session.setCacheMode(CacheMode.IGNORE);
+        }
+        return session;
+    }
+
+    private synchronized void closeSession(Session session) {
+        if (session != null) {
             try {
                 session.close();
             } catch (HibernateException ex) {
                 logger.error("Cannot close session", ex);
                 throw ex;
             }
+            if (local != null) {
+                local.set(null);
+            }
         }
-
     }
 
-    public synchronized void storeTask(Task task, ThreadLocal<Session> local) {
-        Session session = local.get();
-        if (session == null) {
-            session = HibernateUtil.getSessionFactory().openSession();
-            session.setCacheMode(CacheMode.IGNORE);
-        }
-        local.set(session);
+    public synchronized void storeTask(Task task) {
+        Session session = getSession();
         Transaction transaction = null;
         session.setFlushMode(FlushMode.COMMIT);
 
@@ -352,14 +366,17 @@ public class RegisterTool {
             User createdBy = task.getCreatedBy();
             if (createdBy != null) {
                 session.saveOrUpdate(createdBy);
+                session.flush();
                 session.evict(createdBy);
             }
             ErrorReport er = task.getErrorReport();
             if (er != null) {
                 session.saveOrUpdate(er);
+                session.flush();
                 session.evict(er);
             }
             session.saveOrUpdate(task);
+            session.flush();
             transaction.commit();
 
         } catch (RuntimeException ex) {
@@ -373,13 +390,7 @@ public class RegisterTool {
             }
             throw ex;
         } finally {
-            try {
-                session.close();
-                local.set(null);
-            } catch (HibernateException ex) {
-                logger.error("Cannot close session", ex);
-                throw ex;
-            }
+            closeSession(session);
         }
     }
 
@@ -429,7 +440,8 @@ public class RegisterTool {
         }
     }
 
-    public static void storeBibTeX(Session session, BibTeX bibtex) {
+    public void storeBibTeX(BibTeX bibtex) {
+        Session session = getSession();
         try {
             preprocessComponent(bibtex);
 
@@ -451,6 +463,8 @@ public class RegisterTool {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        }finally{
+            closeSession(session);
         }
     }
 }

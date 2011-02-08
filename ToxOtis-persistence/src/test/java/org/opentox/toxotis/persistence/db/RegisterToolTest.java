@@ -32,18 +32,18 @@
  */
 package org.opentox.toxotis.persistence.db;
 
+import java.io.NotSerializableException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
-import org.hibernate.CacheMode;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -53,7 +53,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.component.Algorithm;
+import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.persistence.util.HibernateUtil;
 import org.opentox.toxotis.util.LoggingConfiguration;
@@ -61,22 +64,12 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author chung
+ * @author Pantelis Sopasakis
  */
 public class RegisterToolTest {
 
+    private static final ThreadLocal<Session> LOCAL = new ThreadLocal<Session>();
     private static Throwable failure = null;
-    private static final ThreadLocal<Session> local = new ThreadLocal<Session>();
-
-    private static Session getCurrentSession() {
-        Session s = local.get();
-        if (s == null) {
-            s = HibernateUtil.getSessionFactory().openSession();
-            s.setCacheMode(CacheMode.IGNORE);
-        }
-        local.set(s);
-        return s;
-    }
 
     public RegisterToolTest() {
     }
@@ -105,25 +98,31 @@ public class RegisterToolTest {
     public void tearDown() {
     }
 
-    public static void closeSession() throws HibernateException {
-        Session s = (Session) local.get();
-        if (s != null) {
-            s.close();
-        }
-        local.set(null);
-    }
-
+    /**
+     * Tasks are created and registered in the database. Then they are looked up
+     * using DbUnit (just for testing) and Hibernate queries.
+     * @throws Exception
+     *      Test fails!
+     *  @see {@link #doTaskWriteRead() }
+     */
     @Test
     public void testTaskWriteRead() throws Exception {
+        if (true) return;
         System.out.println("Single-threaded write/read in the database");
         doTaskWriteRead();
     }
 
-    @Test
-    public void multiThreadedTest() throws Exception {
+    /**
+     * The test {@link #testTaskWriteRead() } is run multithreadedly to check whether
+     * the implementation is thread-safe.
+     * @throws Exception
+     * @see {@link #doTaskWriteRead() }
+     */
+    //@Test
+    public void multiThreadedTaskWriteRead() throws Exception {
         System.out.println("Multi-threaded write/read in the database");
-        int poolSize = 50;
-        int folds = poolSize+10;
+        int poolSize = 40;
+        int folds = 4 * poolSize + 10;// just to make sure!!!
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
             es.submit(new Runnable() {
@@ -148,60 +147,215 @@ public class RegisterToolTest {
         if (failure != null) {
             fail();
         }
+    }
+
+    public void doTaskWriteRead() {
+        Session session = null;
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        String sql = "SELECT percentageCompleted FROM Task WHERE uri=\"%s\"";
+        IDatabaseConnection c = null;
+        RegisterTool registerer = new RegisterTool();
+        try {
+            c = getConnection();
+
+            String uid = UUID.randomUUID().toString();
+            Task task = null;
+            try {
+                task = new Task(new VRI("http://alphaville:4000/task/" + uid));
+            } catch (URISyntaxException ex) {
+                fail("Invalid URI exception");
+            }
+            task.setStatus(Task.Status.QUEUED);
+            task.setPercentageCompleted(0.0f);
+            task.setHttpStatus(202);
+            registerer.storeTask(task);
+
+            ITable table = null;
+            try {
+                table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
+            } catch (DataSetException ex) {
+                fail();
+            } catch (SQLException ex) {
+                fail();
+            }
+            assertEquals(1, table.getRowCount());
+            try {
+                assertEquals(new Float(0f), table.getValue(0, "percentageCompleted"));
+            } catch (DataSetException ex) {
+                fail("Table TASK cannot be accessed");
+            }
+
+
+            task.setStatus(Task.Status.RUNNING);
+            for (float i = 1; i <= 99; i++) {
+                task.setPercentageCompleted(i);
+                registerer.storeTask(task);
+                try {
+                    table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
+                    assertEquals(1, table.getRowCount());
+                    assertEquals(new Float(i), table.getValue(0, "percentageCompleted"));
+                } catch (DataSetException ex) {
+                    fail();
+                } catch (SQLException ex) {
+                    fail();
+                }
+
+                session = HibernateUtil.getSessionFactory().openSession();
+                Query q = session.createQuery("FROM Task where uri = :uri");
+                q.setParameter("uri", task.getUri());
+                Task foundTask = (Task) q.uniqueResult();
+                assertEquals(i, foundTask.getPercentageCompleted());
+                session.close();
+            }
+
+            task.setStatus(Task.Status.COMPLETED);
+            task.setPercentageCompleted(100);
+            String resultUri = "http://someserver.com/dataset/1432";
+            try {
+                task.setResultUri(new VRI(resultUri));
+            } catch (URISyntaxException ex) {
+                fail("Invalid URI :" + resultUri);
+            }
+
+            registerer.storeTask(task);
+            try {
+                table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
+                assertEquals(1, table.getRowCount());
+                assertEquals(new Float(100), table.getValue(0, "percentageCompleted"));
+            } catch (DataSetException ex) {
+                fail();
+            } catch (SQLException ex) {
+                fail();
+            }
+
+
+            session = sessionFactory.openSession();
+            Task foundTask = (Task) session.createCriteria(Task.class).
+                    add(Restrictions.eq("uri", task.getUri())).uniqueResult();
+            assertNotNull(foundTask);
+            assertEquals(foundTask.getUri(), task.getUri());
+            assertEquals(foundTask.getPercentageCompleted(), 100.0f);
+            session.close();
+
+        } catch (Exception ex) {
+            fail("Connection to the database cannot be established");
+        } finally {
+            try {
+                c.close();
+            } catch (SQLException ex) {
+                fail("DbUnit Connection cannot close");
+            }
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
 
     }
 
-    public void doTaskWriteRead() throws Exception {
-        String sql = "SELECT percentageCompleted FROM Task WHERE uri=\"%s\"";
-        IDatabaseConnection c = getConnection();
-        String uid = UUID.randomUUID().toString();
-        Task task = new Task(new VRI("http://alphaville:4000/task/" + uid));
-        task.setStatus(Task.Status.QUEUED);
-        task.setPercentageCompleted(0.0f);
-        task.setHttpStatus(202);
-        new RegisterTool().storeTask(task, local);
+    //@Test
+    public void testStoreModel() throws URISyntaxException, ToxOtisException {
+        System.out.println("Store Model in DB");
+        doStoreModel();
+    }
 
-        ITable table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
-        assertEquals(1, table.getRowCount());
-        assertEquals(new Float(0f), table.getValue(0, "percentageCompleted"));
+    //@Test
+    public void multiThreadedModelWriteRead() throws Exception {
+        System.out.println("Multi-threaded write/read of MODELS in the database");
+        int poolSize = 50;
+        int folds = 4 * poolSize + 10;// just to make sure!!!
+        final ExecutorService es = Executors.newFixedThreadPool(poolSize);
+        for (int i = 1; i <= folds; i++) {
+            es.submit(new Runnable() {
 
-        task.setStatus(Task.Status.RUNNING);
-        for (float i = 1; i <= 99; i++) {
-            task.setPercentageCompleted(i);
-            new RegisterTool().storeTask(task, local);
-
-            table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
-            assertEquals(1, table.getRowCount());
-            assertEquals(new Float(i), table.getValue(0, "percentageCompleted"));
-
-
-            Query q = getCurrentSession().createQuery("FROM Task where uri = :uri");
-            q.setParameter("uri", task.getUri());
-            Task foundTask = (Task) q.uniqueResult();
-            assertEquals(i, foundTask.getPercentageCompleted());
-            closeSession();
+                @Override
+                public void run() {
+                    try {
+                        System.out.println("submitted");
+                        new RegisterToolTest().doStoreModel();
+                        System.out.println("done");
+                    } catch (final Throwable ex) {
+                        failure = ex;
+                        ex.printStackTrace();
+                    }
+                }
+            });
         }
 
-        task.setStatus(Task.Status.COMPLETED);
-        task.setPercentageCompleted(100);
-        task.setResultUri(new VRI("http://someserver.com/dataset/1432"));
+        es.shutdown();
+        while (!es.isTerminated()) {
+            Thread.sleep(100);
+        }
 
-        new RegisterTool().storeTask(task, local);
+        if (failure != null) {
+            fail();
+        }
+    }
 
-        table = c.createQueryTable("TASK", String.format(sql, task.getUri()));
-        assertEquals(1, table.getRowCount());
-        assertEquals(new Float(100), table.getValue(0, "percentageCompleted"));
+    private void doStoreModel() throws URISyntaxException, ToxOtisException {
+        Session session = null;
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        String sql = "SELECT dataset, algorithm FROM Model WHERE uri=\"%s\"";
+        IDatabaseConnection c = null;
+        VRI trainingDsUri = new VRI("http://someservice.com:8081/dataset/243");
+        VRI trainingAlgorithmUri = new VRI("http://alphaville:4000/algorithm/mlr");
+        VRI modelUri = new VRI("http://alphaville:7001/model" + UUID.randomUUID());
+        try {
+            RegisterTool registerer = new RegisterTool(LOCAL);
+            c = getConnection();
 
+            Model model = new Model(modelUri);
+            model.setAlgorithm(new Algorithm(trainingAlgorithmUri));
+            model.setDataset(trainingDsUri);
+            try {
+                model.setActualModel(new weka.classifiers.functions.SMOreg());
+            } catch (final NotSerializableException ex) {
+                ex.printStackTrace();
+                fail(ex.getMessage());
+            }
+            registerer.storeModel(model);
 
-        Task foundTask = (Task) getCurrentSession().createCriteria(Task.class).
-                add(Restrictions.eq("uri", task.getUri())).uniqueResult();
-        assertNotNull(foundTask);
-        assertEquals(foundTask.getUri(), task.getUri());
-        assertEquals(foundTask.getPercentageCompleted(), 100.0f);
-        closeSession();
-        
+            /* Check using hibernate */
+            session = sessionFactory.openSession();
+            Model foundModel = (Model) session.createCriteria(Model.class).
+                    add(Restrictions.eq("uri", model.getUri())).uniqueResult();
+            assertNotNull(foundModel);
+            assertNotNull(foundModel.getDataset());
+            assertNotNull(foundModel.getAlgorithm());
+            assertNotNull(foundModel.getActualModel());
+            assertEquals(trainingDsUri.toString(), foundModel.getDataset().toString());
+            assertEquals(trainingAlgorithmUri.toString(), foundModel.getAlgorithm().getUri().toString());
+            assertNotNull(foundModel.getDependentFeatures());
+            assertTrue(foundModel.getDependentFeatures().isEmpty());
 
-        c.close();
+            /* Check again what's in the DB using DBUnit tests */
+            ITable table = null;
+            try {
+                table = c.createQueryTable("TASK", String.format(sql, model.getUri()));
+            } catch (final DataSetException ex) {
+                ex.printStackTrace();
+                fail();
+            } catch (final SQLException ex) {
+                ex.printStackTrace();
+                fail(ex.getMessage());
+            }
+            assertNotNull(table);
+            assertEquals(1, table.getRowCount());
+            assertEquals(trainingDsUri.toString(), table.getValue(0, "dataset"));
+            assertEquals(trainingAlgorithmUri.toString(), table.getValue(0, "algorithm"));
 
+            /* The test succeeds! */
+        } catch (final Exception ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
+        } finally {
+            try {
+                c.close();
+            } catch (final SQLException ex) {
+                fail("DbUnit Connection cannot close");
+            }
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
     }
 }

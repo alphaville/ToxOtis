@@ -30,13 +30,16 @@
  * tel. +30 210 7723236
  *
  */
+
 package org.opentox.toxotis.factory;
 
+import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.exceptions.IUnauthorized;
@@ -87,14 +90,14 @@ public class FeatureFactoryTest {
     }
 
     @Test
-    public void testCreateFeatureOnBadFeatureService() throws ServiceInvocationException {
+    public void testCreateFeatureOnBadFeatureService() throws ServiceInvocationException, URISyntaxException {
         String newFeatureTitle = "New feature - Just for testing";
         String units = "mA";
         try{
         Feature f = FeatureFactory.createAndPublishFeature(newFeatureTitle, units,
-                new ResourceValue(Services.ntua().augment("model", "x"), OTClasses.Model()), Services.ntua().augment("bibtex"), null);
-        } catch (ServiceInvocationException ex){            
-            System.out.println(ex instanceof IUnauthorized);
+                new ResourceValue(Services.ntua().augment("model", "x"), OTClasses.Model()), new VRI("http://alphaville:4000/algorithm/mlr"), null);
+        } catch (ServiceInvocationException ex){
+            ex.asErrorReport().asOntModel().write(System.out);
             return;
         }
         fail("Should have failed!");

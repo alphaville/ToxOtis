@@ -2,15 +2,20 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <!-- OTComponent container class -->
+    <!--
+        Dynamic Update: see http://www.mkyong.com/hibernate/hibernate-dynamic-update-attribute-example/
+        Dynamic Insert: see http://www.mkyong.com/hibernate/hibernate-dynamic-insert-attribute-example/
+    -->
     <class
         discriminator-value="OTComp"
-        dynamic-insert="false"
-        dynamic-update="false"
+        dynamic-insert="true"
+        dynamic-update="true"
         mutable="true"
         name="org.opentox.toxotis.core.OTComponent"
         optimistic-lock="version"
         polymorphism="implicit"
-        select-before-update="false">
+        select-before-update="false"
+        table="OTComponent">
         <id name="uri" type="org.opentox.toxotis.persistence.usertypes.VRIUserType"/>
         <property name="enabled" type="true_false"/>
         <!--    Foreign (M2O) key pointing to MetaInformation

@@ -50,15 +50,48 @@ import org.opentox.toxotis.persistence.util.HibernateUtil;
 public class DeleteTool {
 
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DeleteTool.class);
+    private ThreadLocal<Session> local = null;
 
-    public static int cancelTask(VRI taskUri, ThreadLocal<Session> local) {
-        Session session = local.get();
-        if (session == null) {
+    public DeleteTool() {
+    }
+
+    public DeleteTool(ThreadLocal<Session> local) {
+        this();
+        this.local = local;
+    }
+
+    private synchronized Session getSession() {
+        Session session = null;
+        if (local != null) {
+            session = local.get();
+            if (session == null) {
+                session = HibernateUtil.getSessionFactory().openSession();
+                session.setCacheMode(CacheMode.IGNORE);
+            }
+            local.set(session);
+        } else {
             session = HibernateUtil.getSessionFactory().openSession();
             session.setCacheMode(CacheMode.IGNORE);
         }
-        local.set(session);
-        session.setFlushMode(FlushMode.COMMIT);
+        return session;
+    }
+
+    private synchronized void closeSession(Session session) {
+        if (session != null) {
+            try {
+                session.close();
+            } catch (HibernateException ex) {
+                logger.error("Cannot close session", ex);
+                throw ex;
+            }
+            if (local != null) {
+                local.set(null);
+            }
+        }
+    }
+
+    public int cancelTask(VRI taskUri) {
+        Session session = getSession();
         try {
             String sql = "UPDATE Task SET status = 'CANCELLED' WHERE uri = ?";
             Query q = session.createSQLQuery(sql).setString(0, taskUri.toString());
@@ -76,13 +109,7 @@ public class DeleteTool {
             }
             throw ex;
         } finally {
-            try {
-                session.close();
-                local.set(null);
-            } catch (HibernateException ex) {
-                logger.error("Cannot close session", ex);
-                throw ex;
-            }
+            closeSession(session);
         }
     }
 
@@ -93,11 +120,8 @@ public class DeleteTool {
      * @param session
      * @param taskUri
      */
-    public static int deleteTask(VRI taskUri) {
-
-        Session session = null;        
-            session = HibernateUtil.getSessionFactory().openSession();
-            session.setCacheMode(CacheMode.IGNORE);
+    public int deleteTask(VRI taskUri) {
+        Session session = getSession();
         session.setFlushMode(FlushMode.COMMIT);
         Transaction transaction = null;
         Task t = new Task(taskUri);
@@ -125,17 +149,12 @@ public class DeleteTool {
             }
             throw ex;
         } finally {
-            try {
-                session.close();
-                //local.set(null);
-            } catch (HibernateException ex) {
-                logger.error("Cannot close session", ex);
-                throw ex;
-            }
+            closeSession(session);
         }
     }
 
-    public static void deleteTask(Session session, Task.Status... status) {
+    public void deleteTasks(Task.Status... status) {
+        Session session = getSession();
         try {
             session.beginTransaction();
             String hql = "DELETE from Task WHERE status = :status";
@@ -154,8 +173,8 @@ public class DeleteTool {
                 logger.error("Cannot rollback", rte);
             }
             throw ex;
+        }finally{
+            closeSession(session);
         }
-
-
     }
 }

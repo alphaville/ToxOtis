@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration
+SYSTEM "src/main/resources/hibernate-configuration-3.0.dtd">
+
+<!-- SYSTEM "src/main/resources/hibernate-configuration-3.0.dtd"
 PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://svn.compass-project.org/svn/compass/trunk/lib/hibernate/hibernate-configuration-3.0.dtd">
-<!-- SYSTEM "src/main/resources/hibernate-configuration-3.0.dtd" -->
+-->
 <hibernate-configuration>
     <session-factory>
         <!-- Database connection settings -->
@@ -16,7 +19,7 @@ PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://svn.compass-pr
         <!-- JDBC connection pool (use the built-in) -->
         <!--<property name="connection.pool_size">${toxotis.database.poolsize}</property>-->
 
-        <!-- configuration pool via c3p0-->
+        <!-- Configuration pool via c3p0-->
         <property name="c3p0.acquire_increment">1</property>
         <property name="c3p0.idle_test_period">150</property> <!-- seconds -->
         <property name="c3p0.max_size">400</property>

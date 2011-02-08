@@ -30,6 +30,7 @@
  * tel. +30 210 7723236
  *
  */
+
 package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -152,7 +153,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
     }
 
-    private static byte[] getBytes(Object obj) throws java.io.IOException {
+    private byte[] getBytes(Object obj) throws java.io.IOException {
         if (obj == null) {
             return null;
         }
@@ -390,7 +391,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         this.actualModel = (Serializable) toObject(modelBytes);
     }
 
-    public static Object toObject(byte[] bytes) {
+    public Object toObject(byte[] bytes) {
         Object object = null;
         try {
             object = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(bytes)).readObject();

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis</artifactId>
     <packaging>pom</packaging>
-    <version>0.5.0</version>
+    <version>0.6</version>
     <name>ToxOtis</name>
     <description>ToxOtis is a versatile library allowing developers of QSAR application to use the OpenTox web services.</description>
     <developers>
@@ -138,6 +136,8 @@
         <module>ToxOtis-core</module>
         <module>ToxOtis-persistence</module>
         <module>ToxOtis-benchmark</module>
-    </modules>
+        <module>ToxOtis-janitor</module>
+    <module>ToxOtis-db</module>
+  </modules>
 
 </project>

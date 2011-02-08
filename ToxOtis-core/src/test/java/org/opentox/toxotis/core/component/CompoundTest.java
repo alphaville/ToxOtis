@@ -112,7 +112,7 @@ public class CompoundTest {
         fail("Should have failed");
     }
 
-    @Test
+    //@Test
     public void testDownloadCompound_overSSL()
             throws ToxOtisException, ServiceInvocationException {
         VRI vri = new VRI(Services.ambitUniPlovdiv()).augment("compound", "100");

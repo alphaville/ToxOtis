@@ -50,6 +50,7 @@ import org.opentox.toxotis.exceptions.impl.BadRequestException;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
 import org.opentox.toxotis.exceptions.impl.NotFound;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -159,9 +160,9 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                     notFound.setErrorReport(er);
                     throw notFound;
                 } else {
-                    ConnectionException connectionException = new ConnectionException("Communication Error with : '" + uri + "'");
-                    connectionException.setErrorReport(er);
-                    throw connectionException;
+                    RemoteServiceException unexpected = new RemoteServiceException("Unexpected error from : '" + uri + "'. Service returned status "+status);
+                    unexpected.setErrorReport(er);
+                    throw unexpected;
 
                 }
             }
