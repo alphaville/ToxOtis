@@ -1,7 +1,43 @@
-DROP DATABASE toxotisdb;
+/*
+ *
+ * ToxOtis
+ *
+ * ToxOtis is the Greek word for Sagittarius, that actually means ‘archer’. ToxOtis
+ * is a Java interface to the predictive toxicology services of OpenTox. ToxOtis is
+ * being developed to help both those who need a painless way to consume OpenTox
+ * services and for ambitious service providers that don’t want to spend half of
+ * their time in RDF parsing and creation.
+ *
+ * Copyright (C) 2009-2010 Pantelis Sopasakis & Charalampos Chomenides
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact:
+ * Pantelis Sopasakis
+ * chvng@mail.ntua.gr
+ * Address: Iroon Politechniou St. 9, Zografou, Athens Greece
+ * tel. +30 210 7723236
+ *
+ */
+
+--SQL for DB schema creation
+DROP DATABASE IF EXISTS toxotisdb;
 CREATE DATABASE IF NOT EXISTS toxotisdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
 USE toxotisdb;
-
+--
+--OTComponent
+--
 DROP TABLE IF EXISTS `OTComponent`;
 CREATE TABLE `OTComponent` (
   `id` varchar(255) collate utf8_bin NOT NULL COMMENT 'This is a UUID identifying the component, not a URI',
@@ -11,10 +47,9 @@ CREATE TABLE `OTComponent` (
   `deletionDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Disablement timestamp',
   PRIMARY KEY (`id`),
   KEY `otcomponent_id_index` USING BTREE (`id`),
-  KEY `index_enabled` USING BTREE (`enabled`),
+  KEY `index_enabled` USING BTREE (`enabled`) on lookup (`enabled`),
   KEY `index_created` USING BTREE (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
 
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (
@@ -30,11 +65,14 @@ CREATE TABLE `User` (
   KEY USING BTREE (`uid`),
   UNIQUE KEY USING BTREE (`mail`),
   KEY `index_user_name` USING BTREE (`name`),
-  KEY `index_user_mail` USING BTREE (`mail`)
+  KEY `index_user_mail` USING BTREE (`mail`),
+  KEY `index_user_maxModels`USING BTREE (`maxModels`),
+  KEY `index_user_maxBibTeX`USING BTREE (`maxBibTeX`),
+  KEY `index_user_maxParallelTasks`USING BTREE (`maxParallelTasks`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 LOCK TABLE `User` WRITE;
-INSERT INTO `User` (`uid`,`name`,`mail`,`password`,`maxParallelTasks`,`maxModels`,`maxBibTeX`) VALUES ('guest@in-silico.ch','Guest','guest@opentox.org','{plain text}guest',5,2000,2000);
+INSERT INTO `User` (`uid`,`name`,`mail`,`password`,`maxParallelTasks`,`maxModels`,`maxBibTeX`) VALUES ('guest@opensso.in-silico.ch','Guest','anonymous@anonymous.org','{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H',5,2000,2000);
 UNLOCK TABLE ;
 
 DROP TABLE IF EXISTS `BibTeX`;
@@ -63,7 +101,7 @@ CREATE TABLE `BibTeX` (
   `url` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `volume` int(11) unsigned DEFAULT NULL,
   `year` int(11) unsigned DEFAULT NULL,
-  `createdBy` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `createdBy` varchar(255) COLLATE utf8_bin DEFAULT "guest@opensso.in-silico.ch",
   PRIMARY KEY USING BTREE (`id`),
   KEY `index_bibtex_id` USING BTREE (`id`),
   KEY `index_bibtex_createdBy` USING BTREE (`createdBy`),
@@ -157,3 +195,14 @@ CREATE TABLE `Parameter` (
   CONSTRAINT `modelUri_ref_for_parameter` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`),
   CONSTRAINT `scopeValues` CHECK (UPPER(`scope`) IN (`OPTIONAL`,`MANDATORY`)) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+DELIMITER $$
+CREATE TRIGGER `bibtex_trigger_create` BEFORE INSERT ON BibTeX
+FOR EACH ROW BEGIN
+    INSERT IGNORE INTO OTComponent (id) VALUES (NEW.id);
+END $$
+DELIMITER ;
+
+
+

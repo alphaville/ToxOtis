@@ -60,9 +60,21 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
     private String mail;
     private String hashedPass;
 
+
+    public static User GUEST = new User("guest@opensso.in-silico.ch","Guest","anonymous@anonymous.org","{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H");
+
     public User() {
         
     }
+
+    private User(String uid, String name, String mail, String hashedPass) {
+        this.uid = uid;
+        this.name = name;
+        this.mail = mail;
+        this.hashedPass = hashedPass;
+    }
+
+
 
     public String getHashedPass() {
         return hashedPass;
@@ -91,11 +103,12 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
      *      specifications of RFC 2822.
      * @see EmailValidator
      */
-    public void setMail(String mail) throws org.opentox.toxotis.exceptions.impl.ToxOtisException {
+    public User setMail(String mail) throws org.opentox.toxotis.exceptions.impl.ToxOtisException {
         if (!EmailValidator.validate(mail)) {
             throw new org.opentox.toxotis.exceptions.impl.ToxOtisException("Bad email address according to RFC 2822 : '" + mail + "'");
         }
         this.mail = mail;
+        return this;
 
     }
 
@@ -103,16 +116,18 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
         return name;
     }
 
-    public void setName(String name) {
+    public User setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public User setUid(String uid) {
         this.uid = uid;
+        return this;
     }
 
     @Override

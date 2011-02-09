@@ -412,13 +412,12 @@ public class AuthenticationToken {
      * created).
      * @return
      *      User information as an instance of {@link User }.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the remote identity (SSO) service is not reachable/accessible
      *      at the moment or returns a <code>401</code>/<code>403</code> error HTTP
      *      code implying that the token is not valid.
-     * @throws InactiveTokenException
-     *      If the token the user uses is not active (because it has been invalidated,
-     *      expired, or not initialized yet).
+     * @throws ToxOtisException
+     *      If the mail is invalid
      *
      */
     public User getUser() throws ServiceInvocationException, ToxOtisException {

@@ -12,6 +12,17 @@ public class LoginInfo {
     protected String user;
     protected String password;
     private static final long serialVersionUID = 7128437130482954122L;
+    
+    public static LoginInfo LOGIN_INFO = new LoginInfo().setPassword("opensess@me");
+
+    public LoginInfo(String scheme, String host, String port, String database, String user, String password) {
+        this.scheme = scheme;
+        this.host = host;
+        this.port = port;
+        this.database = database;
+        this.user = user;
+        this.password = password;
+    }
 
     public LoginInfo() {
         setScheme("jdbc:mysql");
@@ -19,7 +30,7 @@ public class LoginInfo {
         setDatabase("toxotisdb");
         setPort("3306");
         setUser("root");
-        
+
     }
 
     public void setURI(URI uri) throws Exception {
@@ -59,8 +70,9 @@ public class LoginInfo {
         return password;
     }
 
-    public void setPassword(String password) {
+    public LoginInfo setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getPort() {

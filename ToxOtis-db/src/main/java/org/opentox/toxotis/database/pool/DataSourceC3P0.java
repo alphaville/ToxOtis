@@ -34,7 +34,6 @@ package org.opentox.toxotis.database.pool;
 
 import javax.sql.DataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.mchange.v2.c3p0.DataSources;
 import org.opentox.toxotis.database.exception.DbException;
 
 public class DataSourceC3P0 implements IDataSourceC3P0 {
