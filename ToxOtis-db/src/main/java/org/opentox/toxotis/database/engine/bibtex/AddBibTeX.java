@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.DbSimpleWriter;
+import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
@@ -16,7 +16,7 @@ import org.opentox.toxotis.database.exception.DbException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class AddBibTeX extends DbSimpleWriter {
+public class AddBibTeX extends DbWriter {
 
     private final BibTeX bibtex;
 
@@ -43,7 +43,6 @@ public class AddBibTeX extends DbSimpleWriter {
             
 
             PreparedStatement ps = getConnection().prepareStatement(getSql());
-            System.out.println(getSql());
             ps.setString(1, bibtex.getUri().getId());
             ps.setString(2, bibtex.getAbstract());
             ps.setString(3, bibtex.getAddress());
@@ -95,7 +94,7 @@ public class AddBibTeX extends DbSimpleWriter {
         } catch (SQLException ex) {
             throw new DbException(ex);
         } finally {
-            closeConnection();
+            close();
         }
 
     }

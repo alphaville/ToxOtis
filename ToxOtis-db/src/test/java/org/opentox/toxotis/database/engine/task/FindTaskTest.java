@@ -33,37 +33,55 @@
 
 package org.opentox.toxotis.database.engine.task;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import org.opentox.toxotis.database.DbReader;
+import java.net.URISyntaxException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.ResultSetIterator;
+import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class ListTasks extends DbReader<String> {
+public class FindTaskTest {
 
-    /**
-     * Lists BibTeX IDs
-     * @return
-     */
-    @Override
-    public IDbIterator<String> list() throws DbException {
-        setTable("Task");
-        setTableColumns("Task.id");
-        System.out.println(getSql());
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(getSql());
-            ResultSet results = ps.executeQuery();
-            ResultSetIterator it = new ResultSetIterator(results);
-            return it;
-        } catch (final SQLException ex) {
-            throw new DbException(ex);
+    public FindTaskTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testSomeMethod() throws DbException, URISyntaxException {
+        VRI baseUri = new VRI("http://alphaville:4000/jaqpot");
+        FindTask ft = new FindTask(baseUri);
+        ft.setPageSize(10);
+        IDbIterator<Task> it = ft.list();
+        while (it.hasNext()) {
+            System.out.println(it.next().getUri());
         }
+        // GOOD PRACTISE : Close the iterator AND the Finder!!!
+        // i.e. the result set and the connection
+        it.close();
+        ft.close();
     }
 }

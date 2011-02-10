@@ -53,9 +53,16 @@ public class DataSourceC3P0 implements IDataSourceC3P0 {
 
         datasource = new ComboPooledDataSource();  // create a new datasource object
         datasource.setJdbcUrl(connectURI);
-        datasource.setMaxPoolSize(500);
+        datasource.setMaxPoolSize(1000);
         datasource.setMinPoolSize(20);
-        datasource.setInitialPoolSize(10);
+        datasource.setInitialPoolSize(50);
+
+        datasource.setMaxIdleTime(1000000);
+        datasource.setCheckoutTimeout(1000000);
+        datasource.setUnreturnedConnectionTimeout(1000000);
+        datasource.setMaxIdleTimeExcessConnections(1000000);
+
+        datasource.setNumHelperThreads(20);
         
     }
 

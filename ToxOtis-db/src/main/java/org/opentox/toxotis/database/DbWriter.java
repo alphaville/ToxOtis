@@ -7,7 +7,7 @@ import org.opentox.toxotis.database.exception.DbException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class DbSimpleWriter extends DbOperation  {
+public abstract class DbWriter extends DbOperation  {
 
     private InsertType insertType = InsertType.INSERT;
     private String[] tableColumns;

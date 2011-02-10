@@ -118,7 +118,7 @@ CREATE TABLE `Feature` (
     `uri` varchar(255) COLLATE utf8_bin NOT NULL,
     `units` varchar(16),
     PRIMARY KEY USING BTREE (`uri`),
-    KEY `index_units` (`units`)
+    KEY `index_units` USING BTREE  (`units`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
@@ -131,12 +131,12 @@ CREATE TABLE `Model` (
   `dataset` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `actualModel` longblob COMMENT 'The actual model object stored as a blob with compression',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `localCode` (`localCode`),
-  KEY `index_model_algorithm` (`algorithm`),
-  KEY `index_model_id` (`id`),
-  KEY `index_model_creator` (`createdBy`),
-  KEY `index_modelAlgorithm` (`algorithm`),
-  KEY `index_model_dataset` (`dataset`),
+  UNIQUE KEY `localCode` USING BTREE  (`localCode`),
+  KEY `index_model_algorithm` USING BTREE  (`algorithm`),
+  KEY `index_model_id` USING BTREE  (`id`),
+  KEY `index_model_creator` USING BTREE  (`createdBy`),
+  KEY `index_modelAlgorithm` USING BTREE  (`algorithm`),
+  KEY `index_model_dataset` USING BTREE  (`dataset`),
   CONSTRAINT `fk_model_references_user` FOREIGN KEY (`createdBy`) REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_of_model_references_otcomponent` FOREIGN KEY (`id`) REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -147,9 +147,9 @@ CREATE TABLE `ModelDepFeatures` (
   `featureUri` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Points to the table of features',
   `depFeature_idx` int(11) unsigned DEFAULT 1 NOT NULL COMMENT 'index of features',
   PRIMARY KEY (`modelId`,`depFeature_idx`),
-  KEY (`modelId`,`depFeature_idx`),
-  KEY `modelId_ref_for_dependentParameters` (`modelId`),
-  KEY `depFeatureUri_ref_for_model` (`featureUri`),
+  KEY  USING BTREE (`modelId`,`depFeature_idx`),
+  KEY `modelId_ref_for_dependentParameters` USING BTREE  (`modelId`),
+  KEY `depFeatureUri_ref_for_model` USING BTREE  (`featureUri`),
   CONSTRAINT `depFeatureUri_ref_for_model` FOREIGN KEY (`featureUri`) REFERENCES `Feature` (`uri`),
   CONSTRAINT `modelUri_ref_for_dependentParameters` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -160,9 +160,9 @@ CREATE TABLE `ModelIndepFeatures` (
   `featureUri` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Points to the table of features',
   `indepFeature_idx` int(11) unsigned DEFAULT 1 NOT NULL COMMENT 'index of features',
   PRIMARY KEY (`modelId`,`indepFeature_idx`),
-  KEY (`modelId`,`indepFeature_idx`),
-  KEY `modelId_ref_for_independentParameters` (`modelId`),
-  KEY `indepFeatureUri_ref_for_model` (`featureUri`),
+  KEY USING BTREE  (`modelId`,`indepFeature_idx`),
+  KEY `modelId_ref_for_independentParameters` USING BTREE  (`modelId`),
+  KEY `indepFeatureUri_ref_for_model` USING BTREE  (`featureUri`),
   CONSTRAINT `indepFeatureUri_ref_for_model` FOREIGN KEY (`featureUri`) REFERENCES `Feature` (`uri`),
   CONSTRAINT `modelUri_ref_for_independentParameters` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -174,9 +174,9 @@ CREATE TABLE `ModelPredictedFeatures` (
   `featureUri` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Points to the table of features',
   `predFeature_idx` int(11) unsigned DEFAULT 1 NOT NULL COMMENT 'index of features',
   PRIMARY KEY (`modelId`,`predFeature_idx`),
-  KEY (`modelId`,`predFeature_idx`),
-  KEY `modelId_ref_for_predictedParameters` (`modelId`),
-  KEY `predFeatureUri_ref_for_model` (`featureUri`),
+  KEY USING BTREE  (`modelId`,`predFeature_idx`),
+  KEY `modelId_ref_for_predictedParameters` USING BTREE  (`modelId`),
+  KEY `predFeatureUri_ref_for_model` USING BTREE  (`featureUri`),
   CONSTRAINT `predFeatureUri_ref_for_model` FOREIGN KEY (`featureUri`) REFERENCES `Feature` (`uri`),
   CONSTRAINT `modelUri_ref_for_predictedParameters` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -190,10 +190,46 @@ CREATE TABLE `Parameter` (
   `valueType` varchar(16) COLLATE utf8_bin DEFAULT "string" COMMENT 'can be String, Double, Integer, Float, Double etc',
   `modelId` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Points to the model table - Many to One relation (every parameter has a model)',
   PRIMARY KEY (`id`),
-  KEY `index_parameter_modelId` (`modelId`),
-  KEY `index_parameter_scope` (`scope`),
+  KEY `index_parameter_modelId` USING BTREE  (`modelId`),
+  KEY `index_parameter_scope` USING BTREE  (`scope`),
   CONSTRAINT `modelUri_ref_for_parameter` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`),
   CONSTRAINT `scopeValues` CHECK (UPPER(`scope`) IN (`OPTIONAL`,`MANDATORY`)) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+DROP TABLE IF EXISTS `ErrorReport`;
+CREATE TABLE `ErrorReport` (
+  `id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `httpStatus` int(11) DEFAULT NULL,
+  `actor` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `message` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `details` longtext,
+  `errorCode` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `errorCause` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_errorCause` USING BTREE  (`errorCause`),
+  KEY `index_error_id` USING BTREE  (`id`),
+  CONSTRAINT `error_id_refs_component` FOREIGN KEY (`id`) REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `trace_fk` FOREIGN KEY (`errorCause`) REFERENCES `ErrorReport` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS `Task`;
+CREATE TABLE `Task` (
+  `id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `resultUri` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `httpStatus` float DEFAULT 202,
+  `percentageCompleted` float DEFAULT 0,
+  `status` varchar(16) COLLATE utf8_bin DEFAULT NULL,
+  `duration` bigint(20) DEFAULT NULL,
+  `errorReport` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `createdBy` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_uri_in_task_refs_OTComponent` USING BTREE  (`id`),
+  KEY `index_errReport_in_task` USING BTREE  (`errorReport`),
+  KEY `index_task_creator` USING BTREE  (`createdBy`),
+  CONSTRAINT `FK_errReport_in_task` FOREIGN KEY (`errorReport`) REFERENCES `ErrorReport` (`id`),
+  CONSTRAINT `FK_task_creator` FOREIGN KEY (`createdBy`) REFERENCES `User` (`uid`),
+  CONSTRAINT `id_in_task_references_OTComponent` FOREIGN KEY (`id`) REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
@@ -203,6 +239,7 @@ FOR EACH ROW BEGIN
     INSERT IGNORE INTO OTComponent (id) VALUES (NEW.id);
 END $$
 DELIMITER ;
+
 
 
 

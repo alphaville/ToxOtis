@@ -31,39 +31,62 @@
  *
  */
 
-package org.opentox.toxotis.database.engine.task;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import org.opentox.toxotis.database.DbReader;
+package org.opentox.toxotis.database.engine.bibtex;
+
+import java.io.IOException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.ResultSetIterator;
+import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class ListTasks extends DbReader<String> {
+public class ListBibTeXTest {
 
-    /**
-     * Lists BibTeX IDs
-     * @return
-     */
-    @Override
-    public IDbIterator<String> list() throws DbException {
-        setTable("Task");
-        setTableColumns("Task.id");
-        System.out.println(getSql());
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(getSql());
-            ResultSet results = ps.executeQuery();
-            ResultSetIterator it = new ResultSetIterator(results);
-            return it;
-        } catch (final SQLException ex) {
-            throw new DbException(ex);
-        }
+    public ListBibTeXTest() {
     }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testSomeMethod() throws DbException {
+        ListBibTeX lister = new ListBibTeX();
+        lister.setPageSize(10);                
+        IDbIterator<String> it = lister.list();
+        while (it.hasNext()){
+            System.out.println(it.next());
+        }
+        /*
+         * Close everything!!!
+         */
+        try {
+            it.close();
+        } catch (DbException ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
+        }
+        lister.close();// DO NOT FORGET!!!
+    }
+
 }

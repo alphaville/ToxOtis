@@ -31,60 +31,53 @@
  *
  */
 
-package org.opentox.toxotis.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+package org.opentox.toxotis.database.engine.task;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.database.IDbIterator;
+import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
-import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
  * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
  */
-public abstract class DbOperation implements ISql {
+public class ListTasksTest {
 
-    private Connection connection;
-
-    public DbOperation() {
+    public ListTasksTest() {
     }
 
-    public DbOperation(Connection connection) {
-        this.connection = connection;
+    @BeforeClass
+    public static void setUpClass() throws Exception {
     }
 
-    public Connection getConnection() throws DbException {
-        if (connection == null) {
-            LoginInfo li = LoginInfo.LOGIN_INFO;
-            DataSourceFactory factory = DataSourceFactory.getInstance();
-            String connectionUri = factory.getConnectionURI(li);
-            try {
-                connection = factory.getDataSource(connectionUri).getConnection();
-            } catch (final SQLException ex) {
-                throw new DbException(ex);
-            }
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testSomeMethod() throws DbException {
+        // TODO review the generated test code and remove the default call to fail.
+        ListTasks lt = new ListTasks();
+        lt.setPageSize(10);
+        IDbIterator<String > iterator = lt.list();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
         }
-        return connection;
+        
     }
 
-    public void close() throws DbException {
-        if (connection != null) {
-            try {
-                if (!connection.isClosed()) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                throw new DbException(ex);
-            }
-        }
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        close();
-        super.finalize();
-    }
 }

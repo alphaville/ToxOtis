@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.pool;
 
 import java.sql.Connection;
@@ -73,7 +71,6 @@ public class DataSourceFactory {
         return DatasourceFactoryHolder.instance;
     }
 
-    
     public synchronized DataSource getDataSource(String connectURI) throws DbException {
         if (connectURI == null) {
             throw new DbException("Connection URI not specified!");
@@ -102,9 +99,6 @@ public class DataSourceFactory {
     public void logout(String connectURI) throws DbException {
     }
 
-
-
-    
     public Connection getConnection(String connectURI) throws DbException {
         try {
             Connection connection = getDataSource(connectURI).getConnection();
@@ -218,10 +212,15 @@ public class DataSourceFactory {
             while (index < nTimes) {
                 int randomInt = pingRandom.nextInt();
                 rs = st.executeQuery(String.format(pingQuery, randomInt));
-                rs.first();
-                int received = rs.getInt(1);
-                if (randomInt != rs.getInt(1)) {
-                    logger.error("DB Ping failed >> Sent: " + pingRandom + ", received :" + received);
+                if (rs.next()) {
+                    int received = rs.getInt(1);
+
+                    if (randomInt != rs.getInt(1)) {
+                        logger.error("DB Ping failed >> Sent: " + pingRandom + ", received :" + received);
+                        return false;
+                    }
+                } else {
+                    logger.error("DB Ping failed >> Sent: " + pingRandom + ", received : NOTHING");
                     return false;
                 }
                 rs.close();
@@ -229,7 +228,7 @@ public class DataSourceFactory {
             }
             return true;
         } catch (final Exception x) {
-            logger.error("Database server ping failed for URI "+getConnectionURI(li),x);
+            logger.error("Database server ping failed for URI " + getConnectionURI(li), x);
             return false;
         } finally {
             /*   Close SQL statement   */
@@ -237,7 +236,7 @@ public class DataSourceFactory {
                 try {
                     st.close();
                 } catch (Exception x) {
-                    logger.error("SQL statement for ping cannot close",x);
+                    logger.error("SQL statement for ping cannot close", x);
                 }
             }
             /*  Close the DB connection */
@@ -245,7 +244,7 @@ public class DataSourceFactory {
                 try {
                     connection.close();
                 } catch (Exception x) {
-                    logger.error("Database connection to "+getConnectionURI(li)+" cannot close",x);
+                    logger.error("Database connection to " + getConnectionURI(li) + " cannot close", x);
                 }
             }
         }

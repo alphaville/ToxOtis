@@ -31,39 +31,47 @@
  *
  */
 
-package org.opentox.toxotis.database.engine.task;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import org.opentox.toxotis.database.DbReader;
-import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.ResultSetIterator;
+package org.opentox.toxotis.database.engine;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class ListTasks extends DbReader<String> {
+public class DisableComponentTest {
 
-    /**
-     * Lists BibTeX IDs
-     * @return
-     */
-    @Override
-    public IDbIterator<String> list() throws DbException {
-        setTable("Task");
-        setTableColumns("Task.id");
-        System.out.println(getSql());
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(getSql());
-            ResultSet results = ps.executeQuery();
-            ResultSetIterator it = new ResultSetIterator(results);
-            return it;
-        } catch (final SQLException ex) {
-            throw new DbException(ex);
-        }
+    public DisableComponentTest() {
     }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testSomeMethod() throws DbException {
+        System.out.println(new DisableComponent("000399c0-c237-4673-ae0a-7ddc83bc48e9","no such thing!").disable() );
+        System.out.println(new DisableComponent("000399c0-c237-4673-ae0a-7ddc83bc48e9","no such thing!").enable()  );
+        System.out.println(new DisableComponent("000399c0-c237-4673-ae0a-7ddc83bc48e9","no such thing!").disable() );
+    }
+
 }
