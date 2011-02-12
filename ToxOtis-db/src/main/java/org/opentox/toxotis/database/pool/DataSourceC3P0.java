@@ -62,7 +62,9 @@ public class DataSourceC3P0 implements IDataSourceC3P0 {
         datasource.setUnreturnedConnectionTimeout(1000000);
         datasource.setMaxIdleTimeExcessConnections(1000000);
 
-        datasource.setNumHelperThreads(20);
+        datasource.setNumHelperThreads(50);
+
+        datasource.setTestConnectionOnCheckin(true);
         
     }
 

@@ -18,7 +18,7 @@ public class DisableComponent extends DbOperation {
 
     @Override
     public String getSqlTemplate() {
-        return "UPDATE OTComponent SET enabled=%s WHERE id IN (%s)";
+        return "UPDATE OTComponent SET enabled=%s, deletionDate=CURRENT_TIMESTAMP WHERE id IN (%s)";
     }
 
     public DisableComponent(final String... componentIds) {

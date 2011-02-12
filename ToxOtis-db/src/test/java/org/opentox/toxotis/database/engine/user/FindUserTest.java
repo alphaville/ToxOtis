@@ -32,7 +32,7 @@
  */
 
 
-package org.opentox.toxotis.database.engine;
+package org.opentox.toxotis.database.engine.user;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,15 +40,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
  * @author chung
  */
-public class DisableComponentTest {
+public class FindUserTest {
 
-    public DisableComponentTest() {
+    public FindUserTest() {
     }
 
     @BeforeClass
@@ -68,9 +67,9 @@ public class DisableComponentTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
-        System.out.println(new DisableComponent("b1688464-fc6f-4cd9-b5b0-b9b68a35dd26","no such thing!").disable() );
-        
+    public void testSomeMethod() {
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
 }

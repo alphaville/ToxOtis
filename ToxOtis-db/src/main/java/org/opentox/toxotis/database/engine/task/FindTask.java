@@ -30,10 +30,8 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.task;
 
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,10 +52,14 @@ import org.opentox.toxotis.database.exception.DbException;
 public class FindTask extends DbReader<Task> {
 
     private final VRI baseUri;
+    private final boolean resolveErrorReport;
+    private final boolean resolveUser;
 
-    public FindTask(VRI baseUri) {
+    public FindTask(VRI baseUri, boolean resolveErrorReport, boolean resolveUser) {
         super();
         this.baseUri = baseUri;
+        this.resolveErrorReport = resolveErrorReport;
+        this.resolveUser = resolveUser;
     }
 
     @Override
@@ -66,19 +68,16 @@ public class FindTask extends DbReader<Task> {
         setTableColumns("Task.id", "Task.resultUri", "Task.httpStatus", "Task.percentageCompleted",
                 "Task.status", "Task.duration", "Task.errorReport", "Task.createdBy", "OTComponent.enabled", "uncompress(meta)");
         setInnerJoin("OTComponent ON Task.id=OTComponent.id");
-
-
         Statement statement = null;
         Connection connection = null;
-
         connection = getConnection();
         try {
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(getSql());
-
             TaskIterator it = new TaskIterator(rs, baseUri);
+            it.setResolveUser(resolveUser);
+            it.setResolveErrorReport(resolveErrorReport);
             return it;
-
         } catch (SQLException ex) {
             Logger.getLogger(FindTask.class.getName()).log(Level.SEVERE, null, ex);
             throw new DbException(ex);

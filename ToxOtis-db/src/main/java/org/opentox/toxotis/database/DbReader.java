@@ -113,7 +113,6 @@ public abstract class DbReader<T> extends DbOperation {
         StringBuilder tableColumnsString = new StringBuilder();
         for (int i = 0; i < tableColumns.length; i++) {
             tableColumnsString.append(tableColumns[i]);
-            ;
             if (i != tableColumns.length - 1) {
                 tableColumnsString.append(",");
             }

@@ -31,6 +31,7 @@
  *
  */
 
+
 package org.opentox.toxotis.database.engine.task;
 
 import java.net.URISyntaxException;
@@ -41,7 +42,10 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.database.DbIterator;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.cache.Cache;
+import org.opentox.toxotis.database.engine.cache.ICache;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.MetaInfoDeblobber;
@@ -50,15 +54,17 @@ import org.opentox.toxotis.ontology.MetaInfoDeblobber;
  *
  * @author Pantelis Sopasakis
  */
-public class TaskIterator implements IDbIterator<Task> {
-
-    private final ResultSet rs;
+public class TaskIterator extends DbIterator<Task> {
+    
     private final VRI baseVri;
     private boolean resolveErrorReport = false;
     private boolean resolveUser = false;
+    private ICache<String, User> usersCache = new Cache<String, User>();
+    private ICache<String, ErrorReport> errorReportCache = new Cache<String, ErrorReport>();
+
 
     public TaskIterator(final ResultSet rs, final VRI baseUri) {
-        this.rs = rs;
+        super(rs);
         this.baseVri = baseUri;
     }
 
@@ -78,24 +84,7 @@ public class TaskIterator implements IDbIterator<Task> {
         this.resolveUser = resolveUser;
     }
 
-    @Override
-    public void close() throws DbException {
-        try {
-            rs.close();
-        } catch (final SQLException ex) {
-            throw new DbException(ex);
-        }
-    }
-
-    @Override
-    public boolean hasNext() throws DbException {
-        try {
-            return rs.next();
-        } catch (SQLException ex) {
-            throw new DbException(ex);
-        }
-    }
-
+        
     @Override
     public Task next() throws DbException {
         // "id", "resultUri", "httpStatus", "percentageCompleted", "status", "duration", "errorReport", "createdBy"
@@ -134,13 +123,19 @@ public class TaskIterator implements IDbIterator<Task> {
 
 
             String taskCreator = rs.getString("createdBy");
+
             if (taskCreator != null) {
-                User u = new User();
-                u.setUid(taskCreator);
-                if (resolveUser) {
-                    //TODO: resolve users!
-                    //TODO: Put users in a CACHE!
-                }
+                User user = usersCache.get(taskCreator);//try to get the user from the cache.
+                if (user == null) {// if user is not found in cache, create it and put it there!
+                    user = new User();
+                    user.setUid(taskCreator);
+                    if (resolveUser) {
+                        //TODO: resolve users!
+                        //TODO: Put users in a CACHE!
+                    }
+                    usersCache.put(taskCreator, user);
+                }                
+                t.setCreatedBy(user);
             }
 
             boolean isTaskEnabled = rs.getBoolean("OTComponent.enabled");
@@ -162,12 +157,4 @@ public class TaskIterator implements IDbIterator<Task> {
         return t;
     }
 
-    @Override
-    public void remove() throws DbException{
-        try {
-            rs.deleteRow();
-        } catch (SQLException ex) {
-            throw new DbException(ex);
-        }
-    }
 }

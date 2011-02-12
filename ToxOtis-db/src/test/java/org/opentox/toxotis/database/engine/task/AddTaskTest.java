@@ -30,10 +30,11 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.task;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,16 +42,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.database.exception.DbException;
-import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -61,6 +58,8 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
  * @author chung
  */
 public class AddTaskTest {
+
+    private static volatile Throwable failure = null;
 
     public AddTaskTest() {
     }
@@ -82,7 +81,7 @@ public class AddTaskTest {
     }
 
     @Test
-    public void testSomeMethod() throws Exception {
+    public void testWriteTask() throws Exception {
         ErrorReport er_trace_2 = new ErrorReport(400, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
         ErrorReport er_trace_1 = new ErrorReport(400, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
         ErrorReport er = new ErrorReport(502, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
@@ -105,7 +104,7 @@ public class AddTaskTest {
         writer.close(); // CLOSE the writer!!! (SHORTLY after you don't need it!!!)
 
 
-        FindTask ft = new FindTask(new VRI("http://alphaville:4000/jaqpot"));
+        FindTask ft = new FindTask(new VRI("http://alphaville:4000/jaqpot"), false, false);
         ft.setWhere("Task.id='" + t.getUri().getId() + "'");
         IDbIterator<Task> iter = ft.list();
 
@@ -115,7 +114,37 @@ public class AddTaskTest {
         }
 
         iter.close();
-        ft.close();       
+        ft.close();
 
+    }
+
+    @Test
+    public void testWriteTaskMultithreadedly() throws InterruptedException {
+        int poolSize = 200;
+        int folds = 5 * poolSize + 20;// just to make sure!!! (brutal?!)
+        final ExecutorService es = Executors.newFixedThreadPool(poolSize);
+        for (int i = 1; i <= folds; i++) {
+            es.submit(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        new AddTaskTest().testWriteTask();
+                    } catch (final Throwable ex) {
+                        failure = ex;
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        es.shutdown();
+        while (!es.isTerminated()) {
+            Thread.sleep(100);
+        }
+
+        if (failure != null) {
+            fail();
+        }
     }
 }
