@@ -66,6 +66,7 @@ public class AddTaskTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        
     }
 
     @AfterClass
@@ -109,8 +110,14 @@ public class AddTaskTest {
         IDbIterator<Task> iter = ft.list();
 
         while (iter.hasNext()) {
-            MetaInfo mi = iter.next().getMeta();
+            Task nextTask = iter.next();
+            MetaInfo mi = nextTask.getMeta();
             assertEquals(t.getMeta(), mi);
+            assertEquals(t.getUri().getId(), nextTask.getUri().getId());
+            assertEquals(t.getDuration(), nextTask.getDuration());
+            assertEquals(t.getHttpStatus(), nextTask.getHttpStatus());
+            assertEquals(t.getStatus(), nextTask.getStatus());
+            assertEquals(t.getResultUri(), nextTask.getResultUri());
         }
 
         iter.close();
@@ -120,10 +127,11 @@ public class AddTaskTest {
 
     @Test
     public void testWriteTaskMultithreadedly() throws InterruptedException {
-        int poolSize = 200;
-        int folds = 5 * poolSize + 20;// just to make sure!!! (brutal?!)
+        int poolSize = 50;
+        int folds = 50 * poolSize + 20;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
+
             es.submit(new Runnable() {
 
                 @Override
@@ -147,4 +155,6 @@ public class AddTaskTest {
             fail();
         }
     }
+
+    
 }

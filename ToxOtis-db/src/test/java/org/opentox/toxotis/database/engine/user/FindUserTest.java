@@ -39,7 +39,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.database.DbIterator;
+import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
@@ -67,9 +71,17 @@ public class FindUserTest {
     }
 
     @Test
-    public void testSomeMethod() {
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testSomeMethod() throws DbException {
+        FindUser fu = new FindUser();
+        fu.setWhere("uid LIKE 'guest%'");
+        IDbIterator<User> users = fu.list();
+        while (users.hasNext()){
+            assertEquals(User.GUEST,users.next());
+            assertEquals(User.GUEST.getMail(),users.next().getMail());
+            assertEquals(User.GUEST.getName(),users.next().getName());
+        }
+        users.close();
+        fu.close();
     }
 
 }

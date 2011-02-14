@@ -46,7 +46,7 @@ public class AddModelTest {
     }
 
     @Test
-    public void testSomeMethod() throws Exception{
+    public void testAddModel() throws Exception{
         VRI vri1 = new VRI("http://opentox.ntua.gr:4000/model/"+UUID.randomUUID().toString());
         VRI datasetUri = new VRI("http://otherServer.com:7000/dataset/1");
 
@@ -57,14 +57,14 @@ public class AddModelTest {
 
         Parameter p = new Parameter();
         p.setUri(new VRI("http://no.such.service.net/jaqpot/parameter/"+UUID.randomUUID().toString()));
-        p.setName("gamma");
+        p.setName("alpha");
         p.setScope(Parameter.ParameterScope.OPTIONAL);
-        p.setTypedValue(new LiteralValue<Double>(100.0d, XSDDatatype.XSDdouble));
+        p.setTypedValue(new LiteralValue(19, XSDDatatype.XSDint));
 
 
         Model m = new Model(vri1);
-//        m.setParameters(new HashSet<Parameter>());
-//        m.getParameters().add(p);
+        m.setParameters(new HashSet<Parameter>());
+        m.getParameters().add(p);
         m.setDataset(datasetUri);
 
         m.setDependentFeatures(new ArrayList<Feature>());
@@ -75,7 +75,7 @@ public class AddModelTest {
         m.getDependentFeatures().add(new Feature(f2));
         m.getDependentFeatures().add(new Feature(f3));
         m.setCreatedBy(User.GUEST);
-        m.setActualModel(new MetaInfoImpl());
+        m.setActualModel(new MetaInfoImpl());// just for the sake to write something in there!
         m.setLocalCode(UUID.randomUUID().toString());
         m.setAlgorithm(new Algorithm("http://algorithm.server.co.uk:9000/algorithm/mlr"));
         

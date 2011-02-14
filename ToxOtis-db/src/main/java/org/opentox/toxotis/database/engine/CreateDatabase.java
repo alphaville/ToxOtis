@@ -18,25 +18,45 @@ import org.opentox.toxotis.database.pool.DataSourceFactory;
  */
 public class CreateDatabase {
 
-    public static void createDB() throws DbException, FileNotFoundException, IOException, URISyntaxException, SQLException {
+    public static void createDB() throws DbException, IOException {
         LoginInfo li = LoginInfo.LOGIN_INFO;
         DataSourceFactory factory = DataSourceFactory.getInstance();
         String connectionUri = factory.getConnectionURI(li);
         Connection connection = null;
+
         try {
             connection = factory.getDataSource(connectionUri).getConnection();
+            connection.setAutoCommit(false);
+            ScriptRunner sr = new ScriptRunner(connection, false, true);
+            URI uri = CreateDatabase.class.getClassLoader().getResource("databaseCreation.sql").toURI();
+            sr.runScript(new FileReader(new File(uri)));
+            connection.commit();
         } catch (final SQLException ex) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (final SQLException ex1) {
+                    throw new DbException(ex1);
+                }
+            }
             throw new DbException(ex);
+        } catch (final IOException ex) {
+            throw ex;
+        } catch (final URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (final SQLException ex1) {
+                    throw new DbException(ex1);
+                }
+            }
         }
 
-        ScriptRunner sr = new ScriptRunner(connection, false, true);
-        URI uri = CreateDatabase.class.getClassLoader().getResource("databaseCreation.sql").toURI();
-        System.out.println(uri);
-        sr.runScript(new FileReader(new File(uri)));
     }
 
-    public static void main(String... args) throws Exception{
+    public static void main(String... args) throws Exception {
         createDB();
     }
-
 }

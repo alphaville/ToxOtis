@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.task;
 
 import java.net.URISyntaxException;
@@ -46,6 +44,8 @@ import org.opentox.toxotis.database.DbIterator;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.cache.Cache;
 import org.opentox.toxotis.database.engine.cache.ICache;
+import org.opentox.toxotis.database.engine.error.FindError;
+import org.opentox.toxotis.database.engine.user.FindUser;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.MetaInfoDeblobber;
@@ -55,13 +55,12 @@ import org.opentox.toxotis.ontology.MetaInfoDeblobber;
  * @author Pantelis Sopasakis
  */
 public class TaskIterator extends DbIterator<Task> {
-    
+
     private final VRI baseVri;
     private boolean resolveErrorReport = false;
     private boolean resolveUser = false;
     private ICache<String, User> usersCache = new Cache<String, User>();
     private ICache<String, ErrorReport> errorReportCache = new Cache<String, ErrorReport>();
-
 
     public TaskIterator(final ResultSet rs, final VRI baseUri) {
         super(rs);
@@ -84,7 +83,6 @@ public class TaskIterator extends DbIterator<Task> {
         this.resolveUser = resolveUser;
     }
 
-        
     @Override
     public Task next() throws DbException {
         // "id", "resultUri", "httpStatus", "percentageCompleted", "status", "duration", "errorReport", "createdBy"
@@ -112,12 +110,21 @@ public class TaskIterator extends DbIterator<Task> {
             t.setDuration(rs.getLong("duration"));
 
             String errorReportString = rs.getString("errorReport");
+
             if (errorReportString != null) {
-                ErrorReport er = new ErrorReport();
-                if (resolveErrorReport) {
-                    //TODO: More on Error Report!
-                    //TODO: Put error reports in a CACHE!
-                }
+                ErrorReport er = errorReportCache.get(errorReportString);
+                if (er == null) {
+                    if (resolveErrorReport) {
+                        FindError fe = new FindError(baseVri);
+                        fe.setWhere("id='" + errorReportString + "'");
+                        IDbIterator<ErrorReport> errorIt = fe.list();
+                        if (errorIt.hasNext()) {
+                            er = errorIt.next();
+                        }
+                        fe.close();
+                    }
+                    errorReportCache.put(errorReportString, er);
+                }                
                 t.setErrorReport(er);
             }
 
@@ -130,11 +137,17 @@ public class TaskIterator extends DbIterator<Task> {
                     user = new User();
                     user.setUid(taskCreator);
                     if (resolveUser) {
-                        //TODO: resolve users!
-                        //TODO: Put users in a CACHE!
+                        FindUser fu = new FindUser();
+                        fu.setWhere("uid='" + taskCreator + "'");
+                        IDbIterator<User> users = fu.list();
+                        if (users.hasNext()) {
+                            user = users.next();
+                        }
+                        users.close();
+                        fu.close();
                     }
                     usersCache.put(taskCreator, user);
-                }                
+                }
                 t.setCreatedBy(user);
             }
 
@@ -156,5 +169,4 @@ public class TaskIterator extends DbIterator<Task> {
         }
         return t;
     }
-
 }

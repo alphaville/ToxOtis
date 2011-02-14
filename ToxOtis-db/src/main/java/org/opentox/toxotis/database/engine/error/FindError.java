@@ -1,11 +1,11 @@
-package org.opentox.toxotis.database.engine.user;
+package org.opentox.toxotis.database.engine.error;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.DbIterator;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.database.DbReader;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.exception.DbException;
@@ -15,20 +15,26 @@ import org.opentox.toxotis.database.exception.DbException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class FindUser extends DbReader<User> {
+public class FindError extends DbReader<ErrorReport> {
+
+    private final VRI baseUri;
+
+    public FindError(final VRI baseUri) {
+        this.baseUri = baseUri;
+    }
 
     @Override
-    public IDbIterator<User> list() throws DbException {        
-        setTable("User");
-        setTableColumns("uid", "name", "mail","password");        
+    public IDbIterator<ErrorReport> list() throws DbException {
+        setTable("ErrorReport");
+        setTableColumns("id", "httpStatus", "actor", "message", "details", "errorCode", "errorCause");
         Statement statement = null;
         Connection connection = null;
-        connection = getConnection();
         try {
-            statement = connection.createStatement();            
+            connection = getConnection();
+            statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(getSql());
-            DbIterator<User> it = new UserIterator(rs);
-            return it;            
+            ErrorIterator it = new ErrorIterator(rs, baseUri);
+            return it;
         } catch (SQLException ex) {
             throw new DbException(ex);
         } finally {

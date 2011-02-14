@@ -73,17 +73,19 @@ public class FindTaskTest {
     @Test
     public void testSomeMethod() throws DbException, URISyntaxException {
         VRI baseUri = new VRI("http://alphaville:4000/jaqpot");
-        FindTask ft = new FindTask(baseUri,false,false);
-        ft.setWhere("Task.id='0002aac3-ff2c-4869-9619-cba2ee534f05'");
-        ft.setPageSize(10);
+        FindTask ft = new FindTask(baseUri,true,true);
+        ft.setPageSize(1);
+        ft.setWhere("Task.status='ERROR'");
         IDbIterator<Task> it = ft.list();
         while (it.hasNext()) {
-            assertNotNull(it.next().getCreatedBy());
-            assertNotNull(it.next().getCreatedBy().getUid());
-            System.out.println(it.next().getDuration());
-            System.out.println(it.next().getErrorReport().getUri());
-            System.out.println(it.next().getResultUri());
-            System.out.println(it.next().getStatus());
+            Task nextTsk = it.next();
+            assertNotNull(nextTsk.getCreatedBy());
+            assertNotNull(nextTsk.getCreatedBy().getUid());
+            System.out.println(nextTsk.getDuration());
+            System.out.println(nextTsk.getErrorReport().getUri());
+            System.out.println(nextTsk.getResultUri());
+            System.out.println(nextTsk.getStatus());
+            System.out.println(nextTsk.getCreatedBy().getMail());
         }
         // GOOD PRACTISE : Close the iterator AND the Finder!!!
         // i.e. the result set and the connection

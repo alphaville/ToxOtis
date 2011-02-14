@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbIterator;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 
 /**
  *
@@ -21,7 +22,17 @@ public class UserIterator extends DbIterator<User> {
 
     @Override
     public User next() throws DbException {
-        User nextUser= new User();
-        throw new UnsupportedOperationException("Not supported yet.");
+        User nextUser = new User();
+        try {
+            nextUser.setUid(rs.getString(1));
+            nextUser.setName(rs.getString(2));
+            nextUser.setMail(rs.getString(3));
+            nextUser.setHashedPass(rs.getString(4));
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } catch (ToxOtisException ex) {
+            throw new DbException("Illegal mail is found in the DB for user " + nextUser.getUid() , ex);
+        }
+        return nextUser;
     }
 }
