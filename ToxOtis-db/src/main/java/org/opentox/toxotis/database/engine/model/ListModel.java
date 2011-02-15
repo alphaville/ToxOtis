@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.model;
 
 import java.sql.PreparedStatement;
@@ -68,7 +67,12 @@ public class ListModel extends DbReader<String> {
         setTableColumns("Model.id");
         if (!includeDisabled) {
             setInnerJoin("OTComponent ON Model.id=OTComponent.id");
-            setWhere("enabled=true");
+            if (where != null) {
+                setWhere(where + "AND enabled=true");
+            } else {
+                setWhere("enabled=true");
+            }
+
         }
         try {
             PreparedStatement ps = getConnection().prepareStatement(getSql());

@@ -36,8 +36,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 import org.opentox.toxotis.database.LoginInfo;
@@ -52,18 +56,20 @@ public class DataSourceFactory {
     protected static final String amark = "&";
     private final Random pingRandom = new Random();
     private final String pingQuery = "SELECT %s";
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DataSourceFactory.class);
+    private static final long serialVersionUID = -5768L;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DataSourceFactory.class);    
+
+
     /*
      * Maps connection URIs to datasources
      */
-    protected ConcurrentHashMap<String, IDataSourceC3P0> datasources;
+    protected IDataSourceC3P0 datasource;
 
     private DataSourceFactory() {
-        datasources = new ConcurrentHashMap<String, IDataSourceC3P0>();
+        
     }
 
     private static class DatasourceFactoryHolder {
-
         private final static DataSourceFactory instance = new DataSourceFactory();
     }
 
@@ -71,24 +77,35 @@ public class DataSourceFactory {
         return DatasourceFactoryHolder.instance;
     }
 
-    public synchronized DataSource getDataSource(String connectURI) throws DbException {
-        if (connectURI == null) {
-            throw new DbException("Connection URI not specified!");
-        }
-        IDataSourceC3P0 ds = getInstance().datasources.get(connectURI);
+    public synchronized IDataSourceC3P0 getDataSourceC3P0() throws DbException {
+        IDataSourceC3P0 dataSource = getInstance().datasource;
+        return dataSource;
+    }
+
+
+    public synchronized DataSource getDataSource() throws DbException {
+        IDataSourceC3P0 ds = getInstance().datasource;
         if (ds == null) {
-            ds = setupDataSource(connectURI);
-            IDataSourceC3P0 oldds = getInstance().datasources.putIfAbsent(connectURI, ds);
-            if (oldds != null) {
-                ds = oldds;
-            }
+            ds = setupDataSource();
+            this.datasource = ds;
         }
         if (ds != null) {
             return ds.getDatasource();
         } else {
             return null;
         }
+    }
 
+    
+
+    public void close() {
+        if (datasource!=null){
+            try {
+                datasource.close();
+            } catch (Exception ex) {
+                Logger.getLogger(DataSourceFactory.class.getName()).log(Level.SEVERE, "ERROR ON CLOSING DATASOURCE!", ex);
+            }
+        }
     }
 
     /**
@@ -99,22 +116,22 @@ public class DataSourceFactory {
     public void logout(String connectURI) throws DbException {
     }
 
-    public Connection getConnection(String connectURI) throws DbException {
+    public Connection getConnection() throws DbException {
         try {
-            Connection connection = getDataSource(connectURI).getConnection();
+            Connection connection = getDataSource().getConnection();
             if (connection.isClosed()) {
-                return getDataSource(connectURI).getConnection();
+                return getDataSource().getConnection();
             } else {
                 return connection;
             }
         } catch (SQLException x) {
             throw new DbException(x);
         }
-    }
+    }    
 
-    public synchronized IDataSourceC3P0 setupDataSource(String connectURI) throws DbException {
+    public synchronized IDataSourceC3P0 setupDataSource() throws DbException {
         try {
-            IDataSourceC3P0 dataSource = new DataSourceC3P0(connectURI);
+            IDataSourceC3P0 dataSource = new DataSourceC3P0();
             return dataSource;
         } catch (Exception x) {
             throw new DbException(x);
@@ -203,7 +220,7 @@ public class DataSourceFactory {
                     li.getScheme(), li.getHostname(), li.getPort(),
                     li.getDatabase(), li.getUser(), li.getPassword());
 
-            connection = getConnection(dburi.toString());
+            connection = getConnection();
             st = connection.createStatement();
 
             int index = 0;

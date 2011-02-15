@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine;
 
 import org.junit.After;
@@ -39,6 +37,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.model.AddModelTest;
+import org.opentox.toxotis.database.engine.model.FindModel;
+import org.opentox.toxotis.database.engine.model.ListModel;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
@@ -57,6 +60,7 @@ public class DisableComponentTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -68,9 +72,32 @@ public class DisableComponentTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
-        System.out.println(new DisableComponent("28fd0bf8-e64b-486a-bac0-1edbee5b7a8f","no such thing!").disable() );
-        
-    }
+    public void testSomeMethod() throws Exception {
 
+        new AddModelTest().testAddModel();
+
+        ListModel list = new ListModel();
+        list.setPageSize(1);
+        IDbIterator<String> modelIt = list.list();
+        String toBeDeleted = null;
+        System.out.println();
+        while (modelIt.hasNext()) {
+            toBeDeleted = modelIt.next();
+            System.out.println(new DisableComponent(modelIt.next(), "no such thing!").disable());
+        }
+        modelIt.close();
+        list.close();
+        System.out.println(toBeDeleted);
+
+        if (toBeDeleted != null) {
+            list = new ListModel();
+            list.setIncludeDisabled(false);
+            list.setWhere(String.format("Model.id='%s'", toBeDeleted));
+            System.out.println();
+            IDbIterator<String> iter = list.list();
+            assertFalse(iter.hasNext());
+            iter.close();
+            list.close();
+        }
+    }
 }

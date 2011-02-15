@@ -30,48 +30,58 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.pool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.opentox.toxotis.database.LoginInfo;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author chung
  */
-public class DataSourceFactoryTest extends TestCase {
+public class DataSourceFactoryTest {
 
-    public DataSourceFactoryTest(String testName) {
-        super(testName);
+    public DataSourceFactoryTest() {
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @BeforeClass
+    public static void setUpClass() throws Exception {
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
     public void testSomeMethod() throws ServiceInvocationException, ToxOtisException {
         try {
             LoginInfo li = LoginInfo.LOGIN_INFO;
 
             DataSourceFactory factory = DataSourceFactory.getInstance();
-            String connectionUri = factory.getConnectionURI(li);
-            System.out.println(connectionUri);
+            String connectionUri = factory.getConnectionURI(li);            
 
-
-            Connection connection = factory.getDataSource(connectionUri).getConnection();
+            Connection connection = factory.getDataSource().getConnection();
 
             assertNotNull(connection);
             assertTrue(factory.ping(li, 5));

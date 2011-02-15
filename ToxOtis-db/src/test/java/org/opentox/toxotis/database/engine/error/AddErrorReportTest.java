@@ -57,6 +57,7 @@ public class AddErrorReportTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before

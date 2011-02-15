@@ -19,13 +19,11 @@ import org.opentox.toxotis.database.pool.DataSourceFactory;
 public class CreateDatabase {
 
     public static void createDB() throws DbException, IOException {
-        LoginInfo li = LoginInfo.LOGIN_INFO;
         DataSourceFactory factory = DataSourceFactory.getInstance();
-        String connectionUri = factory.getConnectionURI(li);
         Connection connection = null;
 
         try {
-            connection = factory.getDataSource(connectionUri).getConnection();
+            connection = factory.getDataSource().getConnection();
             connection.setAutoCommit(false);
             ScriptRunner sr = new ScriptRunner(connection, false, true);
             URI uri = CreateDatabase.class.getClassLoader().getResource("databaseCreation.sql").toURI();

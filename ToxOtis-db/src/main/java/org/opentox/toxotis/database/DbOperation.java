@@ -58,11 +58,9 @@ public abstract class DbOperation implements ISql {
 
     protected Connection getConnection() throws DbException {
         if (connection == null) {
-            LoginInfo li = LoginInfo.LOGIN_INFO;
             DataSourceFactory factory = DataSourceFactory.getInstance();
-            String connectionUri = factory.getConnectionURI(li);
             try {
-                connection = factory.getDataSource(connectionUri).getConnection();
+                connection = factory.getDataSource().getConnection();
             } catch (final SQLException ex) {
                 throw new DbException(ex);
             }

@@ -47,6 +47,7 @@ import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -71,6 +72,7 @@ public class AddTaskTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -122,13 +124,14 @@ public class AddTaskTest {
 
         iter.close();
         ft.close();
+        
 
     }
 
     @Test
     public void testWriteTaskMultithreadedly() throws InterruptedException {
         int poolSize = 50;
-        int folds = 50 * poolSize + 20;// just to make sure!!! (brutal?!)
+        int folds = 10 * poolSize + 20;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
 

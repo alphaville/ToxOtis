@@ -49,7 +49,7 @@ import org.opentox.toxotis.ontology.MetaInfo;
  *
  * @author chung
  */
-public class FindModelTest {
+public class FindModelTest  {
 
     public FindModelTest() {
     }
@@ -58,9 +58,7 @@ public class FindModelTest {
     public static void setUpClass() throws Exception {
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    
 
     @Before
     public void setUp() {

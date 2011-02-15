@@ -32,52 +32,49 @@
  */
 package org.opentox.toxotis.database.pool;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import java.io.PrintWriter;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.global.DbConfiguration;
 
-public class DataSourceC3P0 implements IDataSourceC3P0 {
+class DataSourceC3P0 implements IDataSourceC3P0 {
 
     protected volatile ComboPooledDataSource datasource;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DataSourceC3P0.class);
 
-    public DataSourceC3P0(String connectURI) throws DbException {
+    /**
+     * Default configuration
+     * @throws DbException
+     */
+    public DataSourceC3P0() throws DbException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
             throw new DbException("The driver com.mysql.jdbc.Driver was not loaded.", ex);
         }
-        /*
-         * http://www.mchange.com/projects/c3p0/index.html#using_c3p0
-         */
-
         datasource = new ComboPooledDataSource();  // create a new datasource object
+        datasource.setProperties(DbConfiguration.getInstance().getProperpties());
+        System.out.println(datasource.getProperties());
+
+    }
+   
+    public DataSourceC3P0(String connectURI) throws DbException {
+        this();
         datasource.setJdbcUrl(connectURI);
-        datasource.setMaxPoolSize(1000);
-        datasource.setMinPoolSize(1);
-        datasource.setInitialPoolSize(1);
-
-        datasource.setMaxIdleTime(1000000);
-        datasource.setCheckoutTimeout(1000000);
-        datasource.setUnreturnedConnectionTimeout(1000000);
-        datasource.setMaxIdleTimeExcessConnections(1000000);
-
-        datasource.setNumHelperThreads(2);
-
-        datasource.setTestConnectionOnCheckin(true);
-        datasource.setTestConnectionOnCheckout(true);
-        
-        
     }
 
     @Override
     public void close() throws DbException {
         if (datasource != null) {
-            try{
-            datasource.close();
-            } catch (final Exception ex){
+            try {
+                datasource.close();
+            } catch (final Exception ex) {
                 throw new DbException("Unexpected exception while closing datasource", ex);
-            }catch (final Error ex){
+            } catch (final Error ex) {
                 throw new DbException("Unexpected error while closing datasource", ex);
             }
         }
@@ -91,7 +88,7 @@ public class DataSourceC3P0 implements IDataSourceC3P0 {
         } catch (final DbException dbEx) {
             logger.error("Finalization of a JDBC connection failed", dbEx);
             throw dbEx;
-        }catch (final Exception ex){
+        } catch (final Exception ex) {
             logger.error("Finalization of a JDBC connection failed - Unexpected condition", ex);
             throw ex;
         }

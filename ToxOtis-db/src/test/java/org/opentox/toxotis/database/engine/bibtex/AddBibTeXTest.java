@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.bibtex;
 
 import java.net.URISyntaxException;
@@ -44,9 +42,11 @@ import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import static org.junit.Assert.*;
+
 /**
  *
  * @author chung
@@ -61,6 +61,7 @@ public class AddBibTeXTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -70,7 +71,7 @@ public class AddBibTeXTest {
     @Test
     public void testWriteBibTex() throws InterruptedException {
         int poolSize = 100;
-        int folds = 20 * poolSize + 100;// just to make sure!!! (brutal?!)
+        int folds = 1 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
             es.submit(new Runnable() {
@@ -112,8 +113,17 @@ public class AddBibTeXTest {
         bt.setVolume(1);
         bt.setAddress(UUID.randomUUID().toString());
         bt.setCopyright(UUID.randomUUID().toString());
-        if (1 != new AddBibTeX(bt).write()) {
-            throw new DbException();
+        DbWriter writer = new AddBibTeX(bt);
+        try {
+            if (1 != writer.write()) {
+                throw new DbException();
+            }
+        } catch (DbException ex) {
+            throw ex;
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
         }
     }
 }
