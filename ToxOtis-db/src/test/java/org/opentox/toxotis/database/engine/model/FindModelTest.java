@@ -31,42 +31,53 @@
  *
  */
 
-package org.opentox.toxotis.database.engine.user;
+package org.opentox.toxotis.database.engine.model;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.DbIterator;
-import org.opentox.toxotis.database.DbReader;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.database.IDbIterator;
+import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.ontology.MetaInfo;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class FindUser extends DbReader<User> {
+public class FindModelTest {
 
-    @Override
-    public IDbIterator<User> list() throws DbException {        
-        setTable("User");
-        setTableColumns("uid", "name", "mail","password");        
-        Statement statement = null;
-        Connection connection = null;
-        connection = getConnection();
-        try {
-            statement = connection.createStatement();            
-            ResultSet rs = statement.executeQuery(getSql());
-            DbIterator<User> it = new UserIterator(rs);
-            return it;            
-        } catch (SQLException ex) {
-            throw new DbException(ex);
-        } finally {
-            // Do Nothing:  The client is expected to close the statement and the connection
-        }
-        
+    public FindModelTest() {
     }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testFindModel() throws DbException {
+        FindModel fm = new FindModel(Services.ntua());
+        fm.setSearchById("3ec661f6-b1a0-4d02-8090-80f9e8e8373d");
+        IDbIterator<Model> mods = fm.list();
+        while (mods.hasNext()){
+            assertTrue((mods.next().getActualModel() instanceof MetaInfo) );
+        }
+    }
+
 }

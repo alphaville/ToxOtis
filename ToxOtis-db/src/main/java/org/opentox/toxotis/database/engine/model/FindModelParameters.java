@@ -31,69 +31,89 @@
  *
  */
 
-
 package org.opentox.toxotis.database.engine.model;
 
+import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.component.Model;
-import org.opentox.toxotis.database.DbReader;
-import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.database.DbOperation;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.ontology.LiteralValue;
 
 /**
  *
  * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
  */
-public class FindModel extends DbReader<Model> {
+public class FindModelParameters extends DbOperation {
 
+    private final String modelId;
     private final VRI baseUri;
-    private boolean includeDisabled = false;
 
-    public FindModel(final VRI baseUri) {
+    public FindModelParameters(final String modelId, final VRI baseUri) {
+        super();
+        this.modelId = modelId;
         this.baseUri = baseUri;
     }
 
-    public void setSearchById(String id) {
-        String whereTemplate = "Model.id='%s'";
-        setWhere(String.format(whereTemplate, id));
+    @Override
+    public String getSqlTemplate() {
+        String SQL = "SELECT id,name,scope,value,valueType FROM Parameter WHERE modelId='%s'";
+        return SQL;
     }
 
-    @Override
-    public IDbIterator<Model> list() throws DbException {
-        setTable("Model");
-        setTableColumns("Model.id", "Model.createdBy", "Model.algorithm", "Model.localcode", "Model.dataset", "uncompress(actualModel)", "uncompress(meta)");
-        setInnerJoin("OTComponent ON Model.id=OTComponent.id");
-        if (!includeDisabled) {
-            if (where == null) {
-                setWhere("OTComponent.enabled=true");
-            } else {
-                setWhere(where + " AND OTComponent.enabled=true");
-            }
+    private String getSql() {
+        return String.format(getSqlTemplate(), modelId);
+    }
+
+    private Parameter resolveParameter(final ResultSet rs) throws SQLException {
+        Parameter p = new Parameter(new VRI(baseUri).augment("parameter", rs.getString(1)));
+        p.setName(rs.getString(2));
+        p.setScope(Parameter.ParameterScope.valueOf(rs.getString(3)));
+
+        LiteralValue lv = new LiteralValue();
+        String value = rs.getString(4);
+        lv.setValue(value);        
+
+        String datatypeUri = rs.getString(5);
+        if (datatypeUri != null) {
+            TypeMapper mapper = TypeMapper.getInstance();
+            XSDDatatype xsd = (XSDDatatype) mapper.getTypeByName(datatypeUri);
+            lv.setType(xsd);
         }
+        p.setTypedValue(lv);
+        return p;
+    }
 
-        System.out.println("To Be Executed");
-        System.out.println(getSql());
-
+    public Set<Parameter> listParameters() throws DbException {
         Statement statement = null;
         Connection connection = null;
         connection = getConnection();
         try {
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(getSql());
-            ModelIterator it = new ModelIterator(rs, baseUri);
-            return it;
+            Set<Parameter> set = new HashSet<Parameter>();
+            while (rs.next()) {
+                set.add(resolveParameter(rs));
+            }
+            rs.close();
+            return set;
         } catch (SQLException ex) {
             throw new DbException(ex);
         } finally {
-            // Do Nothing:  The client is expected to close the statement and the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    throw new DbException(ex);
+                }
+            }
         }
-
-
-
     }
 }

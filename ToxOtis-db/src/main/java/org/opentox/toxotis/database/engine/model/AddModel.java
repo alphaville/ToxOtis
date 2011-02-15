@@ -30,6 +30,8 @@
  * tel. +30 210 7723236
  *
  */
+
+
 package org.opentox.toxotis.database.engine.model;
 
 import java.sql.Blob;
@@ -122,13 +124,13 @@ public class AddModel extends DbWriter {
     @Override
     public int write() throws DbException {
 
-        String insertFeatureSql = "INSERT IGNORE Feature (uri, units) VALUES (?,?)";//write all features
+        String insertFeatureSql = "INSERT IGNORE Feature (uri, units) VALUES (?,?)";//write all features (if not already)
         String insertModelAsComponent = "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,compress(?))";//write component stuff related to model
         String insertModelSql = "INSERT INTO Model (id, createdBy, algorithm, localCode, dataset, actualModel) VALUES ('%s', ?,?,?,?,compress(?))";//write model (blob is compressed)
-        String insertModelDependentFeatures = "INSERT INTO ModelDepFeatures (modelId,featureUri,depFeature_idx) VALUES ";//write model dep. feature
-        String insertModelIndependentFeatures = "INSERT INTO ModelIndepFeatures (modelId,featureUri,indepFeature_idx) VALUES ";//write model indep. features
-        String insertModelPredictedFeatures = "INSERT INTO ModelPredictedFeatures (modelId,featureUri,predFeature_idx) VALUES ";//write model pred. features      
-        
+        String insertModelDependentFeatures = "INSERT INTO ModelDepFeatures (modelId,featureUri,idx) VALUES ";//write model dep. feature
+        String insertModelIndependentFeatures = "INSERT INTO ModelIndepFeatures (modelId,featureUri,idx) VALUES ";//write model indep. features
+        String insertModelPredictedFeatures = "INSERT INTO ModelPredictedFeatures (modelId,featureUri,idx) VALUES ";//write model pred. features      
+
         insertModelAsComponent = String.format(insertModelAsComponent, model.getUri().getId());
         insertModelSql = String.format(insertModelSql, model.getUri().getId());
 
@@ -153,7 +155,7 @@ public class AddModel extends DbWriter {
             /*
              * Prepare statements
              */
-            writeFeature = connection.prepareStatement(insertFeatureSql);            
+            writeFeature = connection.prepareStatement(insertFeatureSql);
             writeComponent = connection.prepareStatement(insertModelAsComponent);
             writeModel = connection.prepareStatement(insertModelSql);
 
@@ -214,7 +216,7 @@ public class AddModel extends DbWriter {
                 String predFeatSQL = prepareQueryForFeatureRelations(insertModelPredictedFeatures, model.getPredictedFeatures());
                 statement.addBatch(predFeatSQL);
             }
-            if (model.getParameters()!=null && !model.getParameters().isEmpty()){
+            if (model.getParameters() != null && !model.getParameters().isEmpty()) {
                 System.out.println(prepareQueryForParameters());
                 statement.addBatch(prepareQueryForParameters());
             }

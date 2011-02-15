@@ -31,42 +31,52 @@
  *
  */
 
-package org.opentox.toxotis.database.engine.user;
+package org.opentox.toxotis.database.engine.model;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.DbIterator;
-import org.opentox.toxotis.database.DbReader;
-import org.opentox.toxotis.database.IDbIterator;
+import java.util.Set;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Parameter;
+import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class FindUser extends DbReader<User> {
+public class FindModelParametersTest {
 
-    @Override
-    public IDbIterator<User> list() throws DbException {        
-        setTable("User");
-        setTableColumns("uid", "name", "mail","password");        
-        Statement statement = null;
-        Connection connection = null;
-        connection = getConnection();
-        try {
-            statement = connection.createStatement();            
-            ResultSet rs = statement.executeQuery(getSql());
-            DbIterator<User> it = new UserIterator(rs);
-            return it;            
-        } catch (SQLException ex) {
-            throw new DbException(ex);
-        } finally {
-            // Do Nothing:  The client is expected to close the statement and the connection
+    public FindModelParametersTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testSomeMethod() throws DbException {
+        // 1c5a378c-6c43-454b-afb5-4136d67e2f95
+        FindModelParameters finder = new FindModelParameters("c38c4eaf-0f17-42e6-8a26-fefccd70ec90", Services.anonymous());
+        Set<Parameter> params = finder.listParameters();
+        if (!params.isEmpty()) {
+            System.out.println(params.iterator().next().getTypedValue());
         }
-        
+        finder.close();
     }
 }

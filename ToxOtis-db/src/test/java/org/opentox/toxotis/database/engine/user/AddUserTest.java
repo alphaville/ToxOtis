@@ -10,7 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
 
-import static org.junit.Assert.*;
 
 
 /**
@@ -43,7 +42,7 @@ public class AddUserTest {
         User mockUser = new User();
         mockUser.setHashedPass("x");
         mockUser.setMail(UUID.randomUUID().toString()+"a@b.net");
-        mockUser.setName("abc");
+        mockUser.setName("makis");
         mockUser.setUid(UUID.randomUUID().toString());
         AddUser au = new AddUser(mockUser);
         au.write();

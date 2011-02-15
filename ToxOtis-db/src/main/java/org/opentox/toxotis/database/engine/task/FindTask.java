@@ -30,6 +30,8 @@
  * tel. +30 210 7723236
  *
  */
+
+
 package org.opentox.toxotis.database.engine.task;
 
 import java.sql.Connection;
@@ -60,6 +62,10 @@ public class FindTask extends DbReader<Task> {
         this.baseUri = baseUri;
         this.resolveErrorReport = resolveErrorReport;
         this.resolveUser = resolveUser;
+    }
+
+    public void setSearchById(String id) {
+        setWhere("Task.id='" + id + "'");
     }
 
     @Override

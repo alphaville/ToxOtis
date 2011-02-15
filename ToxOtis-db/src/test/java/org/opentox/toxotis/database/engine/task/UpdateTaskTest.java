@@ -31,42 +31,53 @@
  *
  */
 
-package org.opentox.toxotis.database.engine.user;
+package org.opentox.toxotis.database.engine.task;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.DbIterator;
-import org.opentox.toxotis.database.DbReader;
-import org.opentox.toxotis.database.IDbIterator;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Task;
+import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class FindUser extends DbReader<User> {
+public class UpdateTaskTest {
 
-    @Override
-    public IDbIterator<User> list() throws DbException {        
-        setTable("User");
-        setTableColumns("uid", "name", "mail","password");        
-        Statement statement = null;
-        Connection connection = null;
-        connection = getConnection();
-        try {
-            statement = connection.createStatement();            
-            ResultSet rs = statement.executeQuery(getSql());
-            DbIterator<User> it = new UserIterator(rs);
-            return it;            
-        } catch (SQLException ex) {
-            throw new DbException(ex);
-        } finally {
-            // Do Nothing:  The client is expected to close the statement and the connection
-        }
-        
+    public UpdateTaskTest() {
     }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testUpdateSql() throws DbException {
+        UpdateTask ut = new UpdateTask(new Task(Services.ntua().augment("task","1")).setDuration(10L).setHttpStatus(100));
+        ut.setUpdateErrorReport(false);
+        ut.setUpdateHttpStatus(true);
+        ut.setUpdatePercentageCompleted(false);
+        ut.setUpdateTaskStatus(false);
+        ut.setUpdateResultUri(false);
+        ut.setUpdateDuration(true);
+        ut.update();
+    }
+
 }

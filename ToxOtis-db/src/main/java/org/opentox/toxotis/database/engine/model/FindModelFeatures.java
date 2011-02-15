@@ -31,17 +31,18 @@
  *
  */
 
-
 package org.opentox.toxotis.database.engine.model;
 
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.component.Model;
-import org.opentox.toxotis.database.DbReader;
-import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.database.DbOperation;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
@@ -49,51 +50,68 @@ import org.opentox.toxotis.database.exception.DbException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class FindModel extends DbReader<Model> {
+public class FindModelFeatures extends DbOperation {
 
-    private final VRI baseUri;
-    private boolean includeDisabled = false;
+    public enum SEARCH_MODE {
 
-    public FindModel(final VRI baseUri) {
-        this.baseUri = baseUri;
-    }
+        DEPENDENT("ModelDepFeatures"),
+        INDEPENDENT("ModelIndepFeatures"),
+        PREDICTED("ModelPredictedFeatures");
+        private String tableName;
 
-    public void setSearchById(String id) {
-        String whereTemplate = "Model.id='%s'";
-        setWhere(String.format(whereTemplate, id));
-    }
-
-    @Override
-    public IDbIterator<Model> list() throws DbException {
-        setTable("Model");
-        setTableColumns("Model.id", "Model.createdBy", "Model.algorithm", "Model.localcode", "Model.dataset", "uncompress(actualModel)", "uncompress(meta)");
-        setInnerJoin("OTComponent ON Model.id=OTComponent.id");
-        if (!includeDisabled) {
-            if (where == null) {
-                setWhere("OTComponent.enabled=true");
-            } else {
-                setWhere(where + " AND OTComponent.enabled=true");
-            }
+        private SEARCH_MODE(String tableName) {
+            this.tableName = tableName;
         }
 
-        System.out.println("To Be Executed");
-        System.out.println(getSql());
+        public String getTableName() {
+            return tableName;
+        }
+    }
+    private final SEARCH_MODE searchMode;
+    private final String modelId;
 
+    public List<Feature> list() throws DbException {
         Statement statement = null;
         Connection connection = null;
         connection = getConnection();
         try {
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(getSql());
-            ModelIterator it = new ModelIterator(rs, baseUri);
-            return it;
-        } catch (SQLException ex) {
+            List<Feature> list = new ArrayList<Feature>();
+            while (rs.next()) {
+                try {
+                    list.add(new Feature(new VRI(rs.getString(1))));
+                } catch (URISyntaxException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            rs.close();
+            return list;
+        } catch (final SQLException ex) {
             throw new DbException(ex);
         } finally {
-            // Do Nothing:  The client is expected to close the statement and the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (final SQLException ex) {
+                    throw new DbException(ex);
+                }
+            }
         }
+    }
 
+    public FindModelFeatures(final SEARCH_MODE searchMode, final String modelId) {
+        super();
+        this.searchMode = searchMode;
+        this.modelId = modelId;
+    }
 
+    private String getSql() {
+        return String.format(getSqlTemplate(), searchMode.getTableName(), modelId);
+    }
 
+    @Override
+    public String getSqlTemplate() {
+        return "SELECT featureUri FROM %s WHERE modelId='%s' ORDER BY idx";
     }
 }

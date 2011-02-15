@@ -31,24 +31,22 @@
  *
  */
 
-package org.opentox.toxotis.database.engine.model;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.DbReader;
-import org.opentox.toxotis.database.ResultSetIterator;
+package org.opentox.toxotis.database;
+
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
  * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
  */
-public class ListModel extends DbReader<String> {
+public abstract class DbCount extends DbOperation {
 
-    private boolean includeDisabled = false;
+    protected String table;
+    protected String innerJoin;
+    protected String where;
+    protected String countableColumn = "*";
+    protected boolean includeDisabled = false;
 
     public boolean isIncludeDisabled() {
         return includeDisabled;
@@ -58,24 +56,45 @@ public class ListModel extends DbReader<String> {
         this.includeDisabled = includeDisabled;
     }
 
-    /**
-     * Lists BibTeX IDs
-     * @return
-     */
-    @Override
-    public IDbIterator<String> list() throws DbException {
-        setTable("Model");
-        setTableColumns("Model.id");
-        if (!includeDisabled) {
-            setInnerJoin("OTComponent ON Model.id=OTComponent.id");
-            setWhere("enabled=true");
-        }
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(getSql());
-            ResultSet results = ps.executeQuery();
-            return new ResultSetIterator(results);
-        } catch (final SQLException ex) {
-            throw new DbException(ex);
-        }
+    public void setCountableColumn(String countableColumn) {
+        this.countableColumn = countableColumn;
     }
+
+    protected void setInnerJoin(String innerJoin) {
+        this.innerJoin = innerJoin;
+    }
+
+    protected void setTable(String table) {
+        this.table = table;
+    }
+
+    public void setWhere(String where) {
+        this.where = where;
+    }
+
+    @Override
+    public String getSqlTemplate() {
+        return "SELECT COUNT(%s) FROM %s %s %s";
+    }
+
+    protected String getSql() {
+
+        StringBuilder innerJoinClause = new StringBuilder("");
+        if (innerJoin != null) {
+            innerJoinClause.append("INNER JOIN ");
+            innerJoinClause.append(innerJoin);
+            innerJoinClause.append(" ");
+        }
+
+        StringBuilder whereClause = new StringBuilder("");
+        if (where != null) {
+            whereClause.append("WHERE ");
+            whereClause.append(where);
+            whereClause.append(" ");
+        }
+
+        return String.format(getSqlTemplate(), countableColumn, table, innerJoinClause, whereClause);
+    }
+
+    public abstract int count() throws DbException;
 }

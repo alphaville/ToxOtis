@@ -69,7 +69,7 @@ public class DisableComponentTest {
 
     @Test
     public void testSomeMethod() throws DbException {
-        System.out.println(new DisableComponent("b1688464-fc6f-4cd9-b5b0-b9b68a35dd26","no such thing!").disable() );
+        System.out.println(new DisableComponent("28fd0bf8-e64b-486a-bac0-1edbee5b7a8f","no such thing!").disable() );
         
     }
 

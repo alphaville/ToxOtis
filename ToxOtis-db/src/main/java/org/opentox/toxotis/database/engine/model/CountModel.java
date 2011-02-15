@@ -31,60 +31,49 @@
  *
  */
 
-package org.opentox.toxotis.database;
+package org.opentox.toxotis.database.engine.model;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.Statement;
+import org.opentox.toxotis.database.DbCount;
 import org.opentox.toxotis.database.exception.DbException;
-import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public abstract class DbOperation implements ISql {
-
-    private Connection connection;
-
-    public DbOperation() {
-    }
-
-    public DbOperation(Connection connection) {
-        this.connection = connection;
-    }
-
-    protected Connection getConnection() throws DbException {
-        if (connection == null) {
-            LoginInfo li = LoginInfo.LOGIN_INFO;
-            DataSourceFactory factory = DataSourceFactory.getInstance();
-            String connectionUri = factory.getConnectionURI(li);
-            try {
-                connection = factory.getDataSource(connectionUri).getConnection();
-            } catch (final SQLException ex) {
-                throw new DbException(ex);
-            }
-        }
-        return connection;
-    }
-
-    public void close() throws DbException {
-        if (connection != null) {
-            try {
-                if (!connection.isClosed()) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                throw new DbException(ex);
-            }
-        }
-    }
+public class CountModel extends DbCount {
 
     @Override
-    protected void finalize() throws Throwable {
-        close();
-        super.finalize();
+    public int count() throws DbException {
+        setTable("Model");
+        setCountableColumn("Model.id");
+        setInnerJoin("OTComponent ON Model.id=OTComponent.id");
+        if (!includeDisabled) {
+            if (where != null) {
+                setWhere(where + " AND OTComponent.enabled=true");
+            } else {
+                setWhere("OTComponent.enabled=true");
+            }
+        }
+        System.out.println(getSql());
+        Statement statement = null;
+        Connection connection = null;
+        connection = getConnection();
+        try {
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(getSql());
+            rs.first();
+            return rs.getInt(1);
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            // Do Nothing:  The client is expected to close the statement and the connection
+        }
+
+
     }
 }

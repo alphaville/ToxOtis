@@ -73,7 +73,7 @@ public class FindUserTest {
     @Test
     public void testSomeMethod() throws DbException {
         FindUser fu = new FindUser();
-        fu.setWhere("uid LIKE 'guest%'");
+        fu.setWhere("name LIKE 'Guest'");
         IDbIterator<User> users = fu.list();
         while (users.hasNext()){
             assertEquals(User.GUEST,users.next());

@@ -31,42 +31,50 @@
  *
  */
 
-package org.opentox.toxotis.database.engine.user;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.DbIterator;
-import org.opentox.toxotis.database.DbReader;
+package org.opentox.toxotis.database.engine.model;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.opentox.toxotis.database.IDbIterator;
+import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class FindUser extends DbReader<User> {
+public class ListModelTest {
 
-    @Override
-    public IDbIterator<User> list() throws DbException {        
-        setTable("User");
-        setTableColumns("uid", "name", "mail","password");        
-        Statement statement = null;
-        Connection connection = null;
-        connection = getConnection();
-        try {
-            statement = connection.createStatement();            
-            ResultSet rs = statement.executeQuery(getSql());
-            DbIterator<User> it = new UserIterator(rs);
-            return it;            
-        } catch (SQLException ex) {
-            throw new DbException(ex);
-        } finally {
-            // Do Nothing:  The client is expected to close the statement and the connection
+    public ListModelTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testSomeMethod() throws DbException {
+        ListModel lister = new ListModel();
+        IDbIterator<String> list = lister.list();
+        while (list.hasNext()) {
+            System.out.println(list.next());
         }
-        
+        list.close();
     }
 }

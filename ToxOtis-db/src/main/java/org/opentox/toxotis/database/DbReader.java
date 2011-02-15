@@ -30,9 +30,10 @@
  * tel. +30 210 7723236
  *
  */
+
+
 package org.opentox.toxotis.database;
 
-import java.util.Iterator;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
@@ -42,12 +43,12 @@ import org.opentox.toxotis.database.exception.DbException;
  */
 public abstract class DbReader<T> extends DbOperation {
 
-    private String[] tableColumns;
-    private String table;
-    private String innerJoin;
-    private String where;
-    private int page = 0;
-    private int pageSize = 0;
+    protected String[] tableColumns;
+    protected String table;
+    protected String innerJoin;
+    protected String where;
+    protected int page = 0;
+    protected int pageSize = 0;
 
     public String getInnerJoin() {
         return innerJoin;
@@ -98,7 +99,6 @@ public abstract class DbReader<T> extends DbOperation {
          *  5. Limit
          */
         return "SELECT %s FROM %s %s %s %s";
-
     }
 
     public String getTable() {
@@ -149,9 +149,5 @@ public abstract class DbReader<T> extends DbOperation {
 
     public abstract IDbIterator<T> list() throws DbException;
 
-    @Override
-    protected void finalize() throws Throwable {
-        close();
-        super.finalize();
-    }
+    
 }

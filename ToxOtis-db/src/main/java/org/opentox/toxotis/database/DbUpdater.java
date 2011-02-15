@@ -1,5 +1,7 @@
 package org.opentox.toxotis.database;
 
+import org.opentox.toxotis.database.exception.DbException;
+
 /**
  * Updates an already existing object in the database
  * @author Pantelis Sopasakis
@@ -20,8 +22,7 @@ public abstract  class DbUpdater extends DbOperation {
         return SQL_TEMPLATE;
     }
 
-
-
+    public abstract int update() throws DbException;
     
 
 }
