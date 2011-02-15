@@ -55,8 +55,7 @@ public class ListTasksTest {
     }
 
     @AfterClass
-    public static synchronized void tearDownClass() throws Exception {
-        Thread.sleep(100);
+    public static synchronized void tearDownClass() throws Exception {        
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
@@ -77,6 +76,8 @@ public class ListTasksTest {
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }
+        iterator.close();
+        lt.close();
     }
     
 }

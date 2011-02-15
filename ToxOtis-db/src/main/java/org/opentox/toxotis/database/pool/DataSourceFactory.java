@@ -88,6 +88,7 @@ public class DataSourceFactory {
     }
 
     public synchronized void close() {// Absolutely necessary to be synchronized!
+        
         if (datasource != null) {
             try {
                 datasource.close();
