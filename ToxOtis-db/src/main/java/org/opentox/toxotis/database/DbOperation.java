@@ -47,7 +47,7 @@ import org.opentox.toxotis.database.pool.DataSourceFactory;
  */
 public abstract class DbOperation implements ISql {
 
-    private Connection connection;
+    private volatile Connection connection;
 
     public DbOperation() {
     }
@@ -80,9 +80,5 @@ public abstract class DbOperation implements ISql {
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        close();
-        super.finalize();
-    }
+    
 }

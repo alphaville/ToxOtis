@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.task;
 
 import org.junit.After;
@@ -57,7 +55,8 @@ public class ListTasksTest {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public static synchronized void tearDownClass() throws Exception {
+        Thread.sleep(100);
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
@@ -70,15 +69,14 @@ public class ListTasksTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
+    public void testListTasks() throws DbException {
         // TODO review the generated test code and remove the default call to fail.
         ListTasks lt = new ListTasks();
         lt.setPageSize(10);
-        IDbIterator<String > iterator = lt.list();
-        while (iterator.hasNext()){
+        IDbIterator<String> iterator = lt.list();
+        while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }
-        
     }
-
+    
 }

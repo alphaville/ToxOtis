@@ -32,9 +32,11 @@
  */
 package org.opentox.toxotis.database.engine.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.DbReader;
 import org.opentox.toxotis.database.ResultSetIterator;
@@ -74,9 +76,12 @@ public class ListModel extends DbReader<String> {
             }
 
         }
+        Statement statement = null;
+        Connection connection = null;
+        connection = getConnection();
         try {
-            PreparedStatement ps = getConnection().prepareStatement(getSql());
-            ResultSet results = ps.executeQuery();
+            statement = connection.createStatement();
+            ResultSet results = statement.executeQuery(getSql());
             return new ResultSetIterator(results);
         } catch (final SQLException ex) {
             throw new DbException(ex);

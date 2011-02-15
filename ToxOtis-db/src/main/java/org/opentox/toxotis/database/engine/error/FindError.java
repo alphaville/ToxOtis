@@ -18,6 +18,7 @@ import org.opentox.toxotis.database.exception.DbException;
 public class FindError extends DbReader<ErrorReport> {
 
     private final VRI baseUri;
+    private Statement statement = null;
 
     public FindError(final VRI baseUri) {
         this.baseUri = baseUri;
@@ -27,7 +28,7 @@ public class FindError extends DbReader<ErrorReport> {
     public IDbIterator<ErrorReport> list() throws DbException {
         setTable("ErrorReport");
         setTableColumns("id", "httpStatus", "actor", "message", "details", "errorCode", "errorCause");
-        Statement statement = null;
+        statement = null;
         Connection connection = null;
         try {
             connection = getConnection();
@@ -40,6 +41,17 @@ public class FindError extends DbReader<ErrorReport> {
         } finally {
             // Do Nothing:  The client is expected to close the statement and the connection
         }
-        
+    }
+
+    @Override
+    public void close() throws DbException {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException ex) {
+                throw new DbException(ex);
+            }
+        }
+        super.close();
     }
 }

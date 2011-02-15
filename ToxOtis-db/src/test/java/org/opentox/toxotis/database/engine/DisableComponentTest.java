@@ -58,6 +58,7 @@ public class DisableComponentTest {
     public static void setUpClass() throws Exception {
     }
 
+
     @AfterClass
     public static void tearDownClass() throws Exception {
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();

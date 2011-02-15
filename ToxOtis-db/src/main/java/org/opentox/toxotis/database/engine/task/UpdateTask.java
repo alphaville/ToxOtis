@@ -1,11 +1,20 @@
 package org.opentox.toxotis.database.engine.task;
 
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.database.DbUpdater;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.ontology.MetaInfoBlobber;
 
 /**
  * Configurable Updater of a Task.
@@ -14,6 +23,7 @@ import org.opentox.toxotis.database.exception.DbException;
 public class UpdateTask extends DbUpdater {
 
     private final Task newTask;
+    private String taskId;
     private boolean updatePercentageCompleted = true;
     private boolean updateTaskStatus = true;
     private boolean updateHttpStatus = true;
@@ -49,7 +59,6 @@ public class UpdateTask extends DbUpdater {
     public void setUpdateTaskStatus(boolean updateTaskStatus) {
         this.updateTaskStatus = updateTaskStatus;
     }
-    
 
     public UpdateTask(Task task) {
         if (task == null) {
@@ -58,7 +67,8 @@ public class UpdateTask extends DbUpdater {
         if (task.getUri() == null) {
             throw new IllegalArgumentException("The provided task update-prototype does not have a specified URI");
         }
-        if (task.getUri().getId() == null) {
+        taskId = task.getUri().getId();
+        if (taskId == null) {
             throw new IllegalArgumentException("No task ID can be retrieved from the URI : " + task.getUri());
         }
         this.newTask = task;
@@ -66,7 +76,7 @@ public class UpdateTask extends DbUpdater {
 
     private String getMetaUpdateSql() {
         String sql = "UPDATE OTComponent SET meta=compress(?) WHERE id=?";
-        return null;
+        return sql;
     }
 
     /**
@@ -93,16 +103,26 @@ public class UpdateTask extends DbUpdater {
             updates.add("percentageCompleted=" + newTask.getPercentageCompleted());
         }
         if (updateResultUri) {
-            updates.add(String.format("resultUri='%s'", newTask.getResultUri().toString()));
+            VRI resultUri = newTask.getResultUri();
+            if (resultUri != null) {
+                updates.add(String.format("resultUri='%s'", newTask.getResultUri()));
+            } else {
+                updates.add("resultUri=NULL");
+            }
         }
         if (updateTaskStatus) {
-            updates.add(String.format("status='%s'", newTask.getStatus().toString()));
+            Task.Status taskStatus = newTask.getStatus();
+            if (taskStatus != null) {
+                updates.add(String.format("status='%s'", newTask.getStatus()));
+            } else {
+                updates.add("status=NULL");
+            }
         }
 
         StringBuilder updateData = new StringBuilder("");
         Iterator<String> updateIterator = updates.iterator();
         int length = updates.size();
-        if (length==0){
+        if (length == 0) {
             throw new IllegalArgumentException("Illegal use of UpdateTask: nothing to update...");
         }
         for (int i = 0; i < length; i++) {
@@ -111,12 +131,53 @@ public class UpdateTask extends DbUpdater {
                 updateData.append(", ");
             }
         }
-        
+
         return String.format(mainSql, updateData, newTask.getUri().getId());
     }
 
     @Override
     public int update() throws DbException {
+        Connection connection = getConnection();
+
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        Statement statement = null;
+
+        if (updateMeta) {
+            try {
+                statement = connection.prepareStatement(getMetaUpdateSql());
+                MetaInfoBlobber blobber = new MetaInfoBlobber(newTask.getMeta());
+
+                Blob blob = blobber.toBlob();
+                ((PreparedStatement) statement).setBlob(1, blob);
+                ((PreparedStatement) statement).setString(2, taskId);
+                ((PreparedStatement) statement).executeUpdate();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+
+        try {
+            if (statement == null) {
+                statement = connection.createStatement();
+            }
+            statement.addBatch(getTaskUpdateSql());
+            statement.executeBatch();
+
+            connection.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
         System.out.println(getTaskUpdateSql());
         return -1;
     }

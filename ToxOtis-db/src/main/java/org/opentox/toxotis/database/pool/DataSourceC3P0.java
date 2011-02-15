@@ -32,12 +32,8 @@
  */
 package org.opentox.toxotis.database.pool;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import java.io.PrintWriter;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.global.DbConfiguration;
 

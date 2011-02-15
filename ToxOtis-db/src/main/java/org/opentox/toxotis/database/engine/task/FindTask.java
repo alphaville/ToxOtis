@@ -56,6 +56,7 @@ public class FindTask extends DbReader<Task> {
     private final VRI baseUri;
     private final boolean resolveErrorReport;
     private final boolean resolveUser;
+    private Statement statement = null;
 
     public FindTask(VRI baseUri, boolean resolveErrorReport, boolean resolveUser) {
         super();
@@ -74,7 +75,7 @@ public class FindTask extends DbReader<Task> {
         setTableColumns("Task.id", "Task.resultUri", "Task.httpStatus", "Task.percentageCompleted",
                 "Task.status", "Task.duration", "Task.errorReport", "Task.createdBy", "OTComponent.enabled", "uncompress(meta)");
         setInnerJoin("OTComponent ON Task.id=OTComponent.id");
-        Statement statement = null;
+        statement = null;
         Connection connection = null;
         connection = getConnection();
         try {
@@ -90,7 +91,17 @@ public class FindTask extends DbReader<Task> {
         } finally {
             // Do Nothing:  The client is expected to close the statement and the connection
         }
+    }
 
-
+    @Override
+    public void close() throws DbException {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException ex) {
+                throw new DbException(ex);
+            }
+        }
+        super.close();
     }
 }

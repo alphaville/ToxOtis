@@ -72,10 +72,13 @@ public class ListModelTest {
     @Test
     public void testSomeMethod() throws DbException {
         ListModel lister = new ListModel();
+        lister.setPageSize(100);
         IDbIterator<String> list = lister.list();
         while (list.hasNext()) {
             System.out.println(list.next());
         }
+        lister.close();
         list.close();
+        
     }
 }

@@ -36,10 +36,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,20 +53,15 @@ public class DataSourceFactory {
     protected static final String amark = "&";
     private final Random pingRandom = new Random();
     private final String pingQuery = "SELECT %s";
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DataSourceFactory.class);
     private static final long serialVersionUID = -5768L;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DataSourceFactory.class);    
-
-
-    /*
-     * Maps connection URIs to datasources
-     */
-    protected IDataSourceC3P0 datasource;
+    protected volatile IDataSourceC3P0 datasource;
 
     private DataSourceFactory() {
-        
     }
 
     private static class DatasourceFactoryHolder {
+
         private final static DataSourceFactory instance = new DataSourceFactory();
     }
 
@@ -81,7 +73,6 @@ public class DataSourceFactory {
         IDataSourceC3P0 dataSource = getInstance().datasource;
         return dataSource;
     }
-
 
     public synchronized DataSource getDataSource() throws DbException {
         IDataSourceC3P0 ds = getInstance().datasource;
@@ -96,16 +87,16 @@ public class DataSourceFactory {
         }
     }
 
-    
-
-    public void close() {
-        if (datasource!=null){
+    public synchronized void close() {// Absolutely necessary to be synchronized!
+        if (datasource != null) {
             try {
                 datasource.close();
+                datasource = null;
             } catch (Exception ex) {
                 Logger.getLogger(DataSourceFactory.class.getName()).log(Level.SEVERE, "ERROR ON CLOSING DATASOURCE!", ex);
             }
         }
+
     }
 
     /**
@@ -127,7 +118,7 @@ public class DataSourceFactory {
         } catch (SQLException x) {
             throw new DbException(x);
         }
-    }    
+    }
 
     public synchronized IDataSourceC3P0 setupDataSource() throws DbException {
         try {
@@ -137,71 +128,7 @@ public class DataSourceFactory {
             throw new DbException(x);
         }
     }
-
-    public String getConnectionURI(LoginInfo li) {
-        return getConnectionURI(li.getScheme(), li.getHostname(), li.getPort(), li.getDatabase(), li.getUser(), li.getPassword());
-    }
-
-    /**
-     * Assembles connection URI
-     * @param scheme
-     * @param hostname
-     * @param port
-     * @param database
-     * @param user
-     * @param password
-     * @return    scheme://{Hostname}:{Port}/{Database}?user={user}&password={password}
-     */
-    public String getConnectionURI(String scheme, String hostname, String port,
-            String database, String user, String password) {
-
-        StringBuilder b = new StringBuilder();
-        b.append(scheme).append(colon).
-                append(slash).append(slash);
-
-        if (hostname == null) {
-            b.append("localhost");
-        } else {
-            b.append(hostname);
-        }
-        if (port != null) {
-            b.append(colon).append(port);
-        }
-        b.append(slash).
-                append(database);
-        String q = qmark;
-        if (user != null) {
-            b.append(q);
-            q = amark;
-            b.append("user").append(eqmark).append(user);
-        }
-        if (password != null) {
-            b.append(q);
-            q = amark;
-            b.append("password").append(eqmark).append(password);
-        }
-        b.append(amark);
-        b.append("useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8");
-        return b.toString();
-    }
-
-    /**
-     *
-     * @param scheme
-     * @param hostname
-     * @param port
-     * @param database
-     * @return    scheme://{Hostname}:{Port}/{Database}
-     */
-    public String getConnectionURI(String scheme, String hostname, String port,
-            String database) {
-        return getConnectionURI(scheme, hostname, port, database, null, null);
-    }
-
-    public String getConnectionURI(String hostname, String port,
-            String database) {
-        return getConnectionURI("jdbc:mysql", hostname, port, database, null, null);
-    }
+    
 
     /**
      * Pings the database server
@@ -212,13 +139,11 @@ public class DataSourceFactory {
      * @return
      *      <code>true</code> if the ping was successful!
      */
-    public boolean ping(LoginInfo li, int nTimes) {
+    public boolean ping(int nTimes) {
         Connection connection = null;
         Statement st = null;
         try {
-            String dburi = getConnectionURI(
-                    li.getScheme(), li.getHostname(), li.getPort(),
-                    li.getDatabase(), li.getUser(), li.getPassword());
+
 
             connection = getConnection();
             st = connection.createStatement();
@@ -245,7 +170,7 @@ public class DataSourceFactory {
             }
             return true;
         } catch (final Exception x) {
-            logger.error("Database server ping failed for URI " + getConnectionURI(li), x);
+            logger.error("Database server ping failed", x);
             return false;
         } finally {
             /*   Close SQL statement   */
@@ -261,7 +186,7 @@ public class DataSourceFactory {
                 try {
                     connection.close();
                 } catch (Exception x) {
-                    logger.error("Database connection to " + getConnectionURI(li) + " cannot close", x);
+                    logger.error("Database connection cannot close", x);
                 }
             }
         }

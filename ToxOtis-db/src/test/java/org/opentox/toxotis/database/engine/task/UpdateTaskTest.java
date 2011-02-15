@@ -42,6 +42,7 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Task;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
  *
@@ -71,14 +72,18 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateSql() throws DbException {
-        UpdateTask ut = new UpdateTask(new Task(Services.ntua().augment("task","1")).setDuration(10L).setHttpStatus(100));
-        ut.setUpdateErrorReport(false);
-        ut.setUpdateHttpStatus(true);
-        ut.setUpdatePercentageCompleted(false);
-        ut.setUpdateTaskStatus(false);
-        ut.setUpdateResultUri(false);
-        ut.setUpdateDuration(true);
+        Task newTask = new Task(Services.ntua().augment("task","00024363-e51e-468b-b42c-b1f6491614de")).setDuration(666L).setHttpStatus(101).setMeta(new MetaInfoImpl().addComment("XX"));
+        newTask.setPercentageCompleted(23.5234f);
+        UpdateTask ut = new UpdateTask(newTask);
+            ut.setUpdateErrorReport(true);
+            ut.setUpdateHttpStatus(true);
+            ut.setUpdatePercentageCompleted(true);
+            ut.setUpdateTaskStatus(true);
+            ut.setUpdateResultUri(true);
+            ut.setUpdateDuration(true);
+            ut.setUpdateMeta(true);
         ut.update();
+        ut.close();
     }
 
 }

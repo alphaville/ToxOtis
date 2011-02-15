@@ -77,9 +77,5 @@ public abstract class DbIterator<T> implements IDbIterator<T> {
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        close();
-        super.finalize();
-    }
+    
 }

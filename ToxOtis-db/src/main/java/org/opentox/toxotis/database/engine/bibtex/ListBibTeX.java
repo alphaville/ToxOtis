@@ -30,12 +30,14 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.bibtex;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.DbReader;
 import org.opentox.toxotis.database.ResultSetIterator;
@@ -46,25 +48,37 @@ import org.opentox.toxotis.database.exception.DbException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class ListBibTeX extends DbReader<String>{
-    
+public class ListBibTeX extends DbReader<String> {
+
+    private PreparedStatement statement = null;
     /**
      * Lists BibTeX IDs
      * @return
      */
     @Override
-    public IDbIterator<String> list() throws DbException{
+    public IDbIterator<String> list() throws DbException {
         setTable("BibTeX");
         setTableColumns("BibTeX.id");
         System.out.println(getSql());
         try {
-            PreparedStatement ps = getConnection().prepareStatement(getSql());
-            ResultSet results = ps.executeQuery();
+            statement = getConnection().prepareStatement(getSql());
+            ResultSet results = statement.executeQuery();
             ResultSetIterator it = new ResultSetIterator(results);
             return it;
-        }catch (final SQLException ex){
+        } catch (final SQLException ex) {
             throw new DbException(ex);
         }
     }
 
+    @Override
+    public void close() throws DbException {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException ex) {
+                throw new DbException(ex);
+            }
+        }
+        super.close();
+    }
 }

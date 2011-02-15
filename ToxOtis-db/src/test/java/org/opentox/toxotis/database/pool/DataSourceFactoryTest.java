@@ -75,16 +75,12 @@ public class DataSourceFactoryTest {
 
     @Test
     public void testSomeMethod() throws ServiceInvocationException, ToxOtisException {
-        try {
-            LoginInfo li = LoginInfo.LOGIN_INFO;
-
-            DataSourceFactory factory = DataSourceFactory.getInstance();
-            String connectionUri = factory.getConnectionURI(li);            
-
+        try {            
+            DataSourceFactory factory = DataSourceFactory.getInstance();                    
             Connection connection = factory.getDataSource().getConnection();
 
             assertNotNull(connection);
-            assertTrue(factory.ping(li, 5));
+            assertTrue(factory.ping(50));
 
         } catch (Exception ex) {
             ex.printStackTrace();

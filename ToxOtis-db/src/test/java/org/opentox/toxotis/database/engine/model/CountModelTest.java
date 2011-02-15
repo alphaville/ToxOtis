@@ -74,6 +74,7 @@ public class CountModelTest {
         cm.setIncludeDisabled(true);
         cm.setWhere("Model.id LIKE '%8f%'");
         System.out.println(cm.count());
+        cm.close();
     }
 
 }

@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.bibtex;
 
 import java.io.IOException;
@@ -59,6 +57,8 @@ public class ListBibTeXTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        Thread.sleep(1000);
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -70,23 +70,19 @@ public class ListBibTeXTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
+    public void testSomeMethod() throws DbException, InterruptedException {
         ListBibTeX lister = new ListBibTeX();
-        lister.setPageSize(10);                
+        lister.setPageSize(10);
         IDbIterator<String> it = lister.list();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             System.out.println(it.next());
         }
         /*
          * Close everything!!!
          */
-        try {
-            it.close();
-        } catch (DbException ex) {
-            ex.printStackTrace();
-            fail(ex.getMessage());
-        }
-        lister.close();// DO NOT FORGET!!!
-    }
 
+        it.close();
+        lister.close();// DO NOT FORGET!!!
+
+    }
 }

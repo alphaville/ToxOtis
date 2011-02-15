@@ -217,7 +217,6 @@ public class AddModel extends DbWriter {
                 statement.addBatch(predFeatSQL);
             }
             if (model.getParameters() != null && !model.getParameters().isEmpty()) {
-                System.out.println(prepareQueryForParameters());
                 statement.addBatch(prepareQueryForParameters());
             }
             statement.executeBatch();

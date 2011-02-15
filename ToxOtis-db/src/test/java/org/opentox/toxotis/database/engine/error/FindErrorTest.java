@@ -59,6 +59,8 @@ public class FindErrorTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        Thread.sleep(1000);
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before

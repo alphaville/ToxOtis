@@ -39,6 +39,8 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -60,6 +62,8 @@ import static org.junit.Assert.*;
  */
 public class AddModelTest {
 
+    private static Throwable failure = null;
+
     public AddModelTest() {
     }
 
@@ -78,6 +82,36 @@ public class AddModelTest {
 
     @After
     public void tearDown() {
+    }
+
+    @Test
+    public void testWriteBruteForce() throws InterruptedException {
+        int poolSize = 100;
+        int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
+        final ExecutorService es = Executors.newFixedThreadPool(poolSize);
+        for (int i = 1; i <= folds; i++) {
+            es.submit(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        new AddModelTest().testAddModel();
+                    } catch (final Throwable ex) {
+                        failure = ex;
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        es.shutdown();
+        while (!es.isTerminated()) {
+            Thread.sleep(100);
+        }
+
+        if (failure != null) {
+            fail();
+        }
     }
 
     @Test
@@ -113,8 +147,10 @@ public class AddModelTest {
         m.setActualModel(new MetaInfoImpl());// just for the sake to write something in there!
         m.setLocalCode(UUID.randomUUID().toString());
         m.setAlgorithm(new Algorithm("http://algorithm.server.co.uk:9000/algorithm/mlr"));
-        
-        new AddModel(m).write();
+
+        AddModel adder = new AddModel(m);
+        adder.write();
+        adder.close();
 
     }
 
