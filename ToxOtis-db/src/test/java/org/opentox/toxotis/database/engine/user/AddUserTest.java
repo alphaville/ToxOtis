@@ -51,6 +51,14 @@ public class AddUserTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+            }
+        }));
+
     }
 
     @AfterClass
@@ -59,7 +67,7 @@ public class AddUserTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() {        
     }
 
     @After

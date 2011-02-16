@@ -30,10 +30,10 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.model;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -45,9 +45,11 @@ import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
- * @author chung
+ * @author Pantelis Sopasakis
  */
 public class ListModelTest {
+
+    private static volatile Throwable failure = null;
 
     public ListModelTest() {
     }
@@ -58,6 +60,7 @@ public class ListModelTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        System.out.println("Done!!!");
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
@@ -66,19 +69,58 @@ public class ListModelTest {
     }
 
     @After
-    public void tearDown() {
+    public synchronized void tearDown() {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
+    public void testListModelMultithreadedly() throws InterruptedException {
+        /*
+         * c3p0.numHelperThreads=110 and it works fine!
+         * Note... Setting minPoolSize=maxPoolSize=initialPoolSize=1000 and numHelperThreads=50
+         * does not solve the problem!
+         */
+        int poolSize = 50;
+        int folds = 1000 * poolSize + 10;// just to make sure!!! (brutal?!)
+        final ExecutorService es = Executors.newFixedThreadPool(poolSize);
+        for (int i = 1; i <= folds; i++) {
+
+            es.submit(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        new ListModelTest().testListModels();
+                    } catch (final Throwable ex) {
+                        failure = ex;
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        es.shutdown();
+        while (!es.isTerminated()) {
+            Thread.sleep(100);
+        }
+
+        if (failure != null) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testListModels() throws DbException {
         ListModel lister = new ListModel();
         lister.setPageSize(100);
         IDbIterator<String> list = lister.list();
+        int i=0;
         while (list.hasNext()) {
-            System.out.println(list.next());
+            assertNotNull(list.next());
+            i++;
         }
-        lister.close();
+        assertEquals(100, i);
         list.close();
-        
+        lister.close();
+
     }
 }

@@ -47,6 +47,7 @@ import org.opentox.toxotis.database.exception.DbException;
 public class AddUser extends DbWriter {
 
     private final User user;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddUser.class);
 
     public AddUser(final User user) {
         this.user = user;
@@ -65,7 +66,7 @@ public class AddUser extends DbWriter {
             int update = ps.executeUpdate();
             ps.close();
             return update;
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
             throw new DbException(ex);
         } finally {
             close();

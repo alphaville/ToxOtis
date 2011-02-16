@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.model;
 
 import java.sql.Connection;
@@ -47,6 +46,9 @@ import org.opentox.toxotis.database.exception.DbException;
  */
 public class CountModel extends DbCount {
 
+    private Statement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CountModel.class);
+
     @Override
     public int count() throws DbException {
         setTable("Model");
@@ -60,20 +62,38 @@ public class CountModel extends DbCount {
             }
         }
         System.out.println(getSql());
-        Statement statement = null;
         Connection connection = null;
         connection = getConnection();
+        ResultSet rs = null;
         try {
             statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(getSql());
+            rs = statement.executeQuery(getSql());
             rs.first();
             return rs.getInt(1);
         } catch (SQLException ex) {
             throw new DbException(ex);
         } finally {
+            if (rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    throw new DbException(ex);
+                }
+            }
             // Do Nothing:  The client is expected to close the statement and the connection
         }
+    }
 
-
+    @Override
+    public void close() throws DbException {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            super.close();
+        }
     }
 }

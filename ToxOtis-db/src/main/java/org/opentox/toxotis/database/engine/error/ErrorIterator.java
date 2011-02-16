@@ -12,15 +12,15 @@ import org.opentox.toxotis.database.exception.DbException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class ErrorIterator extends DbIterator<ErrorReport>{
+public class ErrorIterator extends DbIterator<ErrorReport> {
 
     private final VRI baseUri;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorIterator.class);
 
     public ErrorIterator(final ResultSet rs, final VRI baseUri) {
         super(rs);
         this.baseUri = baseUri;
     }
-    
 
     @Override
     public ErrorReport next() throws DbException {
@@ -31,13 +31,11 @@ public class ErrorIterator extends DbIterator<ErrorReport>{
             nextReport.setActor(rs.getString(3));
             nextReport.setMessage(rs.getString(4));
             nextReport.setDetails(rs.getString(5));
-            nextReport.setErrorCode(rs.getString(6));            
-        } catch (SQLException ex) {
+            nextReport.setErrorCode(rs.getString(6));
+        } catch (final SQLException ex) {
+            logger.warn("Error reading result set on error reports", ex);
             throw new DbException(ex);
         }
         return nextReport;
     }
-
-
-
 }

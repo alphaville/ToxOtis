@@ -53,6 +53,8 @@ public class FindModel extends DbReader<Model> {
 
     private final VRI baseUri;
     private boolean includeDisabled = false;
+    private Statement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindModel.class);
 
     public FindModel(final VRI baseUri) {
         this.baseUri = baseUri;
@@ -77,9 +79,7 @@ public class FindModel extends DbReader<Model> {
         }
 
         System.out.println("To Be Executed");
-        System.out.println(getSql());
-
-        Statement statement = null;
+        System.out.println(getSql());        
         Connection connection = null;
         connection = getConnection();
         try {
@@ -92,8 +92,18 @@ public class FindModel extends DbReader<Model> {
         } finally {
             // Do Nothing:  The client is expected to close the statement and the connection
         }
+    }
 
-
-
+    @Override
+    public void close() throws DbException {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            super.close();
+        }
     }
 }

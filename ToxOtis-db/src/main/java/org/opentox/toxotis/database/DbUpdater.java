@@ -8,9 +8,7 @@ import org.opentox.toxotis.database.exception.DbException;
  * @author Charalampos Chomenides
  */
 public abstract  class DbUpdater extends DbOperation {
-
-    private static final String WHERE_TEMPLATE = "WHERE %s";
-    private String table;
+    
 
     public DbUpdater() {
         super();

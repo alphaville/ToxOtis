@@ -18,14 +18,17 @@ import org.opentox.toxotis.database.pool.DataSourceFactory;
  */
 public class CreateDatabase {
 
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CreateDatabase.class);
+
     public static void createDB() throws DbException, IOException {
         DataSourceFactory factory = DataSourceFactory.getInstance();
         Connection connection = null;
+        boolean connectionAutoCommit = false;
 
         try {
             connection = factory.getDataSource().getConnection();
-            connection.setAutoCommit(false);
-            ScriptRunner sr = new ScriptRunner(connection, false, true);
+            connection.setAutoCommit(connectionAutoCommit);
+            ScriptRunner sr = new ScriptRunner(connection, connectionAutoCommit, true);
             URI uri = CreateDatabase.class.getClassLoader().getResource("databaseCreation.sql").toURI();
             sr.runScript(new FileReader(new File(uri)));
             connection.commit();
@@ -51,7 +54,6 @@ public class CreateDatabase {
                 }
             }
         }
-
     }
 
     public static void main(String... args) throws Exception {

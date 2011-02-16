@@ -35,9 +35,6 @@ package org.opentox.toxotis.database.engine.bibtex;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.DbReader;
 import org.opentox.toxotis.database.ResultSetIterator;
@@ -51,6 +48,8 @@ import org.opentox.toxotis.database.exception.DbException;
 public class ListBibTeX extends DbReader<String> {
 
     private PreparedStatement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ListBibTeX.class);
+
     /**
      * Lists BibTeX IDs
      * @return
@@ -59,7 +58,6 @@ public class ListBibTeX extends DbReader<String> {
     public IDbIterator<String> list() throws DbException {
         setTable("BibTeX");
         setTableColumns("BibTeX.id");
-        System.out.println(getSql());
         try {
             statement = getConnection().prepareStatement(getSql());
             ResultSet results = statement.executeQuery();
@@ -72,13 +70,15 @@ public class ListBibTeX extends DbReader<String> {
 
     @Override
     public void close() throws DbException {
-        if (statement != null) {
-            try {
+        try {
+            if (statement != null) {
                 statement.close();
-            } catch (SQLException ex) {
-                throw new DbException(ex);
             }
+        } catch (SQLException ex) {
+            logger.debug("failure to close statement", ex);
+            throw new DbException(ex);
+        } finally {
+            super.close();
         }
-        super.close();
     }
 }

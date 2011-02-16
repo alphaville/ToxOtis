@@ -12,9 +12,9 @@ import java.util.Map;
 public class Cache<K, T> implements ICache<K, T> {
 
     private final Map<K, T> objects;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Cache.class);
 
     public Cache() {
-
         objects = Collections.synchronizedMap(new HashMap<K, T>());
     }
 

@@ -71,7 +71,7 @@ public class AddTaskTest {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public synchronized static void tearDownClass() throws Exception {
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
@@ -123,9 +123,7 @@ public class AddTaskTest {
         }
 
         iter.close();
-        ft.close();
-        
-
+        ft.close();       
     }
 
     @Test

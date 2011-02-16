@@ -35,8 +35,6 @@ package org.opentox.toxotis.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 

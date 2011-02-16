@@ -44,6 +44,7 @@ import org.opentox.toxotis.database.exception.DbException;
  */
 public class FindBibTeX extends DbReader<BibTeX>{
 
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindBibTeX.class);
 
 
     @Override

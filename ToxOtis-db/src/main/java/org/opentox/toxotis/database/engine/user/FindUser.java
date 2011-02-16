@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.user;
 
 import java.sql.Connection;
@@ -50,23 +49,37 @@ import org.opentox.toxotis.database.exception.DbException;
  */
 public class FindUser extends DbReader<User> {
 
+    private Statement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindUser.class);
+
     @Override
-    public IDbIterator<User> list() throws DbException {        
+    public IDbIterator<User> list() throws DbException {
         setTable("User");
-        setTableColumns("uid", "name", "mail","password");        
-        Statement statement = null;
+        setTableColumns("uid", "name", "mail", "password");
         Connection connection = null;
         connection = getConnection();
         try {
-            statement = connection.createStatement();            
+            statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(getSql());
             DbIterator<User> it = new UserIterator(rs);
-            return it;            
+            return it;
         } catch (SQLException ex) {
             throw new DbException(ex);
         } finally {
             // Do Nothing:  The client is expected to close the statement and the connection
         }
-        
+    }
+
+    @Override
+    public void close() throws DbException {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            super.close();
+        }
     }
 }

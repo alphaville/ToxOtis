@@ -59,7 +59,6 @@ public class FindErrorTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {        
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -67,11 +66,12 @@ public class FindErrorTest {
     }
 
     @After
-    public void tearDown() {
+    public synchronized void tearDown() {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
+    public void testFindError() throws DbException {
         FindError fe = new FindError(Services.ntua());
         fe.setPageSize(10);
         IDbIterator<ErrorReport> it = fe.list();

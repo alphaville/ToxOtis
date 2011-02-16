@@ -34,6 +34,7 @@ package org.opentox.toxotis.database.pool;
 
 import javax.sql.DataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import java.util.UUID;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.global.DbConfiguration;
 
@@ -41,6 +42,7 @@ class DataSourceC3P0 implements IDataSourceC3P0 {
 
     protected volatile ComboPooledDataSource datasource;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DataSourceC3P0.class);
+    private static final String ticket = UUID.randomUUID().toString();
 
     /**
      * Default configuration
@@ -54,13 +56,18 @@ class DataSourceC3P0 implements IDataSourceC3P0 {
         }
         datasource = new ComboPooledDataSource();  // create a new datasource object
         datasource.setProperties(DbConfiguration.getInstance().getProperpties());
-        System.out.println(datasource.getProperties());
+        logger.info("Acquired datasource [".concat(ticket).concat("]".concat(" with properties... ".concat(datasource.getProperties().toString()))));
 
     }
-   
+
     public DataSourceC3P0(String connectURI) throws DbException {
         this();
         datasource.setJdbcUrl(connectURI);
+    }
+
+    @Override
+    public String getTicket() {
+        return ticket;
     }
 
     @Override
@@ -75,20 +82,6 @@ class DataSourceC3P0 implements IDataSourceC3P0 {
             }
         }
 
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            close();
-        } catch (final DbException dbEx) {
-            logger.error("Finalization of a JDBC connection failed", dbEx);
-            throw dbEx;
-        } catch (final Exception ex) {
-            logger.error("Finalization of a JDBC connection failed - Unexpected condition", ex);
-            throw ex;
-        }
-        super.finalize();
     }
 
     @Override

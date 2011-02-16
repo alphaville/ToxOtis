@@ -59,8 +59,7 @@ public class FindModelTest  {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+    public static void tearDownClass() throws Exception {        
     }
     
 
@@ -69,17 +68,20 @@ public class FindModelTest  {
     }
 
     @After
-    public void tearDown() {
+    public synchronized void tearDown() {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Test
-    public void testFindModel() throws DbException {
+    public synchronized void testFindModel() throws DbException {
         FindModel fm = new FindModel(Services.ntua());
         fm.setSearchById("3ec661f6-b1a0-4d02-8090-80f9e8e8373d");
         IDbIterator<Model> mods = fm.list();
         while (mods.hasNext()){
             assertTrue((mods.next().getActualModel() instanceof MetaInfo) );
         }
+        mods.close();
+        fm.close();
     }
 
 }

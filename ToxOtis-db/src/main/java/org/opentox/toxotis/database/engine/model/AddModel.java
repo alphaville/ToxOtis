@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.model;
 
 import java.sql.Blob;
@@ -63,6 +61,11 @@ import org.opentox.toxotis.ontology.MetaInfoBlobber;
 public class AddModel extends DbWriter {
 
     private final Model model;
+    private Statement modelStatement = null;
+    private PreparedStatement writeFeature = null;
+    private PreparedStatement writeComponent = null;
+    private PreparedStatement writeModel = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddModel.class);
 
     public AddModel(Model model) throws NullPointerException {
         if (model == null) {
@@ -135,9 +138,6 @@ public class AddModel extends DbWriter {
         insertModelSql = String.format(insertModelSql, model.getUri().getId());
 
         Connection connection = getConnection();
-        PreparedStatement writeFeature = null;
-        PreparedStatement writeComponent = null;
-        PreparedStatement writeModel = null;
 
         Set<Feature> featuresToBeWritten = new HashSet<Feature>();
         if (model.getDependentFeatures() != null) {
@@ -203,23 +203,23 @@ public class AddModel extends DbWriter {
             /*
              * Dependent, Independent, Predicted features
              */
-            Statement statement = connection.createStatement();
+            modelStatement = connection.createStatement();
             if (model.getDependentFeatures() != null) {
                 String depFeatSQL = prepareQueryForFeatureRelations(insertModelDependentFeatures, model.getDependentFeatures());
-                statement.addBatch(depFeatSQL);
+                modelStatement.addBatch(depFeatSQL);
             }
             if (model.getIndependentFeatures() != null) {
                 String indepFeatSQL = prepareQueryForFeatureRelations(insertModelIndependentFeatures, model.getIndependentFeatures());
-                statement.addBatch(indepFeatSQL);
+                modelStatement.addBatch(indepFeatSQL);
             }
             if (model.getPredictedFeatures() != null) {
                 String predFeatSQL = prepareQueryForFeatureRelations(insertModelPredictedFeatures, model.getPredictedFeatures());
-                statement.addBatch(predFeatSQL);
+                modelStatement.addBatch(predFeatSQL);
             }
             if (model.getParameters() != null && !model.getParameters().isEmpty()) {
-                statement.addBatch(prepareQueryForParameters());
+                modelStatement.addBatch(prepareQueryForParameters());
             }
-            statement.executeBatch();
+            modelStatement.executeBatch();
 
 
             connection.commit();
@@ -235,7 +235,40 @@ public class AddModel extends DbWriter {
             }
             throw new DbException(ex);
         } finally {
+            SQLException sqlOnClose = null;
+
+            if (modelStatement != null) {
+                try {
+                    modelStatement.close();
+                } catch (SQLException ex) {
+                    sqlOnClose = ex;
+                }
+            }
+            if (writeComponent != null) {
+                try {
+                    writeComponent.close();
+                } catch (SQLException ex) {
+                    sqlOnClose = ex;
+                }
+            }
+            if (writeFeature != null) {
+                try {
+                    writeFeature.close();
+                } catch (SQLException ex) {
+                    sqlOnClose = ex;
+                }
+            }
+            if (writeModel != null) {
+                try {
+                    writeModel.close();
+                } catch (SQLException ex) {
+                    sqlOnClose = ex;
+                }
+            }
             close();
+            if (sqlOnClose!=null){
+                throw new DbException(sqlOnClose);
+            }
         }
 
         return -1;

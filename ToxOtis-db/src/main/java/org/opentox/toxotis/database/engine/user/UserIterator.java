@@ -30,14 +30,10 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.user;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbIterator;
 import org.opentox.toxotis.database.exception.DbException;
@@ -49,6 +45,8 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  * @author Charalampos Chomenides
  */
 public class UserIterator extends DbIterator<User> {
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserIterator.class);
 
     public UserIterator(ResultSet rs) {
         super(rs);
@@ -62,10 +60,12 @@ public class UserIterator extends DbIterator<User> {
             nextUser.setName(rs.getString(2));
             nextUser.setMail(rs.getString(3));
             nextUser.setHashedPass(rs.getString(4));
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
             throw new DbException(ex);
-        } catch (ToxOtisException ex) {
-            throw new DbException("Illegal mail is found in the DB for user " + nextUser.getUid() , ex);
+        } catch (final ToxOtisException ex) {
+            String msg = "Illegal mail is found in the DB for user ".concat(nextUser.getUid() != null ? nextUser.getUid() : "-");
+            logger.warn(msg);
+            throw new DbException(msg, ex);
         }
         return nextUser;
     }

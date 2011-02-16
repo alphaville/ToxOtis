@@ -36,6 +36,7 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,12 +61,16 @@ public class AddBibTeXTest {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+    public static void tearDownClass() throws Exception {        
     }
 
     @Before
     public void setUp() throws Exception {
+    }
+
+    @After
+    public void tearDown() {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Test
@@ -79,7 +84,7 @@ public class AddBibTeXTest {
                 @Override
                 public void run() {
                     try {
-                        new AddBibTeXTest().testSomeMethod();
+                        new AddBibTeXTest().testRegisterBibTeX();
                     } catch (final Throwable ex) {
                         failure = ex;
                         ex.printStackTrace();
@@ -98,7 +103,7 @@ public class AddBibTeXTest {
         }
     }
 
-    public void testSomeMethod() throws DbException {
+    public void testRegisterBibTeX() throws DbException {
         User u = User.GUEST;
         BibTeX bt = null;
         try {

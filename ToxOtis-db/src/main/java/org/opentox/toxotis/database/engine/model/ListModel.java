@@ -45,11 +45,13 @@ import org.opentox.toxotis.database.exception.DbException;
 /**
  *
  * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
  */
 public class ListModel extends DbReader<String> {
 
     private boolean includeDisabled = false;
+    private Statement statement = null;
+    private ResultSet results;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ListModel.class);
 
     public boolean isIncludeDisabled() {
         return includeDisabled;
@@ -75,16 +77,28 @@ public class ListModel extends DbReader<String> {
                 setWhere("enabled=true");
             }
 
-        }
-        Statement statement = null;
+        }        
         Connection connection = null;
         connection = getConnection();
         try {
             statement = connection.createStatement();
-            ResultSet results = statement.executeQuery(getSql());
+            results = statement.executeQuery(getSql());
             return new ResultSetIterator(results);
         } catch (final SQLException ex) {
             throw new DbException(ex);
+        }
+    }
+
+    @Override
+    public void close() throws DbException {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            super.close();
         }
     }
 }

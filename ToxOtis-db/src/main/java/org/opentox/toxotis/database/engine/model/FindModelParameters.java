@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.model;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -41,6 +40,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.database.DbOperation;
@@ -55,6 +56,8 @@ public class FindModelParameters extends DbOperation {
 
     private final String modelId;
     private final VRI baseUri;
+    Statement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindModelParameters.class);
 
     public FindModelParameters(final String modelId, final VRI baseUri) {
         super();
@@ -79,7 +82,7 @@ public class FindModelParameters extends DbOperation {
 
         LiteralValue lv = new LiteralValue();
         String value = rs.getString(4);
-        lv.setValue(value);        
+        lv.setValue(value);
 
         String datatypeUri = rs.getString(5);
         if (datatypeUri != null) {
@@ -92,21 +95,25 @@ public class FindModelParameters extends DbOperation {
     }
 
     public Set<Parameter> listParameters() throws DbException {
-        Statement statement = null;
         Connection connection = null;
         connection = getConnection();
+        ResultSet rs = null;
         try {
             statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(getSql());
+            rs = statement.executeQuery(getSql());
             Set<Parameter> set = new HashSet<Parameter>();
             while (rs.next()) {
                 set.add(resolveParameter(rs));
-            }
-            rs.close();
+            }            
             return set;
         } catch (SQLException ex) {
             throw new DbException(ex);
         } finally {
+            try {
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(FindModelParameters.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if (connection != null) {
                 try {
                     connection.close();
@@ -114,6 +121,19 @@ public class FindModelParameters extends DbOperation {
                     throw new DbException(ex);
                 }
             }
+        }
+    }
+
+    @Override
+    public void close() throws DbException {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            super.close();
         }
     }
 }

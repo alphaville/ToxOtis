@@ -49,6 +49,7 @@ import org.opentox.toxotis.database.exception.DbException;
 public class ListTasks extends DbReader<String> {
 
     private PreparedStatement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ListTasks.class);
     /**
      * Lists BibTeX IDs
      * @return
@@ -64,6 +65,7 @@ public class ListTasks extends DbReader<String> {
             ResultSetIterator it = new ResultSetIterator(results);
             return it;
         } catch (final SQLException ex) {
+            logger.debug("error while listing task ids", ex);
             throw new DbException(ex);
         }
     }
@@ -74,6 +76,7 @@ public class ListTasks extends DbReader<String> {
             try {
                 statement.close();
             } catch (SQLException ex) {
+                logger.debug("statement uncloseable", ex);
                 throw new DbException(ex);
             }
         }

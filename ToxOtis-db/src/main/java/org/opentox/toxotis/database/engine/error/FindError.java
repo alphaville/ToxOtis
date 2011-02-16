@@ -19,6 +19,7 @@ public class FindError extends DbReader<ErrorReport> {
 
     private final VRI baseUri;
     private Statement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindError.class);
 
     public FindError(final VRI baseUri) {
         this.baseUri = baseUri;

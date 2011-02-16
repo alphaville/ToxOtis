@@ -61,6 +61,7 @@ public class TaskIterator extends DbIterator<Task> {
     private boolean resolveUser = false;
     private ICache<String, User> usersCache = new Cache<String, User>();
     private ICache<String, ErrorReport> errorReportCache = new Cache<String, ErrorReport>();
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TaskIterator.class);
 
     public TaskIterator(final ResultSet rs, final VRI baseUri) {
         super(rs);
@@ -162,9 +163,8 @@ public class TaskIterator extends DbIterator<Task> {
                 metablob.free();
             }
 
-
-
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
+            logger.debug("next task cannot be retrieved",ex);
             throw new DbException(ex);
         }
         return t;

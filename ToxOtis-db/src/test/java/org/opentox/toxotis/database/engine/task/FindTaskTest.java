@@ -59,7 +59,7 @@ public class FindTaskTest {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public synchronized static void tearDownClass() throws Exception {
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 

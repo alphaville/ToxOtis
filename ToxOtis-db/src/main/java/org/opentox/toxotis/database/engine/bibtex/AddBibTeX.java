@@ -19,6 +19,7 @@ import org.opentox.toxotis.database.exception.DbException;
 public class AddBibTeX extends DbWriter {
 
     private final BibTeX bibtex;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddBibTeX.class);
 
     public AddBibTeX(final BibTeX bibtex) {
         super();
@@ -38,10 +39,7 @@ public class AddBibTeX extends DbWriter {
                 "bookTitle", "chapter", "copyright", "crossref", "edition", "editor", "isbn",
                 "issn", "journal", "bibkey", "keywords", "number", "pages", "series", "title", "url",
                 "volume", "year", "createdBy");
-        try {
-
-            
-
+        try {           
             PreparedStatement ps = getConnection().prepareStatement(getSql());
             ps.setString(1, bibtex.getUri().getId());
             ps.setString(2, bibtex.getAbstract());

@@ -4,9 +4,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.database.DbOperation;
 import org.opentox.toxotis.database.exception.DbException;
@@ -20,6 +17,7 @@ public class ErrorReportBatchWriter extends DbOperation {
 
     private final Statement stmt;
     private final ErrorReport error;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorReportBatchWriter.class);
 
     public ErrorReportBatchWriter(final Statement stmt, final ErrorReport error) {
         this.stmt = stmt;
@@ -28,7 +26,7 @@ public class ErrorReportBatchWriter extends DbOperation {
 
     @Override
     public String getSqlTemplate() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new AssertionError("Should not be invoked!");
     }
 
     public void batchStatement() throws DbException {

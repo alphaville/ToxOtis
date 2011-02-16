@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.user;
 
 import org.junit.After;
@@ -59,9 +57,7 @@ public class FindUserTest {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-       
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+    public static void tearDownClass() throws Exception {        
     }
 
     @Before
@@ -69,7 +65,8 @@ public class FindUserTest {
     }
 
     @After
-    public void tearDown() {
+    public synchronized void tearDown() {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Test
@@ -77,13 +74,12 @@ public class FindUserTest {
         FindUser fu = new FindUser();
         fu.setWhere("name LIKE 'Guest'");
         IDbIterator<User> users = fu.list();
-        while (users.hasNext()){
-            assertEquals(User.GUEST,users.next());
-            assertEquals(User.GUEST.getMail(),users.next().getMail());
-            assertEquals(User.GUEST.getName(),users.next().getName());
+        while (users.hasNext()) {
+            assertEquals(User.GUEST, users.next());
+            assertEquals(User.GUEST.getMail(), users.next().getMail());
+            assertEquals(User.GUEST.getName(), users.next().getName());
         }
         users.close();
         fu.close();
     }
-
 }

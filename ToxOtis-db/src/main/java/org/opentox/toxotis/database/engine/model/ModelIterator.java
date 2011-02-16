@@ -54,6 +54,7 @@ import org.opentox.toxotis.ontology.MetaInfoDeblobber;
 public class ModelIterator extends DbIterator<Model> {
 
     private final VRI baseUri;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ModelIterator.class);
 
     public ModelIterator(ResultSet rs, VRI baseUri) {
         super(rs);
@@ -82,8 +83,8 @@ public class ModelIterator extends DbIterator<Model> {
             Blob actualModelBlob = rs.getBlob(6);
             if (actualModelBlob != null) {
                 nextModel.setBlob(actualModelBlob);
-            }
-            actualModelBlob.free();
+                actualModelBlob.free();
+            }            
 
             Blob metaInfoBlob = rs.getBlob(7);
             if (metaInfoBlob != null) {

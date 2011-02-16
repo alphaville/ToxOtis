@@ -41,7 +41,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
-import org.opentox.toxotis.database.LoginInfo;
 import org.opentox.toxotis.database.exception.DbException;
 
 public class DataSourceFactory {
@@ -87,17 +86,23 @@ public class DataSourceFactory {
         }
     }
 
-    public synchronized void close() {// Absolutely necessary to be synchronized!
-        
+    public void close() {
         if (datasource != null) {
             try {
-                datasource.close();
-                datasource = null;
-            } catch (Exception ex) {
-                Logger.getLogger(DataSourceFactory.class.getName()).log(Level.SEVERE, "ERROR ON CLOSING DATASOURCE!", ex);
+                /*
+                 * Should otherwise wait for com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask
+                 * which has package-access! Waiting for 5 seconds before closing the pool...
+                 */
+                logger.trace("closing datasource [".concat(datasource.getTicket()).concat("]"));
+                synchronized (this) {// Absolutely necessary to be synchronized!
+                    Thread.sleep(5000);
+                    datasource.close();
+                    datasource = null;
+                }
+            } catch (final Exception ex) {
+                logger.error("DataSource cannot close", ex);
             }
         }
-
     }
 
     /**
@@ -129,7 +134,6 @@ public class DataSourceFactory {
             throw new DbException(x);
         }
     }
-    
 
     /**
      * Pings the database server
@@ -143,15 +147,12 @@ public class DataSourceFactory {
     public boolean ping(int nTimes) {
         Connection connection = null;
         Statement st = null;
+        ResultSet rs = null;
         try {
-
-
             connection = getConnection();
             st = connection.createStatement();
 
             int index = 0;
-
-            ResultSet rs = null;
             while (index < nTimes) {
                 int randomInt = pingRandom.nextInt();
                 rs = st.executeQuery(String.format(pingQuery, randomInt));
@@ -174,12 +175,20 @@ public class DataSourceFactory {
             logger.error("Database server ping failed", x);
             return false;
         } finally {
+            /* Close result set */
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    logger.warn("result set could not be closed", ex);
+                }
+            }
             /*   Close SQL statement   */
             if (st != null) {
                 try {
                     st.close();
                 } catch (Exception x) {
-                    logger.error("SQL statement for ping cannot close", x);
+                    logger.warn("SQL statement for ping cannot close", x);
                 }
             }
             /*  Close the DB connection */
@@ -187,7 +196,7 @@ public class DataSourceFactory {
                 try {
                     connection.close();
                 } catch (Exception x) {
-                    logger.error("Database connection cannot close", x);
+                    logger.warn("Database connection cannot close", x);
                 }
             }
         }

@@ -2,19 +2,21 @@ package org.opentox.toxotis.database.engine;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 import org.opentox.toxotis.database.DbOperation;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
  * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
  */
 public class DisableComponent extends DbOperation {
 
     private String[] componentIds;
     private static final String quote = "'";
     private static final String comma = ", ";
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DisableComponent.class);
 
     @Override
     public String getSqlTemplate() {
@@ -34,11 +36,11 @@ public class DisableComponent extends DbOperation {
     }
 
     public int disable() throws DbException {
-       return enable(false);
+        return enable(false);
     }
 
     public int enable() throws DbException {
-       return enable(true);
+        return enable(true);
     }
 
     public int enable(boolean enable) throws DbException {
@@ -55,14 +57,24 @@ public class DisableComponent extends DbOperation {
             }
         }
         String sql = String.format(getSqlTemplate(), enable, updatedComponentsSql);
+        Statement stmt = null;
         try {
-            Statement stmt = getConnection().createStatement();
+            stmt = getConnection().createStatement();
             stmt.addBatch(sql);
             return stmt.executeBatch()[0];
         } catch (SQLException ex) {
             throw new DbException(ex);
-        }finally{
-            close();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException ex) {
+                throw new DbException(ex);
+            } finally {
+                close();
+            }
+
         }
     }
 }

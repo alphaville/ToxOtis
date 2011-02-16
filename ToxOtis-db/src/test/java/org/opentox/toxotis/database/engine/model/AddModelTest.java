@@ -36,6 +36,8 @@ package org.opentox.toxotis.database.engine.model;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mchange.v2.c3p0.management.ActiveManagementCoordinator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
@@ -65,6 +67,7 @@ public class AddModelTest {
     private static Throwable failure = null;
 
     public AddModelTest() {
+        
     }
 
     @BeforeClass
@@ -73,7 +76,6 @@ public class AddModelTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -81,11 +83,12 @@ public class AddModelTest {
     }
 
     @After
-    public void tearDown() {
+    public synchronized void tearDown() {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Test
-    public void testWriteBruteForce() throws InterruptedException {
+    public synchronized void testWriteBruteForce() throws InterruptedException {
         int poolSize = 100;
         int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
@@ -115,7 +118,7 @@ public class AddModelTest {
     }
 
     @Test
-    public void testAddModel() throws Exception{
+    public synchronized void testAddModel() throws Exception{
         VRI vri1 = new VRI("http://opentox.ntua.gr:4000/model/"+UUID.randomUUID().toString());
         VRI datasetUri = new VRI("http://otherServer.com:7000/dataset/1");
 

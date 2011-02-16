@@ -55,7 +55,7 @@ public class ListTasksTest {
     }
 
     @AfterClass
-    public static synchronized void tearDownClass() throws Exception {        
+    public static synchronized void tearDownClass() throws Exception {
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 

@@ -35,4 +35,6 @@ public interface IDataSourceC3P0 {
 
     DataSource getDatasource();
 
+    String getTicket();
+
 }

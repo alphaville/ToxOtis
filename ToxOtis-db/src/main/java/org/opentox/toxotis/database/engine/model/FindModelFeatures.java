@@ -69,9 +69,10 @@ public class FindModelFeatures extends DbOperation {
     }
     private final SEARCH_MODE searchMode;
     private final String modelId;
+    private Statement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindModelFeatures.class);
 
-    public List<Feature> list() throws DbException {
-        Statement statement = null;
+    public List<Feature> list() throws DbException {        
         Connection connection = null;
         connection = getConnection();
         try {
@@ -113,5 +114,18 @@ public class FindModelFeatures extends DbOperation {
     @Override
     public String getSqlTemplate() {
         return "SELECT featureUri FROM %s WHERE modelId='%s' ORDER BY idx";
+    }
+
+    @Override
+    public void close() throws DbException {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            super.close();
+        }
     }
 }

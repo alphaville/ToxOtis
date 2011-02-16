@@ -30,17 +30,13 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.task;
 
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.engine.error.ErrorReportBatchWriter;
@@ -55,6 +51,7 @@ import org.opentox.toxotis.ontology.MetaInfoBlobber;
 public class AddTask extends DbWriter {
 
     private final Task task;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddTask.class);
 
     public AddTask(final Task task) {
         this.task = task;
@@ -86,8 +83,11 @@ public class AddTask extends DbWriter {
                 try {
                     Blob blob = mib.toBlob();
                     stmt.setBlob(2, blob);
-                } catch (Exception ex) {
-                    Logger.getLogger(AddTask.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (final SQLException ex) {
+                    logger.warn("Improper parametrization of prepared statement", ex);
+                    throw ex;
+                } catch (final Exception ex) {
+                    logger.warn("MetaInfo serialization exception", ex);
                 }
             } else {
                 stmt.setNull(2, Types.BLOB);// no meta!
@@ -129,10 +129,13 @@ public class AddTask extends DbWriter {
                 result += i;
             }
             return result;
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
+            logger.debug(null, ex);
             try {
                 getConnection().rollback();
-            } catch (SQLException ex1) {
+            } catch (final SQLException ex1) {
+                logger.warn("SQLException such that connection cannot roll back", ex);
+                logger.warn("Rolling back not possible", ex1);
                 throw new DbException(ex1);
             }
             throw new DbException(ex);
@@ -140,7 +143,8 @@ public class AddTask extends DbWriter {
             if (stmt != null) {
                 try {
                     stmt.close();
-                } catch (SQLException ex) {
+                } catch (final SQLException ex) {
+                    logger.debug("statement uncloseable", ex);
                     throw new DbException(ex);
                 }
             }

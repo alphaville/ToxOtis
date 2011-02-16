@@ -59,7 +59,6 @@ public class FindModelParametersTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -68,6 +67,7 @@ public class FindModelParametersTest {
 
     @After
     public void tearDown() {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Test

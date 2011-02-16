@@ -37,13 +37,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.engine.model.AddModelTest;
-import org.opentox.toxotis.database.engine.model.FindModel;
 import org.opentox.toxotis.database.engine.model.ListModel;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
@@ -60,8 +56,8 @@ public class DisableComponentTest {
 
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+    public static synchronized void tearDownClass() throws Exception {
+        
     }
 
     @Before
@@ -70,12 +66,18 @@ public class DisableComponentTest {
 
     @After
     public void tearDown() {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+    }
+
+    @Test
+    public void testALot() throws Exception {
+        for (int i=0;i<5;i++){
+            testSomeMethod();
+        }
     }
 
     @Test
     public void testSomeMethod() throws Exception {
-
-        new AddModelTest().testAddModel();
 
         ListModel list = new ListModel();
         list.setPageSize(1);

@@ -2,8 +2,6 @@ package org.opentox.toxotis.database.engine.error;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.exception.DbException;
@@ -16,6 +14,7 @@ import org.opentox.toxotis.database.exception.DbException;
 public class AddErrorReport extends DbWriter {
 
     private final ErrorReport error;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddErrorReport.class);
 
     public AddErrorReport(final ErrorReport error) {
         this.error = error;
@@ -30,21 +29,24 @@ public class AddErrorReport extends DbWriter {
             writer.batchStatement();
             int[] ints = stmt.executeBatch();
             int result = 0;
-            for (int i : ints){
+            for (int i : ints) {
                 result += i;
             }
             return result;
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
+            logger.warn("failed to execute statement", ex);
             throw new DbException(ex);
         } finally {
-            if (stmt != null) {
-                try {
+            try {
+                if (stmt != null) {
                     stmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(AddErrorReport.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            } catch (final SQLException ex) {
+                logger.warn("failed to close statement", ex);
+                throw new DbException(ex);
+            } finally {
+                close();
             }
-            close();
         }
 
     }

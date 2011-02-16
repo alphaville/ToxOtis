@@ -31,6 +31,8 @@ public class UpdateTask extends DbUpdater {
     private boolean updateDuration = false;
     private boolean updateResultUri = false;
     private boolean updateErrorReport = false;
+    private Statement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UpdateTask.class);
 
     public void setUpdateDuration(boolean updateDuration) {
         this.updateDuration = updateDuration;
@@ -123,7 +125,9 @@ public class UpdateTask extends DbUpdater {
         Iterator<String> updateIterator = updates.iterator();
         int length = updates.size();
         if (length == 0) {
-            throw new IllegalArgumentException("Illegal use of UpdateTask: nothing to update...");
+            String msg = "Possible programming error/bad practice - Illegal use of UpdateTask: nothing to update";
+            logger.warn(msg);
+            throw new IllegalArgumentException(msg);
         }
         for (int i = 0; i < length; i++) {
             updateData.append(updateIterator.next());
@@ -145,7 +149,6 @@ public class UpdateTask extends DbUpdater {
             Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        Statement statement = null;
 
         if (updateMeta) {
             try {
@@ -174,11 +177,31 @@ public class UpdateTask extends DbUpdater {
 
             connection.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
+            String msg ="SQL exception while updating task - rolling back";
+            logger.debug(msg, ex);
+            try {
+                connection.rollback();
+                logger.trace("connection rolled back after failure to update task");
+            } catch (SQLException ex1) {
+                String msg1 = "SQL exception caused connection rool back to fail";
+                logger.trace(msg1, ex1);
+                throw new DbException(ex1);
+            }
+            throw new DbException(msg,ex);
         }
-
-
-        System.out.println(getTaskUpdateSql());
         return -1;
+    }
+
+    @Override
+    public void close() throws DbException {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            super.close();
+        }
     }
 }

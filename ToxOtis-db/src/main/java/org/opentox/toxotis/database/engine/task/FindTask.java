@@ -30,16 +30,12 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.task;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.database.IDbIterator;
@@ -57,6 +53,7 @@ public class FindTask extends DbReader<Task> {
     private final boolean resolveErrorReport;
     private final boolean resolveUser;
     private Statement statement = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindTask.class);
 
     public FindTask(VRI baseUri, boolean resolveErrorReport, boolean resolveUser) {
         super();
@@ -85,8 +82,8 @@ public class FindTask extends DbReader<Task> {
             it.setResolveUser(resolveUser);
             it.setResolveErrorReport(resolveErrorReport);
             return it;
-        } catch (SQLException ex) {
-            Logger.getLogger(FindTask.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final SQLException ex) {
+            logger.warn(null, ex);
             throw new DbException(ex);
         } finally {
             // Do Nothing:  The client is expected to close the statement and the connection
@@ -99,6 +96,7 @@ public class FindTask extends DbReader<Task> {
             try {
                 statement.close();
             } catch (SQLException ex) {
+                logger.debug("statement uncloseable", ex);
                 throw new DbException(ex);
             }
         }
