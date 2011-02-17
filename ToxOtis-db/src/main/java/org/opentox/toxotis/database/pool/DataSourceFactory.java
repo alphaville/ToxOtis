@@ -32,13 +32,12 @@
  */
 package org.opentox.toxotis.database.pool;
 
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 import org.opentox.toxotis.database.exception.DbException;
@@ -93,6 +92,7 @@ public class DataSourceFactory {
                  * Should otherwise wait for com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask
                  * which has package-access! Waiting for 5 seconds before closing the pool...
                  */
+
                 logger.trace("closing datasource [".concat(datasource.getTicket()).concat("]"));
                 synchronized (this) {// Absolutely necessary to be synchronized!
                     Thread.sleep(5000);
