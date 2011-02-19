@@ -91,13 +91,7 @@ public class FindModelFeatures extends DbOperation {
         } catch (final SQLException ex) {
             throw new DbException(ex);
         } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (final SQLException ex) {
-                    throw new DbException(ex);
-                }
-            }
+            close();
         }
     }
 

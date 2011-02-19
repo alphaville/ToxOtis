@@ -40,6 +40,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
@@ -58,7 +59,9 @@ public class FindModelFeaturesTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        System.out.println("Shuting down the pool...");
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        System.out.println("OK");
     }
 
     @Before
@@ -71,7 +74,15 @@ public class FindModelFeaturesTest {
 
     @Test
     public void testSomeMethod() throws DbException {
-        FindModelFeatures finder = new FindModelFeatures(FindModelFeatures.SEARCH_MODE.DEPENDENT,"3ec661f6-b1a0-4d02-8090-80f9e8e8373d");
+        ListModel lister = new ListModel();
+        IDbIterator<String> l = lister.list();
+        String modelId = null;
+        if (l.hasNext()){
+            modelId = l.next();
+        }
+        l.close();
+        lister.close();
+        FindModelFeatures finder = new FindModelFeatures(FindModelFeatures.SEARCH_MODE.DEPENDENT,modelId);
         List<Feature> list = finder.list();
         for (Feature f : list){
             System.out.println(f.getUri());

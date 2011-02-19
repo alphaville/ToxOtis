@@ -77,9 +77,7 @@ public class FindModel extends DbReader<Model> {
                 setWhere(where + " AND OTComponent.enabled=true");
             }
         }
-
-        System.out.println("To Be Executed");
-        System.out.println(getSql());        
+              
         Connection connection = null;
         connection = getConnection();
         try {
