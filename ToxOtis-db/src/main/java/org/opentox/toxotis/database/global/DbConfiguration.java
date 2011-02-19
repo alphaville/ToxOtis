@@ -12,6 +12,7 @@ import java.util.Properties;
 public class DbConfiguration {
 
     private Properties properpties = getDefaultProperties();
+    private static org.slf4j.Logger staticLogger = org.slf4j.LoggerFactory.getLogger(DbConfiguration.class);
 
     private static class DbConfigurationHolder {
 
@@ -28,7 +29,9 @@ public class DbConfiguration {
         try {
             c3p0Props.load(is);
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            final String msg = "Cannot load default properties for C3P0";
+            staticLogger.error(msg, ex);
+            throw new RuntimeException(msg, ex);
         }
         return c3p0Props;
     }

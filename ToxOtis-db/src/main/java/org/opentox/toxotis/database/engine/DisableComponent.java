@@ -62,15 +62,19 @@ public class DisableComponent extends DbOperation {
             stmt = getConnection().createStatement();
             stmt.addBatch(sql);
             return stmt.executeBatch()[0];
-        } catch (SQLException ex) {
-            throw new DbException(ex);
+        } catch (final SQLException ex) {
+            final String msg = "SQL statement execution failed while trying to enable/disable a component in the database";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
             try {
                 if (stmt != null) {
                     stmt.close();
                 }
-            } catch (SQLException ex) {
-                throw new DbException(ex);
+            } catch (final SQLException ex) {
+                final String msg = "SQL statement execution failed while trying to enable/disable a component in the database";
+                logger.warn(msg, ex);
+                throw new DbException(msg, ex);
             } finally {
                 close();
             }

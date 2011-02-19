@@ -94,7 +94,6 @@ public class AddTask extends DbWriter {
             }
             stmt.execute();
 
-
             if (task.getErrorReport() != null) {
                 ErrorReportBatchWriter errorReportWriter = new ErrorReportBatchWriter(stmt, task.getErrorReport());
                 errorReportWriter.batchStatement();
@@ -130,7 +129,7 @@ public class AddTask extends DbWriter {
             }
             return result;
         } catch (final SQLException ex) {
-            logger.debug(null, ex);
+            logger.debug("SQLException caught while adding task in the database", ex);
             try {
                 getConnection().rollback();
             } catch (final SQLException ex1) {
@@ -150,7 +149,5 @@ public class AddTask extends DbWriter {
             }
             close();
         }
-
-
     }
 }

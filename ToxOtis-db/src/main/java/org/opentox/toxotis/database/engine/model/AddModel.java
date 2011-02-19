@@ -66,6 +66,12 @@ public class AddModel extends DbWriter {
     private PreparedStatement writeComponent = null;
     private PreparedStatement writeModel = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddModel.class);
+    private final String insertFeatureSql = "INSERT IGNORE Feature (uri, units) VALUES (?,?)";//write all features (if not already)
+    private final String insertModelAsComponentTemplate = "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,compress(?))";//write component stuff related to model
+    private final String insertModelSqlTemplate = "INSERT INTO Model (id, createdBy, algorithm, localCode, dataset, actualModel) VALUES ('%s', ?,?,?,?,compress(?))";//write model (blob is compressed)
+    private final String insertModelDependentFeatures = "INSERT INTO ModelDepFeatures (modelId,featureUri,idx) VALUES ";//write model dep. feature
+    private final String insertModelIndependentFeatures = "INSERT INTO ModelIndepFeatures (modelId,featureUri,idx) VALUES ";//write model indep. features
+    private final String insertModelPredictedFeatures = "INSERT INTO ModelPredictedFeatures (modelId,featureUri,idx) VALUES ";//write model pred. features
 
     public AddModel(Model model) throws NullPointerException {
         if (model == null) {
@@ -127,15 +133,8 @@ public class AddModel extends DbWriter {
     @Override
     public int write() throws DbException {
 
-        String insertFeatureSql = "INSERT IGNORE Feature (uri, units) VALUES (?,?)";//write all features (if not already)
-        String insertModelAsComponent = "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,compress(?))";//write component stuff related to model
-        String insertModelSql = "INSERT INTO Model (id, createdBy, algorithm, localCode, dataset, actualModel) VALUES ('%s', ?,?,?,?,compress(?))";//write model (blob is compressed)
-        String insertModelDependentFeatures = "INSERT INTO ModelDepFeatures (modelId,featureUri,idx) VALUES ";//write model dep. feature
-        String insertModelIndependentFeatures = "INSERT INTO ModelIndepFeatures (modelId,featureUri,idx) VALUES ";//write model indep. features
-        String insertModelPredictedFeatures = "INSERT INTO ModelPredictedFeatures (modelId,featureUri,idx) VALUES ";//write model pred. features      
-
-        insertModelAsComponent = String.format(insertModelAsComponent, model.getUri().getId());
-        insertModelSql = String.format(insertModelSql, model.getUri().getId());
+        String insertModelAsComponent = String.format(insertModelAsComponentTemplate, model.getUri().getId());
+        String insertModelSql = String.format(insertModelSqlTemplate, model.getUri().getId());
 
         Connection connection = getConnection();
 
@@ -241,6 +240,9 @@ public class AddModel extends DbWriter {
                 try {
                     modelStatement.close();
                 } catch (SQLException ex) {
+                    final String msg = "SQL exception occured while closing the (main) SQL statement for "
+                            + "adding a model in the database consisting of particular batched statements";
+                    logger.warn(msg, ex);
                     sqlOnClose = ex;
                 }
             }
@@ -248,6 +250,9 @@ public class AddModel extends DbWriter {
                 try {
                     writeComponent.close();
                 } catch (SQLException ex) {
+                    final String msg = "SQL exception occured while closing the SQL statement for "
+                            + "adding a model in the database : ".concat(insertModelAsComponent != null ? insertModelAsComponent : "N/A");
+                    logger.warn(msg, ex);
                     sqlOnClose = ex;
                 }
             }
@@ -255,6 +260,9 @@ public class AddModel extends DbWriter {
                 try {
                     writeFeature.close();
                 } catch (SQLException ex) {
+                    final String msg = "SQL exception occured while closing the SQL statement for "
+                            + "adding a model in the database : ".concat(insertFeatureSql);
+                    logger.warn(msg, ex);
                     sqlOnClose = ex;
                 }
             }
@@ -262,11 +270,15 @@ public class AddModel extends DbWriter {
                 try {
                     writeModel.close();
                 } catch (SQLException ex) {
+                    final String msg = "SQL exception occured while closing the SQL statement for "
+                            + "adding a model in the database : ".concat(insertModelSql != null ? insertModelSql : "N/A");
+                    logger.warn(msg, ex);
                     sqlOnClose = ex;
                 }
             }
             close();
-            if (sqlOnClose!=null){
+            if (sqlOnClose != null) {
+                logger.warn(null,sqlOnClose);
                 throw new DbException(sqlOnClose);
             }
         }

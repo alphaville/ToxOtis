@@ -33,12 +33,15 @@
 package org.opentox.toxotis.database.engine.user;
 
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
@@ -55,7 +58,11 @@ public class AddUserTest {
 
             @Override
             public void run() {
-                org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+                try {
+                    org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+                } catch (DbException ex) {
+                    Logger.getLogger(AddUserTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }));
 

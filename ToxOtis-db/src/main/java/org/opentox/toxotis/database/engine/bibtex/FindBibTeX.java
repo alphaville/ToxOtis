@@ -30,6 +30,7 @@
  * tel. +30 210 7723236
  *
  */
+
 package org.opentox.toxotis.database.engine.bibtex;
 
 import org.opentox.toxotis.core.component.BibTeX;

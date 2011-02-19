@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.task;
 
 import java.sql.PreparedStatement;
@@ -50,6 +49,7 @@ public class ListTasks extends DbReader<String> {
 
     private PreparedStatement statement = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ListTasks.class);
+
     /**
      * Lists BibTeX IDs
      * @return
@@ -72,14 +72,16 @@ public class ListTasks extends DbReader<String> {
 
     @Override
     public void close() throws DbException {
-        if (statement != null) {
-            try {
+
+        try {
+            if (statement != null) {
                 statement.close();
-            } catch (SQLException ex) {
-                logger.debug("statement uncloseable", ex);
-                throw new DbException(ex);
             }
+        } catch (final SQLException ex) {
+            logger.debug("statement uncloseable", ex);
+            throw new DbException(ex);
+        } finally {
+            super.close();
         }
-        super.close();
     }
 }

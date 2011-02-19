@@ -64,7 +64,9 @@ public class ListBibTeX extends DbReader<String> {
             ResultSetIterator it = new ResultSetIterator(results);
             return it;
         } catch (final SQLException ex) {
-            throw new DbException(ex);
+            final String msg = "Error reading bibtex id from the database";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         }
     }
 

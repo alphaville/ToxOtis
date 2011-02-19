@@ -57,6 +57,7 @@ public class ListBibTeXTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -65,7 +66,7 @@ public class ListBibTeXTest {
 
     @After
     public synchronized void tearDown() {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        
     }
 
     @Test

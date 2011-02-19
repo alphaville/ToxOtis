@@ -3,6 +3,8 @@ package org.opentox.toxotis.database.engine.bibtex;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
@@ -20,6 +22,7 @@ public class AddBibTeX extends DbWriter {
 
     private final BibTeX bibtex;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddBibTeX.class);
+    PreparedStatement ps = null;
 
     public AddBibTeX(final BibTeX bibtex) {
         super();
@@ -39,8 +42,8 @@ public class AddBibTeX extends DbWriter {
                 "bookTitle", "chapter", "copyright", "crossref", "edition", "editor", "isbn",
                 "issn", "journal", "bibkey", "keywords", "number", "pages", "series", "title", "url",
                 "volume", "year", "createdBy");
-        try {           
-            PreparedStatement ps = getConnection().prepareStatement(getSql());
+        try {
+            ps = getConnection().prepareStatement(getSql());
             ps.setString(1, bibtex.getUri().getId());
             ps.setString(2, bibtex.getAbstract());
             ps.setString(3, bibtex.getAddress());
@@ -79,19 +82,27 @@ public class AddBibTeX extends DbWriter {
             } else {
                 ps.setNull(23, Types.INTEGER);
             }
-            if (bibtex.getYear()!= null) {
+            if (bibtex.getYear() != null) {
                 ps.setInt(24, bibtex.getYear());
             } else {
                 ps.setNull(24, Types.INTEGER);
-            }            
+            }
             ps.setString(25, bibtex.getCreatedBy().getUid());
-
             int update = ps.executeUpdate();
-            ps.close();
             return update;
         } catch (SQLException ex) {
-            throw new DbException(ex);
+            final String msg = "BibTeX could not be added in the database";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException ex) {
+                    final String msg = "Prepared statement for adding BibTeX in the database cannot be closed";
+                    logger.warn(msg, ex);                    
+                }
+            }
             close();
         }
 

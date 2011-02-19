@@ -32,11 +32,13 @@
  */
 package org.opentox.toxotis.database.pool;
 
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import javax.sql.DataSource;
@@ -85,7 +87,7 @@ public class DataSourceFactory {
         }
     }
 
-    public void close() {
+    public void close() throws DbException {
         if (datasource != null) {
             try {
                 /*
@@ -100,7 +102,9 @@ public class DataSourceFactory {
                     datasource = null;
                 }
             } catch (final Exception ex) {
-                logger.error("DataSource cannot close", ex);
+                final String msg = "DataSource cannot close";
+                logger.error(msg, ex);
+                throw new DbException(msg, ex);
             }
         }
     }
@@ -121,8 +125,10 @@ public class DataSourceFactory {
             } else {
                 return connection;
             }
-        } catch (SQLException x) {
-            throw new DbException(x);
+        } catch (final SQLException sqlEx) {
+            final String msg = "Connection could not be retrieved from the pool";
+            logger.warn(msg, sqlEx);
+            throw new DbException(msg, sqlEx);
         }
     }
 
@@ -130,7 +136,9 @@ public class DataSourceFactory {
         try {
             IDataSourceC3P0 dataSource = new DataSourceC3P0();
             return dataSource;
-        } catch (Exception x) {
+        } catch (final Exception x) {
+            final String msg = "Connection could not be retrieved from the pool";
+            logger.warn(msg, x);
             throw new DbException(x);
         }
     }
@@ -201,4 +209,5 @@ public class DataSourceFactory {
             }
         }
     }
+
 }

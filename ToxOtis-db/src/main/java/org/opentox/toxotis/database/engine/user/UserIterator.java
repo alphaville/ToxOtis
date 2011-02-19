@@ -61,10 +61,12 @@ public class UserIterator extends DbIterator<User> {
             nextUser.setMail(rs.getString(3));
             nextUser.setHashedPass(rs.getString(4));
         } catch (final SQLException ex) {
-            throw new DbException(ex);
+            final String msg = "Database exception while reading users from the database";
+            logger.warn(msg, ex);
+            throw new DbException(msg,ex);
         } catch (final ToxOtisException ex) {
-            String msg = "Illegal mail is found in the DB for user ".concat(nextUser.getUid() != null ? nextUser.getUid() : "-");
-            logger.warn(msg);
+            final String msg = "Illegal mail is found in the DB for user ".concat(nextUser.getUid() != null ? nextUser.getUid() : "-");
+            logger.warn(msg, ex);
             throw new DbException(msg, ex);
         }
         return nextUser;

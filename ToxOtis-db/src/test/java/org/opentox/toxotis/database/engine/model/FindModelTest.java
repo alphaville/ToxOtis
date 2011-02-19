@@ -47,7 +47,7 @@ import org.opentox.toxotis.ontology.MetaInfo;
 
 /**
  *
- * @author chung
+ * @author Pantelis Sopasakis
  */
 public class FindModelTest  {
 
@@ -59,7 +59,8 @@ public class FindModelTest  {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {        
+    public static void tearDownClass() throws Exception {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
     
 
@@ -69,7 +70,7 @@ public class FindModelTest  {
 
     @After
     public synchronized void tearDown() {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        
     }
 
     @Test

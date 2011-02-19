@@ -71,12 +71,15 @@ public class CountModel extends DbCount {
             rs.first();
             return rs.getInt(1);
         } catch (SQLException ex) {
-            throw new DbException(ex);
+            String msg = "SQLException caught while adding task in the database";
+            logger.debug(msg, ex);
+            throw new DbException(msg,ex);
         } finally {
-            if (rs!=null){
+            if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
+                    logger.debug("Result set uncloseable (after counting models)", ex);
                     throw new DbException(ex);
                 }
             }
@@ -91,6 +94,7 @@ public class CountModel extends DbCount {
                 statement.close();
             }
         } catch (SQLException ex) {
+            logger.debug("SQL statement uncloseable", ex);
             throw new DbException(ex);
         } finally {
             super.close();

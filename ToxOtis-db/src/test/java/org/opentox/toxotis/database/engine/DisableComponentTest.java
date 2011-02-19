@@ -57,7 +57,7 @@ public class DisableComponentTest {
 
     @AfterClass
     public static synchronized void tearDownClass() throws Exception {
-        
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -65,8 +65,7 @@ public class DisableComponentTest {
     }
 
     @After
-    public void tearDown() {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+    public void tearDown() {        
     }
 
     @Test

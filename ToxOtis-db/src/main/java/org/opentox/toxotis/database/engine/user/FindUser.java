@@ -63,8 +63,10 @@ public class FindUser extends DbReader<User> {
             ResultSet rs = statement.executeQuery(getSql());
             DbIterator<User> it = new UserIterator(rs);
             return it;
-        } catch (SQLException ex) {
-            throw new DbException(ex);
+        } catch (final SQLException ex) {
+            String msg = "Database error occured while executing statement : ".concat(getSql());
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
             // Do Nothing:  The client is expected to close the statement and the connection
         }
@@ -77,7 +79,9 @@ public class FindUser extends DbReader<User> {
                 statement.close();
             }
         } catch (SQLException ex) {
-            throw new DbException(ex);
+            final String msg = "statement uncloseable";
+            logger.warn(msg,ex);
+            throw new DbException(msg,ex);
         } finally {
             super.close();
         }

@@ -36,6 +36,11 @@ package org.opentox.toxotis.database;
 import java.net.URI;
 import java.sql.Connection;
 
+/**
+ * 
+ * @deprecated
+ */
+@Deprecated
 public class LoginInfo {
 
     protected String scheme;

@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database;
 
 import java.sql.Connection;
@@ -46,6 +45,7 @@ import org.opentox.toxotis.database.pool.DataSourceFactory;
 public abstract class DbOperation implements ISql {
 
     private volatile Connection connection;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DbOperation.class);
 
     public DbOperation() {
     }
@@ -60,7 +60,9 @@ public abstract class DbOperation implements ISql {
             try {
                 connection = factory.getDataSource().getConnection();
             } catch (final SQLException ex) {
-                throw new DbException(ex);
+                final String msg = "Cannot get connection from the connection pool";
+                logger.warn(msg, ex);
+                throw new DbException(msg, ex);
             }
         }
         return connection;
@@ -72,11 +74,11 @@ public abstract class DbOperation implements ISql {
                 if (!connection.isClosed()) {
                     connection.close();
                 }
-            } catch (SQLException ex) {
-                throw new DbException(ex);
+            } catch (final SQLException ex) {
+                final String msg = "Connection to the database cannot be closed";
+                logger.warn(msg, ex);
+                throw new DbException(msg, ex);
             }
         }
     }
-
-    
 }

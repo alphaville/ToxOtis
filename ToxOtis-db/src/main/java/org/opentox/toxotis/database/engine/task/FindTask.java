@@ -92,14 +92,16 @@ public class FindTask extends DbReader<Task> {
 
     @Override
     public void close() throws DbException {
-        if (statement != null) {
-            try {
+
+        try {
+            if (statement != null) {
                 statement.close();
-            } catch (SQLException ex) {
-                logger.debug("statement uncloseable", ex);
-                throw new DbException(ex);
             }
+        } catch (final SQLException ex) {
+            logger.debug("statement uncloseable", ex);
+            throw new DbException(ex);
+        } finally {
+            super.close();
         }
-        super.close();
     }
 }

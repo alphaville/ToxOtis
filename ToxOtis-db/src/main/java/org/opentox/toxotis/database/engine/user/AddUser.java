@@ -30,11 +30,12 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.user;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.exception.DbException;
@@ -48,6 +49,7 @@ public class AddUser extends DbWriter {
 
     private final User user;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddUser.class);
+    private PreparedStatement ps = null;
 
     public AddUser(final User user) {
         this.user = user;
@@ -58,18 +60,29 @@ public class AddUser extends DbWriter {
         setTable("User");
         setTableColumns("uid", "name", "mail", "password");
         try {
-            PreparedStatement ps = getConnection().prepareStatement(getSql());
+            ps = getConnection().prepareStatement(getSql());
             ps.setString(1, user.getUid());
             ps.setString(2, user.getName());
             ps.setString(3, user.getMail());
             ps.setString(4, user.getHashedPass());
             int update = ps.executeUpdate();
-            ps.close();
             return update;
         } catch (final SQLException ex) {
-            throw new DbException(ex);
+            final String msg = "SQL statement execution failed while trying to add user in the database";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
-            close();
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (final SQLException ex) {
+                final String msg = "SQL statement execution failed while trying to add a user in the database";
+                logger.warn(msg, ex);
+                throw new DbException(msg, ex);
+            } finally {
+                close();
+            }
         }
     }
 }

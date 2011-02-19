@@ -51,8 +51,10 @@ class DataSourceC3P0 implements IDataSourceC3P0 {
     public DataSourceC3P0() throws DbException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException ex) {
-            throw new DbException("The driver com.mysql.jdbc.Driver was not loaded.", ex);
+        } catch (final ClassNotFoundException ex) {
+            final String msg = "Driver com.mysql.jdbc.Driver not found";
+            logger.error(msg,ex);
+            throw new DbException(msg, ex);
         }
         datasource = new ComboPooledDataSource();  // create a new datasource object
         datasource.setProperties(DbConfiguration.getInstance().getProperpties());
@@ -76,9 +78,13 @@ class DataSourceC3P0 implements IDataSourceC3P0 {
             try {
                 datasource.close();
             } catch (final Exception ex) {
-                throw new DbException("Unexpected exception while closing datasource", ex);
+                final String msg = "Unexpected exception while closing datasource";
+                logger.warn(msg, ex);
+                throw new DbException(msg, ex);
             } catch (final Error ex) {
-                throw new DbException("Unexpected error while closing datasource", ex);
+                final String msg = "Unexpected error while closing datasource";
+                logger.warn(msg, ex);
+                throw new DbException(msg, ex);
             }
         }
 
