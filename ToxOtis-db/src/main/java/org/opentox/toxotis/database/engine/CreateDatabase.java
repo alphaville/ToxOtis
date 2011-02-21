@@ -1,13 +1,11 @@
 package org.opentox.toxotis.database.engine;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.*;
-import org.opentox.toxotis.database.LoginInfo;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 

@@ -51,7 +51,7 @@ public class CountTasks extends DbCount {
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CountTasks.class);
 
     @Override
-    public int count() throws DbException {
+    public int count() throws DbException {        
         setTable("Task");
         setCountableColumn("Task.id");
         setInnerJoin("OTComponent ON Task.id=OTComponent.id");

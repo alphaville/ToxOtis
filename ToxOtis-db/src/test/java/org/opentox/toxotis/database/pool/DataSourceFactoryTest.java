@@ -33,18 +33,13 @@
 package org.opentox.toxotis.database.pool;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.database.LoginInfo;
-import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
-import org.opentox.toxotis.util.aa.AuthenticationToken;
 import static org.junit.Assert.*;
 
 /**

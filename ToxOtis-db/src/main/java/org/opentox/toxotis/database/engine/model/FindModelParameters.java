@@ -40,8 +40,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.database.DbOperation;
@@ -112,11 +110,14 @@ public class FindModelParameters extends DbOperation {
             throw new DbException(msg, ex);
         } finally {
             try {
-                rs.close();
+                if (rs != null) {
+                    rs.close();
+                }
             } catch (SQLException ex) {
                 final String msg = "Result set engaged with parameters failed to close";
                 logger.warn(msg, ex);
-            }            
+                throw new DbException(msg, ex);
+            }
         }
     }
 
@@ -126,6 +127,7 @@ public class FindModelParameters extends DbOperation {
             if (statement != null) {
                 statement.close();
             }
+            statement = null;
         } catch (SQLException ex) {
             throw new DbException(ex);
         } finally {
