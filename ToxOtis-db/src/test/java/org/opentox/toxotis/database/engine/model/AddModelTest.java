@@ -30,14 +30,11 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.database.engine.model;
 
-import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.mchange.v2.c3p0.management.ActiveManagementCoordinator;
+import java.io.NotSerializableException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
@@ -56,6 +53,10 @@ import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
+import java.util.Random;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.exception.DbException;
 import static org.junit.Assert.*;
 
 /**
@@ -65,9 +66,10 @@ import static org.junit.Assert.*;
 public class AddModelTest {
 
     private static Throwable failure = null;
+    private static final VRI baseVri = Services.ntua();
+    private static final Random RND = new Random(117543 + System.currentTimeMillis());
 
     public AddModelTest() {
-        
     }
 
     @BeforeClass
@@ -84,10 +86,10 @@ public class AddModelTest {
     }
 
     @After
-    public synchronized void tearDown() {        
+    public synchronized void tearDown() {
     }
 
-    @Test
+    //@Test
     public synchronized void testWriteBruteForce() throws InterruptedException {
         int poolSize = 100;
         int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
@@ -117,9 +119,110 @@ public class AddModelTest {
         }
     }
 
+    //@Test
+    public synchronized void testWriteAndFindBruteForce() throws InterruptedException {
+        int poolSize = 100;
+        int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
+        final ExecutorService es = Executors.newFixedThreadPool(poolSize);
+        for (int i = 1; i <= folds; i++) {
+            es.submit(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        new AddModelTest().testAddAndFindModel();
+                    } catch (final Throwable ex) {
+                        failure = ex;
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        es.shutdown();
+        while (!es.isTerminated()) {
+            Thread.sleep(100);
+        }
+
+        if (failure != null) {
+            fail();
+        }
+    }
+
     @Test
-    public synchronized void testAddModel() throws Exception{
-        VRI vri1 = new VRI("http://opentox.ntua.gr:4000/model/"+UUID.randomUUID().toString());
+    public synchronized void testAddModel() throws Exception {
+        Model m = createRandomModel();
+        AddModel adder = new AddModel(m);
+        adder.write();
+        adder.close();
+
+    }
+
+    @Test
+    public synchronized void testAddAndFindModel() throws Exception {
+        Model m = createRandomModel();
+        AddModel adder = null;
+        try {
+            adder = new AddModel(m);
+            adder.write();
+        } catch (DbException ex) {
+            throw ex;
+        } finally {
+            if (adder != null) {
+                adder.close();
+            }
+        }
+
+        // Now find the model...
+        FindModel finder = null;
+        IDbIterator<Model> list = null;
+        try {
+            finder = new FindModel(new VRI(baseVri));
+            finder.setResolveUsers(true);
+            assertNotNull(finder);
+            assertTrue(finder.isResolveUsers());
+            finder.setSearchById(m.getUri().getId());
+            list = finder.list();
+            assertNotNull(list);
+            if (list.hasNext()) {
+                Model found = list.next();
+                assertNotNull(found);
+                assertNotNull(found.getDataset());
+                assertEquals(m.getDataset(), found.getDataset());
+                assertNotNull(found.getActualModel());
+                assertNotNull(found.getAlgorithm().getUri());
+                assertEquals(m.getAlgorithm().getUri(), found.getAlgorithm().getUri());
+                assertNotNull(found.getCreatedBy());
+                assertNotNull("Mail of retrieved user not found", found.getCreatedBy().getMail());
+                assertNotNull("Name of retrieved user not found", found.getCreatedBy().getName());
+            }
+        } catch (DbException ex) {
+            throw ex;
+        } finally {
+            DbException dbex = null;
+            if (list != null) {
+                try {
+                    list.close();
+                } catch (DbException x) {
+                    dbex = x;
+                }
+            }
+            if (finder != null) {
+                try {
+                    finder.close();
+                } catch (DbException x) {
+                    dbex = x;
+                }
+            }
+            if (dbex != null) {
+                dbex.printStackTrace();
+                fail(dbex.getMessage());
+            }
+        }
+    }
+
+    private Model createRandomModel() throws NotSerializableException, URISyntaxException {
+        VRI vri1 = new VRI(baseVri).augment("model", UUID.randomUUID().toString());
         VRI datasetUri = new VRI("http://otherServer.com:7000/dataset/1");
 
         VRI f1 = new VRI("http://otherServer.com:7000/feature/1");
@@ -128,10 +231,10 @@ public class AddModelTest {
 
 
         Parameter p = new Parameter();
-        p.setUri(new VRI("http://no.such.service.net/jaqpot/parameter/"+UUID.randomUUID().toString()));
+        p.setUri(new VRI("http://no.such.service.net/jaqpot/parameter/" + UUID.randomUUID().toString()));
         p.setName("alpha");
         p.setScope(Parameter.ParameterScope.OPTIONAL);
-        p.setTypedValue(new LiteralValue(19, XSDDatatype.XSDint));
+        p.setTypedValue(new LiteralValue(RND.nextInt(), XSDDatatype.XSDint));
 
 
         Model m = new Model(vri1);
@@ -150,11 +253,6 @@ public class AddModelTest {
         m.setActualModel(new MetaInfoImpl());// just for the sake to write something in there!
         m.setLocalCode(UUID.randomUUID().toString());
         m.setAlgorithm(new Algorithm("http://algorithm.server.co.uk:9000/algorithm/mlr"));
-
-        AddModel adder = new AddModel(m);
-        adder.write();
-        adder.close();
-
+        return m;
     }
-
 }

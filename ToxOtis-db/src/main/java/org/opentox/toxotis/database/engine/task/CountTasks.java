@@ -31,8 +31,7 @@
  *
  */
 
-
-package org.opentox.toxotis.database.engine.model;
+package org.opentox.toxotis.database.engine.task;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -46,16 +45,16 @@ import org.opentox.toxotis.database.exception.DbException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class CountModel extends DbCount {
+public class CountTasks extends DbCount {
 
     private Statement statement = null;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CountModel.class);
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CountTasks.class);
 
     @Override
     public int count() throws DbException {
-        setTable("Model");
-        setCountableColumn("Model.id");
-        setInnerJoin("OTComponent ON Model.id=OTComponent.id");
+        setTable("Task");
+        setCountableColumn("Task.id");
+        setInnerJoin("OTComponent ON Task.id=OTComponent.id");
         if (!includeDisabled) {
             if (where != null) {
                 setWhere(where + " AND OTComponent.enabled=true");
@@ -72,9 +71,9 @@ public class CountModel extends DbCount {
             rs.first();
             return rs.getInt(1);
         } catch (SQLException ex) {
-            String msg = "SQLException caught while counting models in the database";
+            String msg = "SQLException caught while counting task in the database";
             logger.debug(msg, ex);
-            throw new DbException(msg,ex);
+            throw new DbException(msg, ex);
         } finally {
             SQLException sqlEx = null;
             String exceptionMessage = null;
@@ -100,20 +99,6 @@ public class CountModel extends DbCount {
                 throw new DbException(exceptionMessage, sqlEx);
             }
             // Do Nothing:  The client is expected to close the connection
-        }
-    }
-
-    @Override
-    public void close() throws DbException {
-        try {
-            if (statement != null) {
-                statement.close();
-            }
-        } catch (SQLException ex) {
-            logger.debug("SQL statement uncloseable", ex);
-            throw new DbException(ex);
-        } finally {
-            super.close();
         }
     }
 }

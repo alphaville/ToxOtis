@@ -30,28 +30,24 @@
  * tel. +30 210 7723236
  *
  */
+package org.opentox.toxotis.database.engine.task;
 
-package org.opentox.toxotis.database.engine.model;
-
-import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.core.component.Parameter;
-import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.database.engine.model.AddModelTest;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
  * @author chung
  */
-public class FindModelParametersTest {
+public class CountTasksTest {
 
-    public FindModelParametersTest() {
+    public CountTasksTest() {
     }
 
     @BeforeClass
@@ -68,24 +64,43 @@ public class FindModelParametersTest {
     }
 
     @After
-    public void tearDown() {        
+    public void tearDown() {
+    }
+
+    /*
+     * Count tasks for a particular user (with given UID)
+     */
+    @Test
+    public void testCountTasks() throws Exception {
+        CountTasks ct = null;
+        try {
+            ct = new CountTasks();
+            ct.setWhere(String.format("createdBy='%s'", User.GUEST.getUid()));
+            int result = ct.count();
+            assertTrue(result > 0);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (ct != null) {
+                ct.close();
+            }
+        }
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
-        ListModel lister = new ListModel();
-        IDbIterator<String> l = lister.list();
-        String modelId = null;
-        if (l.hasNext()){
-            modelId = l.next();
+    public void testCountTasks_zero() throws Exception {
+        CountTasks ct = null;
+        try {
+            ct = new CountTasks();
+            ct.setWhere(String.format("createdBy='%s'", "nosuchuser@in-silico.ch"));
+            int result = ct.count();
+            assertEquals(0, result);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (ct != null) {
+                ct.close();
+            }
         }
-        l.close();
-        lister.close();
-        FindModelParameters finder = new FindModelParameters(modelId, Services.anonymous());
-        Set<Parameter> params = finder.listParameters();
-        if (!params.isEmpty()) {
-            System.out.println(params.iterator().next().getTypedValue());
-        }
-        finder.close();
     }
 }

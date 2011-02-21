@@ -104,23 +104,19 @@ public class FindModelParameters extends DbOperation {
             Set<Parameter> set = new HashSet<Parameter>();
             while (rs.next()) {
                 set.add(resolveParameter(rs));
-            }            
+            }
             return set;
         } catch (SQLException ex) {
-            throw new DbException(ex);
+            final String msg = "SQL-related exception while listing model parameters retrieved from the database";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
             try {
                 rs.close();
             } catch (SQLException ex) {
-                Logger.getLogger(FindModelParameters.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    throw new DbException(ex);
-                }
-            }
+                final String msg = "Result set engaged with parameters failed to close";
+                logger.warn(msg, ex);
+            }            
         }
     }
 

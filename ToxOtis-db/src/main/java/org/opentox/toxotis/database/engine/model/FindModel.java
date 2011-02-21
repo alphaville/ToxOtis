@@ -54,11 +54,21 @@ public class FindModel extends DbReader<Model> {
     private final VRI baseUri;
     private boolean includeDisabled = false;
     private Statement statement = null;
+    private boolean resolveUsers;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindModel.class);
 
     public FindModel(final VRI baseUri) {
         this.baseUri = baseUri;
     }
+
+    public boolean isResolveUsers() {
+        return resolveUsers;
+    }
+
+    public void setResolveUsers(boolean resolveUsers) {
+        this.resolveUsers = resolveUsers;
+    }
+
 
     public void setSearchById(String id) {
         String whereTemplate = "Model.id='%s'";
@@ -84,6 +94,7 @@ public class FindModel extends DbReader<Model> {
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(getSql());
             ModelIterator it = new ModelIterator(rs, baseUri);
+            it.setResolveUser(resolveUsers);
             return it;
         } catch (SQLException ex) {
             throw new DbException(ex);

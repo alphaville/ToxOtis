@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.model;
 
 import java.net.URISyntaxException;
@@ -40,6 +39,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.database.DbOperation;
@@ -72,26 +73,40 @@ public class FindModelFeatures extends DbOperation {
     private Statement statement = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindModelFeatures.class);
 
-    public List<Feature> list() throws DbException {        
+    public List<Feature> list() throws DbException {
         Connection connection = null;
         connection = getConnection();
+        ResultSet rs = null;
         try {
             statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(getSql());
+            rs = statement.executeQuery(getSql());
             List<Feature> list = new ArrayList<Feature>();
             while (rs.next()) {
                 try {
                     list.add(new Feature(new VRI(rs.getString(1))));
-                } catch (URISyntaxException ex) {
-                    throw new RuntimeException(ex);
+                } catch (final URISyntaxException ex) {
+                    final String msg = "Invalid URI found in the database for feature";
+                    logger.error(msg, ex);
+                    throw new RuntimeException(msg, ex);
                 }
             }
-            rs.close();
             return list;
         } catch (final SQLException ex) {
-            throw new DbException(ex);
+            final String msg = "SQL-related exception while looking for features in the database";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
-            close();
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    final String msg = "Result set is uncloseable";
+                    logger.warn(msg, ex);
+                    throw new DbException(msg, ex);
+                } finally {
+                    close();
+                }
+            }
         }
     }
 
@@ -116,8 +131,10 @@ public class FindModelFeatures extends DbOperation {
             if (statement != null) {
                 statement.close();
             }
-        } catch (SQLException ex) {
-            throw new DbException(ex);
+        } catch (final SQLException ex) {
+            final String msg = "statement uncloseable";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
             super.close();
         }

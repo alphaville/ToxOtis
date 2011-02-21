@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.model;
 
 import java.net.URISyntaxException;
@@ -40,7 +39,12 @@ import java.sql.SQLException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Algorithm;
 import org.opentox.toxotis.core.component.Model;
+import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbIterator;
+import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.cache.Cache;
+import org.opentox.toxotis.database.engine.cache.ICache;
+import org.opentox.toxotis.database.engine.user.FindUser;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.MetaInfo;
@@ -55,10 +59,20 @@ public class ModelIterator extends DbIterator<Model> {
 
     private final VRI baseUri;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ModelIterator.class);
+    private boolean resolveUser = false;
+    private ICache<String, User> usersCache = new Cache<String, User>();
 
-    public ModelIterator(ResultSet rs, VRI baseUri) {
+    public ModelIterator(final ResultSet rs, final VRI baseUri) {
         super(rs);
         this.baseUri = baseUri;
+    }
+
+    public boolean isResolveUser() {
+        return resolveUser;
+    }
+
+    public void setResolveUser(boolean resolveUser) {
+        this.resolveUser = resolveUser;
     }
 
     @Override
@@ -67,24 +81,55 @@ public class ModelIterator extends DbIterator<Model> {
         try {
             String modelId = rs.getString(1);
             nextModel.setUri(new VRI(baseUri).augment("model", modelId));
+
+            String taskCreator = rs.getString(2);
+            if (taskCreator != null) {
+                User user = usersCache.get(taskCreator);//try to get the user from the cache.
+                if (user == null) {// if user is not found in cache, create it and put it there!
+                    user = new User();
+                    user.setUid(taskCreator);
+                    if (resolveUser) {
+                        FindUser fu = new FindUser();
+                        fu.setWhere("uid='" + taskCreator + "'");
+                        IDbIterator<User> users = fu.list();
+                        if (users.hasNext()) {
+                            user = users.next();
+                        }
+                        users.close();
+                        fu.close();
+                    }
+                    usersCache.put(taskCreator, user);
+                }
+                nextModel.setCreatedBy(user);
+            }
+
             try {
                 nextModel.setAlgorithm(new Algorithm(new VRI(rs.getString(3))));
-            } catch (ToxOtisException ex) {
+            } catch (final ToxOtisException ex) {
+                logger.warn("Invalid algorithm URI pointed by the model".concat(modelId), ex);
                 throw new RuntimeException(ex);
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
+                logger.error("Illegal URI found for training algorithm for a model", ex);
                 throw new RuntimeException(ex);
             }
             nextModel.setLocalCode(rs.getString(4));
             try {
                 nextModel.setDataset(new VRI(rs.getString(5)));
             } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
+                final String msg = "Illegal URI found for training dataset for a model";
+                logger.error(msg, ex);
+                throw new RuntimeException(msg, ex);
             }
             Blob actualModelBlob = rs.getBlob(6);
             if (actualModelBlob != null) {
                 nextModel.setBlob(actualModelBlob);
-                actualModelBlob.free();
-            }            
+                try {
+                    actualModelBlob.free();
+                } catch (final SQLException ex) {
+                    logger.warn("An error occured releasing the (actual model) Blob's resources", ex);
+                    throw ex;
+                }
+            }
 
             Blob metaInfoBlob = rs.getBlob(7);
             if (metaInfoBlob != null) {
@@ -110,8 +155,10 @@ public class ModelIterator extends DbIterator<Model> {
             nextModel.setPredictedFeatures(predictedFeaturesFinder.list());
             predictedFeaturesFinder.close();
             return nextModel;
-        } catch (SQLException ex) {
-            throw new DbException(ex);
+        } catch (final SQLException ex) {
+            final String msg = "SQL-related exception thrown while reading model data from the database";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         }
     }
 }

@@ -97,7 +97,7 @@ public class DataSourceFactory {
 
                 logger.trace("closing datasource [".concat(datasource.getTicket()).concat("]"));
                 synchronized (this) {// Absolutely necessary to be synchronized!
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                     datasource.close();
                     datasource = null;
                 }
