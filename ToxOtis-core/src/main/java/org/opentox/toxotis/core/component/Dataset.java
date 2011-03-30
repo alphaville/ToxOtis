@@ -95,11 +95,11 @@ public class Dataset extends OTPublishable<Dataset> {
      *      In case the provided URI is not a valid dataset URI according to the
      *      OpenTox specifications.
      */
-    public Dataset(VRI uri) throws ServiceInvocationException {
+    public Dataset(VRI uri) throws ToxOtisException {
         super(uri);
         if (uri != null) {
             if (!Dataset.class.equals(uri.getOpenToxType())) {
-                throw new ServiceInvocationException("The provided URI : '" + uri.getStringNoQuery()
+                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
                         + "' is not a valid Dataset uri according to the OpenTox specifications.");
             }
         }

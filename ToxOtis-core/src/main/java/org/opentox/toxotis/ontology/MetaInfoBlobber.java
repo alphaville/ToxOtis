@@ -58,6 +58,9 @@ public class MetaInfoBlobber {
     
 
     public Blob toBlob() throws Exception{
+        if (meta==null){
+            return null;
+        }
         Blob blob = new SerialBlob(getBytes());
         return blob;
 

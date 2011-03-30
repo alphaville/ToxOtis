@@ -4,7 +4,7 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.5.4-SNAPSHOT</version>
+    <version>0.5.5</version>
     <name>ToxOtis-core</name>
     <description></description>
     <developers>
@@ -69,6 +69,12 @@
             <classifier>all</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
 
     </dependencies>
 
@@ -96,7 +102,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>2.3.1</version>
-                    <configuration>
+                    <configuration>                        
                         <source>1.6</source>
                         <target>1.6</target>
                     </configuration>

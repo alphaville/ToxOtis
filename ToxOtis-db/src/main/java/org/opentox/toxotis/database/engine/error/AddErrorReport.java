@@ -34,16 +34,18 @@ public class AddErrorReport extends DbWriter {
             }
             return result;
         } catch (final SQLException ex) {
-            logger.warn("failed to execute statement", ex);
-            throw new DbException(ex);
+            final String msg = "failed to execute statement";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
             try {
                 if (stmt != null) {
                     stmt.close();
                 }
             } catch (final SQLException ex) {
-                logger.warn("failed to close statement", ex);
-                throw new DbException(ex);
+                final String msg = "failed to close statement";
+                logger.warn(msg, ex);
+                throw new DbException(msg, ex);
             } finally {
                 close();
             }

@@ -69,11 +69,10 @@ public class DataSourceFactoryTest {
     }
 
     @Test
-    public void testSomeMethod() throws ServiceInvocationException, ToxOtisException {
+    public void testInvokeDataSource() throws ServiceInvocationException, ToxOtisException {
         try {            
             DataSourceFactory factory = DataSourceFactory.getInstance();                    
             Connection connection = factory.getDataSource().getConnection();
-
             assertNotNull(connection);
             assertTrue(factory.ping(50));
 

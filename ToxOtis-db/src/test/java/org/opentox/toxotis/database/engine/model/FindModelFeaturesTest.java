@@ -73,7 +73,7 @@ public class FindModelFeaturesTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
+    public void testFindModelFeatures() throws DbException {
         ListModel lister = new ListModel();
         IDbIterator<String> l = lister.list();
         String modelId = null;

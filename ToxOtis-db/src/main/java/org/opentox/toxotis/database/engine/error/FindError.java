@@ -22,6 +22,18 @@ public class FindError extends DbReader<ErrorReport> {
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindError.class);
 
     public FindError(final VRI baseUri) {
+        if (baseUri == null) {
+            final String msg = "Null is not a valid value for baseUri in the constructor of FindError";
+            final NullPointerException iae = new NullPointerException(msg);
+            logger.warn(msg, iae);
+            throw iae;
+        }
+        if (baseUri.toString() == null || (baseUri.toString() != null && (baseUri.toString().isEmpty()))) {
+            final String msg = "Void base URI provided in the constructor of FindError";
+            final IllegalArgumentException iae = new IllegalArgumentException(msg);
+            logger.warn(msg, iae);
+            throw iae;
+        }
         this.baseUri = baseUri;
     }
 
@@ -38,21 +50,29 @@ public class FindError extends DbReader<ErrorReport> {
             ErrorIterator it = new ErrorIterator(rs, baseUri);
             return it;
         } catch (SQLException ex) {
-            throw new DbException(ex);
+            final String msg = "Database exception while searching for error reports in the database.";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         } finally {
             // Do Nothing:  The client is expected to close the statement and the connection
+            // The client closes the result set applying a close() on the ErrorIterator
+            // and then closes the statement and the connection invoking close() on this
+            // object
         }
     }
 
     @Override
     public void close() throws DbException {
-        if (statement != null) {
-            try {
+        try {
+            if (statement != null) {
                 statement.close();
-            } catch (SQLException ex) {
-                throw new DbException(ex);
             }
+        } catch (SQLException ex) {
+            final String msg = "statement uncloseable";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
+        } finally {
+            super.close();
         }
-        super.close();
     }
 }

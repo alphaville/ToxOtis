@@ -20,13 +20,35 @@ public class ErrorReportBatchWriter extends DbOperation {
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorReportBatchWriter.class);
 
     public ErrorReportBatchWriter(final Statement stmt, final ErrorReport error) {
+        if (stmt == null) {
+            final String msg = "Programatic error: null statement provided in the constructor of ErrorReportBatchWriter";
+            final NullPointerException npe = new NullPointerException(msg);
+            logger.error(msg, npe);
+        }
+        if (error==null){
+            final String msg = "Programatic error: null error report provided in the constructor of ErrorReportBatchWriter. " +
+                    "Cannot register a null object in the database";
+            final NullPointerException npe = new NullPointerException(msg);
+            logger.error(msg, npe);
+            throw npe;
+        }
+        if (error.getUri()==null || (error.getUri()!=null &&
+                (error.getUri().toString()==null) || (error.getUri().toString()!=null && error.getUri().toString().isEmpty()))
+                ){
+            final String msg = "Programatic error: No URI for the submitted error reprort (No Primary Key can be assigned)";
+            final IllegalArgumentException iae = new IllegalArgumentException(msg);
+            logger.warn(msg,iae);
+            throw iae;
+        }
         this.stmt = stmt;
         this.error = error;
     }
 
     @Override
     public String getSqlTemplate() {
-        throw new AssertionError("Should not be invoked!");
+        AssertionError aser = new AssertionError("Should not be invoked!");
+        logger.error("ErrorReportBatchWriter#getSqlTemplate() invoked - throws assertion error", aser);
+        throw aser;
     }
 
     public void batchStatement() throws DbException {
@@ -40,7 +62,9 @@ public class ErrorReportBatchWriter extends DbOperation {
             try {
                 batchStatement(er);
             } catch (SQLException ex) {
-                throw new DbException(ex);
+                final String msg = "Error report while writing data regarding error report in the database";
+                logger.warn(msg, ex);
+                throw new DbException(msg, ex);
             }
         }
     }

@@ -70,7 +70,7 @@ public class FindUserTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
+    public void testFindUser() throws DbException {
         FindUser fu = new FindUser();
         fu.setWhere("name LIKE 'Guest'");
         IDbIterator<User> users = fu.list();

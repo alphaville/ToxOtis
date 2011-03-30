@@ -207,8 +207,8 @@ public class AuthenticationToken {
      *      error code other than expected (e.g. encounters some internal error
      *      and returns a status code 500).
      */
-    public AuthenticationToken(File file) throws IOException {
-//        this(PasswordFileManager.CRYPTO.authFromFile(file));
+    public AuthenticationToken(File file) throws IOException, ToxOtisException, ServiceInvocationException {
+        this(PasswordFileManager.CRYPTO.authFromFile(file));
     }
 
     /**

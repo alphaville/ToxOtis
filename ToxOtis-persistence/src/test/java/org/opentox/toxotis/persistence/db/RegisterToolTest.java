@@ -53,7 +53,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.ToxOtisException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Algorithm;
 import org.opentox.toxotis.core.component.Model;
@@ -253,7 +252,7 @@ public class RegisterToolTest {
     }
 
     //@Test
-    public void testStoreModel() throws URISyntaxException, ToxOtisException {
+    public void testStoreModel() throws Exception {
         System.out.println("Store Model in DB");
         doStoreModel();
     }
@@ -291,7 +290,7 @@ public class RegisterToolTest {
         }
     }
 
-    private void doStoreModel() throws URISyntaxException, ToxOtisException {
+    private void doStoreModel() throws Exception {
         Session session = null;
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         String sql = "SELECT dataset, algorithm FROM Model WHERE uri=\"%s\"";

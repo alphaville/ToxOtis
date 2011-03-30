@@ -33,8 +33,9 @@ public class ErrorIterator extends DbIterator<ErrorReport> {
             nextReport.setDetails(rs.getString(5));
             nextReport.setErrorCode(rs.getString(6));
         } catch (final SQLException ex) {
-            logger.warn("Error reading result set on error reports", ex);
-            throw new DbException(ex);
+            final String msg = "Error reading result set on error reports";
+            logger.warn(msg, ex);
+            throw new DbException(msg, ex);
         }
         return nextReport;
     }

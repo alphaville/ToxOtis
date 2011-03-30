@@ -34,6 +34,8 @@
 package org.opentox.toxotis.database.engine.model;
 
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

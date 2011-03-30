@@ -82,7 +82,10 @@ public class VRI implements Serializable { // Well tested!
         Task("task"),
         BibTex("bibtex"),
         Model("model"),
-        Query("query");
+        Query("query"),
+        Error("error"),
+        Parameter("parameter")
+        ;
         private final String keyword;
 
         private UriKeywords(final String keyword) {
@@ -109,7 +112,10 @@ public class VRI implements Serializable { // Well tested!
         ALGORITHM(OTClasses.Algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_orNothing),
         BIBTEX(KnoufBibTex.Entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_orNothing),
         MODEL(OTClasses.Model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_orNothing),
-        TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing);
+        TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing),
+        ERROR(OTClasses.ErrorReport(), ErrorReport.class, ".+/(?i)error(s||)/" + END_SLASH_orNothing),
+        PARAMETER(OTClasses.Parameter(), Parameter.class, ".+/(?i)parameter(s||)/" + END_SLASH_orNothing),
+        ;
         /**
          * ParameterValue of regular expressions that identify a
          * certain resource.
@@ -432,6 +438,12 @@ public class VRI implements Serializable { // Well tested!
 
     @Override
     public String toString() {
+        if (uri==null){
+            return null;
+        }
+        if (uri.isEmpty()){
+            return "";
+        }
         StringBuilder string = new StringBuilder(uri);
         String query = getQueryAsString();
         if (query != null && !query.isEmpty()) {

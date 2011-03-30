@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.task;
 
 import java.sql.Connection;
@@ -51,7 +50,7 @@ public class CountTasks extends DbCount {
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CountTasks.class);
 
     @Override
-    public int count() throws DbException {        
+    public int count() throws DbException {
         setTable("Task");
         setCountableColumn("Task.id");
         setInnerJoin("OTComponent ON Task.id=OTComponent.id");
@@ -95,7 +94,8 @@ public class CountTasks extends DbCount {
                     sqlEx = ex;
                 }
             }
-            if (sqlEx != null) {
+            if (sqlEx != null) {// this is already logged
+                logger.trace(exceptionMessage, sqlEx);
                 throw new DbException(exceptionMessage, sqlEx);
             }
             // Do Nothing:  The client is expected to close the connection

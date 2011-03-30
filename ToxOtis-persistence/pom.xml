@@ -41,7 +41,7 @@
     <parent>
         <artifactId>ToxOtis</artifactId>
         <groupId>org.opentox.toxotis</groupId>
-        <version>0.5.0</version>
+        <version>0.6</version>
         <relativePath>../</relativePath>
     </parent>
 
@@ -69,7 +69,7 @@
         <dependency>
             <artifactId>ToxOtis-core</artifactId>
             <groupId>org.opentox.toxotis</groupId>
-            <version>0.5.3</version>
+            <version>0.5.5</version>
         </dependency>
 
         <dependency>
@@ -102,13 +102,7 @@
             <artifactId>hibernate-core</artifactId>
             <version>3.3.0.SP1</version>
             <classifier>javadoc</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.4.0</version>
-        </dependency>
+        </dependency>        
 
         <dependency>
             <groupId>javassist</groupId>
@@ -127,7 +121,7 @@
             <scope>test</scope>
         </dependency>
 
-        
+
     </dependencies>
 
     <repositories>
@@ -171,5 +165,6 @@
         </pluginManagement>
     </build>
 </project>
+
 
 

@@ -81,4 +81,10 @@ public class ClientFactory {
         }
         return null;
     }
+
+    public static void main(String... args){
+        for (int i=0;i<=191;i++){
+            System.out.print(i+".pdf ");
+        }
+    }
 }
