@@ -37,6 +37,11 @@ public class FindError extends DbReader<ErrorReport> {
         this.baseUri = baseUri;
     }
 
+    public void setSearchById(String id) {
+        String whereTemplate = "ErrorReport.id='%s'";
+        setWhere(String.format(whereTemplate, id));
+    }
+
     @Override
     public IDbIterator<ErrorReport> list() throws DbException {
         setTable("ErrorReport");

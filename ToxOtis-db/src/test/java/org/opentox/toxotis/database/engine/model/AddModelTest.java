@@ -89,7 +89,7 @@ public class AddModelTest {
     public synchronized void tearDown() {
     }
 
-    //@Test
+    @Test
     public synchronized void testWriteBruteForce() throws InterruptedException {
         int poolSize = 100;
         int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
@@ -119,7 +119,7 @@ public class AddModelTest {
         }
     }
 
-    //@Test
+    @Test
     public synchronized void testWriteAndFindBruteForce() throws InterruptedException {
         int poolSize = 100;
         int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)

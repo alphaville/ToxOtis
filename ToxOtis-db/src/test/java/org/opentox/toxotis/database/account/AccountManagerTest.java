@@ -30,7 +30,9 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.database.engine.user;
+
+
+package org.opentox.toxotis.database.account;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -38,8 +40,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.DbIterator;
-import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
@@ -47,9 +47,9 @@ import org.opentox.toxotis.database.exception.DbException;
  *
  * @author chung
  */
-public class FindUserTest {
+public class AccountManagerTest {
 
-    public FindUserTest() {
+    public AccountManagerTest() {
     }
 
     @BeforeClass
@@ -58,7 +58,6 @@ public class FindUserTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -66,21 +65,37 @@ public class FindUserTest {
     }
 
     @After
-    public synchronized void tearDown() {        
+    public void tearDown() {
     }
 
     @Test
-    public void testFindUser() throws DbException {
-        FindUser fu = new FindUser();
-        fu.setWhere("name LIKE 'Pan%'");
-        IDbIterator<User> users = fu.list();
-        while (users.hasNext()) {
-//            assertEquals(User.GUEST, users.next());
-//            assertEquals(User.GUEST.getMail(), users.next().getMail());
-//            assertEquals(User.GUEST.getName(), users.next().getName());
-            System.out.println(users.next().getMail());
-        }
-        users.close();
-        fu.close();
+    public void testUserExists() throws DbException {
+        AccountManager am = new AccountManager(User.GUEST);
+        assertTrue(am.userExists());
     }
+
+    @Test
+    public void testUserNotExists() throws DbException {
+        User unknownUser = new User();
+        unknownUser.setUid("whatever@some-unknown-server.eu");
+        AccountManager am = new AccountManager(unknownUser);
+        assertFalse(am.userExists());
+    }
+
+    @Test
+    public void testCountModels() throws DbException {
+        AccountManager am = new AccountManager(User.GUEST);
+        int count = am.countModels();
+        System.out.println(count);
+    }
+
+    @Test
+    public void testCountTasks() throws DbException {
+        User u = new User();
+        u.setUid("Sopasakis@opensso.in-silico.ch");
+        AccountManager am = new AccountManager(u);
+        int count = am.countActiveTasks();
+        System.out.println(count);
+    }
+
 }

@@ -22,5 +22,6 @@ public abstract  class DbUpdater extends DbOperation {
 
     public abstract int update() throws DbException;
     
+    
 
 }

@@ -92,7 +92,7 @@ public class ErrorReportBatchWriter extends DbOperation {
         values.append(", ");
         if (er.getMessage() != null) {
             values.append("'");
-            values.append(er.getMessage());
+            values.append(er.getMessage().replaceAll("'", "\""));
             values.append("'");
         } else {
             values.append("NULL");
@@ -100,7 +100,7 @@ public class ErrorReportBatchWriter extends DbOperation {
         values.append(", ");
         if (er.getDetails() != null) {
             values.append("'");
-            values.append(er.getDetails());
+            values.append(er.getDetails().replaceAll("'", "\""));
             values.append("'");
         } else {
             values.append("NULL");

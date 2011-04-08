@@ -93,7 +93,7 @@ public class UpdateTask extends DbUpdater {
         }
         if (updateErrorReport) {
             if (newTask.getErrorReport() != null) {
-                updates.add("errorReport=" + newTask.getErrorReport().getUri().getId());
+                updates.add(String.format("errorReport='%s'", newTask.getErrorReport().getUri().getId()));
             } else {
                 updates.add("errorReport=NULL");
             }
@@ -172,12 +172,13 @@ public class UpdateTask extends DbUpdater {
             if (statement == null) {
                 statement = connection.createStatement();
             }
+            String sqlI = getTaskUpdateSql();
             statement.addBatch(getTaskUpdateSql());
             statement.executeBatch();
 
             connection.commit();
         } catch (SQLException ex) {
-            String msg ="SQL exception while updating task - rolling back";
+            String msg = "SQL exception while updating task - rolling back";
             logger.debug(msg, ex);
             try {
                 connection.rollback();
@@ -187,7 +188,7 @@ public class UpdateTask extends DbUpdater {
                 logger.trace(msg1, ex1);
                 throw new DbException(ex1);
             }
-            throw new DbException(msg,ex);
+            throw new DbException(msg, ex);
         }
         return -1;
     }

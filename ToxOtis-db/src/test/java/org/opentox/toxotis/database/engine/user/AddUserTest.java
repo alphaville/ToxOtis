@@ -32,6 +32,7 @@
  */
 package org.opentox.toxotis.database.engine.user;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,7 +75,7 @@ public class AddUserTest {
     }
 
     @Before
-    public void setUp() {        
+    public void setUp() {
     }
 
     @After
@@ -84,18 +85,19 @@ public class AddUserTest {
     @Test
     public void testSomeMethod() throws Exception {
         User mockUser = new User();
-        mockUser.setHashedPass("x");
-        mockUser.setMail(UUID.randomUUID().toString() + "a@b.net");
-        mockUser.setName("makis");
+        mockUser.setHashedPass("kjsgrls");
+        mockUser.setMail("me_" + new Random(5 * System.currentTimeMillis() + 73).nextInt() + "@mail.ntua.gr");
+        mockUser.setName("Pantelis S.");
         mockUser.setUid(UUID.randomUUID().toString());
+
         AddUser au = new AddUser(mockUser);
         au.write();
         au.close();
 
-        
+
         // CLOSE THE DATASOURCE!
-        
-        
+
+
 
 
     }
