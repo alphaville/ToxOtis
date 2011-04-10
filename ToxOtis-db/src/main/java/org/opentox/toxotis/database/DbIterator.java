@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database;
 
 import java.sql.ResultSet;
@@ -47,6 +46,11 @@ public abstract class DbIterator<T> implements IDbIterator<T> {
     protected final ResultSet rs;
 
     public DbIterator(final ResultSet rs) {
+        if (rs == null) {
+            throw new NullPointerException("Null values are not allowed in the constructor of "
+                    + "Iterator. The ResultSet object with which you instantiate a new DbIterator "
+                    + "cannot be null");
+        }
         this.rs = rs;
     }
 
@@ -69,13 +73,11 @@ public abstract class DbIterator<T> implements IDbIterator<T> {
     }
 
     @Override
-    public void remove() throws DbException{
+    public void remove() throws DbException {
         try {
             rs.deleteRow();
         } catch (final SQLException ex) {
             throw new DbException(ex);
         }
     }
-
-    
 }

@@ -30,8 +30,15 @@
  * tel. +30 210 7723236
  *
  */
+
+
 package org.opentox.toxotis.database.engine.bibtex;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.DbReader;
@@ -44,8 +51,15 @@ import org.opentox.toxotis.database.exception.DbException;
  */
 public class FindBibTeX extends DbReader<BibTeX> {
 
+    private final VRI baseUri;
+    private Statement statement = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindBibTeX.class);
     private boolean includeDisabled = false;
+    private boolean resolveUsers;
+
+    public FindBibTeX(final VRI baseUri) {
+        this.baseUri = baseUri;
+    }
 
     public boolean isIncludeDisabled() {
         return includeDisabled;
@@ -53,6 +67,14 @@ public class FindBibTeX extends DbReader<BibTeX> {
 
     public void setIncludeDisabled(boolean includeDisabled) {
         this.includeDisabled = includeDisabled;
+    }
+
+    public boolean isResolveUsers() {
+        return resolveUsers;
+    }
+
+    public void setResolveUsers(boolean resolveUsers) {
+        this.resolveUsers = resolveUsers;
     }
 
     public void setSearchById(String id) {
@@ -97,7 +119,6 @@ public class FindBibTeX extends DbReader<BibTeX> {
 //) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
     @Override
     public IDbIterator<BibTeX> list() throws DbException {
-        BibTeX b = new BibTeX();
         setTable("BibTeX");
         setTableColumns(
                 "BibTeX.id",
@@ -135,6 +156,32 @@ public class FindBibTeX extends DbReader<BibTeX> {
             }
         }
 
-        throw new UnsupportedOperationException("Not supported yet.");
+        Connection connection = null;
+        connection = getConnection();
+
+        try {
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(getSql());
+            BibTeXIterator it = new BibTeXIterator(rs, baseUri);
+            it.setResolveUser(resolveUsers);
+            return it;
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            // Do Nothing:  The client is expected to close the statement and the connection
+        }
+    }
+
+    @Override
+    public void close() throws DbException {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException ex) {
+            throw new DbException(ex);
+        } finally {
+            super.close();
+        }
     }
 }

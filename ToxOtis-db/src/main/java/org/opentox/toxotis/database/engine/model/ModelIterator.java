@@ -82,15 +82,15 @@ public class ModelIterator extends DbIterator<Model> {
             String modelId = rs.getString(1);
             nextModel.setUri(new VRI(baseUri).augment("model", modelId));
 
-            String taskCreator = rs.getString(2);
-            if (taskCreator != null) {
-                User user = usersCache.get(taskCreator);//try to get the user from the cache.
+            String modelCreator = rs.getString(2);
+            if (modelCreator != null) {
+                User user = usersCache.get(modelCreator);//try to get the user from the cache.
                 if (user == null) {// if user is not found in cache, create it and put it there!
                     user = new User();
-                    user.setUid(taskCreator);
+                    user.setUid(modelCreator);
                     if (resolveUser) {
                         FindUser fu = new FindUser();
-                        fu.setWhere("uid='" + taskCreator + "'");
+                        fu.setWhere("uid='" + modelCreator + "'");
                         IDbIterator<User> users = fu.list();
                         if (users.hasNext()) {
                             user = users.next();
@@ -98,7 +98,7 @@ public class ModelIterator extends DbIterator<Model> {
                         users.close();
                         fu.close();
                     }
-                    usersCache.put(taskCreator, user);
+                    usersCache.put(modelCreator, user);
                 }
                 nextModel.setCreatedBy(user);
             }
