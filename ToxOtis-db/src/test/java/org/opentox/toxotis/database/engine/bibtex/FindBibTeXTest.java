@@ -71,7 +71,7 @@ public class FindBibTeXTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
+    public void testWriteReadBibTeX() throws DbException {
         ROG rog = new ROG();        
 
         for (int i = 1; i < 10; i++) {
@@ -104,6 +104,9 @@ public class FindBibTeXTest {
                 assertEquals(bibtex.getJournal(), nextBibTexFound.getJournal());
                 assertEquals(bibtex.getKey(), nextBibTexFound.getKey());
                 assertEquals(bibtex.getKeywords(), nextBibTexFound.getKeywords());
+                assertEquals(bibtex.getUrl(), nextBibTexFound.getUrl());
+                assertEquals(bibtex.getVolume(), nextBibTexFound.getVolume());
+                assertEquals(bibtex.getYear(), nextBibTexFound.getYear());
                 assertEquals(bibtex.getMeta().getContributors().iterator().next().getValue(), nextBibTexFound.getMeta().getContributors().iterator().next().getValue());
                 assertEquals(bibtex.getMeta().getComments().iterator().next().getValue(), nextBibTexFound.getMeta().getComments().iterator().next().getValue());
                 assertEquals(bibtex.getMeta().getCreators().iterator().next().getValue(), nextBibTexFound.getMeta().getCreators().iterator().next().getValue());

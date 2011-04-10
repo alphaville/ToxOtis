@@ -7,7 +7,6 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
-import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
@@ -73,7 +72,7 @@ public class ROG {
             random.setPages(RNG.nextInt()+" to "+RNG.nextInt());
             random.setSeries(nextString(255));
             random.setTitle(nextString(255));
-            random.setUrl(nextString(255));
+            random.setUrl(Services.opentox().augment("bibtex2",nextString(100)).toString());
             random.setVolume(RNG.nextInt());
             random.setYear(RNG.nextInt());
             return random;
