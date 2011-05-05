@@ -72,7 +72,7 @@ public class ErrorReportBatchWriter extends DbOperation {
     private void batchStatement(ErrorReport er) throws SQLException {
         String preInsertStmt = "INSERT INTO OTComponent (id) VALUES (%s)";
         String I1 = String.format(preInsertStmt, "'" + er.getUri().getId() + "'");
-        String insertStmt = "INSERT INTO ErrorReport (id, httpStatus, actor, message, details,errorCause) VALUES (%s)";
+        String insertStmt = "INSERT INTO ErrorReport (id, httpStatus, actor, message, details,errorCause,errorCode) VALUES (%s)";
         StringBuilder values = new StringBuilder();
         values.append("'");
         values.append(er.getUri().getId());
@@ -109,6 +109,14 @@ public class ErrorReportBatchWriter extends DbOperation {
         if (er.getErrorCause() != null) {
             values.append("'");
             values.append(er.getErrorCause().getUri().getId());
+            values.append("'");
+        } else {
+            values.append("NULL");
+        }
+        values.append(", ");
+        if (er.getErrorCode() != null) {
+            values.append("'");
+            values.append(er.getErrorCode());
             values.append("'");
         } else {
             values.append("NULL");

@@ -3,8 +3,11 @@ package org.opentox.toxotis.database.engine;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.BibTeX;
+import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -27,6 +30,25 @@ public class ROG {
     private UUID nextUuid() {
         UUID uuid = UUID.randomUUID();
         return uuid;
+    }
+
+    public User nextUser() {
+        User random = new User();
+        random.setName(nextString(255));
+        try {
+            random.setMail(RNG.nextLong() + "@mail.here.org");
+        } catch (ToxOtisException ex) {
+            throw new RuntimeException(ex);
+        }
+        random.setHashedPass(nextString(50));
+        random.setUid(nextString(234) + "@opensso.in-silico.ch");
+        return random;
+    }
+
+    public Model nextModel() {
+        Model nextModel = new Model(Services.ntua().augment("model", nextUuid()));
+        nextModel.setCreatedBy(User.GUEST);
+        return nextModel;
     }
 
     public BibTeX nextBibTeX() {
@@ -63,16 +85,15 @@ public class ROG {
                     addRights(nextString(2500)).
                     addSubject(nextString(4000)).
                     addTitle(nextString(8000)).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark",RNG.nextInt()), OTClasses.Compound())).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment(nextString(50),RNG.nextLong()), OTClasses.FeatureValueString())).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark",RNG.nextInt()), OTClasses.Algorithm()))
-                    );
+                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark", RNG.nextInt()), OTClasses.Compound())).
+                    addSeeAlso(new ResourceValue(Services.anonymous().augment(nextString(50), RNG.nextLong()), OTClasses.FeatureValueString())).
+                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark", RNG.nextInt()), OTClasses.Algorithm())));
 
             random.setNumber(RNG.nextInt());
-            random.setPages(RNG.nextInt()+" to "+RNG.nextInt());
+            random.setPages(RNG.nextInt() + " to " + RNG.nextInt());
             random.setSeries(nextString(255));
             random.setTitle(nextString(255));
-            random.setUrl(Services.opentox().augment("bibtex2",nextString(100)).toString());
+            random.setUrl(Services.opentox().augment("bibtex2", nextString(100)).toString());
             random.setVolume(RNG.nextInt());
             random.setYear(RNG.nextInt());
             return random;

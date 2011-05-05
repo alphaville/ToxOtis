@@ -1,5 +1,6 @@
 package org.opentox.toxotis.database.engine.error;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.opentox.toxotis.core.component.ErrorReport;
@@ -23,11 +24,19 @@ public class AddErrorReport extends DbWriter {
     @Override
     public int write() throws DbException {
         Statement stmt = null;
+        Connection connection = getConnection();
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException ex) {
+            throw new RuntimeException("SQLException happened while applying the method .setAutoCommit(boolean) on a fresh "
+                    + "connection. This most probably means that the connection is closed.", ex);
+        }
         try {
             stmt = getConnection().createStatement();
             ErrorReportBatchWriter writer = new ErrorReportBatchWriter(stmt, error);
             writer.batchStatement();
             int[] ints = stmt.executeBatch();
+            connection.commit();
             int result = 0;
             for (int i : ints) {
                 result += i;
@@ -36,6 +45,16 @@ public class AddErrorReport extends DbWriter {
         } catch (final SQLException ex) {
             final String msg = "failed to execute statement";
             logger.warn(msg, ex);
+            if (connection != null) {
+                try {
+                    logger.info("Rolling back");
+                    connection.rollback();
+                } catch (final SQLException rollBackException) {
+                    final String m1 = "Rolling back failed";
+                    logger.error(m1);
+                    throw new DbException(m1, rollBackException);
+                }
+            }
             throw new DbException(msg, ex);
         } finally {
             try {

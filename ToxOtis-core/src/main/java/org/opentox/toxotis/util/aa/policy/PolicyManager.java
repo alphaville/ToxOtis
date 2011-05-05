@@ -48,6 +48,7 @@ import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.https.DeleteHttpsClient;
+import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
 import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
@@ -302,10 +303,18 @@ public class PolicyManager {
     }
 
     public static IPolicyWrapper defaultSignleUserPolicy(String policyName, VRI componentUri, String userName) {
+
         Policy pol = new Policy();
         pol.setPolicyName(policyName);
-        pol.addSubject(new SingleSubject(userName));
-        PolicyRule pr = new PolicyRule("rule_allow_only_creator");
+
+        PolicyRule pr = null;
+        if ("guest".equals(userName)) {
+            pol.addSubject(GroupSubject.MEMBER);
+            pr = new PolicyRule("public_access_rule");
+        } else {
+            pol.addSubject(new SingleSubject(userName));
+            pr = new PolicyRule("rule_allow_only_creator");
+        }
         pr.setTargetUri(componentUri.toString());
         pr.setAllowGet(true);
         pr.setAllowPost(true);
@@ -313,12 +322,11 @@ public class PolicyManager {
         pr.setAllowDelete(true);
         pol.addRule(pr);
 
-
         return new PolicyWrapper(pol);
     }
 
     public static IPolicyWrapper defaultSignleUserPolicy(String policyName, VRI componentUri, AuthenticationToken token)
-            throws ToxOtisException, ServiceInvocationException   {
+            throws ToxOtisException, ServiceInvocationException {
         return defaultSignleUserPolicy(policyName, componentUri, token.getUser().getUid().split("@")[0]);
     }
 }

@@ -21,7 +21,7 @@ public abstract class DbWriter extends DbOperation  {
     public enum InsertType {
 
         INSERT("INSERT"),
-        INSERT_IGNORE("INSERT_IGNORE"),
+        INSERT_IGNORE("INSERT IGNORE"),
         REPLACE("REPLACE");
         private String type;
 

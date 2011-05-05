@@ -32,6 +32,7 @@
  */
 package org.opentox.toxotis.core.html.impl;
 
+import org.opentox.toxotis.core.html.GoogleAnalytics;
 import org.opentox.toxotis.core.html.HTMLBody;
 import org.opentox.toxotis.core.html.HTMLHead;
 import org.opentox.toxotis.core.html.HTMLPage;
@@ -85,6 +86,9 @@ public class HTMLPageImpl extends HTMLExpandableComponentImpl implements HTMLPag
         builder.append(xhtmlStrict);
         builder.append("\n");
         String namespaceDeclaration = " xmlns=\""+xmlNs+"\"";
+        builder.append("<head>");
+        builder.append(GoogleAnalytics.getGAjs());
+        builder.append("</head>");
         builder.append("<html");
         builder.append(namespaceDeclaration);
         builder.append(">\n");

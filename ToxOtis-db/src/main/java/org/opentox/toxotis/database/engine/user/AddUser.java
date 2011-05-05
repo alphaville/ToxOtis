@@ -32,6 +32,7 @@
  */
 package org.opentox.toxotis.database.engine.user;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -58,18 +59,39 @@ public class AddUser extends DbWriter {
     @Override
     public int write() throws DbException {
         setTable("User");
-        setTableColumns("uid", "name", "mail", "password");
+        setTableColumns("uid", "name", "mail", "password", "maxParallelTasks", "maxModels", "maxBibTeX");
+        Connection connection = getConnection();
         try {
-            ps = getConnection().prepareStatement(getSql());
+            connection.setAutoCommit(false);
+        } catch (SQLException ex) {
+            throw new RuntimeException("SQLException happened while applying the method .setAutoCommit(boolean) on a fresh "
+                    + "connection. This most probably means that the connection is closed.", ex);
+        }
+        try {
+            ps = connection.prepareStatement(getSql());
             ps.setString(1, user.getUid());
             ps.setString(2, user.getName());
             ps.setString(3, user.getMail());
             ps.setString(4, user.getHashedPass());
+            ps.setInt(5, user.getMaxParallelTasks());
+            ps.setInt(6, user.getMaxModels());
+            ps.setInt(7, user.getMaxBibTeX());
             int update = ps.executeUpdate();
+            connection.commit();
             return update;
         } catch (final SQLException ex) {
             final String msg = "SQL statement execution failed while trying to add user in the database";
             logger.warn(msg, ex);
+            if (connection != null) {
+                try {
+                    logger.info("Rolling back");
+                    connection.rollback();
+                } catch (final SQLException rollBackException) {
+                    final String m1 = "Rolling back failed";
+                    logger.error(m1);
+                    throw new DbException(m1, rollBackException);
+                }
+            }
             throw new DbException(msg, ex);
         } finally {
             try {

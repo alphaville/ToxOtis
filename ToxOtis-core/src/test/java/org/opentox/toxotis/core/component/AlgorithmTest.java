@@ -40,6 +40,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.html.HTMLPage;
+import org.opentox.toxotis.core.html.impl.HTMLPageImpl;
 import org.opentox.toxotis.exceptions.IBadRequest;
 import org.opentox.toxotis.exceptions.IClientException;
 import org.opentox.toxotis.exceptions.IConnectionException;
@@ -93,7 +95,12 @@ public class AlgorithmTest {
     }
 
     @Test
-    public void testDownload_() throws ToxOtisException, ServiceInvocationException {
+    public void testHtml() throws ToxOtisException, ServiceInvocationException, URISyntaxException {
+        Algorithm a = new Algorithm("http://opentox.ntua.gr:8080/algorithm/mlr");
+        a.loadFromRemote();
+        HTMLPage document = new HTMLPageImpl();
+        document.getHtmlBody().addComponent(a.inHtml());
+        System.out.println(document.toString());
     }
 
     //@Test

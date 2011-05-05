@@ -36,6 +36,7 @@ import java.net.URISyntaxException;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Algorithm;
 import org.opentox.toxotis.core.component.Model;
@@ -154,6 +155,13 @@ public class ModelIterator extends DbIterator<Model> {
             FindModelFeatures predictedFeaturesFinder = new FindModelFeatures(FindModelFeatures.SEARCH_MODE.PREDICTED, modelId);
             nextModel.setPredictedFeatures(predictedFeaturesFinder.list());
             predictedFeaturesFinder.close();
+
+            ModelReferencesFinder modelReferences = new ModelReferencesFinder(modelId);
+            Set<String> references = modelReferences.getReferences();
+            for (String ref : references) {
+                nextModel.addBibTeXReferences(new VRI(baseUri).augment("bibtex", ref));
+            }
+
             return nextModel;
         } catch (final SQLException ex) {
             final String msg = "SQL-related exception thrown while reading model data from the database";

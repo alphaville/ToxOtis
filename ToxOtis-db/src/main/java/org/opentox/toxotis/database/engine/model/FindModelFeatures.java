@@ -44,6 +44,8 @@ import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.database.DbOperation;
+import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.ResultSetIterator;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
@@ -72,6 +74,7 @@ public class FindModelFeatures extends DbOperation {
     private final String modelId;
     private Statement statement = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindModelFeatures.class);
+    
 
     public List<Feature> list() throws DbException {
         Connection connection = null;

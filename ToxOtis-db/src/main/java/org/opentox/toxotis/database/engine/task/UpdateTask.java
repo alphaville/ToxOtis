@@ -34,6 +34,7 @@ public class UpdateTask extends DbUpdater {
     private Statement statement = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UpdateTask.class);
 
+
     public void setUpdateDuration(boolean updateDuration) {
         this.updateDuration = updateDuration;
     }
@@ -90,7 +91,7 @@ public class UpdateTask extends DbUpdater {
         Set<String> updates = new HashSet<String>();
         if (updateDuration) {
             updates.add("duration=" + newTask.getDuration());
-        }
+        }        
         if (updateErrorReport) {
             if (newTask.getErrorReport() != null) {
                 updates.add(String.format("errorReport='%s'", newTask.getErrorReport().getUri().getId()));

@@ -37,12 +37,12 @@ public class PolicyTest {
 
     @Test
     public void testSomeMethod() throws Exception {
-        AuthenticationToken at = new AuthenticationToken("guest", "guest");
-        PolicyManager.defaultSignleUserPolicy("testPolicy_xy", new VRI("http://opentox.ntua.gr:4000/testResource10"), at).publish(null, at);
-        ArrayList<String > policiesPlusOne = PolicyManager.listPolicyUris(null, at);
-        assertTrue("A policy was created but is not found in the list of policies",policiesPlusOne.contains("testPolicy_xy"));
-        PolicyManager.deleteRemotePolicy(null, "testPolicy_xy", at);
-        ArrayList<String > policies = PolicyManager.listPolicyUris(null, at);
-        assertTrue("Policy testPolicy_x was not deleted",!policies.contains("testPolicy_xy"));
+        AuthenticationToken at = new AuthenticationToken("Sopasakis", "abfhs8y");        
+        PolicyManager.defaultSignleUserPolicy("shutdown_opentox_8080", new VRI("http://opentox.ntua.gr:8080/shutdown"), at).publish(null, at);
+//        ArrayList<String > policiesPlusOne = PolicyManager.listPolicyUris(null, at);
+//        assertTrue("A policy was created but is not found in the list of policies",policiesPlusOne.contains("testPolicy_xy"));
+//        PolicyManager.deleteRemotePolicy(null, "testPolicy_xy", at);
+//        ArrayList<String > policies = PolicyManager.listPolicyUris(null, at);
+//        assertTrue("Policy testPolicy_x was not deleted",!policies.contains("testPolicy_xy"));
     }
 }

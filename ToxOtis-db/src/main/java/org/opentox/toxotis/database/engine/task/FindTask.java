@@ -50,6 +50,7 @@ import org.opentox.toxotis.database.exception.DbException;
 public class FindTask extends DbReader<Task> {
 
     private final VRI baseUri;
+    private boolean includeDisabled = false;
     private final boolean resolveErrorReport;
     private final boolean resolveUser;
     private Statement statement = null;
@@ -72,6 +73,13 @@ public class FindTask extends DbReader<Task> {
         setTableColumns("Task.id", "Task.resultUri", "Task.httpStatus", "Task.percentageCompleted",
                 "Task.status", "Task.duration", "Task.errorReport", "Task.createdBy", "OTComponent.enabled", "uncompress(meta)");
         setInnerJoin("OTComponent ON Task.id=OTComponent.id");
+        if (!includeDisabled) {
+            if (where == null) {
+                setWhere("OTComponent.enabled=true");
+            } else {
+                setWhere(where + " AND OTComponent.enabled=true");
+            }
+        }
         statement = null;
         Connection connection = null;
         connection = getConnection();

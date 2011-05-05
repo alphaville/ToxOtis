@@ -47,8 +47,17 @@ import org.opentox.toxotis.database.exception.DbException;
  */
 public class ListTasks extends DbReader<String> {
 
+    private boolean includeDisabled = false;
     private PreparedStatement statement = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ListTasks.class);
+
+    public boolean isIncludeDisabled() {
+        return includeDisabled;
+    }
+
+    public void setIncludeDisabled(boolean includeDisabled) {
+        this.includeDisabled = includeDisabled;
+    }
 
     /**
      * Lists BibTeX IDs
@@ -58,7 +67,16 @@ public class ListTasks extends DbReader<String> {
     public IDbIterator<String> list() throws DbException {
         setTable("Task");
         setTableColumns("Task.id");
-        System.out.println(getSql());
+        if (!includeDisabled) {
+            setInnerJoin("OTComponent ON Task.id=OTComponent.id");
+            if (where != null) {
+                setWhere(where + "AND enabled=true");
+            } else {
+                setWhere("enabled=true");
+            }
+
+        }
+        
         try {
             statement = getConnection().prepareStatement(getSql());
             ResultSet results = statement.executeQuery();

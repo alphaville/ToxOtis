@@ -60,6 +60,9 @@ public class UserIterator extends DbIterator<User> {
             nextUser.setName(rs.getString(2));
             nextUser.setMail(rs.getString(3));
             nextUser.setHashedPass(rs.getString(4));
+            nextUser.setMaxParallelTasks(rs.getInt("maxParallelTasks"));
+            nextUser.setMaxModels(rs.getInt("maxModels"));
+            nextUser.setMaxBibTeX(rs.getInt("maxBibTeX"));
         } catch (final SQLException ex) {
             final String msg = "Database exception while reading users from the database";
             logger.warn(msg, ex);

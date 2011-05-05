@@ -48,6 +48,8 @@ import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
+import org.opentox.toxotis.core.html.HTMLTable;
+import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.core.html.impl.HTMLParagraphImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -83,7 +85,6 @@ public class ErrorReport extends OTComponent<ErrorReport>
     private UUID uuid = UUID.randomUUID();
     private static final String DISCRIMINATOR = "error";
     private static Map<Integer, String> errorCodeReference;
-
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorReport.class);
 
     static {
@@ -217,7 +218,7 @@ public class ErrorReport extends OTComponent<ErrorReport>
             indiv.addLiteral(OTDatatypeProperties.httpStatus().asDatatypeProperty(model),
                     model.createTypedLiteral(httpStatus, XSDDatatype.XSDint));
         }
-        if (errorCause!=null){
+        if (errorCause != null) {
             indiv.addProperty(OTObjectProperties.trace().asObjectProperty(model), errorCause.asIndividual(model));
         }
         return indiv;
@@ -272,14 +273,18 @@ public class ErrorReport extends OTComponent<ErrorReport>
                 breakLine().horizontalSeparator();
         builder.getDiv().setAlignment(Alignment.justify).setId(getUri().toString());
         builder.addSubSubSubHeading("Information about the Exceptional Event");
-        builder.addTable(2).
-                setTextAtCursor("Report URI").setTextAtCursor(getUri().toString()).
+        HTMLTable table = builder.addTable(2);
+
+        table.setTextAtCursor("Report URI").setTextAtCursor(HTMLUtils.linkUrlsInText(getUri().toString())).
                 setTextAtCursor("Error Code").setTextAtCursor(getErrorCode()).
                 setTextAtCursor("Message").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getMessage())).setAlignment(Alignment.justify)).
                 setTextAtCursor("HTTP Code").setAtCursor(
                 new HTMLParagraphImpl("<a href= \"" + errorCodeReference.get(getHttpStatus()) + "\" >" + Integer.toString(getHttpStatus()) + "</a>").setAlignment(Alignment.justify)).
-                setTextAtCursor("Who is to Blame").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getActor())).setAlignment(Alignment.justify)).
-                setCellPadding(5).
+                setTextAtCursor("Who is to Blame").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getActor())).setAlignment(Alignment.justify));
+        if (errorCause != null) {
+            table.setTextAtCursor("Trace").setTextAtCursor(HTMLUtils.linkUrlsInText(getErrorCause().getUri().toString()));
+        }
+        table.setCellPadding(5).
                 setCellSpacing(2).
                 setTableBorder(0).
                 setColWidth(1, 150).

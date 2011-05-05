@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbIterator;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
@@ -66,7 +67,7 @@ public class FindUserTest {
     }
 
     @After
-    public synchronized void tearDown() {        
+    public synchronized void tearDown() {
     }
 
     @Test
@@ -78,7 +79,29 @@ public class FindUserTest {
 //            assertEquals(User.GUEST, users.next());
 //            assertEquals(User.GUEST.getMail(), users.next().getMail());
 //            assertEquals(User.GUEST.getName(), users.next().getName());
-            System.out.println(users.next().getMail());
+//            System.out.println(users.next().getMail());
+        }
+        users.close();
+        fu.close();
+    }
+
+    @Test
+    public void testWriteAndRead() throws DbException {
+        ROG rog = new ROG();
+        User random = rog.nextUser();
+        random.setMaxBibTeX(1001);
+        random.setMaxModels(1001);
+        random.setMaxParallelTasks(5);
+        AddUser adder = new AddUser(random);
+        adder.write();
+        adder.close();
+
+
+        FindUser fu = new FindUser();
+        fu.setWhere("name='" + random.getName() + "'");
+        IDbIterator<User> users = fu.list();
+        while (users.hasNext()) {
+            assertEquals(5, users.next().getMaxParallelTasks());
         }
         users.close();
         fu.close();

@@ -3,8 +3,6 @@ package org.opentox.toxotis.database.engine.bibtex;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.User;

@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.opentox.toxotis.client.Pair;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Parameter;
 import static org.junit.Assert.*;
 import static java.lang.System.out;
 
@@ -89,5 +90,14 @@ public class VRIexample {
         out.println("Initial URI        : " + Services.anonymous());
         out.println("Augmented          : " + Services.anonymous().augment("algorithm",143));
         out.println("Parameter appended : " + Services.anonymous().addUrlParameter("a", 100));
+    }
+
+
+    @Test
+    public void test4() {
+
+        out.println("Test 4 - Parameters URIs");
+        Parameter p = new Parameter(Services.anonymous().augment("prm","2475"));
+        System.out.println(p.getUri().getId());
     }
 }

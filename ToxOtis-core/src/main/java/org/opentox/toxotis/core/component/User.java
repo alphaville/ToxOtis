@@ -59,12 +59,36 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
     private String name;
     private String mail;
     private String hashedPass;
+    private int maxParallelTasks = 0;
+    private int maxModels = 0;
+    private int maxBibTeX = 0;
+    public static User GUEST = new User("guest@opensso.in-silico.ch", "Guest", "anonymous@anonymous.org", "{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H");
 
+    public int getMaxBibTeX() {
+        return maxBibTeX;
+    }
 
-    public static User GUEST = new User("guest@opensso.in-silico.ch","Guest","anonymous@anonymous.org","{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H");
+    public void setMaxBibTeX(int maxBibTeX) {
+        this.maxBibTeX = maxBibTeX;
+    }
+
+    public int getMaxModels() {
+        return maxModels;
+    }
+
+    public void setMaxModels(int maxModels) {
+        this.maxModels = maxModels;
+    }
+
+    public int getMaxParallelTasks() {
+        return maxParallelTasks;
+    }
+
+    public void setMaxParallelTasks(int maxParallelTasks) {
+        this.maxParallelTasks = maxParallelTasks;
+    }
 
     public User() {
-        
     }
 
     private User(String uid, String name, String mail, String hashedPass) {
@@ -73,8 +97,6 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
         this.mail = mail;
         this.hashedPass = hashedPass;
     }
-
-
 
     public String getHashedPass() {
         return hashedPass;
@@ -175,7 +197,10 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
         HTMLTable dataTable = builder.addTable(2);
         dataTable.setAtCursor(new HTMLTextImpl("URI").formatBold(true)).setTextAtCursor(uri != null ? uri.toString() : "-").
                 setAtCursor(new HTMLTextImpl("UID").formatBold(true)).setTextAtCursor(getUid()).
-                setAtCursor(new HTMLTextImpl("Name").formatBold(true)).setTextAtCursor(getName() != null ? getName() : "No Name");
+                setAtCursor(new HTMLTextImpl("Name").formatBold(true)).setTextAtCursor(getName() != null ? getName() : "No Name").
+                setAtCursor(new HTMLTextImpl("Max allowed parallel tasks").formatBold(true)).setTextAtCursor(getMaxParallelTasks() + "").
+                setAtCursor(new HTMLTextImpl("Max allowed models").formatBold(true)).setTextAtCursor(getMaxModels() + "").
+                setAtCursor(new HTMLTextImpl("Max allowed BibTeX entries").formatBold(true)).setTextAtCursor(getMaxBibTeX() + "");
 
         dataTable.setCellPadding(5).
                 setCellSpacing(2).
@@ -183,6 +208,9 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
                 setColWidth(1, 150).
                 setColWidth(2, 400);
         builder.getDiv().breakLine();
+
+        builder.addParagraph("Check out user's quota <a href=\"" + getUri().augment("quota") + "\">here</a>",
+                Alignment.left);
 
         builder.addParagraph("<small>Other Formats: "
                 + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"

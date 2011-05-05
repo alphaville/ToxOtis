@@ -1,7 +1,6 @@
 DROP DATABASE IF EXISTS toxotisdb;
 CREATE DATABASE IF NOT EXISTS toxotisdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
 USE toxotisdb;
-
 DROP TABLE IF EXISTS `OTComponent`;
 CREATE TABLE `OTComponent` (
   `id` varchar(255) collate utf8_bin NOT NULL COMMENT 'This is a UUID identifying the component, not a URI',
@@ -14,7 +13,6 @@ CREATE TABLE `OTComponent` (
   KEY `index_enabled` USING BTREE (`enabled`),
   KEY `index_created` USING BTREE (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (
   `uid` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -34,11 +32,9 @@ CREATE TABLE `User` (
   KEY `index_user_maxBibTeX`USING BTREE (`maxBibTeX`),
   KEY `index_user_maxParallelTasks`USING BTREE (`maxParallelTasks`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
 LOCK TABLE `User` WRITE;
 INSERT INTO `User` (`uid`,`name`,`mail`,`password`,`maxParallelTasks`,`maxModels`,`maxBibTeX`) VALUES ('guest@opensso.in-silico.ch','Guest','anonymous@anonymous.org','{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H',5,2000,2000);
 UNLOCK TABLE ;
-
 DROP TABLE IF EXISTS `BibTeX`;
 CREATE TABLE `BibTeX` (
   `id` varchar(255) NOT NULL,
@@ -150,7 +146,7 @@ CREATE TABLE `Parameter` (
   `id` varchar(50) COLLATE utf8_bin NOT NULL,
   `name` varchar(16) COLLATE utf8_bin NOT NULL,
   `scope` varchar(16) COLLATE utf8_bin DEFAULT "OPTIONAL",
-  `value` varchar(16) COLLATE utf8_bin DEFAULT "",
+  `value` varchar(255) COLLATE utf8_bin DEFAULT "",
   `valueType` varchar(50) COLLATE utf8_bin DEFAULT "string" COMMENT 'can be String, Double, Integer, Float, Double etc',
   `modelId` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Points to the model table - Many to One relation (every parameter has a model)',
   PRIMARY KEY (`id`),
@@ -166,7 +162,7 @@ CREATE TABLE `ErrorReport` (
   `id` varchar(255) COLLATE utf8_bin NOT NULL,
   `httpStatus` int(11) DEFAULT NULL,
   `actor` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `message` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `message` text COLLATE utf8_bin DEFAULT NULL,
   `details` longtext,
   `errorCode` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `errorCause` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -194,6 +190,35 @@ CREATE TABLE `Task` (
   CONSTRAINT `FK_errReport_in_task` FOREIGN KEY (`errorReport`) REFERENCES `ErrorReport` (`id`),
   CONSTRAINT `FK_task_creator` FOREIGN KEY (`createdBy`) REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_in_task_references_OTComponent` FOREIGN KEY (`id`) REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+-- NEW (Introduced on May 3, 2011)
+-- Many-to-many relationship between models and BibTeX entries
+-- One model can have multiple BibTeX references
+-- One BibTeX entry can be assigned to more than one models
+DROP TABLE IF EXISTS `ModelBibTeX`;
+CREATE TABLE `ModelBibTeX` (
+    `modelId` varchar(50) COLLATE utf8_bin NOT NULL,
+    `bibTeXId` varchar(255) NOT NULL,
+    PRIMARY KEY (`modelId`, `bibTeXId`),
+    KEY `index_modelId_in_ModelBibTeX` USING BTREE  (`modelId`),
+    CONSTRAINT `modelId_ref_Model` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `bibTeXId_ref_BibTeX` FOREIGN KEY (`bibTeXId`) REFERENCES `BibTeX` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--Under Construction
+DROP TABLE IF EXISTS `Bookmark`;
+CREATE TABLE `Bookmark` (
+  `id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `url` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `folder` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `createdBy` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_uri_in_task_refs_OTComponent` USING BTREE  (`id`),
+  KEY `index_bookmark_creator` USING BTREE  (`createdBy`),
+  CONSTRAINT `FK_task_creator` FOREIGN KEY (`createdBy`) REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `id_in_bookmark_references_OTComponent` FOREIGN KEY (`id`) REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 

@@ -25,8 +25,8 @@ public class PolicyManagement {
         /**
          * Authenticate and acquire a token from the SSO server
          */
-        String policyName = "s2";
-        String uri = "http://opentox.ntua.gr:4000/testResource12";
+        String policyName = "abcxyz1";
+        String uri = "http://opentox.ntua.gr:4000/my/resource/1";
 
         /*
          * Policy Definition
@@ -56,5 +56,7 @@ public class PolicyManagement {
          */
         ArrayList<String> policies = PolicyManager.listPolicyUris(null, at);
         assertTrue("Policy " + policyName + " was not deleted", !policies.contains(policyName));
+
+        at.invalidate();
     }
 }

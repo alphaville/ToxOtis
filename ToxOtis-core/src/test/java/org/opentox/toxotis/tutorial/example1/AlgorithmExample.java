@@ -73,7 +73,9 @@ public class AlgorithmExample {
          * Some meta-information regarding the algorithm
          */
         MetaInfo mi = new MetaInfoImpl();
-        mi.addComment("Very good algorithm").addCreator("Pantelis Sopasakis").addIdentifier(algorithm.getUri().toString());
+        mi.addComment("Very good algorithm").
+                addCreator("Pantelis Sopasakis").
+                addIdentifier(algorithm.getUri().toString());
         algorithm.setMeta(mi);
 
         /*

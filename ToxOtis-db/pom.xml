@@ -13,8 +13,8 @@
 
     <groupId>org.opentox.toxotis.database</groupId>
     <artifactId>ToxOtis-db</artifactId>
-    <version>0.2.2-SNAPSHOT</version>
-    <name>ToxOtis-db</name>
+    <version>0.2.9</version>
+    <name>ToxOtis Database Module</name>
     <developers>
         <developer>
             <name>Sopasakis Pantelis</name>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.opentox.toxotis</groupId>
             <artifactId>ToxOtis-core</artifactId>
-            <version>0.5.5</version>
+            <version>0.5.19</version>
         </dependency>
     </dependencies>
 

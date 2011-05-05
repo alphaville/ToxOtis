@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.error;
 
 import org.junit.After;
@@ -38,7 +37,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.ErrorReport;
+import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
@@ -65,20 +66,36 @@ public class AddErrorReportTest {
     }
 
     @After
-    public synchronized void tearDown() {        
+    public synchronized void tearDown() {
     }
 
     @Test
     public void testSomeMethod() throws DbException {
-        ErrorReport er_trace_2 = new ErrorReport(400, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
-        ErrorReport er_trace_1 = new ErrorReport(400, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
-        ErrorReport er = new ErrorReport(502, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
+        ErrorReport er_trace_2 = new ErrorReport(400, "fds43tgdfag", "agtdsfd", "asdfsaf", "jyfrggr");
+        ErrorReport er_trace_1 = new ErrorReport(400, "fdsa5yaergg", "agtdsfd", "asdfsaf", "jyfrggr");
+        ErrorReport er = new ErrorReport(502, "f3405u0t4985dsag", "agtdsfy5trefad", "asdfsaf", "jyfrggr");
         er_trace_1.setErrorCause(er_trace_2);
         er.setErrorCause(er_trace_1);
 
         AddErrorReport adder = new AddErrorReport(er);
-        System.out.println(adder.write());
+        assertEquals(6, adder.write());
         adder.close();
-    }
 
+        FindError finder = new FindError(Services.ntua());
+        finder.setSearchById(er.getUri().getId());
+        IDbIterator<ErrorReport> iterator = finder.list();
+        if (iterator.hasNext()){
+            ErrorReport found = iterator.next();
+            assertEquals(er.getMessage(),found.getMessage());
+            assertEquals(er.getDetails(),found.getDetails());
+            assertEquals(er.getActor(),found.getActor());
+            assertEquals(er.getHttpStatus(),found.getHttpStatus());
+            assertNotNull(found.getErrorCause());
+        }else{
+            fail();
+        }
+        iterator.close();
+        finder.close();
+
+    }
 }

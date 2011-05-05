@@ -44,6 +44,7 @@ import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
+import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -118,7 +119,8 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         if (getErrorReport() != null) {
             builder.addSubSubSubHeading("Error Report");
             HTMLTable errorReportTable = builder.addTable(2);
-            errorReportTable.setAtCursor(new HTMLTextImpl("Actor").formatBold(true)).setTextAtCursor(getErrorReport().getActor() != null ? getErrorReport().getActor() : "Undefined").
+            errorReportTable.setAtCursor(new HTMLTextImpl("URI").formatBold(true)).setTextAtCursor(getErrorReport().getUri() != null ? HTMLUtils.linkUrlsInText(getErrorReport().getUri().toString()) : "Undefined").
+                    setAtCursor(new HTMLTextImpl("Actor").formatBold(true)).setTextAtCursor(getErrorReport().getActor() != null ? getErrorReport().getActor() : "Undefined").
                     setAtCursor(new HTMLTextImpl("Error Code").formatBold(true)).setTextAtCursor(getErrorReport().getErrorCode() != null ? getErrorReport().getErrorCode() : "-").
                     setAtCursor(new HTMLTextImpl("Message").formatBold(true)).setTextAtCursor(getErrorReport().getMessage() != null ? getErrorReport().getMessage() : "-").
                     setAtCursor(new HTMLTextImpl("HTTP Code").formatBold(true)).setTextAtCursor(getErrorReport().getHttpStatus() > 0 ? "" + getErrorReport().getHttpStatus() : "-").

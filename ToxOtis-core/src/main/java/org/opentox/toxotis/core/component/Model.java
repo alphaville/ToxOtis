@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -47,6 +46,7 @@ import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.sql.rowset.serial.SerialBlob;
@@ -54,6 +54,7 @@ import javax.sql.rowset.serial.SerialException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.IBibTexReferencable;
 import org.opentox.toxotis.core.IHTMLSupport;
 import org.opentox.toxotis.core.OTOnlineResource;
 import org.opentox.toxotis.core.IOntologyServiceSupport;
@@ -81,9 +82,10 @@ import org.opentox.toxotis.util.spiders.ModelSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Model extends OTOnlineResource<Model> implements IOntologyServiceSupport<Model>, IHTMLSupport {
+public class Model extends OTOnlineResource<Model> implements IOntologyServiceSupport<Model>, IHTMLSupport, IBibTexReferencable {
 
     private VRI dataset;
+    private Set<VRI> references = new HashSet<VRI>();
     private Algorithm algorithm;
     private List<Feature> predictedFeatures;
     private List<Feature> dependentFeatures;
@@ -270,7 +272,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return this;
     }
 
-    public Model addPredictedFeatures(Feature... features){
+    public Model addPredictedFeatures(Feature... features) {
         if (getPredictedFeatures() == null) {
             setPredictedFeatures(new ArrayList<Feature>(features.length));
         }
@@ -466,6 +468,24 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setAtCursor(new HTMLTextImpl("Training Dataset").formatBold(true)).
                 setTextAtCursor(HTMLUtils.linkUrlsInText(getDataset() != null ? getDataset().toString() : "-"));
 
+        if (getBibTeXReferences() != null && !getBibTeXReferences().isEmpty()) {
+            featuresTable.setAtCursor(new HTMLTextImpl("References").formatBold(true));
+            StringBuilder refs = new StringBuilder();
+            if (getBibTeXReferences().size() == 1) {
+                VRI nextVri = getBibTeXReferences().iterator().next();
+                String id = nextVri.getId();
+                refs.append("<a href=\"" + nextVri + "\">" + id + "</a>\n");
+            } else {
+                int i = 1;
+                refs.append("<ol>\n");
+                for (VRI vriRef : getBibTeXReferences()) {
+                    refs.append("<li><a href=\"" + vriRef + "\">" + vriRef.getId() + "</a></li>\n");
+                }
+                refs.append("</ol>\n");
+            }
+            featuresTable.setTextAtCursor(refs.toString());
+        }
+
         featuresTable.setCellPadding(5).
                 setCellSpacing(2).
                 setTableBorder(1).
@@ -474,9 +494,11 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
         if (getParameters() != null && !getParameters().isEmpty()) {
             builder.addSubSubSubHeading("Model Parameters");
-            HTMLTable parametersTable = builder.addTable(2);
-            parametersTable.setAtCursor(new HTMLTextImpl("Parameter Name").formatBold(true)).setAtCursor(new HTMLTextImpl("Value").formatBold(true));
+            HTMLTable parametersTable = builder.addTable(3);
+            parametersTable.setAtCursor(new HTMLTextImpl("Parameter URI").formatBold(true)).
+                    setAtCursor(new HTMLTextImpl("Parameter Name").formatBold(true)).setAtCursor(new HTMLTextImpl("Value").formatBold(true));
             for (Parameter prm : getParameters()) {
+                parametersTable.setAtCursor(new HTMLTagImpl("a", prm.getUri().toString()).addTagAttribute("href", prm.getUri().toString()));
                 parametersTable.setAtCursor(new HTMLTagImpl("a", prm.getName().getValueAsString()).addTagAttribute("href", getAlgorithm().getUri().toString()));
                 parametersTable.setAtCursor(prm.getTypedValue() != null
                         ? new HTMLTagImpl("a", prm.getTypedValue().getValueAsString()).addTagAttribute(
@@ -485,8 +507,9 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             parametersTable.setCellPadding(5).
                     setCellSpacing(2).
                     setTableBorder(1).
-                    setColWidth(1, 150).
-                    setColWidth(2, 600);
+                    setColWidth(1, 500).
+                    setColWidth(2, 150).
+                    setColWidth(3, 400);
 
         }
 
@@ -503,5 +526,30 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 + "</small>", Alignment.left);
 
         return builder.getDiv();
+    }
+
+    @Override
+    public Set<VRI> getBibTeXReferences() {
+        return references;
+    }
+
+    @Override
+    public IBibTexReferencable addBibTeXReferences(VRI... references) {
+        for (VRI x : references) {
+            this.references.add(x);
+        }
+        return this;
+    }
+
+    @Override
+    public IBibTexReferencable setBibTeXReferences(VRI... references) {
+        this.references = new HashSet<VRI>();
+        return addBibTeXReferences(references);
+    }
+
+    @Override
+    public IBibTexReferencable setBibTeXReferences(Set<VRI> references) {
+        this.references = references;
+        return this;
     }
 }

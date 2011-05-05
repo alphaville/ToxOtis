@@ -36,8 +36,12 @@ public class ParseDataset {
         System.out.println("\nValidating...");
         OntModel ontModel = ds.asOntModel();
         WonderWebValidator validator = new WonderWebValidator(ontModel);
-        boolean isOwnDl = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);        
+        boolean isOwnDl = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
         System.out.println("The reconstructed RDF document is " + (isOwnDl ? "" : "**NOT**") + "OWL-DL valid");       
+
+        org.opentox.toxotis.core.component.Model m = new org.opentox.toxotis.core.component.Model();
+        m.setUri(Services.ntua().augment("model",1));
+        m.asOntModel().write(System.out);
 
     }
 }

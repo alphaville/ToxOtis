@@ -31,8 +31,7 @@
  *
  */
 
-
-package org.opentox.toxotis.core.component;
+package org.opentox.toxotis.database.engine.parameter;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,17 +39,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
  * @author chung
  */
-public class BibTeXTest {
+public class FindParameterTest {
 
-    public BibTeXTest() {
+    public FindParameterTest() {
     }
 
     @BeforeClass
@@ -70,15 +70,17 @@ public class BibTeXTest {
     }
 
     @Test
-    public void testParseBibTex() throws ToxOtisException, ServiceInvocationException {
-//        BibTeX bt = new BibTeX(Services.ntua().augment("bibtex","cd1927a5-ec38-4414-909f-62b4e6cf1d3b")).loadFromRemote();
-    }
+    public void testSomeMethod() throws DbException {
+        FindParameter finder = new FindParameter(Services.anonymous());
+        IDbIterator<Parameter> iterator = finder.list();
+        while (iterator.hasNext()){
+            Parameter p = iterator.next();
+            System.out.println(p.getUri());
+            p.inHtml();
 
-    @Test
-    public void testPublishBibTeX() throws ToxOtisException, ServiceInvocationException {
-        
+        }
+        iterator.close();
+        finder.close();
     }
-
-    
 
 }

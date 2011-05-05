@@ -55,7 +55,7 @@ public class FindUser extends DbReader<User> {
     @Override
     public IDbIterator<User> list() throws DbException {
         setTable("User");
-        setTableColumns("uid", "name", "mail", "password");
+        setTableColumns("uid", "name", "mail", "password","maxParallelTasks","maxModels","maxBibTeX");
         Connection connection = null;
         connection = getConnection();
         try {

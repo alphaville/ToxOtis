@@ -220,11 +220,7 @@ public class AddModel extends DbWriter {
                 modelStatement.addBatch(prepareQueryForParameters());
             }
             modelStatement.executeBatch();
-
-
             connection.commit();
-
-
         } catch (final SQLException ex) {
             if (connection != null) {
                 try {

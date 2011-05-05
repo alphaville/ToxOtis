@@ -32,8 +32,6 @@
  */
 package org.opentox.toxotis.util.aa.policy;
 
-import org.opentox.toxotis.util.LoggingConfiguration;
-
 
 /**
  * A collection of standard groups of Users used to identify certain access levels.

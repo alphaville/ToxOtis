@@ -42,7 +42,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.exception.DbException;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -83,16 +86,34 @@ public class AddUserTest {
     }
 
     @Test
-    public void testSomeMethod() throws Exception {
+    public void testAddUser() throws Exception {
         User mockUser = new User();
         mockUser.setHashedPass("kjsgrls");
         mockUser.setMail("me_" + new Random(5 * System.currentTimeMillis() + 73).nextInt() + "@mail.ntua.gr");
         mockUser.setName("Pantelis S.");
         mockUser.setUid(UUID.randomUUID().toString());
+        mockUser.setMaxBibTeX(1004);
+        mockUser.setMaxParallelTasks(4);
+        mockUser.setMaxModels(781);
 
         AddUser au = new AddUser(mockUser);
-        au.write();
+        assertEquals(1, au.write());
         au.close();
+
+        FindUser finder = new FindUser();
+        finder.setWhere("uid='" + mockUser.getUid() + "'");
+        IDbIterator<User> iterator = finder.list();
+        if (iterator.hasNext()) {
+            User user = iterator.next();
+            assertEquals(mockUser.getMail(), user.getMail());
+            assertEquals(mockUser.getUid(), user.getUid());
+            assertEquals(mockUser.getName(), user.getName());
+            assertEquals(mockUser.getMaxParallelTasks(), user.getMaxParallelTasks());
+            assertEquals(mockUser.getMaxModels(), user.getMaxModels());
+            assertEquals(mockUser.getMaxBibTeX(), user.getMaxBibTeX());
+        } else {
+            fail("No such user in the database");
+        }
 
 
         // CLOSE THE DATASOURCE!
