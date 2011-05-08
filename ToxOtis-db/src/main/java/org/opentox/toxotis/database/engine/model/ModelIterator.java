@@ -37,6 +37,8 @@ import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Algorithm;
 import org.opentox.toxotis.core.component.Model;
@@ -115,7 +117,10 @@ public class ModelIterator extends DbIterator<Model> {
             }
             nextModel.setLocalCode(rs.getString(4));
             try {
-                nextModel.setDataset(new VRI(rs.getString(5)));
+                String datasetFromDatabase = rs.getString(5);
+                if (datasetFromDatabase != null) {
+                    nextModel.setDataset(new VRI(datasetFromDatabase));
+                }
             } catch (URISyntaxException ex) {
                 final String msg = "Illegal URI found for training dataset for a model";
                 logger.error(msg, ex);
@@ -159,7 +164,11 @@ public class ModelIterator extends DbIterator<Model> {
             ModelReferencesFinder modelReferences = new ModelReferencesFinder(modelId);
             Set<String> references = modelReferences.getReferences();
             for (String ref : references) {
-                nextModel.addBibTeXReferences(new VRI(baseUri).augment("bibtex", ref));
+                try {
+                    nextModel.addBibTeXReferences(new VRI(ref));
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(ModelIterator.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             return nextModel;

@@ -479,7 +479,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 int i = 1;
                 refs.append("<ol>\n");
                 for (VRI vriRef : getBibTeXReferences()) {
-                    refs.append("<li><a href=\"" + vriRef + "\">" + vriRef.getId() + "</a></li>\n");
+                    refs.append("<li><a href=\"" + vriRef + "\">" + vriRef + "</a></li>\n");
                 }
                 refs.append("</ol>\n");
             }
@@ -490,7 +490,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setCellSpacing(2).
                 setTableBorder(1).
                 setColWidth(1, 150).
-                setColWidth(2, 600);
+                setColWidth(2, 650);
 
         if (getParameters() != null && !getParameters().isEmpty()) {
             builder.addSubSubSubHeading("Model Parameters");

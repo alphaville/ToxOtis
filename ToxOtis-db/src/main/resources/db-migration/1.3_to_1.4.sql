@@ -1,0 +1,3 @@
+ALTER TABLE `ModelBibTeX` DROP FOREIGN KEY `bibTeXId_ref_BibTeX`;
+ALTER TABLE `ModelBibTeX` CHANGE COLUMN `bibTeXId` `bibTeXUri` VARCHAR(255);
+DELETE FROM `ModelBibTeX`;

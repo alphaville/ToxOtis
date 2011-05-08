@@ -36,7 +36,7 @@ public class ModelReferencesFinder extends DbOperation {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            results = statement.executeQuery(String.format("SELECT `bibTeXId` FROM `ModelBibTeX` WHERE `modelId`='%s'", modelId));
+            results = statement.executeQuery(String.format("SELECT `bibTeXUri` FROM `ModelBibTeX` WHERE `modelId`='%s'", modelId));
             while (results.next()) {
                 references.add(results.getString(1));
             }

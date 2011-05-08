@@ -29,6 +29,13 @@ public class AssociateBibTeX extends DbWriter {
         }
     }
 
+    /**
+     *
+     * @param modelId
+     *      The id of the model
+     * @param bibTex
+     *      The <b>URIs</b> of the BibTeX resources (not the IDs)
+     */
     public AssociateBibTeX(String modelId, String... bibTex) {
         this.modelId = modelId;
         this.bibTexIds = bibTex;
@@ -39,7 +46,7 @@ public class AssociateBibTeX extends DbWriter {
         if (SQL == null) {
             setInsertType(InsertType.INSERT_IGNORE);
             setTable("ModelBibTeX");
-            setTableColumns("modelId", "bibTeXId");
+            setTableColumns("modelId", "bibTeXUri");
             SQL = getSql();
         }
         Connection connection = getConnection();

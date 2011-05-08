@@ -195,7 +195,7 @@ public class AddModel extends DbWriter {
             writeModel.setString(1, modelCreator);
             writeModel.setString(2, model.getAlgorithm().getUri().toString());
             writeModel.setString(3, model.getLocalCode());
-            writeModel.setString(4, model.getDataset().toString());
+            writeModel.setString(4, model.getDataset() != null ? model.getDataset().toString() : null);
             writeModel.setBlob(5, model.getBlob());
             writeModel.executeUpdate();
 
@@ -275,7 +275,7 @@ public class AddModel extends DbWriter {
             }
             close();
             if (sqlOnClose != null) {
-                logger.warn(null,sqlOnClose);
+                logger.warn(null, sqlOnClose);
                 throw new DbException(sqlOnClose);
             }
         }

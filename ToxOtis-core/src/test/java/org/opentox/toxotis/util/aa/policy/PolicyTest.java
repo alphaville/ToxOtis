@@ -37,8 +37,24 @@ public class PolicyTest {
 
     @Test
     public void testSomeMethod() throws Exception {
-        AuthenticationToken at = new AuthenticationToken("Sopasakis", "abfhs8y");        
-        PolicyManager.defaultSignleUserPolicy("shutdown_opentox_8080", new VRI("http://opentox.ntua.gr:8080/shutdown"), at).publish(null, at);
+        AuthenticationToken at = new AuthenticationToken("hampos", "arabela");
+//        PolicyManager.defaultSignleUserPolicy("userguest_sopasakis",
+//                new VRI("http://alphaville:8080/user/Sopasakis@opensso.in-silico.ch"), at).publish(null, at);
+
+        Policy pol = new Policy("NTUA_all_users");
+        pol.addSubject(GroupSubject.DEVELOPMENT);
+        pol.addSubject(GroupSubject.PARTNER);
+        PolicyRule pr = new PolicyRule("ot_only_access");
+        pr.setTargetUri("http://opentox.ntua.gr:8080/user");
+        pr.setAllowGet(true);
+        pr.setAllowPost(false);
+        pr.setAllowPut(false);
+        pr.setAllowDelete(false);
+        pol.addRule(pr);
+        PolicyWrapper pw = new PolicyWrapper(pol);
+        pw.publish(null, at);
+
+
 //        ArrayList<String > policiesPlusOne = PolicyManager.listPolicyUris(null, at);
 //        assertTrue("A policy was created but is not found in the list of policies",policiesPlusOne.contains("testPolicy_xy"));
 //        PolicyManager.deleteRemotePolicy(null, "testPolicy_xy", at);

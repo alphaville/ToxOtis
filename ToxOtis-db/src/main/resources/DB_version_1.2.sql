@@ -1,4 +1,4 @@
---DB Version : 1.3
+--DB Version : 1.2
 DROP DATABASE IF EXISTS toxotisdb;
 CREATE DATABASE IF NOT EXISTS toxotisdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
 USE toxotisdb;
@@ -39,7 +39,7 @@ UNLOCK TABLE ;
 DROP TABLE IF EXISTS `BibTeX`;
 CREATE TABLE `BibTeX` (
   `id` varchar(255) NOT NULL,
-  `abstract` TEXT COLLATE utf8_bin DEFAULT NULL,
+  `abstract` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `address` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `annotation` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `author` varchar(255) COLLATE utf8_bin NOT NULL,
