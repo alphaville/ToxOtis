@@ -111,6 +111,49 @@ public class BibTeX extends OTPublishable<BibTeX>
          */
         Phdthesis,
         /**
+         * A work that is printed and bound, but without a named
+         * publisher or sponsoring institution.
+         */
+        Booklet,
+        /**
+         * A part of a book, which may be a chapter (or section or whatever)
+         * and/or a range of pages.
+         */
+        Inbook,
+        /**
+         * A part of a book having its own title.
+         */
+        Incollection,
+        /**
+         * An article in a conference proceedings.
+         */
+        Inproceedings,
+        /**
+         * Technical documentation
+         */
+        Manual,
+        /**
+         * A Master's thesis.
+         */
+        Mastersthesis,
+        /**
+         * Misc, Use this type when nothing else fits.
+         */
+        Misc,
+        /**
+         * The proceedings of a conference.
+         */
+        Proceedings,
+        /**
+         * A report published by a school or other institution,
+         * usually numbered within a series.
+         */
+        TechReport,
+        /**
+         * A document having an author and title, but not formally published.
+         */
+        Unpublished,
+        /**
          * A generic BibTeX entry which encapsulates all cases.
          */
         Entry;
@@ -525,9 +568,9 @@ public class BibTeX extends OTPublishable<BibTeX>
     @Override
     public Task publishOnline(AuthenticationToken token) throws ServiceInvocationException {
         VRI bibTexService = getBibTexService();
-        if (token != null) {// Append tokenid to the list of URL parameters
-            bibTexService.appendToken(token);
-        }
+//        if (token != null) {// Append tokenid to the list of URL parameters
+//            bibTexService.appendToken(token);
+//        }
         return publishOnline(bibTexService, token);
     }
 
@@ -545,7 +588,6 @@ public class BibTeX extends OTPublishable<BibTeX>
         builder.addSubSubSubHeading("BibTeX Information");
         HTMLTable table = builder.addTable(2).
                 setTextAtCursor("BibTeX URI").setTextAtCursor(new HTMLTagImpl("a", getUri().toString()).addTagAttribute("href", getUri().toString()).toString()).
-                setTextAtCursor("Title").setTextAtCursor(getTitle()).
                 setTextAtCursor("Author(s)").setTextAtCursor(getAuthor()).
                 setTextAtCursor("Entry Type").setTextAtCursor(getBibType().toString()).
                 setColWidth(1, 150).
@@ -659,7 +701,7 @@ public class BibTeX extends OTPublishable<BibTeX>
             try {
                 bibTypeClass = KnoufBibTex.forName(m_bib_type.toString());
             } catch (ToxOtisException ex) {
-                throw new RuntimeException("Serialization to Individual is not possible - Severe BUG!",ex);
+                throw new RuntimeException("Serialization to Individual is not possible - Severe BUG!", ex);
             }
         }
         indiv = model.createIndividual(bibtexUri, bibTypeClass.inModel(model));

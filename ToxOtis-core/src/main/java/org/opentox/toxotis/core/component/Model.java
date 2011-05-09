@@ -473,8 +473,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             StringBuilder refs = new StringBuilder();
             if (getBibTeXReferences().size() == 1) {
                 VRI nextVri = getBibTeXReferences().iterator().next();
-                String id = nextVri.getId();
-                refs.append("<a href=\"" + nextVri + "\">" + id + "</a>\n");
+                refs.append("<a href=\"" + nextVri + "\">" + nextVri + "</a>\n");
             } else {
                 int i = 1;
                 refs.append("<ol>\n");
