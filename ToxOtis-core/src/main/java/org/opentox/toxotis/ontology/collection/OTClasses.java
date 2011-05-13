@@ -76,6 +76,8 @@ public class OTClasses {
     private static OntologicalClass ms_FeatureValuePair;
     private static OntologicalClass ms_Model;
     private static OntologicalClass ms_Parameter;
+    private static OntologicalClass ms_QPRFReport;
+    private static OntologicalClass ms_Report;
 
     private static OntologicalClass ms_MultiParameter;
     private static OntologicalClass ms_VectorParameter;
@@ -186,6 +188,26 @@ public class OTClasses {
             ms_Algorithm = clazz;
         }
         return ms_Algorithm;
+    }
+
+    public static OntologicalClass Report() {
+        if (ms_Report == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("Report");
+            clazz.getMetaInfo().addComment("An OpenTox-relevant report");
+            clazz.getSuperClasses().add(OpenToxResource());
+            ms_Report = clazz;
+        }
+        return ms_Report;
+    }
+
+    public static OntologicalClass QPRFReport() {
+        if (ms_QPRFReport == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("QPRFReport");
+            clazz.getMetaInfo().addComment("A QPRF report");
+            clazz.getSuperClasses().add(Report());
+            ms_QPRFReport = clazz;
+        }
+        return ms_QPRFReport;
     }
 
     public static OntologicalClass Compound() {

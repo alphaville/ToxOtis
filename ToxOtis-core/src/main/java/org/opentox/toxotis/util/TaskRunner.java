@@ -88,6 +88,7 @@ public class TaskRunner implements Callable<Task> {
         }
     }
 
+    @Override
     public Task call() throws ServiceInvocationException {
         task.loadFromRemote();
         return updateTask(task);

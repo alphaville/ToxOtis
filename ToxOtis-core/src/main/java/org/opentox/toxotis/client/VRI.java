@@ -30,6 +30,8 @@
  * tel. +30 210 7723236
  *
  */
+
+
 package org.opentox.toxotis.client;
 
 import java.io.Serializable;
@@ -45,6 +47,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.*;
 import org.opentox.toxotis.core.component.BibTeX;
+import org.opentox.toxotis.core.component.qprf.QprfReport;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -84,8 +87,9 @@ public class VRI implements Serializable { // Well tested!
         Model("model"),
         Query("query"),
         Error("error"),
-        Parameter("parameter")
-        ;
+        Parameter("parameter"),
+        Report("reach_report"),
+        Qprf("qprf");
         private final String keyword;
 
         private UriKeywords(final String keyword) {
@@ -115,7 +119,7 @@ public class VRI implements Serializable { // Well tested!
         TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing),
         ERROR(OTClasses.ErrorReport(), ErrorReport.class, ".+/(?i)error(s||)/" + END_SLASH_orNothing),
         PARAMETER(OTClasses.Parameter(), Parameter.class, ".+/(?i)parameter(s||)/" + END_SLASH_orNothing),
-        ;
+        QPRFREPORT(OTClasses.QPRFReport(), QprfReport.class, ".+/(?i)reach_report(s||)/(?i)qprf/" + END_SLASH_orNothing);
         /**
          * ParameterValue of regular expressions that identify a
          * certain resource.
@@ -438,10 +442,10 @@ public class VRI implements Serializable { // Well tested!
 
     @Override
     public String toString() {
-        if (uri==null){
+        if (uri == null) {
             return null;
         }
-        if (uri.isEmpty()){
+        if (uri.isEmpty()) {
             return "";
         }
         StringBuilder string = new StringBuilder(uri);
@@ -648,7 +652,11 @@ public class VRI implements Serializable { // Well tested!
      *      URI without the query part
      */
     public String getStringNoQuery() {
-        return uri;
+        String stringNoQuery = uri;
+        if (stringNoQuery.endsWith("/")) {
+            stringNoQuery = stringNoQuery.substring(0, stringNoQuery.length() - 1);
+        }
+        return stringNoQuery;
     }
 
     @Override
@@ -692,14 +700,15 @@ public class VRI implements Serializable { // Well tested!
     public String getId() {
         String residual = getStringNoQuery().replaceAll(getServiceBaseUri().toString(), "").trim();
         String[] parts = residual.split("/");
-        if (parts.length == 3) {
-            String id = parts[2];
+
+        if (parts.length == 3 || parts.length == 4) {
+            String id = parts[parts.length - 1];
             if (id.endsWith("/")) {
                 id = id.substring(0, id.length() - 2);
             }
             return id;
         }
+
         return null;
     }
-    
 }

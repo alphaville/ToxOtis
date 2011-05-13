@@ -323,13 +323,19 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         return this;
     }
 
+    private String normalizeStatusString(String status) {
+        String newStatus = status;
+        newStatus = newStatus.toLowerCase();
+        return (newStatus.length() > 0) ? Character.toUpperCase(newStatus.charAt(0)) + newStatus.substring(1) : newStatus;
+    }
+
     @Override
     public Individual asIndividual(OntModel model) {
         Individual indiv = model.createIndividual(getUri() != null ? getUri().getStringNoQuery() : null, OTClasses.Task().inModel(model));
         getMeta().attachTo(indiv, model);
         if (hasStatus != null) {
             indiv.addLiteral(OTDatatypeProperties.hasStatus().asDatatypeProperty(model),
-                    model.createTypedLiteral(hasStatus, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(normalizeStatusString(hasStatus.toString()), XSDDatatype.XSDstring));
         }
         if (percentageCompleted != -1) {
             indiv.addLiteral(OTDatatypeProperties.percentageCompleted().asDatatypeProperty(model),

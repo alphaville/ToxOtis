@@ -74,10 +74,5 @@ public class AppTest
         Task task = new Task();
 
     }
-//    public void testGetProtectedDataset() throws Exception {
-//        AuthenticationToken at = new AuthenticationToken("Sopasakis", "abfhs8y");
-//        Dataset ds = new Dataset(new VRI("https://ambit.uni-plovdiv.bg:8443/ambit2/dataset/6"));
-//        System.out.println(at);
-//        ds.loadFromRemote(at);
-//    }
+
 }
