@@ -842,6 +842,22 @@ public class MetaInfoImpl implements MetaInfo {
         return hash;
     }
 
+
+    private String listOfCreators(){
+        StringBuilder builder = new StringBuilder();
+        String creatorId = null;
+        for (LiteralValue creator : creators){
+            creatorId = creator.getValueAsString();
+            builder.append("<a href=\"");
+            builder.append("/user/");
+            builder.append(creatorId);
+            builder.append("\">");
+            builder.append(creatorId);
+            builder.append("</a>\n");
+        }
+        return builder.toString();
+    }
+
     @Override
     public HTMLContainer inHtml() {
         HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
@@ -864,7 +880,7 @@ public class MetaInfoImpl implements MetaInfo {
         }
         if (creators != null && !creators.isEmpty()) {
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "creator") + "\">Creator" + (creators.size() > 1 ? "s" : "") + "</a>").
-                    setTextAtCursor(createHtmlList(creators));
+                    setTextAtCursor(listOfCreators());
         }
         if (publishers != null && !publishers.isEmpty()) {
             table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "publisher") + "\">Publisher" + (publishers.size() > 1 ? "s" : "") + "</a>").

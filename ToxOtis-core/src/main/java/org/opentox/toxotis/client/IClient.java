@@ -96,7 +96,6 @@ public interface IClient extends Closeable {
      */
     @Override
     void close() throws IOException;
-    
 
     /**
      * Retrieve the specified media type which is the value for the <code>Accept</code>
@@ -222,8 +221,11 @@ public interface IClient extends Closeable {
      */
     Set<VRI> getResponseUriList() throws ServiceInvocationException;
 
-    public WriteLock getConnectionLock() ;
+    public WriteLock getConnectionLock();
 
-    public ReadLock getReadLock() ;
+    public ReadLock getReadLock();
 
+    String getResponseHeader(String header) throws ServiceInvocationException;
+
+    String getResponseContentType() throws ServiceInvocationException;
 }

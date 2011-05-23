@@ -34,6 +34,7 @@ package org.opentox.toxotis.core.html;
 
 import org.opentox.toxotis.core.html.impl.HTMLAppendableTableImpl;
 import org.opentox.toxotis.core.html.impl.HTMLContainerImpl;
+import org.opentox.toxotis.core.html.impl.HTMLFormImpl;
 import org.opentox.toxotis.core.html.impl.HTMLParagraphImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
@@ -92,6 +93,21 @@ public class HTMLDivBuilder {
     public HTMLContainer addSubSubSubHeading(String text) {
         div.addComponent(new HTMLTagImpl("h4", text));
         return div;
+    }
+
+
+    public HTMLForm addForm(){
+        HTMLForm form = new HTMLFormImpl();
+        div.addComponent(form);
+        return form;
+    }
+
+    public HTMLForm addForm(String actionUri, String method){
+        HTMLForm form = new HTMLFormImpl();
+        form.setActionUrl(actionUri);
+        form.setMethod(method);
+        div.addComponent(form);
+        return form;
     }
 
     public HTMLTable addTable(int cols, int rows) {

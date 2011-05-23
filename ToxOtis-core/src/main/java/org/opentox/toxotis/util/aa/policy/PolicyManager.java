@@ -107,7 +107,6 @@ public class PolicyManager {
         ArrayList<String> policies = listPolicyUris(policyService, token);
         for (String policyName : policies) {
             deleteRemotePolicy(policyService, policyName, token);
-            System.out.println(policyName);
         }
     }
 

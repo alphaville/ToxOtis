@@ -422,4 +422,35 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
         }
         return setOfUris;
     }
+
+    @Override
+    public String getResponseContentType() throws ServiceInvocationException {
+        String ct = getResponseHeader(RequestHeaders.CONTENT_TYPE);
+        if (ct==null) return null;
+        return ct.split(";")[0];
+
+    }
+
+    @Override
+    public String getResponseHeader(String header) throws ServiceInvocationException {
+        if (con == null) {
+            initializeConnection(vri.toURI());
+        }
+        for (int i = 0;; i++) {
+            String headerName = con.getHeaderFieldKey(i);
+            String headerValue = con.getHeaderField(i);
+            if (headerName == null && headerValue == null) {
+                break;
+            }
+            if (headerName == null) {
+                continue;
+            } else {
+                if (headerName.equalsIgnoreCase(header)) {
+                    return headerValue;
+                }
+
+            }
+        }
+        return null;
+    }
 }

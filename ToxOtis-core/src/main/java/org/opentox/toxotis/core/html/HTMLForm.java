@@ -40,6 +40,8 @@ package org.opentox.toxotis.core.html;
 public interface HTMLForm extends HTMLExpandableComponent {
 
     HTMLForm setActionUrl(String actionUrl);
-    HTMLForm addInput(String description, String parameterName, String value, int size);
+    HTMLForm setMethod(String method);
+    String getMethod();
+    String getActionUrl();
 
 }

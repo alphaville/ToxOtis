@@ -61,8 +61,12 @@ import org.opentox.toxotis.core.IOntologyServiceSupport;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
+import org.opentox.toxotis.core.html.HTMLForm;
+import org.opentox.toxotis.core.html.HTMLInput;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.HTMLUtils;
+import org.opentox.toxotis.core.html.impl.HTMLAppendableTableImpl;
+import org.opentox.toxotis.core.html.impl.HTMLInputImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
@@ -452,8 +456,31 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         builder.addSubHeading("Model Report");
         builder.addSubSubHeading(uri.toString());
         builder.getDiv().setAlignment(Alignment.justify).breakLine().horizontalSeparator();
-        builder.addSubSubHeading("Information about the Model");
+
+        builder.addSubSubHeading("Use the model");
+        builder.addParagraph("Specify the dataset you want to submit for prediction", Alignment.justify);
+
+
+        HTMLForm form = builder.addForm("", "POST");
+
+        HTMLTable interfacetable = new HTMLAppendableTableImpl(2);
+        interfacetable.setAtCursor(new HTMLTextImpl("Dataset URI").formatBold(true)).
+                setAtCursor(new HTMLInputImpl().setName("dataset_uri").setType(HTMLInput.HTMLInputType.TEXT).
+                setValue(getDataset() != null ? getDataset().toString() : "").setSize(60)).
+                setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Predict")).setTextAtCursor("");
+        interfacetable.setCellPadding(5).
+                setCellSpacing(2).
+                setTableBorder(1).
+                setColWidth(1, 200).
+                setColWidth(2, 600);
+        form.addComponent(interfacetable);
+
         builder.getDiv().breakLine().breakLine();
+
+
+
+        builder.addSubSubHeading("Information about the Model");
+        builder.getDiv().breakLine();
 
         HTMLTable featuresTable = builder.addTable(2);
 
@@ -497,7 +524,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             parametersTable.setAtCursor(new HTMLTextImpl("Parameter URI").formatBold(true)).
                     setAtCursor(new HTMLTextImpl("Parameter Name").formatBold(true)).setAtCursor(new HTMLTextImpl("Value").formatBold(true));
             for (Parameter prm : getParameters()) {
-                parametersTable.setAtCursor(new HTMLTagImpl("a", prm.getUri().toString()).addTagAttribute("href", prm.getUri().toString()));
+                parametersTable.setAtCursor(new HTMLTagImpl("a", "/parameter/"+prm.getUri().getId()).addTagAttribute("href", prm.getUri().toString()));
                 parametersTable.setAtCursor(new HTMLTagImpl("a", prm.getName().getValueAsString()).addTagAttribute("href", getAlgorithm().getUri().toString()));
                 parametersTable.setAtCursor(prm.getTypedValue() != null
                         ? new HTMLTagImpl("a", prm.getTypedValue().getValueAsString()).addTagAttribute(
@@ -506,15 +533,19 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             parametersTable.setCellPadding(5).
                     setCellSpacing(2).
                     setTableBorder(1).
-                    setColWidth(1, 500).
+                    setColWidth(1, 400).
                     setColWidth(2, 150).
-                    setColWidth(3, 400);
+                    setColWidth(3, 240);
 
         }
 
         if (getMeta() != null && !getMeta().isEmpty()) {
+            builder.getDiv().breakLine().breakLine();
             builder.addSubSubSubHeading("Meta Information");
-            builder.addComponent(getMeta().inHtml());
+            HTMLContainer metaContainer = getMeta().inHtml();
+            HTMLTable metaTable = (HTMLTable) metaContainer.getComponents().get(0);
+            metaTable.setColWidth(1, 150).setColWidth(2, 650);
+            builder.addComponent(metaContainer);
         }
 
         builder.addParagraph("<small>Other Formats: "

@@ -161,7 +161,6 @@ public class PolicyWrapper implements IPolicyWrapper {
         IPostClient spc = ClientFactory.createPostClient(policyServer);
         spc.setContentType(Media.APPLICATION_XML);
         spc.addHeaderParameter(SUBJECT_ID, token.stringValue());
-        System.out.println(this.getText().trim());
         spc.setPostable(this.getText().trim(), true);
         spc.post();
         try {
