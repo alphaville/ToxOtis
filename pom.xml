@@ -138,6 +138,6 @@
         <module>ToxOtis-benchmark</module>
         <module>ToxOtis-janitor</module>
         <module>ToxOtis-db</module>
-    </modules>
+  </modules>
 
 </project>

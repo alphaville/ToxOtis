@@ -71,7 +71,7 @@ public class DataSourceFactoryTest {
 
     @Test
     public void testInvokeDataSource() throws ServiceInvocationException, ToxOtisException {
-        AuthenticationToken token = new AuthenticationToken("Sopasakis","abfhs8y");
+        AuthenticationToken token = new AuthenticationToken("guest","guest");
         System.out.println(token);
 
 //        try {

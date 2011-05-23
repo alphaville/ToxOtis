@@ -1,4 +1,4 @@
---DB Version : 1.3
+--DB Version : 1.5
 DROP DATABASE IF EXISTS toxotisdb;
 CREATE DATABASE IF NOT EXISTS toxotisdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
 USE toxotisdb;
@@ -243,7 +243,7 @@ DROP TABLE IF EXISTS `QprfReport`;
 CREATE TABLE `QprfReport` (
     `id` varchar(255) COLLATE utf8_bin NOT NULL,
     `modelUri` varchar(2000) COLLATE utf8_bin NOT NULL,
-    `compoundUri` varchar(2000) COLLATE utf8_bin NOT NULL,    
+    `compoundUri` varchar(2000) COLLATE utf8_bin NOT NULL,
     `doaUri` varchar(2000) COLLATE utf8_bin DEFAULT NULL,
     `keywords`  varchar(2000) COLLATE utf8_bin DEFAULT NULL,
     `report_date` BIGINT,

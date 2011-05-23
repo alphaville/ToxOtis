@@ -74,7 +74,7 @@ public class AddBibTeXTest {
         
     }
 
-    @Test
+//    @Test
     public void testWriteBibTex() throws InterruptedException {
         int poolSize = 100;
         int folds = 1 * poolSize + 100;// just to make sure!!! (brutal?!)
@@ -104,6 +104,7 @@ public class AddBibTeXTest {
         }
     }
 
+    @Test
     public void testRegisterBibTeX() throws DbException {
         User u = User.GUEST;
         BibTeX bt = null;

@@ -30,16 +30,15 @@
  * tel. +30 210 7723236
  *
  */
-
-
-package org.opentox.toxotis.database.account;
+package org.opentox.toxotis.database.engine.qprf;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.core.component.qprf.QprfReport;
+import org.opentox.toxotis.database.engine.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
@@ -47,9 +46,9 @@ import org.opentox.toxotis.database.exception.DbException;
  *
  * @author Pantelis Sopasakis
  */
-public class AccountManagerTest {
+public class BatchAddFoafTest {
 
-    public AccountManagerTest() {
+    public BatchAddFoafTest() {
     }
 
     @BeforeClass
@@ -69,33 +68,11 @@ public class AccountManagerTest {
     }
 
     @Test
-    public void testUserExists() throws DbException {
-        AccountManager am = new AccountManager(User.GUEST);
-        assertTrue(am.userExists());
+    public void testAddFoaf() throws DbException {
+        ROG rog = new ROG();
+        QprfReport report = rog.nextReport(5);
+        BatchAddFoaf foafAdder = new BatchAddFoaf(report.getAuthors());
+        assertEquals(5, foafAdder.write());
+        foafAdder.close();
     }
-
-    @Test
-    public void testUserNotExists() throws DbException {
-        User unknownUser = new User();
-        unknownUser.setUid("whatever@some-unknown-server.eu");
-        AccountManager am = new AccountManager(unknownUser);
-        assertFalse(am.userExists());
-    }
-
-    @Test
-    public void testCountModels() throws DbException {
-        AccountManager am = new AccountManager(User.GUEST);
-        int count = am.countModels();
-        System.out.println(count);
-    }
-
-    @Test
-    public void testCountTasks() throws DbException {
-        User u = new User();
-        u.setUid("Sopasakis@opensso.in-silico.ch");
-        AccountManager am = new AccountManager(u);
-        int count = am.countActiveTasks();
-        System.out.println(count);
-    }
-
 }

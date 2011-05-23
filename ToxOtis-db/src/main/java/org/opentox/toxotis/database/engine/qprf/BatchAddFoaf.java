@@ -30,82 +30,76 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.database.engine.bibtex;
+package org.opentox.toxotis.database.engine.qprf;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
- * Associate a list of BibTeX with a Model.
+ *
  * @author Pantelis Sopasakis
  */
-public class AssociateBibTeX extends DbWriter {
+class BatchAddFoaf extends DbWriter {
 
+    private final Collection<VRI> foaf;
+    private PreparedStatement ps;
     private static String SQL;
-    private String modelId;
-    private String[] bibTexIds;
-    private PreparedStatement prepared;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AssociateBibTeX.class);
 
-    public AssociateBibTeX(VRI modelId, VRI... bibTex) {
-        this.modelId = modelId.toString();
-        bibTexIds = new String[bibTex.length];
-        int i = 0;
-        for (VRI vri : bibTex) {
-            bibTexIds[i] = vri.toString();
-            i++;
-        }
+    public BatchAddFoaf(Collection<VRI> authors) {
+        this.foaf = authors;
     }
 
-    /**
-     *
-     * @param modelId
-     *      The id of the model
-     * @param bibTex
-     *      The <b>URIs</b> of the BibTeX resources (not the IDs)
-     */
-    public AssociateBibTeX(String modelId, String... bibTex) {
-        this.modelId = modelId;
-        this.bibTexIds = bibTex;
+    public BatchAddFoaf(VRI... foafUris) {
+        this.foaf = new ArrayList<VRI>();
+        Collections.addAll(this.foaf, foafUris);
     }
 
     @Override
     public int write() throws DbException {
-        if (SQL == null) {
-            setInsertType(InsertType.INSERT_IGNORE);
-            setTable("ModelBibTeX");
-            setTableColumns("modelId", "bibTeXUri");
-            SQL = getSql();
+        if (foaf == null || (foaf != null && foaf.isEmpty())) {
+            return 0;
         }
-        Connection connection = getConnection();
+        if (SQL == null) {
+            //setInsertType(InsertType.INSERT_IGNORE);
+            setTable("Foaf");
+            setTableColumns("id");
+            SQL = getSql();
+            System.out.println(SQL);
+        }
         try {
-            prepared = connection.prepareStatement(SQL);
-            for (String bibtex : bibTexIds) {
-                prepared.setString(1, modelId);
-                prepared.setString(2, bibtex);
-                prepared.addBatch();
+            ps = getConnection().prepareStatement(SQL);
+            for (VRI vri : foaf) {
+                System.out.println("Adding " + vri);
+                ps.setString(1, vri.toString());
+                ps.addBatch();
             }
-            int[] ints = prepared.executeBatch();
+            int[] ints = ps.executeBatch();
             int sum = 0;
             for (int i : ints) {
                 sum += i;
             }
             return sum;
         } catch (SQLException ex) {
+            Logger.getLogger(BatchAddFoaf.class.getName()).log(Level.SEVERE, null, ex);
             throw new DbException(ex);
         } finally {
             SQLException sqle = null;
-            if (prepared != null) {
+            if (ps != null) {
                 try {
-                    prepared.close();
+                    ps.close();
                 } catch (SQLException ex) {
                     final String msg = "SQL exception occured while closing the  SQL statement for "
                             + "adding a model in the database consisting of particular batched statements";
-                    logger.warn(msg, ex);
+//                    logger.warn(msg, ex);
                     sqle = ex;
                 }
             }

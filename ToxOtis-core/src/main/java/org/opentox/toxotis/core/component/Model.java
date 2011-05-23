@@ -457,16 +457,22 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         builder.addSubSubHeading(uri.toString());
         builder.getDiv().setAlignment(Alignment.justify).breakLine().horizontalSeparator();
 
+
+        /**
+         * Interface for making predictions
+         */
         builder.addSubSubHeading("Use the model");
         builder.addParagraph("Specify the dataset you want to submit for prediction", Alignment.justify);
-
-
         HTMLForm form = builder.addForm("", "POST");
-
+        form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).setName("comingFrom").setValue("webInterface"));
+        int textBoxSize = 60;
         HTMLTable interfacetable = new HTMLAppendableTableImpl(2);
         interfacetable.setAtCursor(new HTMLTextImpl("Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_uri").setType(HTMLInput.HTMLInputType.TEXT).
-                setValue(getDataset() != null ? getDataset().toString() : "").setSize(60)).
+                setValue(getDataset() != null ? getDataset().toString() : "").setSize(textBoxSize)).
+                setAtCursor(new HTMLTextImpl("Dataset Service").formatBold(true)).
+                setAtCursor(new HTMLInputImpl().setName("dataset_service").
+                    setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset.getServiceBaseUri().augment("dataset").toString()).setSize(textBoxSize)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Predict")).setTextAtCursor("");
         interfacetable.setCellPadding(5).
                 setCellSpacing(2).
@@ -476,6 +482,36 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         form.addComponent(interfacetable);
 
         builder.getDiv().breakLine().breakLine();
+
+
+
+        /**
+         * Interface for model validation
+         */
+        builder.addSubSubHeading("Validate the model (using a test set)");
+        builder.addParagraph("Test-set validation of this model", Alignment.justify);
+        HTMLForm form2 = builder.addForm("/iface/validation", "POST");
+        form2.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).setName("comingFrom").setValue("webInterface"));
+        form2.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).setName("model_uri").setValue(uri.toString()));
+        int textBoxSize2 = 60;
+        HTMLTable validationtable = new HTMLAppendableTableImpl(2);
+        validationtable.setAtCursor(new HTMLTextImpl("Test Dataset URI").formatBold(true)).
+                setAtCursor(new HTMLInputImpl().setName("test_dataset_uri").setType(HTMLInput.HTMLInputType.TEXT).
+                setValue(getDataset() != null ? getDataset().toString() : "").setSize(textBoxSize2)).
+                setAtCursor(new HTMLTextImpl("Target Dataset URI").formatBold(true)).
+                setAtCursor(new HTMLInputImpl().setName("test_target_dataset_uri").
+                    setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset.toString()).setSize(textBoxSize2)).
+                    setAtCursor(new HTMLTextImpl("Validation Service").formatBold(true)).
+                setAtCursor(new HTMLInputImpl().setName("validation_service").
+                    setType(HTMLInput.HTMLInputType.TEXT).setValue("http://toxcreate2.in-silico.ch/validation/test_set_validation").setSize(textBoxSize2)).
+                setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Validate")).setTextAtCursor("");
+        validationtable.setCellPadding(5).
+                setCellSpacing(2).
+                setTableBorder(1).
+                setColWidth(1, 250).
+                setColWidth(2, 550);
+        form2.addComponent(validationtable);
+
 
 
 
