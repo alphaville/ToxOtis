@@ -476,9 +476,9 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Predict")).setTextAtCursor("");
         interfacetable.setCellPadding(5).
                 setCellSpacing(2).
-                setTableBorder(1).
-                setColWidth(1, 200).
-                setColWidth(2, 600);
+                setTableBorder(0).
+                setColWidth(1, 250).
+                setColWidth(2, 550);
         form.addComponent(interfacetable);
 
         builder.getDiv().breakLine().breakLine();
@@ -507,13 +507,12 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Validate")).setTextAtCursor("");
         validationtable.setCellPadding(5).
                 setCellSpacing(2).
-                setTableBorder(1).
+                setTableBorder(0).
                 setColWidth(1, 250).
                 setColWidth(2, 550);
         form2.addComponent(validationtable);
 
-
-
+        builder.getDiv().breakLine().breakLine();
 
         builder.addSubSubHeading("Information about the Model");
         builder.getDiv().breakLine();
