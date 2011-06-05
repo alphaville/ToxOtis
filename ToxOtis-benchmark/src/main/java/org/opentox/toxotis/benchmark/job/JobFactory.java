@@ -2,6 +2,7 @@ package org.opentox.toxotis.benchmark.job;
 
 import org.opentox.toxotis.benchmark.job.impl.ParseDatasetJob;
 import java.util.ArrayList;
+import org.opentox.toxotis.benchmark.job.impl.DatasetMemoryJob;
 import org.opentox.toxotis.benchmark.job.impl.DownloadOntModelJob;
 import org.opentox.toxotis.benchmark.job.impl.InstancesFromCsv;
 import org.opentox.toxotis.benchmark.job.impl.TimeAuthenticationJob;
@@ -41,6 +42,18 @@ public class JobFactory {
         ArrayList<Job> jobs = new ArrayList<Job>();
         for (int i = start; i <= stop; i += step) {
             DownloadOntModelJob job = new DownloadOntModelJob(i, i, gaugeName);
+            job.setService(templatedServiceUrl);
+            job.setNumberIterations(iterations);
+            job.setTitle(title);
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    public static ArrayList<Job> createMemoryTest(String title, int start, int stop, int step, String templatedServiceUrl, int iterations, String gaugeName) {
+        ArrayList<Job> jobs = new ArrayList<Job>();
+        for (int i = start; i <= stop; i += step) {
+            DatasetMemoryJob job = new DatasetMemoryJob(i, i, gaugeName);
             job.setService(templatedServiceUrl);
             job.setNumberIterations(iterations);
             job.setTitle(title);

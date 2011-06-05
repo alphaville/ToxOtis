@@ -4,7 +4,7 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.5.50</version>
+    <version>0.6.5</version>
     <name>ToxOtis Core Module</name>
     <description></description>
     <developers>
@@ -60,7 +60,7 @@
             <groupId>weka</groupId>
             <artifactId>weka</artifactId>
             <version>3.6.0</version>
-        </dependency>
+        </dependency>       
 
         <dependency>
             <groupId>com.cedarsoft.serialization</groupId>
@@ -102,7 +102,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>2.3.1</version>
-                    <configuration>                        
+                    <configuration>
                         <source>1.6</source>
                         <target>1.6</target>
                     </configuration>
@@ -131,7 +131,7 @@
                                 <goal>jar</goal>
                             </goals>
                         </execution>
-                    </executions>                    
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

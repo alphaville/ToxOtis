@@ -74,6 +74,7 @@ public class DataEntry extends OTComponent<DataEntry> {
     public DataEntry() {
         featureValues = new ArrayList<FeatureValue>();
         conformer = new Compound();
+        this.meta = null;
     }
 
     public DataEntry(Compound compound, List<FeatureValue> featureValues) {

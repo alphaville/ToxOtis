@@ -114,7 +114,6 @@ public class DatasetSpider extends Tarantula<Dataset> {
 
     @Override
     public Dataset parse() throws ServiceInvocationException  {
-        System.out.println("DS parsing started");
         long timeFlag = System.currentTimeMillis();
         Dataset dataset = new Dataset();
         dataset.setUri(datasetUri);
@@ -129,25 +128,21 @@ public class DatasetSpider extends Tarantula<Dataset> {
         OTClasses.NominalFeature().inModel(model);
         OTClasses.NumericFeature().inModel(model);
         OTClasses.StringFeature().inModel(model);
-        System.out.println("H 1");
         /** END **
          */
         dataset.setMeta(new MetaInfoSpider(resource, model).parse());
-        System.out.println("H 2");
         StmtIterator entryIt = model.listStatements(
                 new SimpleSelector(resource, OTObjectProperties.dataEntry().asObjectProperty(model),
                 (RDFNode) null));
-        System.out.println("H 3");
         ArrayList<DataEntry> dataEntries = new ArrayList<DataEntry>();
         while (entryIt.hasNext()) {
             Resource entryResource = entryIt.nextStatement().getObject().as(Resource.class);
             DataEntrySpider dataEntrySpider = new DataEntrySpider(entryResource, model);
             dataEntries.add(dataEntrySpider.parse());
-            System.out.println("***");
         }
-        System.out.println("H 4");
         dataset.setDataEntries(dataEntries);
         parseTime = System.currentTimeMillis() - timeFlag;
+        model.close();
         return dataset;
     }
 }

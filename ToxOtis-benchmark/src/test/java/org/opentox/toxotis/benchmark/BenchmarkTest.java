@@ -6,7 +6,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.benchmark.gauge.GaugeFactory;
 import org.opentox.toxotis.benchmark.gauge.TimeGauge;
 import org.opentox.toxotis.benchmark.job.JobFactory;
@@ -44,7 +44,7 @@ public class BenchmarkTest {
     }
 
 
-   // @Test
+    @Test
     public void testSomeMethod() throws CloneNotSupportedException, ToxOtisException, InterruptedException, Exception {
 
         final Benchmark benchmark = new Benchmark("Remote Datasets to Local OntModel objects");// Diagram Title
@@ -58,18 +58,18 @@ public class BenchmarkTest {
         String ds10GaugeName = "dataset/10";
 
         // Number for iterations for each measurement
-        int nIter1 = 20;
+        int nIter1 = 10;
         int nIter2 = 20;
 //        int nIter3 = 5;
 
-        benchmark.addJobs(JobFactory.createDownloadOntModelJobs(
-                "J1", 5, 100, 5,
-                Services.ideaconsult().augment("dataset", "4").toString() + "?max=%s", nIter1,
-                ds4GaugeName));
+//        benchmark.addJobs(JobFactory.createMemoryTest(
+//                "J1", 50, 300, 50,
+//                Services.ideaconsult().augment("dataset", "585036").toString() + "?max=%s", nIter1,
+//                ds4GaugeName));
 
         benchmark.addJobs(JobFactory.createDownloadOntModelJobs(
                 "J2", 100, 500, 50,
-                Services.ideaconsult().augment("dataset", "9").toString() + "?max=%s", nIter2,
+                Services.ideaconsult().augment("dataset", "585036").toString() + "?max=%s", nIter2,
                 ds9GaugeName));
 
 

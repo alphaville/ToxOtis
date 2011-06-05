@@ -86,7 +86,7 @@ public class DatasetFactory {
      *      of the provided Instances object.
      */
     public static Dataset createFromArff(Instances instances) throws ToxOtisException {
-        if (instances.attribute("compound_uri") == null) {
+        if (instances.attribute("compound_uri") == null && instances.attribute("URI") == null) {
             throw new ToxOtisException("Cannot create an OpenTox dataset out of this dataset because "
                     + "'compound_uri' was not found in it's attribute list");
         }
@@ -157,7 +157,7 @@ public class DatasetFactory {
         try {
             while (attributes.hasMoreElements()) {
                 Attribute attribute = (Attribute) attributes.nextElement();
-                if (attribute.name().equals(Dataset.compound_uri)) {
+                if (attribute.name().equals(Dataset.compound_uri) || attribute.name().equals("URI")) {
                     de.setConformer(new Compound(new VRI(instance.stringValue(attribute))));
                 } else {
                     FeatureValue fv = new FeatureValue();

@@ -20,7 +20,8 @@ import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.StatisticalBarRenderer;
 import org.jfree.chart.renderer.category.StatisticalLineAndShapeRenderer;
 import org.jfree.data.statistics.DefaultStatisticalCategoryDataset;
-import org.opentox.toxotis.ToxOtisException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+
 
 /**
  * This is the core of a ToxOtis Benchmark. One can use this class to execute a

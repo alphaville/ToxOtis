@@ -103,6 +103,7 @@ public class Dataset extends OTPublishable<Dataset> {
                         + "' is not a valid Dataset uri according to the OpenTox specifications.");
             }
         }
+        this.meta = null;
     }
 
     /**

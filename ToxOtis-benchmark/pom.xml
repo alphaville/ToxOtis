@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ToxOtis</artifactId>
         <groupId>org.opentox.toxotis</groupId>
-        <version>0.5.0</version>
+        <version>0.6</version>
     </parent>
     <groupId>org.opentox.toxotis.benchmark</groupId>
     <artifactId>ToxOtis-benchmark</artifactId>
@@ -44,7 +44,7 @@
         <dependency>
             <artifactId>ToxOtis-core</artifactId>
             <groupId>org.opentox.toxotis</groupId>
-            <version>0.5.2</version>
+            <version>0.5.53</version>
         </dependency>
 
         <dependency>

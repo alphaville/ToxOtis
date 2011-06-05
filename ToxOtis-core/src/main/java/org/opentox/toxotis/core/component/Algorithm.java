@@ -286,10 +286,12 @@ public class Algorithm extends OTOnlineResource<Algorithm>
          * Interface for making predictions
          */
         builder.addSubSubHeading("Train a model");
-        builder.addParagraph("Specify the dataset you want to submit for prediction", Alignment.justify);
+        builder.addParagraph("Specify the dataset that will be used for the training and the prediction feature URI from this dataset."
+                + "Provide your preferred feature service (it is suggested to use the default one). ", Alignment.justify);
         HTMLForm form = builder.addForm("/iface/generic", "POST");
         form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).setName("comingFrom").setValue("webInterface"));
         form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).setName("algorithm_uri").setValue(uri.toString()));
+
 
         int textBoxSize = 60;
         HTMLTable interfacetable = new HTMLAppendableTableImpl(2);
@@ -298,11 +300,31 @@ public class Algorithm extends OTOnlineResource<Algorithm>
                 setValue("http://apps.ideaconsult.net:8080/ambit2/dataset/R545").setSize(textBoxSize)).
                 setAtCursor(new HTMLTextImpl("Prediction Feature").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("prediction_feature").setType(HTMLInput.HTMLInputType.TEXT).
-                        setValue("http://apps.ideaconsult.net:8080/ambit2/feature/22200").setSize(textBoxSize)).
+                setValue("http://apps.ideaconsult.net:8080/ambit2/feature/22200").setSize(textBoxSize)).
                 setAtCursor(new HTMLTextImpl("Feature Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("feature_service").
-                    setType(HTMLInput.HTMLInputType.TEXT).setValue(Services.ideaconsult().augment("feature").toString()).setSize(textBoxSize)).
-                setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Train")).setTextAtCursor("");
+                setType(HTMLInput.HTMLInputType.TEXT).setValue(Services.ideaconsult().augment("feature").toString()).setSize(textBoxSize));
+
+        if (getParameters() != null && !getParameters().isEmpty()) {
+            StringBuilder paramsBuilder = new StringBuilder();
+            Object tempValue = null;
+            for (Parameter param : parameters) {
+                tempValue = param.getValue();
+                if (tempValue != null) {
+                    paramsBuilder.append(param.getName().getValueAsString());
+                    paramsBuilder.append("=");
+                    paramsBuilder.append(tempValue.toString());
+                    paramsBuilder.append(" ");
+                }
+            }
+            interfacetable.setAtCursor(new HTMLTextImpl("Parameters").formatBold(true)).
+                    setAtCursor(new HTMLInputImpl().setName("params").
+                    setType(HTMLInput.HTMLInputType.TEXT).setValue(paramsBuilder.toString()).setSize(textBoxSize));
+        }
+
+        interfacetable.setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Train")).setTextAtCursor("");
+
+
         interfacetable.setCellPadding(5).
                 setCellSpacing(2).
                 setTableBorder(0).

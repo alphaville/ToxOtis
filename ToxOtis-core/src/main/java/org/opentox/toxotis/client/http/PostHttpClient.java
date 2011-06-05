@@ -44,7 +44,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.opentox.toxotis.client.RequestHeaders;
@@ -68,7 +71,8 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     /** Type of the posted content*/
     private String contentType = null;
     /** Parameters to be posted as application/x-www-form-urlencoded (if any) */
-    private Map<String, String> postParameters = new HashMap<String, String>();
+    //TODO: Convert into a Map<String, List<String>> postParameters;
+    private Map<String, List<String>> postParameters = new LinkedHashMap<String, List<String>>();
     private OntModel model;
     /** Arbitrary object to be posted to the remote server s*/
     private File fileContentToPost = null;
@@ -192,7 +196,16 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
             throw new NullPointerException("paramName must be not null");
         }
         try {
-            postParameters.put(URLEncoder.encode(paramName, URL_ENCODING), paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "");
+            String encodedParamName = URLEncoder.encode(paramName, URL_ENCODING);
+            String encodedParamvalue = paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "";
+            List<String> list = postParameters.get(encodedParamName); // check if param exists
+            if (list != null) { // param exists
+                list.add(encodedParamvalue);
+            } else { // param does not exist
+                list = new ArrayList<String>();
+                list.add(encodedParamvalue);
+                postParameters.put(encodedParamName, list);
+            }
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
@@ -224,20 +237,21 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
         }
         StringBuilder string = new StringBuilder();
         final int nParams = postParameters.size();
+
         if (nParams > 0) {
-            int counter = 0;
-            for (Map.Entry<String, String> e : postParameters.entrySet()) {
-                string.append(e.getKey());
-                string.append("=");
-                if (e.getValue() != null) {
-                    string.append(e.getValue());
-                }
-                if (counter != nParams - 1) {
+            for (Map.Entry<String, List<String>> e : postParameters.entrySet()) {
+                List<String> values = e.getValue();
+                for (String value : values) {
+                    string.append(e.getKey());
+                    string.append("=");
+                    if (e.getValue() != null) {
+                        string.append(value);
+                    }
                     string.append("&");
                 }
-                counter++;
             }
         }
+        string.deleteCharAt(string.length()-1);
         return new String(string);
     }
 
@@ -350,8 +364,8 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
             wr.flush();
             wr.close();
         } catch (final IOException ex) {
-            ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the " +
-                    "remote web service located at '"+getUri()+"'", ex);
+            ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the "
+                    + "remote web service located at '" + getUri() + "'", ex);
             postException.setActor(getUri() != null ? getUri().toString() : "N/A");
             throw postException;
         } finally {
@@ -362,5 +376,15 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     @Override
     public WriteLock getPostLock() {
         return postLock;
+    }
+
+    public static void main(String... args){
+        PostHttpClient client = new PostHttpClient();
+        client.addPostParameter("a", "1");
+        client.addPostParameter("a", "2");
+        client.addPostParameter("b", "3");
+        client.addPostParameter("c", "3");
+        client.addPostParameter("c", "3");
+        System.out.println(client.getParametersAsQuery());
     }
 }

@@ -43,6 +43,7 @@ import org.opentox.toxotis.core.OTOnlineResource;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
+import org.opentox.toxotis.core.html.HTMLForm;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
@@ -138,6 +139,11 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
             builder.addSubSubSubHeading("Meta Information");
             builder.addComponent(getMeta().inHtml());
         }
+
+        HTMLForm form = builder.addForm(getUri() + "?method=DELETE", "POST");
+        
+        form.addComponent();
+
 
         builder.addParagraph("<small>Other Formats: "
                 + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"

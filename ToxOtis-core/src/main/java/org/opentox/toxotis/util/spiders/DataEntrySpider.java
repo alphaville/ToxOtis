@@ -73,6 +73,7 @@ public class DataEntrySpider extends Tarantula<DataEntry>{
                 Compound conformer = conformerSpider.parse();
                 dataEntry.setConformer(conformer);
             }
+        conformerIt.close();
         StmtIterator valuesIt = model.listStatements(
                 new SimpleSelector(resource,
                 OTObjectProperties.values().asObjectProperty(model),
@@ -83,6 +84,7 @@ public class DataEntrySpider extends Tarantula<DataEntry>{
             FeatureValueSpider featureValueSpider = new FeatureValueSpider(valueResource, model);
             featureValues.add(featureValueSpider.parse());
         }
+        valuesIt.close();
         dataEntry.setFeatureValues(featureValues);
         return dataEntry;
     }

@@ -110,6 +110,9 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
         temp =retrievePropertyLiterals(model.createAnnotationProperty("http://purl.org/dc/elements/1.1/audience"));
         dcmeta.setAudiences(temp);
 
+        if (dcmeta.isEmpty()){
+            return null;
+        }
         return dcmeta;
     }
 }

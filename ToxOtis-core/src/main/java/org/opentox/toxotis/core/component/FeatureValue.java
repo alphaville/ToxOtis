@@ -62,14 +62,16 @@ public class FeatureValue extends OTComponent<FeatureValue> {
         if (uri == null) {
             uri = Services.anonymous().augment(DISCRIMINATOR, hashCode());
         }
-        return uri;
+        return uri;        
     }
 
     public FeatureValue() {
         super();
+        this.meta = null;
     }
 
     public FeatureValue(Feature feature, LiteralValue value) {
+        this();
         this.feature = feature;
         this.value = value;
     }

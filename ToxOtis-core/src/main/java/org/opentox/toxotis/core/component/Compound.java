@@ -47,8 +47,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -106,6 +104,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
                         + "' is not a valid Compound uri according to the OpenTox specifications.");
             }
         }
+        this.meta = null;
     }
 
     /**
@@ -259,7 +258,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
     public Individual asIndividual(OntModel model) {
         String compoundUri = getUri() != null ? getUri().getStringNoQuery() : null;
         Individual indiv = model.createIndividual(compoundUri, OTClasses.Compound().inModel(model));
-        getMeta().attachTo(indiv, model);
+        //getMeta().attachTo(indiv, model);
         return indiv;
     }
 

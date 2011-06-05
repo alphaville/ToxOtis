@@ -472,7 +472,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setValue(getDataset() != null ? getDataset().toString() : "").setSize(textBoxSize)).
                 setAtCursor(new HTMLTextImpl("Dataset Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_service").
-                    setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset.getServiceBaseUri().augment("dataset").toString()).setSize(textBoxSize)).
+                setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset != null ? dataset.getServiceBaseUri().augment("dataset").toString() : "").setSize(textBoxSize)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Predict")).setTextAtCursor("");
         interfacetable.setCellPadding(5).
                 setCellSpacing(2).
@@ -500,10 +500,10 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setValue(getDataset() != null ? getDataset().toString() : "").setSize(textBoxSize2)).
                 setAtCursor(new HTMLTextImpl("Target Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("test_target_dataset_uri").
-                    setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset.toString()).setSize(textBoxSize2)).
-                    setAtCursor(new HTMLTextImpl("Validation Service").formatBold(true)).
+                setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset!=null?dataset.toString():"").setSize(textBoxSize2)).
+                setAtCursor(new HTMLTextImpl("Validation Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("validation_service").
-                    setType(HTMLInput.HTMLInputType.TEXT).setValue("http://toxcreate2.in-silico.ch/validation/test_set_validation").setSize(textBoxSize2)).
+                setType(HTMLInput.HTMLInputType.TEXT).setValue("http://toxcreate2.in-silico.ch/validation/test_set_validation").setSize(textBoxSize2)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Validate")).setTextAtCursor("");
         validationtable.setCellPadding(5).
                 setCellSpacing(2).
@@ -559,7 +559,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             parametersTable.setAtCursor(new HTMLTextImpl("Parameter URI").formatBold(true)).
                     setAtCursor(new HTMLTextImpl("Parameter Name").formatBold(true)).setAtCursor(new HTMLTextImpl("Value").formatBold(true));
             for (Parameter prm : getParameters()) {
-                parametersTable.setAtCursor(new HTMLTagImpl("a", "/parameter/"+prm.getUri().getId()).addTagAttribute("href", prm.getUri().toString()));
+                parametersTable.setAtCursor(new HTMLTagImpl("a", "/parameter/" + prm.getUri().getId()).addTagAttribute("href", prm.getUri().toString()));
                 parametersTable.setAtCursor(new HTMLTagImpl("a", prm.getName().getValueAsString()).addTagAttribute("href", getAlgorithm().getUri().toString()));
                 parametersTable.setAtCursor(prm.getTypedValue() != null
                         ? new HTMLTagImpl("a", prm.getTypedValue().getValueAsString()).addTagAttribute(

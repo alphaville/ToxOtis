@@ -93,7 +93,7 @@ public class RemoteArffRertiever implements Closeable {
         return instances;
     }
 
-    public void initializeInstances() throws ServiceInvocationException {
+    private void initializeInstances() throws ServiceInvocationException {
         if (!arffSupport()) {
             throw new RemoteServiceException("The remote service does not support TEXT/X-ARFF");
         }
