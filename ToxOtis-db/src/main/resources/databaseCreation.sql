@@ -229,14 +229,17 @@ CREATE TABLE `Task` (
   CONSTRAINT `id_in_task_references_OTComponent` FOREIGN KEY (`id`) REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 DROP TABLE IF EXISTS `ModelBibTeX`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ModelBibTeX` (
-    `modelId` varchar(50) COLLATE utf8_bin NOT NULL,
-    `bibTeXId` varchar(255) NOT NULL,
-    PRIMARY KEY (`modelId`, `bibTeXId`),
-    KEY `index_modelId_in_ModelBibTeX` USING BTREE  (`modelId`),
-    CONSTRAINT `modelId_ref_Model` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `bibTeXId_ref_BibTeX` FOREIGN KEY (`bibTeXId`) REFERENCES `BibTeX` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `modelId` varchar(50) COLLATE utf8_bin NOT NULL,
+  `bibTeXUri` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
+  PRIMARY KEY (`modelId`,`bibTeXUri`),
+  KEY `index_modelId_in_ModelBibTeX` (`modelId`) USING BTREE,
+  KEY `bibTeXId_ref_BibTeX` (`bibTeXUri`),
+  CONSTRAINT `modelId_ref_Model` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Foaf`;
 CREATE TABLE `Foaf` (
     `id` varchar(255) COLLATE utf8_bin NOT NULL,
