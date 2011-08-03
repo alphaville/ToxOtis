@@ -30,25 +30,23 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.core.component;
+package org.opentox.toxotis.util.spiders;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.collection.Services;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.core.component.Compound;
 
 /**
  *
  * @author chung
  */
-public class ModelTest {
+public class CompoundSpiderTest {
 
-    public ModelTest() {
+    public CompoundSpiderTest() {
     }
 
     @BeforeClass
@@ -67,10 +65,13 @@ public class ModelTest {
     public void tearDown() {
     }
 
+    /**
+     * Test of parse method, of class CompoundSpider.
+     */
     @Test
-    public void testModel() throws ServiceInvocationException {
-        AuthenticationToken token = new AuthenticationToken("guest", "guest");                
-        Model m = new Model(Services.ntua().augment("algorithm", "mlr")).loadFromRemote(token);
-        System.out.println(m.getMeta().getRights());
+    public void testParse() throws Exception {
+        System.out.println("parse");
+        CompoundSpider spider = new CompoundSpider("phenol", null);
+        spider.parse();
     }
 }

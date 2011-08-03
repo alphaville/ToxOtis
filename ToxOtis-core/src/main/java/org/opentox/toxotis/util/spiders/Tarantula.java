@@ -62,6 +62,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.collection.OTAlgorithmTypes;
 import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
  * A generic parser for OpenTox components.
@@ -223,7 +224,13 @@ public abstract class Tarantula<Result> implements Closeable {
             }
         }
         for (OntClass oc : ontClassSet) {
-            ontClasses.add(OTClasses.forName(oc.getLocalName()));
+            OntologicalClass tempOC = OTClasses.forName(oc.getLocalName());
+            if (tempOC!=null){
+                ontClasses.add(tempOC);
+            }else{
+                ontClasses.add(new OntologicalClassImpl(oc.getLocalName(), oc.getNameSpace()));
+            }
+            
         }
         return ontClasses;
     }

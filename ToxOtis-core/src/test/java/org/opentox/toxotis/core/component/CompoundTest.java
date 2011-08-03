@@ -33,9 +33,15 @@
 
 package org.opentox.toxotis.core.component;
 
+import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntModel;
 import java.io.File;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Set;
+import javax.swing.ImageIcon;
+import javax.xml.stream.XMLStreamWriter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -51,7 +57,10 @@ import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.factory.CompoundFactory;
+import org.opentox.toxotis.ontology.LiteralValue;
+import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.spiders.CompoundSpider;
 
 /**
  *
@@ -78,7 +87,23 @@ public class CompoundTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
+    public void listConformers() throws Exception{
+        CompoundSpider spider = new CompoundSpider("ethene", null);
+        Compound compound = spider.parse();
+        System.out.println(compound.listConformers(null).size());
+    }
+    
+    //@Test
+    public void testDepict() throws ToxOtisException, ServiceInvocationException {
+        CompoundSpider spider = new CompoundSpider("eugenol", null);
+        Compound compound = spider.parse();
+        ImageIcon icon = compound.getDepiction(null);
+        int height = icon.getIconHeight();
+        System.out.println(height);
+    }
+    
+//    @Test
     public void testDownloadCompound() throws ToxOtisException, ServiceInvocationException {
         Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound", "10"));
         StringWriter sw = new StringWriter();
@@ -86,7 +111,7 @@ public class CompoundTest {
         assertTrue(sw.getBuffer().length() > 10);
     }
 
-    @Test
+ //   @Test
     public void testDownloadCompoundNotFound() throws ToxOtisException, ServiceInvocationException {
         try {
             Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound", "xyz"));
@@ -99,7 +124,7 @@ public class CompoundTest {
         fail("Should have failed");
     }
 
-    @Test
+  //  @Test
     public void testDownloadCompound_noSuchURL() throws ServiceInvocationException, URISyntaxException, ToxOtisException{
         VRI vri = new VRI("http://asdf.wqret.fd:8765").augment("compound", "xyz");
         Compound c = new Compound(vri);
@@ -123,5 +148,16 @@ public class CompoundTest {
         assertTrue(sw.getBuffer().length() > 10);
     }
 
+    @Test
+    public void testGetFeatValue() throws Exception{
+        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/144317/conformer/413851"));
+        Feature f = new Feature(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/22200"));
+        LiteralValue lv = c.getProperty(f, null);
+        System.out.println(lv);
+        
+    }
+            
+    
+    
 
 }

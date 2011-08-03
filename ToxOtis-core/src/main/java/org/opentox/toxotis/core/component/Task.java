@@ -140,9 +140,9 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
             builder.addComponent(getMeta().inHtml());
         }
 
-        HTMLForm form = builder.addForm(getUri() + "?method=DELETE", "POST");
-        
-        form.addComponent();
+//        HTMLForm form = builder.addForm(getUri() + "?method=DELETE", "POST");
+//        
+//        form.addComponent();
 
 
         builder.addParagraph("<small>Other Formats: "

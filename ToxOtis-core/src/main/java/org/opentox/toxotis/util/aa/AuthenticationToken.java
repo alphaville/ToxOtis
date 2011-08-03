@@ -45,6 +45,7 @@ import java.util.Date;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.collection.Services.*;
@@ -137,7 +138,7 @@ public class AuthenticationToken {
         IPostClient poster = ClientFactory.createPostClient(Services.SingleSignOn.ssoAuthenticate());
         try {
             poster.addPostParameter("username", username);
-            poster.addPostParameter("password", password);
+            poster.addPostParameter("password", password);            
             username = null;
             password = null;
             poster.post();
@@ -155,8 +156,7 @@ public class AuthenticationToken {
                 } else if (status == 403) {
                     throw new ForbiddenRequest("Forbidden");
                 }
-            }
-
+            }            
             String response = poster.getResponseText();
             if (response.contains("token.id=")) {
                 response = response.replaceAll("token.id=", "");

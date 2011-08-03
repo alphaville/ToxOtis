@@ -40,16 +40,22 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
@@ -82,6 +88,16 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
 public class Compound extends DescriptorCaclulation<Compound> {
 
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
+    private List<String> synonyms;
+    private javax.swing.ImageIcon depiction;
+    private String iupacName;
+    private String einecs;
+    private String inchi;
+    private String inchiKey;
+    private String registrationDate;
+    private String casrn;
+    private String smiles;
+    private List<VRI> conformers;
 
     /**
      * Construct a new compound identified by its URI. You should provide a
@@ -149,23 +165,33 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      with an error code like 500 or 503.
      */
     public Set<Conformer> listConformers(AuthenticationToken token) throws ServiceInvocationException {
-        VRI newUri = new VRI(uri).augment("conformer");
-        if (token != null) {
-            newUri.appendToken(token);
-        }
+        VRI newUri = null;
+        if (uri.getOpenToxType().equals(Conformer.class)) {
+            String uriString = uri.toString();
+            String withoutConformer = uriString.split("/conformer/")[0];         
+            try {
+                newUri = new VRI(withoutConformer).augment("conformer");
+            } catch (URISyntaxException ex) {
+                logger.error(null, ex);
+                throw new RuntimeException(ex);
+            }
+        } else {
+            newUri = new VRI(uri).augment("conformer");
+        }        
         GetHttpClient client = new GetHttpClient(newUri);
+        client.authorize(token);
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
         Set<VRI> uriList = client.getResponseUriList();
-        Set<Conformer> conformers = new HashSet<Conformer>();
+        Set<Conformer> confmers = new HashSet<Conformer>();
         for (VRI confUri : uriList) {
             try {
-                conformers.add(new Conformer(new VRI(confUri)));
+                confmers.add(new Conformer(new VRI(confUri)));
             } catch (ToxOtisException ex) {
-                throw new RemoteServiceException("Remote service returned the URI : "+confUri+" which is " +
-                        "not a valid conformer URI");
+                throw new RemoteServiceException("Remote service returned the URI : " + confUri + " which is "
+                        + "not a valid conformer URI");
             }
         }
-        return conformers;
+        return confmers;
     }
 
     public Dataset getPropertiesByOnt(OntologicalClass featurePrototype, AuthenticationToken token) throws ServiceInvocationException {
@@ -438,19 +464,19 @@ public class Compound extends DescriptorCaclulation<Compound> {
         download(smilesWriter, Media.CHEMICAL_SMILES, token);
         String smiles = smilesWriter.toString().trim();
         VRI similarityService = new VRI(service);
-        similarityService.clearToken().appendToken(token).addUrlParameter("search", smiles).addUrlParameter("threshol", similarity);
+        similarityService.clearToken().appendToken(token).addUrlParameter("search", smiles).addUrlParameter("threshold", similarity);
         GetHttpClient client = null;
         Set<VRI> resultSet = null;
         try {
             client = new GetHttpClient(similarityService);
             client.setMediaType(Media.TEXT_URI_LIST);
-            
-                int status = client.getResponseCode();
-                if (status != 200) { // TODO: Tasks??? 201? 202?
-                    throw new RemoteServiceException("Received a status code '" + status + "' from the service at"
-                            + similarityService.clearToken());
-                }
-            
+
+            int status = client.getResponseCode();
+            if (status != 200) { // TODO: Tasks??? 201? 202?
+                throw new RemoteServiceException("Received a status code '" + status + "' from the service at"
+                        + similarityService.clearToken());
+            }
+
             resultSet = client.getResponseUriList();
         } catch (ServiceInvocationException ex) {
             throw ex;
@@ -485,5 +511,142 @@ public class Compound extends DescriptorCaclulation<Compound> {
      */
     public Set<VRI> getSimilar(double similarity, AuthenticationToken token) throws ServiceInvocationException {
         return getSimilar(similarity, Services.ideaconsult().augment("query", "similarity"), token);
+    }
+
+    public List<String> getSynonyms() {
+        if (synonyms == null) {
+        }
+        return synonyms;
+    }
+
+    public void setSynonyms(List<String> synonyms) {
+        this.synonyms = synonyms;
+    }
+
+    public ImageIcon getDepiction(String depictionService) {
+        if (depictionService == null) {
+            depictionService = "http://apps.ideaconsult.net:8080/ambit2/depict/cdk?search=%s";
+        }
+        if (depiction == null) {
+            if (getSmiles() == null) { // no smiles - no depiction
+                return null;
+            }
+            // Smiles - URL encoded:
+            String smilesUrlEncoded = null;
+            try {
+                smilesUrlEncoded = URLEncoder.encode(getSmiles(), "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                logger.error(null, ex);
+                throw new RuntimeException(ex);
+            }
+            VRI requestDepictionVri = null;
+            try {
+                requestDepictionVri = new VRI(String.format(depictionService, smilesUrlEncoded));
+            } catch (URISyntaxException ex) {
+                logger.error(null, ex);
+                throw new RuntimeException(ex);
+            }
+            IGetClient depictionClient = ClientFactory.createGetClient(requestDepictionVri);
+            depictionClient.setMediaType(Media.IMAGE_PNG);
+            try {
+                depiction = new ImageIcon(requestDepictionVri.toURI().toURL());
+            } catch (MalformedURLException ex) {
+                logger.error(null, ex);
+                throw new RuntimeException(ex);
+            }
+            try {
+                depictionClient.close();
+            } catch (IOException ex) {
+                logger.error(null, ex);
+                throw new RuntimeException(ex);
+            }
+        }
+        if (depiction != null) {
+            if (!(depiction.getIconHeight() > 0 && depiction.getIconWidth() > 0)) {
+                depiction = null;
+            }
+        }
+        if (depiction == null) {
+            try {
+                try {
+                    depiction = new ImageIcon(new VRI(uri.toString()).addUrlParameter("media", "image/png").toURI().toURL());
+                } catch (URISyntaxException ex) {
+                    logger.error(null, ex);
+                    throw new RuntimeException(ex);
+                }
+            } catch (MalformedURLException ex) {
+                logger.error(null, ex);
+                throw new RuntimeException(ex);
+            }
+        }
+        return depiction;
+    }
+
+    public void setDepiction(ImageIcon depiction) {
+        this.depiction = depiction;
+    }
+
+    public String getCasrn() {
+        return casrn;
+    }
+
+    public void setCasrn(String casrn) {
+        this.casrn = casrn;
+    }
+
+    public String getEinecs() {
+        return einecs;
+    }
+
+    public void setEinecs(String einecs) {
+        this.einecs = einecs;
+    }
+
+    public String getInchi() {
+        return inchi;
+    }
+
+    public void setInchi(String inchi) {
+        this.inchi = inchi;
+    }
+
+    public String getInchiKey() {
+        return inchiKey;
+    }
+
+    public void setInchiKey(String inchiKey) {
+        this.inchiKey = inchiKey;
+    }
+
+    public String getIupacName() {
+        return iupacName;
+    }
+
+    public void setIupacName(String iupacName) {
+        this.iupacName = iupacName;
+    }
+
+    public String getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(String registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public String getSmiles() {
+        return smiles;
+    }
+
+    public void setSmiles(String smiles) {
+        this.smiles = smiles;
+    }
+
+    public List<VRI> getConformers() {
+        return conformers;
+    }
+
+    public void setConformers(List<VRI> conformers) {
+        this.conformers = conformers;
     }
 }

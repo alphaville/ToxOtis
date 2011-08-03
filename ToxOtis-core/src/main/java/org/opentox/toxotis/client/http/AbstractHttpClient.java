@@ -394,7 +394,7 @@ public abstract class AbstractHttpClient implements IClient {
             responseCode = con.getResponseCode();
         } catch (IOException ex) {
             ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
-                    + "the server", ex);
+                    + "the server at "+getUri(), ex);
             connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
             throw connectionExc;
         }

@@ -70,6 +70,10 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
         /* title */
         temp = retrievePropertyLiterals(DC.title);
         dcmeta.setTitles(temp);
+        /* title */
+        temp = retrievePropertyLiterals(DC.rights);
+        dcmeta.setRights(temp);
+        
         /* subject */
         temp = retrievePropertyLiterals(DC.subject);
         dcmeta.setSubjects(temp);

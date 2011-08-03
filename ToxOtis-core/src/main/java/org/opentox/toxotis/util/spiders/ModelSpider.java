@@ -81,7 +81,6 @@ public class ModelSpider extends Tarantula<Model> {
         client.authorize(token);
         try {
             client.setMediaType(Media.APPLICATION_RDF_XML);
-//            client.setUri(uri);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
             uri.clearToken(); // << Token no needed any more!

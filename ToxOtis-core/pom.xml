@@ -4,20 +4,20 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.6.5</version>
+    <version>0.6.7</version>
     <name>ToxOtis Core Module</name>
     <description></description>
     <developers>
         <developer>
             <name>Sopasakis Pantelis</name>
             <organization>NTUA</organization>
-            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <organizationUrl>http://opentox.ntua.gr</organizationUrl>
             <url>https://github.com/alphaville</url>
         </developer>
         <developer>
             <name>Charalampos Chomenides</name>
             <organization>NTUA</organization>
-            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <organizationUrl>http://opentox.ntua.gr</organizationUrl>
             <url>https://github.com/hampos</url>
         </developer>
     </developers>

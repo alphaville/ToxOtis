@@ -30,18 +30,18 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.core.component.qprf;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.OTPublishable;
+import org.opentox.toxotis.core.component.Compound;
+import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
@@ -59,11 +59,8 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
      * The URI of the model for the the QPRF report is generated
      * (i.e. the model which creates the prediction)
      */
-    private VRI modelUri;
-    /**
-     * Uri of the compund for which the QPRF report is created
-     */
-    private VRI compoundUri;
+    private Model model;
+    
     /**
      * The URI of the Domain of Applicability Model that is used
      * along with the predictive model
@@ -79,7 +76,7 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
      * RDF is available using the FOAF web ontology.
      * see http://xmlns.com/foaf/spec/
      */
-    private HashSet<VRI> authors = new HashSet<VRI>();
+    private HashSet<QprfAuthor> authors = new HashSet<QprfAuthor>();
     /**
      * The date (timestamp) of the QPRF report. Can be easily exported as
      * java.util.Date or java.sql.Date.
@@ -114,6 +111,8 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
      */
     private User createdBy;
     private QprfReportMeta reportMeta;
+    
+    private Compound compound;
 
     public QprfReport() {
         super();
@@ -122,6 +121,7 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
     public QprfReport(VRI uri) {
         super(uri);
     }
+    
 
     public QprfReportMeta getReportMeta() {
         return reportMeta;
@@ -157,23 +157,15 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         return this;
     }
 
-    public HashSet<VRI> getAuthors() {
+    public HashSet<QprfAuthor> getAuthors() {
         return authors;
     }
 
-    public QprfReport setAuthors(HashSet<VRI> authors) {
+    public QprfReport setAuthors(HashSet<QprfAuthor> authors) {
         this.authors = authors;
         return this;
     }
-
-    public VRI getCompoundUri() {
-        return compoundUri;
-    }
-
-    public QprfReport setCompoundUri(VRI compoundUri) {
-        this.compoundUri = compoundUri;
-        return this;
-    }
+    
 
     public VRI getDatasetStructuralAnalogues() {
         return datasetStructuralAnalogues;
@@ -208,15 +200,6 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
 
     public QprfReport setKeywords(String keywords) {
         this.keywords = keywords;
-        return this;
-    }
-
-    public VRI getModelUri() {
-        return modelUri;
-    }
-
-    public QprfReport setModelUri(VRI modelUri) {
-        this.modelUri = modelUri;
         return this;
     }
 
@@ -283,4 +266,24 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
          */
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public Compound getCompound() {
+        return compound;
+    }
+
+    public QprfReport setCompound(Compound compound) {
+        this.compound = compound;
+        return this;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    
+    
 }

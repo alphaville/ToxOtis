@@ -95,10 +95,14 @@ public class DatasetSpider extends Tarantula<Dataset> {
     public DatasetSpider(Resource resource, OntModel model) {
         super(resource, model);
         try {
+            if (resource.getURI()!=null){
             datasetUri = new VRI(resource.getURI());
+            }else{
+                datasetUri = null;
+            }
         } catch (URISyntaxException ex) {
             logger.debug(null, ex);
-        }
+        } 
     }
 
     public DatasetSpider(OntModel model, String uri) {

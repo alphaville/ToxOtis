@@ -78,19 +78,16 @@ public class OTClasses {
     private static OntologicalClass ms_Parameter;
     private static OntologicalClass ms_QPRFReport;
     private static OntologicalClass ms_Report;
-
     private static OntologicalClass ms_MultiParameter;
     private static OntologicalClass ms_VectorParameter;
     private static OntologicalClass ms_VariableInfo;
     private static OntologicalClass ms_ParameterValue;
     private static OntologicalClass ms_SetValuedParameter;
     private static OntologicalClass ms_VariableValue;
-
     private static OntologicalClass ms_Task;
     private static OntologicalClass ms_ErrorReport;
     private static OntologicalClass ms_Thing;
     private static Map<String, Method> ms_methodCache;
-
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTClasses.class);
 
     private synchronized static void initMethodCache() {
@@ -104,13 +101,13 @@ public class OTClasses {
         }
     }
 
-    public static Set<OntologicalClass> getAll(){
+    public static Set<OntologicalClass> getAll() {
         initMethodCache();
         Set<OntologicalClass> result = new HashSet<OntologicalClass>();
         Collection<Method> methods = ms_methodCache.values();
-        for (Method m : methods){
+        for (Method m : methods) {
             try {
-                result.add((OntologicalClass)m.invoke(null));
+                result.add((OntologicalClass) m.invoke(null));
             } catch (IllegalAccessException ex) {
                 logger.warn(null, ex);
             } catch (IllegalArgumentException ex) {
@@ -170,7 +167,7 @@ public class OTClasses {
         if (ms_OpenToxResource == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OpenToxResource");
             clazz.getMetaInfo().addComment("Generic OpenTox Resource");
-            clazz.getSuperClasses().add(Thing());            
+            clazz.getSuperClasses().add(Thing());
             ms_OpenToxResource = clazz;
         }
         return ms_OpenToxResource;
@@ -489,5 +486,3 @@ public class OTClasses {
         return ms_ErrorReport;
     }
 }
-
-
