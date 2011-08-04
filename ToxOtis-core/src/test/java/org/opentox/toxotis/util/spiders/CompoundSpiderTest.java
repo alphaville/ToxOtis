@@ -32,6 +32,8 @@
  */
 package org.opentox.toxotis.util.spiders;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,6 +41,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.core.component.Compound;
+import org.opentox.toxotis.util.SimilarityRetriever;
 
 /**
  *
@@ -71,7 +74,17 @@ public class CompoundSpiderTest {
     @Test
     public void testParse() throws Exception {
         System.out.println("parse");
-        CompoundSpider spider = new CompoundSpider("phenol", null);
-        spider.parse();
+//        CompoundSpider spider = new CompoundSpider("phenol", null);
+        CompoundSpider spider = new CompoundSpider("http://apps.ideaconsult.net:8080/ambit2/compound/24793", null);
+        Compound cmp = spider.parse();        
+        System.out.println(cmp.getIupacName());
+        System.out.println(cmp.getUri());
+        System.out.println(cmp.getUri().getOntologicalClass());
+        System.out.println(cmp.getUri().getOpenToxType());
+        SimilarityRetriever sr = new SimilarityRetriever(0.95, cmp);
+        ArrayList<Compound> sim = sr.similarCompounds();
+        for (Compound c : sim){
+            System.out.println("  o  -->  "+c.getUri()+c.getSynonyms());
+        }
     }
 }

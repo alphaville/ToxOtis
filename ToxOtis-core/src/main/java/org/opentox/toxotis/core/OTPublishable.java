@@ -116,7 +116,7 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
             public VRI call() throws Exception {
                 Task t = publishOnline(vri, token);
 
-                while (t.getStatus().equals(Task.Status.RUNNING)) {
+                while (t.getStatus().equals(Task.Status.RUNNING)||t.getStatus().equals(Task.Status.QUEUED)) {
                     t.loadFromRemote();
                     Thread.sleep(100);
                 }
@@ -125,7 +125,6 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
                             + "due to some unexpected error. Error Report : " + t.getErrorReport());
                 }
                 return t.getResultUri();
-
             }
         };
         Future<VRI> future = executor.submit(backgroundJob);

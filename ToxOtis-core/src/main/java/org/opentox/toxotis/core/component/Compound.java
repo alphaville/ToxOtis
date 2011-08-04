@@ -87,8 +87,8 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  */
 public class Compound extends DescriptorCaclulation<Compound> {
 
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
-    private List<String> synonyms;
+    private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Compound.class);
+    private ArrayList<String> synonyms;
     private javax.swing.ImageIcon depiction;
     private String iupacName;
     private String einecs;
@@ -97,7 +97,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
     private String registrationDate;
     private String casrn;
     private String smiles;
-    private List<VRI> conformers;
+    private HashSet<Conformer> conformers;
 
     /**
      * Construct a new compound identified by its URI. You should provide a
@@ -168,7 +168,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         VRI newUri = null;
         if (uri.getOpenToxType().equals(Conformer.class)) {
             String uriString = uri.toString();
-            String withoutConformer = uriString.split("/conformer/")[0];         
+            String withoutConformer = uriString.split("/conformer/")[0];
             try {
                 newUri = new VRI(withoutConformer).augment("conformer");
             } catch (URISyntaxException ex) {
@@ -177,7 +177,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
             }
         } else {
             newUri = new VRI(uri).augment("conformer");
-        }        
+        }
         GetHttpClient client = new GetHttpClient(newUri);
         client.authorize(token);
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
@@ -223,11 +223,9 @@ public class Compound extends DescriptorCaclulation<Compound> {
         /**
          *TODO: Should this request include the uri parameters for the feature?
          */
-        VRI dsUri = new VRI(getUri()).addUrlParameter("feature_uris[]", feature.getUri().toString());
-        if (token != null) {
-            dsUri.appendToken(token);
-        }
+        VRI dsUri = new VRI(getUri()).addUrlParameter("feature_uris[]", feature.getUri().toString());        
         GetHttpClient client = new GetHttpClient();
+        client.authorize(token);
         client.setUri(dsUri);
         client.setMediaType(Media.APPLICATION_RDF_XML);
         OntModel model = client.getResponseOntModel();
@@ -395,17 +393,18 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      status code like 500 or 503).
      *
      */
+    @Deprecated
     public ImageIcon getDepictionFromRemote(AuthenticationToken token) throws ServiceInvocationException {
-        ImageIcon depiction;
-        try {
-            StringWriter writer = new StringWriter();
-            download(writer, Media.CHEMICAL_SMILES, token);
-            String smiles = writer.toString();
-            depiction = new ImageIcon(new URL(Services.Depiction.ideaCdkImage().
-                    addUrlParameter("query", smiles).appendToken(token).toString()));
-        } catch (MalformedURLException ex) {
-            throw new ServiceInvocationException(ex);
-        }
+//        ImageIcon depiction;
+//        try {
+//            StringWriter writer = new StringWriter();
+//            download(writer, Media.CHEMICAL_SMILES, token);
+//            String smiles = writer.toString();
+//            depiction = new ImageIcon(new URL(Services.Depiction.ideaCdkImage().
+//                    addUrlParameter("query", smiles).appendToken(token).toString()));
+//        } catch (MalformedURLException ex) {
+//            throw new ServiceInvocationException(ex);
+//        }
         return depiction;
     }
 
@@ -514,51 +513,52 @@ public class Compound extends DescriptorCaclulation<Compound> {
     }
 
     public List<String> getSynonyms() {
-        if (synonyms == null) {
-        }
         return synonyms;
     }
 
-    public void setSynonyms(List<String> synonyms) {
+    public void setSynonyms(ArrayList<String> synonyms) {
         this.synonyms = synonyms;
     }
 
     public ImageIcon getDepiction(String depictionService) {
-        if (depictionService == null) {
-            depictionService = "http://apps.ideaconsult.net:8080/ambit2/depict/cdk?search=%s";
-        }
-        if (depiction == null) {
+        if (depiction != null) {
+            return depiction;
+        } else {
+            if (depictionService == null) {
+                depictionService = "http://apps.ideaconsult.net:8080/ambit2/depict/cdk?search=%s";
+            }
             if (getSmiles() == null) { // no smiles - no depiction
-                return null;
-            }
-            // Smiles - URL encoded:
-            String smilesUrlEncoded = null;
-            try {
-                smilesUrlEncoded = URLEncoder.encode(getSmiles(), "UTF-8");
-            } catch (UnsupportedEncodingException ex) {
-                logger.error(null, ex);
-                throw new RuntimeException(ex);
-            }
-            VRI requestDepictionVri = null;
-            try {
-                requestDepictionVri = new VRI(String.format(depictionService, smilesUrlEncoded));
-            } catch (URISyntaxException ex) {
-                logger.error(null, ex);
-                throw new RuntimeException(ex);
-            }
-            IGetClient depictionClient = ClientFactory.createGetClient(requestDepictionVri);
-            depictionClient.setMediaType(Media.IMAGE_PNG);
-            try {
-                depiction = new ImageIcon(requestDepictionVri.toURI().toURL());
-            } catch (MalformedURLException ex) {
-                logger.error(null, ex);
-                throw new RuntimeException(ex);
-            }
-            try {
-                depictionClient.close();
-            } catch (IOException ex) {
-                logger.error(null, ex);
-                throw new RuntimeException(ex);
+                depiction = null;
+            } else {
+                // Smiles - URL encoded:
+                String smilesUrlEncoded = null;
+                try {
+                    smilesUrlEncoded = URLEncoder.encode(getSmiles(), "UTF-8");
+                } catch (UnsupportedEncodingException ex) {
+                    logger.error(null, ex);
+                    throw new RuntimeException(ex);
+                }
+                VRI requestDepictionVri = null;
+                try {
+                    requestDepictionVri = new VRI(String.format(depictionService, smilesUrlEncoded));
+                } catch (URISyntaxException ex) {
+                    logger.error(null, ex);
+                    throw new RuntimeException(ex);
+                }
+                IGetClient depictionClient = ClientFactory.createGetClient(requestDepictionVri);
+                depictionClient.setMediaType(Media.IMAGE_PNG);
+                try {
+                    depiction = new ImageIcon(requestDepictionVri.toURI().toURL());
+                } catch (MalformedURLException ex) {
+                    logger.error(null, ex);
+                    throw new RuntimeException(ex);
+                }
+                try {
+                    depictionClient.close();
+                } catch (IOException ex) {
+                    logger.error(null, ex);
+                    throw new RuntimeException(ex);
+                }
             }
         }
         if (depiction != null) {
@@ -642,11 +642,18 @@ public class Compound extends DescriptorCaclulation<Compound> {
         this.smiles = smiles;
     }
 
-    public List<VRI> getConformers() {
+    public HashSet<Conformer> getConformers() {
+        if (conformers == null) {
+            try {
+                conformers = new HashSet<Conformer>(listConformers(null));
+            } catch (ServiceInvocationException ex) {
+                Logger.getLogger(Compound.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return conformers;
     }
 
-    public void setConformers(List<VRI> conformers) {
+    public void setConformers(HashSet<Conformer> conformers) {
         this.conformers = conformers;
     }
 }

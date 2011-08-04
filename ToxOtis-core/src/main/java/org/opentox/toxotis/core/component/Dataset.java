@@ -315,6 +315,8 @@ public class Dataset extends OTPublishable<Dataset> {
 
         Task dsUpload = new Task();
         String remoteResult = client.getResponseText();
+        System.out.println("Publishing >> Response : " + remoteResult);
+        System.out.println("Publishing >> STATUS   : " + status);
         if (status == 202) {
             try {
                 dsUpload.setUri(new VRI(remoteResult));

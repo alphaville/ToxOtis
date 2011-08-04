@@ -48,9 +48,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Conformer extends Compound {
-
-    private String conformerId;
+public class Conformer extends Compound {    
 
     public Conformer() {
         super();

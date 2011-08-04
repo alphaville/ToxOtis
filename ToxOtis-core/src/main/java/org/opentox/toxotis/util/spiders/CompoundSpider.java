@@ -55,6 +55,7 @@ import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Compound;
+import org.opentox.toxotis.core.component.Conformer;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.exceptions.impl.BadRequestException;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
@@ -88,23 +89,44 @@ public class CompoundSpider extends Tarantula<Compound> {
 
     public CompoundSpider(String keyword, String lookUpService) throws ServiceInvocationException, ToxOtisException {
         super();
+        /*
+         * identify whether the submitted keyword is a URI:
+         */
+        boolean keywordIsVri = false;
+        VRI possibleVri = null;
+        try {
+            possibleVri = new VRI(keyword);
+            Class<?> otClass = possibleVri.getOpenToxType();
+            if (Compound.class.equals(otClass) || Conformer.class.equals(otClass)) {
+                keywordIsVri = true;
+            }
+        } catch (URISyntaxException ex) {
+            keywordIsVri = false;
+        }
         this.keyword = keyword;
         if (lookUpService == null) {
-            lookUpService = "http://apps.ideaconsult.net:8080/ambit2/query/compound/%s/all";
+            if (!keywordIsVri) {
+                lookUpService = "http://apps.ideaconsult.net:8080/ambit2/query/compound/%s/all";
+            } else {
+                lookUpService = "http://apps.ideaconsult.net:8080/ambit2/query/compound/url/all";
+            }
         }
         this.lookupService = lookUpService;
 
-        try {
-            keyword = URLEncoder.encode(keyword, "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(CompoundSpider.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
+        if (!keywordIsVri) {
+            try {
+                keyword = URLEncoder.encode(keyword, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(CompoundSpider.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);
+            }
         }
         ////// !!!! Now 'keyword' is UTF-8-encoded !!!!
+        
         String queryUri = String.format(lookUpService, keyword);
         queryVri = null;
-        try {
-            queryVri = new VRI(queryUri);
+        try {            
+            queryVri = !keywordIsVri?new VRI(queryUri):new VRI(lookUpService).addUrlParameter("search", keyword);
         } catch (URISyntaxException ex) {
             String msg = "Keyword '" + keyword + "' is not valid";
             logger.debug(msg, ex);
@@ -113,25 +135,31 @@ public class CompoundSpider extends Tarantula<Compound> {
         /*
          * GET THE URI OF THE COMPOUND 
          */
-        IClient client = ClientFactory.createGetClient(queryVri);
-        client.setMediaType(Media.TEXT_URI_LIST);
-        int responseCode = client.getResponseCode();
-        if (responseCode != 200) {
-            throw new ServiceInvocationException("Service responded with code " + responseCode);
-        }
-        Set<VRI> responseUri = client.getResponseUriList();
-        if (responseUri == null || (responseUri != null && responseUri.isEmpty())) {
-            throw new ServiceInvocationException("No response from service");
-        }
-        this.uri = responseUri.iterator().next();
-        if (client != null) {
-            try {
-                client.close();
-            } catch (IOException ex) {
-                logger.error("Client could not close", ex);
-                throw new RuntimeException(ex);
+        if (!keywordIsVri) {
+            IClient client = ClientFactory.createGetClient(queryVri);
+            client.setMediaType(Media.TEXT_URI_LIST);
+            int responseCode = client.getResponseCode();
+            if (responseCode != 200) {
+                throw new ServiceInvocationException("Service responded with code " + responseCode);
             }
+            Set<VRI> responseUri = client.getResponseUriList();
+            if (responseUri == null || (responseUri != null && responseUri.isEmpty())) {
+                throw new ServiceInvocationException("No response from service");
+            }
+            this.uri = responseUri.iterator().next();
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    logger.error("Client could not close", ex);
+                    throw new RuntimeException(ex);
+                }
+            }
+        } else {
+            this.uri = possibleVri;
         }
+
+
         IGetClient compoundClient = ClientFactory.createGetClient(queryVri);
         try {
             compoundClient.setMediaType(Media.APPLICATION_RDF_XML.getMime());

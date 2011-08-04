@@ -71,7 +71,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
     /**
      * Assigns a documentation link to each XSDDataType element.
      */
-    protected static Map<String, String> XSD_DATATYPE_LINKS = new HashMap<String, String>();
+    protected static final Map<String, String> XSD_DATATYPE_LINKS = new HashMap<String, String>();
 
     static {
         XSD_DATATYPE_LINKS.put(XSDDatatype.XSDstring.getURI(), String.format(XSD_DOC_PAGE_TEMPLATE, "string"));

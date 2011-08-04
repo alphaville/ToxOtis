@@ -71,7 +71,7 @@ public abstract class OTComponent<T extends IOTComponent>
     protected static final String tokenid = "tokenid";
     /* Every component is enabled by default */
     private boolean enabled = true;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
+    private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
 
     /**
      * Constructor for an empty OpenTox Component

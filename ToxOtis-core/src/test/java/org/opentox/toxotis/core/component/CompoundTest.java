@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.ontology.Individual;
@@ -88,12 +87,12 @@ public class CompoundTest {
     }
 
     //@Test
-    public void listConformers() throws Exception{
+    public void listConformers() throws Exception {
         CompoundSpider spider = new CompoundSpider("ethene", null);
         Compound compound = spider.parse();
         System.out.println(compound.listConformers(null).size());
     }
-    
+
     //@Test
     public void testDepict() throws ToxOtisException, ServiceInvocationException {
         CompoundSpider spider = new CompoundSpider("eugenol", null);
@@ -102,7 +101,7 @@ public class CompoundTest {
         int height = icon.getIconHeight();
         System.out.println(height);
     }
-    
+
 //    @Test
     public void testDownloadCompound() throws ToxOtisException, ServiceInvocationException {
         Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound", "10"));
@@ -111,7 +110,7 @@ public class CompoundTest {
         assertTrue(sw.getBuffer().length() > 10);
     }
 
- //   @Test
+    //   @Test
     public void testDownloadCompoundNotFound() throws ToxOtisException, ServiceInvocationException {
         try {
             Compound comp = new Compound(new VRI(Services.ideaconsult()).augment("compound", "xyz"));
@@ -124,13 +123,13 @@ public class CompoundTest {
         fail("Should have failed");
     }
 
-  //  @Test
-    public void testDownloadCompound_noSuchURL() throws ServiceInvocationException, URISyntaxException, ToxOtisException{
+    //  @Test
+    public void testDownloadCompound_noSuchURL() throws ServiceInvocationException, URISyntaxException, ToxOtisException {
         VRI vri = new VRI("http://asdf.wqret.fd:8765").augment("compound", "xyz");
         Compound c = new Compound(vri);
-        try{
-        c.download(new StringWriter(), Media.CHEMICAL_MDLMOL, (AuthenticationToken) null);
-        } catch (ServiceInvocationException ex){
+        try {
+            c.download(new StringWriter(), Media.CHEMICAL_MDLMOL, (AuthenticationToken) null);
+        } catch (ServiceInvocationException ex) {
             assertTrue(ex instanceof IConnectionException);
             return;
         }
@@ -148,16 +147,18 @@ public class CompoundTest {
         assertTrue(sw.getBuffer().length() > 10);
     }
 
-    @Test
-    public void testGetFeatValue() throws Exception{
+//    @Test
+    public void testGetFeatValue() throws Exception {
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/144317/conformer/413851"));
         Feature f = new Feature(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/22200"));
         LiteralValue lv = c.getProperty(f, null);
         System.out.println(lv);
-        
-    }
-            
-    
-    
 
+    }
+
+    @Test
+    public void testSimilar() throws Exception{
+        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/144317/conformer/413851"));
+        System.out.println(c.getSimilar(0.95, null));
+    }
 }

@@ -97,6 +97,12 @@ public class QprfReportMeta implements Serializable {
      * Discussion on the QMRF report.
      */
     private String QMRFReportDiscussion;
+    /**
+     * A reference/link to a QMRF report
+     * Can be the URI of an OpenTox QMRF report
+     */
+    private String QMRFReportReference;
+    
 
     public String getDescriptorDomain() {
         return descriptorDomain;
@@ -232,5 +238,16 @@ public class QprfReportMeta implements Serializable {
         this.metabolicDomain = metabolicDomain;
         return this;
     }
+
+    public String getQMRFReportReference() {
+        return QMRFReportReference;
+    }
+
+    public QprfReportMeta setQMRFReportReference(String QMRFReportReference) {
+        this.QMRFReportReference = QMRFReportReference;
+        return this;
+    }
+    
+    
 
 }

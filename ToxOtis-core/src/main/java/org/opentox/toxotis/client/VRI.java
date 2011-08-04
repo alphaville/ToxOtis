@@ -249,8 +249,8 @@ public class VRI implements Serializable { // Well tested!
      *      VRI to be cloned.
      */
     public VRI(VRI other) {
-        this.uri = other.uri;
-        this.urlParams = other.urlParams;
+        this.uri = new String(other.uri);
+        this.urlParams = new ArrayList<Pair<String, String>>(other.urlParams);
     }
 
     /**

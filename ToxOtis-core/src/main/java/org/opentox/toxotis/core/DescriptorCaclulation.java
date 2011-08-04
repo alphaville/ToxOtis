@@ -60,7 +60,7 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  */
 public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTPublishable<T> implements IDescriptorCalculation {
 
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DescriptorCaclulation.class);
+    private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DescriptorCaclulation.class);
 
     public DescriptorCaclulation() {
         super();

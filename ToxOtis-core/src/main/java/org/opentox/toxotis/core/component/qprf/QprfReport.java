@@ -35,6 +35,7 @@ package org.opentox.toxotis.core.component.qprf;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -43,9 +44,7 @@ import org.opentox.toxotis.core.OTPublishable;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Task;
-import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
@@ -56,20 +55,31 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 public class QprfReport extends OTPublishable<OTPublishable> implements Serializable {
 
     /**
-     * The URI of the model for the the QPRF report is generated
-     * (i.e. the model which creates the prediction)
+     * Serialization UID
+     */
+    private static final long serialVersionUID = 8129724L;
+    /**
+     * Level of similarity according to which the structural analogues
+     * where retrieved for the compound
+     */
+    private double similarityLevel;
+    /**
+     * The model of the QPRF report with which the prediction was generated
      */
     private Model model;
-    
     /**
      * The URI of the Domain of Applicability Model that is used
      * along with the predictive model
      */
-    private VRI doaUri;
+    private String doaUri;
     /**
-     * Keywords that will facilitate the search
+     * The Name of the DoA algorithm used
      */
-    private String keywords;
+    private String doAName;
+    /**
+     * The keyword for the compound as provided by the user
+     */
+    private String keyword;
     /**
      * Set of authors of this QPRF report
      * Every author is identified by a URI from where it's representation in
@@ -83,21 +93,31 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
      */
     private Long report_date = System.currentTimeMillis();
     /**
-     * Timestamp of model creation
+     * Timestamp of model creation.
      */
     private Long model_date;
-    /**
-     * The dataset containing the structural analogues of the submitted
-     * compound and their experimental values.
-     */
-    private VRI datasetStructuralAnalogues;
     /**
      * Result of the applicability domain algorithm on the
      * submitted compound. Usually a YES/NO answer.
      */
-    private LiteralValue applicabilityDomainResult;
-    private LiteralValue predictionResult;
-    private LiteralValue experimentalResult;
+    private String applicabilityDomainResult;
+    /**
+     * Result of the prediction using the QSAR model
+     */
+    private String predictionResult;
+    /**
+     * The experimental value for the compound. The units can be
+     * retrieved from the dependent feature of the model.
+     */
+    private String experimentalResult;
+    /**
+     * Experimental result units
+     */
+    private String expResultUnits;
+    /**
+     * Predicted result units
+     */
+    private String predResultUnits;
     /**
      * Reference to QMRF report. Can be a URI or other identifier of the
      * corresponding QMRF report.
@@ -109,10 +129,19 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
      * online and creates it as a resource; an example can be the 'guest'
      * user identified by guest@opensso.in-silico.ch)
      */
-    private User createdBy;
     private QprfReportMeta reportMeta;
-    
+    /**
+     * The compound for which the QPRF report is created
+     */
     private Compound compound;
+    /**
+     * ArrayList of structural analogues as a list of compounds
+     */
+    private ArrayList<Compound> structuralAnalogues;
+    /*
+     * Experimental values for compounds
+     */
+    private ArrayList<String> experimentalValues;
 
     public QprfReport() {
         super();
@@ -121,7 +150,6 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
     public QprfReport(VRI uri) {
         super(uri);
     }
-    
 
     public QprfReportMeta getReportMeta() {
         return reportMeta;
@@ -129,14 +157,6 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
 
     public void setReportMeta(QprfReportMeta reportMeta) {
         this.reportMeta = reportMeta;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 
     public String getQMRFreference() {
@@ -148,11 +168,11 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         return this;
     }
 
-    public LiteralValue getApplicabilityDomainResult() {
+    public String getApplicabilityDomainResult() {
         return applicabilityDomainResult;
     }
 
-    public QprfReport setApplicabilityDomainResult(LiteralValue applicabilityDomainResult) {
+    public QprfReport setApplicabilityDomainResult(String applicabilityDomainResult) {
         this.applicabilityDomainResult = applicabilityDomainResult;
         return this;
     }
@@ -165,41 +185,31 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         this.authors = authors;
         return this;
     }
-    
 
-    public VRI getDatasetStructuralAnalogues() {
-        return datasetStructuralAnalogues;
-    }
-
-    public QprfReport setDatasetStructuralAnalogues(VRI datasetStructuralAnalogues) {
-        this.datasetStructuralAnalogues = datasetStructuralAnalogues;
-        return this;
-    }
-
-    public VRI getDoaUri() {
+    public String getDoaUri() {
         return doaUri;
     }
 
-    public QprfReport setDoaUri(VRI doaUri) {
+    public QprfReport setDoaUri(String doaUri) {
         this.doaUri = doaUri;
         return this;
     }
 
-    public LiteralValue getExperimentalResult() {
+    public String getExperimentalResult() {
         return experimentalResult;
     }
 
-    public QprfReport setExperimentalResult(LiteralValue experimentalResult) {
+    public QprfReport setExperimentalResult(String experimentalResult) {
         this.experimentalResult = experimentalResult;
         return this;
     }
 
-    public String getKeywords() {
-        return keywords;
+    public String getKeyword() {
+        return keyword;
     }
 
-    public QprfReport setKeywords(String keywords) {
-        this.keywords = keywords;
+    public QprfReport setKeyword(String keywords) {
+        this.keyword = keywords;
         return this;
     }
 
@@ -212,11 +222,11 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         return this;
     }
 
-    public LiteralValue getPredictionResult() {
+    public String getPredictionResult() {
         return predictionResult;
     }
 
-    public QprfReport setPredictionResult(LiteralValue predictionResult) {
+    public QprfReport setPredictionResult(String predictionResult) {
         this.predictionResult = predictionResult;
         return this;
     }
@@ -284,6 +294,56 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         this.model = model;
     }
 
+    public ArrayList<Compound> getStructuralAnalogues() {
+        return structuralAnalogues;
+    }
+
+    public void setStructuralAnalogues(ArrayList<Compound> structuralAnalogues) {
+        this.structuralAnalogues = structuralAnalogues;
+    }
+
+    public String getDoAName() {
+        return doAName;
+    }
+
+    public void setDoAName(String doAName) {
+        this.doAName = doAName;
+    }
+
+    public double getSimilarityLevel() {
+        return similarityLevel;
+    }
+
+    public QprfReport setSimilarityLevel(double similarityLevel) {
+        this.similarityLevel = similarityLevel;
+        return this;
+    }
+
+    public String getExpResultUnits() {
+        return expResultUnits;
+    }
+
+    public QprfReport setExpResultUnits(String expResultUnits) {
+        this.expResultUnits = expResultUnits;
+        return this;
+    }
+
+    public String getPredResultUnits() {
+        return predResultUnits;
+    }
+
+    public QprfReport setPredResultUnits(String predResultUnits) {
+        this.predResultUnits = predResultUnits;
+        return this;
+    }
+
+    public ArrayList<String> getExperimentalValues() {
+        return experimentalValues;
+    }
+
+    public void setExperimentalValues(ArrayList<String> experimentalValues) {
+        this.experimentalValues = experimentalValues;
+    }
     
     
 }
