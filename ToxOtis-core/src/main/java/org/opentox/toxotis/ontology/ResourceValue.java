@@ -99,8 +99,7 @@ public class ResourceValue implements Serializable {
     }
 
     public long getHash() {
-        long hash = (this.uri != null ? uri.toString().trim().hashCode() : 0);
-        hash += 7 * (ontologicalClass != null ? ontologicalClass.getUri().hashCode() : 0);
+        long hash = 19 + (this.uri != null ? uri.toString().trim().hashCode() : 0);
         return hash;
     }
 

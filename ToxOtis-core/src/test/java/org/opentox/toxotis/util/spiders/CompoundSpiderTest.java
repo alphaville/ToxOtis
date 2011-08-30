@@ -39,8 +39,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.component.Algorithm;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.core.component.Compound;
+import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.util.SimilarityRetriever;
 
 /**
@@ -73,9 +76,11 @@ public class CompoundSpiderTest {
      */
     @Test
     public void testParse() throws Exception {
-        System.out.println("parse");
+        System.out.println("parse");        
+        
 //        CompoundSpider spider = new CompoundSpider("phenol", null);
-        CompoundSpider spider = new CompoundSpider("http://apps.ideaconsult.net:8080/ambit2/compound/24793", null);
+        CompoundSpider spider = new CompoundSpider("http://apps.ideaconsult.net:8080/ambit2/compound/24793",
+                "http://apps.ideaconsult.net:8080/ambit2/query/compound/%s/all");
         Compound cmp = spider.parse();        
         System.out.println(cmp.getIupacName());
         System.out.println(cmp.getUri());

@@ -76,7 +76,7 @@ public class LiteralValue<T> implements Serializable {
      * instance of it with <code>null</code> value and default class <code>java.lang.String</code>,
      * or in terms of xsd datatypes, {@link XSDDatatype#XSDstring }.
      */
-    public LiteralValue() {        
+    public LiteralValue() {
     }
 
     /**
@@ -130,7 +130,7 @@ public class LiteralValue<T> implements Serializable {
         if (type != null) {
             this.serializableTypeUri = type.getURI();
         }
-       
+
     }
 
     public void setValue(T value) {
@@ -195,29 +195,16 @@ public class LiteralValue<T> implements Serializable {
         final LiteralValue<T> other = (LiteralValue<T>) obj;
         if (this.toString() != other.toString() && (this.toString() == null || !this.toString().equals(other.toString()))) {
             return false;
-        }        
+        }
         return true;
     }
 
-    
-
-    /**
-     * Delegates the method {@link #getHash() } herein. It is advisable that you use
-     * the method {@link #getHash() } instead where needed.
-     * @return
-     *      The hashCode value returned by {@link #getHash() } cast as integer. In case
-     *      the result returned by {@link #getHash() } is too big to be cast as an integer
-     *      , then it is adapted within the limits or minimum and maximum integers.
-     */
     @Override
     public int hashCode() {
-//        if (getHash() <= Integer.MAX_VALUE && getHash() >= Integer.MIN_VALUE) {
-        return (int) getHash();
-//        } else if (getHash() > Integer.MAX_VALUE) {
-//            return (int) (Integer.MAX_VALUE - 2 * getHash());
-//        } else {
-//            return (int) (Integer.MIN_VALUE + 2 * getHash());
-//        }
+        int hash = 7;
+        hash = 59 * hash + (this.value != null ? this.value.toString().hashCode() : 0);
+        hash = 59 * hash + (this.type != null ? this.type.toString().hashCode() : 0);
+        return hash;
     }
 
     /**

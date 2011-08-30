@@ -39,6 +39,8 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import org.opentox.toxotis.client.collection.Services;
 
 /**
@@ -57,12 +59,58 @@ public class SSLConfiguration {
 
     private static boolean isSslInitialized = false;
     private static final String PROTOCOL = "SSL";
+    public static boolean ACCEPT_ALL_CERTS = true;
 
     public static void initializeSSLConnection() {
         if (!isSslInitialized) {
-            initSsl();
+            if (ACCEPT_ALL_CERTS) {
+                initInsecure();
+            } else {
+                initSsl();
+            }
         }
     }
+
+    //<editor-fold defaultstate="collapsed" desc="INSECURE INITIALIZATION">
+    private static void initInsecure() {
+        TrustManager[] trustAllCerts = new TrustManager[]{
+            new X509TrustManager() {
+                
+                @Override
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                
+                @Override
+                public void checkClientTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                }
+                
+                @Override
+                public void checkServerTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                }
+            }
+        };
+        
+        // Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance(PROTOCOL);
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+        }
+        HttpsURLConnection.setDefaultHostnameVerifier(
+                new HostnameVerifier() {
+                    
+                    @Override
+                    public boolean verify(String string, SSLSession ssls) {
+                        return true;
+                    }
+                });
+        isSslInitialized = true;
+    }
+    //</editor-fold>
 
     private static void initSsl() {
         SSLContext sc = null;
@@ -77,14 +125,12 @@ public class SSLConfiguration {
             throw new RuntimeException(ex);
         }
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
         HostnameVerifier hv = new HostnameVerifier() {
 
             @Override
             public boolean verify(String urlHostName, SSLSession session) {
                 /* This is to avoid spoofing */
-                return (urlHostName.equals(session.getPeerHost())
-                        && urlHostName.equals(Services.SSO_HOST));
+                return (urlHostName.equals(session.getPeerHost()));
             }
         };
 

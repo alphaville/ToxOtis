@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -66,6 +64,12 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
  */
 public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupport {
 
+    public void endowUri(final VRI baseUri) {
+        if (super.uri == null) {
+            setUri(new VRI(baseUri).augment("parameter", this.hashCode()));
+        }
+    }
+
     @Override
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -83,7 +87,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
 
         HTMLTable infoTable = builder.addTable(2);
 
-        String vri = getUri()!=null ? getUri().toString() : null;
+        String vri = getUri() != null ? getUri().toString() : null;
         infoTable.setAtCursor(new HTMLTextImpl("Parameter URI").formatBold(true)).setTextAtCursor(HTMLUtils.linkUrlsInText(vri)).
                 setAtCursor(new HTMLTextImpl("Name").formatBold(true)).setTextAtCursor(getName().getValueAsString()).
                 setAtCursor(new HTMLTextImpl("Value").formatBold(true)).setTextAtCursor(getValue().toString()).
@@ -253,10 +257,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        }        
         final Parameter<T> other = (Parameter<T>) obj;
         if (this.typedValue != other.typedValue && (this.typedValue == null || !this.typedValue.equals(other.typedValue))) {
             return false;
@@ -273,8 +274,8 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 37 * hash + (this.getName() != null ? this.getName().toString().hashCode() : 0);
-        hash = 37 * hash + (this.typedValue != null ? this.typedValue.toString().hashCode() : 0);
+        hash = 37 * hash + (this.getName() != null ? this.getName().hashCode() : 0);
+        hash = 37 * hash + (this.typedValue != null ? this.typedValue.hashCode() : 0);
         hash = 37 * hash + (this.scope != null ? this.scope.toString().hashCode() : 0);
         return hash;
     }

@@ -781,16 +781,13 @@ public class MetaInfoImpl implements MetaInfo {
             return false;
         }
 
-
         if (!areSetEquals(this.descriptions, other.descriptions)) {
             return false;
         }
 
-
         if (!areSetEquals(this.titles, other.titles)) {
             return false;
         }
-
 
         if (!areSetEquals(this.subjects, other.subjects)) {
             return false;
@@ -842,11 +839,10 @@ public class MetaInfoImpl implements MetaInfo {
         return hash;
     }
 
-
-    private String listOfCreators(){
+    private String listOfCreators() {
         StringBuilder builder = new StringBuilder();
         String creatorId = null;
-        for (LiteralValue creator : creators){
+        for (LiteralValue creator : creators) {
             creatorId = creator.getValueAsString();
             builder.append("<a href=\"");
             builder.append("/user/");

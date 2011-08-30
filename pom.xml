@@ -11,13 +11,13 @@
         <developer>
             <name>Sopasakis Pantelis</name>
             <organization>NTUA</organization>
-            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <organizationUrl>http://opentox.ntua.gr</organizationUrl>
             <url>https://github.com/alphaville</url>
         </developer>
         <developer>
             <name>Charalampos Chomenides</name>
             <organization>NTUA</organization>
-            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <organizationUrl>http://opentox.ntua.gr</organizationUrl>
             <url>https://github.com/hampos</url>
         </developer>
     </developers>
@@ -35,20 +35,15 @@
     </licenses>
     <url>http://github.com/alphaville/ToxOtis</url>
 
-
     <distributionManagement>
         <snapshotRepository>
-            <id>ambit-plovdiv-snapshots</id>
-            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
+            <id>opentox-snapshots</id>
+            <url>http://opentox.ntua.gr:8081/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-            <id>ambit-plovdiv-thirdparty</id>
-            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
+            <id>opentox-ntua-gr</id>
+            <url>http://opentox.ntua.gr:8081/nexus/content/repositories/releases/</url>
         </repository>
-        <site>
-            <id>website_ambit</id>
-            <url>scp://shell.sourceforge.net/home/groups/a/am/ambit/htdocs/AMBIT2-LIBS</url>
-        </site>
     </distributionManagement>
 
     <profiles>
@@ -138,6 +133,6 @@
         <module>ToxOtis-benchmark</module>
         <module>ToxOtis-janitor</module>
         <module>ToxOtis-db</module>
-  </modules>
+    </modules>
 
 </project>

@@ -134,18 +134,19 @@ public abstract class Tarantula<Result> implements Closeable {
                     String stringVal = node.as(Literal.class).getString();
                     if (datatype != null && datatype.equals(XSDDatatype.XSDdateTime)) {
                         // For the following bug fix, credits go to FABIAN BUCHWALD!!!!!!
-                        DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
+                        DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy",
+                                Locale.ENGLISH);
                         try {
-                            Date date = (Date) formatter.parse(stringVal);
-                            results.add(new LiteralValue<Date>(date, datatype));
-                        } catch (ParseException ex) {
                             try {
+                                Date date = (Date) formatter.parse(stringVal);
+                                results.add(new LiteralValue<Date>(date, datatype));
+                            } catch (ParseException ex) {
+
                                 long longDate = Long.parseLong(stringVal);
                                 results.add(new LiteralValue<Date>(new Date(longDate), datatype));
-                            } catch (NumberFormatException nfe) {
-                                System.err.println("[WARNING] Date format not supported.");
-                                nfe.printStackTrace();
                             }
+                        } catch (NumberFormatException nfe) {
+                            System.err.println("[WARNING] Date format not supported.");
                         }
                     } else {
                         results.add(new LiteralValue(stringVal, datatype));
@@ -225,12 +226,12 @@ public abstract class Tarantula<Result> implements Closeable {
         }
         for (OntClass oc : ontClassSet) {
             OntologicalClass tempOC = OTClasses.forName(oc.getLocalName());
-            if (tempOC!=null){
+            if (tempOC != null) {
                 ontClasses.add(tempOC);
-            }else{
+            } else {
                 ontClasses.add(new OntologicalClassImpl(oc.getLocalName(), oc.getNameSpace()));
             }
-            
+
         }
         return ontClasses;
     }
