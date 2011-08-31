@@ -64,6 +64,8 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
  */
 public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupport {
 
+    private String name;
+
     public void endowUri(final VRI baseUri) {
         if (super.uri == null) {
             setUri(new VRI(baseUri).augment("parameter", this.hashCode()));
@@ -190,20 +192,21 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
      *      not any.
      */
     public LiteralValue getName() {
-        if (getMeta() != null) {
-            if (getMeta().getTitles() != null && !getMeta().getTitles().isEmpty()) {
-                LiteralValue val = getMeta().getTitles().iterator().next();
-                return val;
+        if (this.name != null) { // if someone has set the name using setName, use this value
+            return new LiteralValue<String>(name, XSDDatatype.XSDstring);
+        } else {//otherwise pick a name from getMeta().getTitles().
+            if (getMeta() != null) {
+                if (getMeta().getTitles() != null && !getMeta().getTitles().isEmpty()) {
+                    LiteralValue val = getMeta().getTitles().iterator().next();
+                    return val;
+                }
             }
         }
         return null;
     }
 
     public Parameter setName(String name) {
-        if (getMeta() == null) {
-            setMeta(new MetaInfoImpl());
-        }
-        getMeta().addTitle(name);
+        this.name = name;
         return this;
     }
 
@@ -257,7 +260,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
-        }        
+        }
         final Parameter<T> other = (Parameter<T>) obj;
         if (this.typedValue != other.typedValue && (this.typedValue == null || !this.typedValue.equals(other.typedValue))) {
             return false;

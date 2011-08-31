@@ -4,7 +4,7 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.8</version>
+    <version>0.8.1</version>
     <name>ToxOtis Core Module</name>
     <description></description>
     <developers>
