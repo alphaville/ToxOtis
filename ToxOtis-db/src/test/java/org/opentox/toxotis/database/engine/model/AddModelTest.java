@@ -69,12 +69,12 @@ public class AddModelTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        DataSourceFactory.getInstance().ping(100);
+        //DataSourceFactory.getInstance().ping(10);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        DataSourceFactory.getInstance().close();
+        //DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -87,7 +87,7 @@ public class AddModelTest {
 
     @Test
     public synchronized void testWriteBruteForce() throws InterruptedException {
-        int poolSize = 100;
+        int poolSize = 50;
         int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
@@ -117,7 +117,7 @@ public class AddModelTest {
 
     @Test
     public synchronized void testWriteAndFindBruteForce() throws InterruptedException {
-        int poolSize = 100;
+        int poolSize = 50;
         int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
@@ -145,7 +145,7 @@ public class AddModelTest {
         }
     }
 
-    @Test
+   @Test
     public synchronized void testAddModel() throws Exception {
         Model m = _ROG_.nextModel();
         m.setMeta(null);
@@ -155,7 +155,7 @@ public class AddModelTest {
 
     }
 
-    @Test
+   @Test
     public synchronized void testAddAndFindModel() throws Exception {
         Model m = _ROG_.nextModel();
         AddModel adder = null;
@@ -267,17 +267,44 @@ public class AddModelTest {
             }
         }
     }
-    
+
+    @Test
+    public void testModelNullMeta() throws Exception {
+        Model m = _ROG_.nextModel();
+        m.setMeta(null);
+        AddModel adder = null;
+        try {
+            adder = new AddModel(m);
+            adder.write();
+        } catch (DbException ex) {
+            throw ex;
+        } finally {
+            if (adder != null) {
+                adder.close();
+            }
+        }
+
+        FindModel finder = new FindModel(new VRI(baseVri));
+        finder.setSearchById(m.getUri().getId());
+        IDbIterator<Model> list = finder.list();
+        assertTrue(list.hasNext());
+        Model found = list.next();
+        assertNull(found.getMeta());
+        assertFalse(list.hasNext());
+        list.close();
+        finder.close();
+    }
+
     @Test
     public void testModelMeta() throws Exception {
         //TODO: Implementation WANTED!
     }
-    
+
     @Test
     public void testModelCreator() throws Exception {
         //TODO: Implementation WANTED!
     }
-    
+
     @Test
     public void testModelFeatureUnits() throws Exception {
         //TODO: Implementation WANTED!

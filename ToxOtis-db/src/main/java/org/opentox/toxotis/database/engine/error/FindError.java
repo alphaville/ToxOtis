@@ -48,7 +48,7 @@ public class FindError extends DbReader<ErrorReport> {
         setTableColumns("ErrorReport.id", "httpStatus", "actor", "message", "details",
                 "errorCode", "errorCause", "uncompress(MetaInfo.meta)");
         setInnerJoin("OTComponent ON ErrorReport.id=OTComponent.id "
-                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id OR OTComponent.meta IS NULL" );
+                + "LEFT JOIN MetaInfo ON OTComponent.meta=MetaInfo.id" );
     }
 
     public void setSearchById(String id) {

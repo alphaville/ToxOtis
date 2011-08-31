@@ -80,8 +80,7 @@ public class FindModel extends DbReader<Model> {
         setTable("Model");
         setTableColumns("Model.id", "Model.createdBy", "Model.algorithm", "Model.localcode", "Model.dataset", "uncompress(actualModel)", "uncompress(MetaInfo.meta)");
         setInnerJoin("OTComponent ON Model.id=OTComponent.id "
-                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id "
-                + "OR OTComponent.meta IS NULL");
+                + "LEFT JOIN MetaInfo ON OTComponent.meta=MetaInfo.id");
         if (!includeDisabled) {
             if (where == null) {
                 setWhere("OTComponent.enabled=true");

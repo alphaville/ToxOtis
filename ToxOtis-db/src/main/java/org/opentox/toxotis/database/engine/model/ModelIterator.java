@@ -143,6 +143,8 @@ public class ModelIterator extends DbIterator<Model> {
                 MetaInfo mi = mid.toMetaInfo();
                 nextModel.setMeta(mi);
                 metaInfoBlob.free();
+            }else{
+                nextModel.setMeta(null);
             }
 
             FindModelParameters paramFinder = new FindModelParameters(modelId, baseUri);

@@ -48,8 +48,7 @@ public class FindParameter extends DbReader<Parameter> {
         setTableColumns("Parameter.id", "name", "scope", "value", "valueType",
                 "uncompress(MetaInfo.meta)");
         setInnerJoin("OTComponent ON Parameter.id=OTComponent.id "
-                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id "
-                + "OR OTComponent.meta IS NULL");
+                + "LEFT JOIN MetaInfo ON OTComponent.meta=MetaInfo.id");
         
         statement = null;
         Connection connection = null;

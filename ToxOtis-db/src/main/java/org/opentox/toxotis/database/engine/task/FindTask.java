@@ -73,8 +73,7 @@ public class FindTask extends DbReader<Task> {
         setTableColumns("Task.id", "Task.resultUri", "Task.httpStatus", "Task.percentageCompleted",
                 "Task.status", "Task.duration", "Task.errorReport", "Task.createdBy", "OTComponent.enabled", "uncompress(MetaInfo.meta)");
         setInnerJoin("OTComponent ON Task.id=OTComponent.id "
-                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id "
-                + "OR OTComponent.meta IS NULL");
+                + "LEFT JOIN MetaInfo ON OTComponent.meta=MetaInfo.id");
         if (!includeDisabled) {
             if (where == null) {
                 setWhere("OTComponent.enabled=true");
