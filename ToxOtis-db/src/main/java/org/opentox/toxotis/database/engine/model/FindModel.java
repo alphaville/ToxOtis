@@ -78,8 +78,10 @@ public class FindModel extends DbReader<Model> {
     @Override
     public IDbIterator<Model> list() throws DbException {
         setTable("Model");
-        setTableColumns("Model.id", "Model.createdBy", "Model.algorithm", "Model.localcode", "Model.dataset", "uncompress(actualModel)", "uncompress(meta)");
-        setInnerJoin("OTComponent ON Model.id=OTComponent.id");
+        setTableColumns("Model.id", "Model.createdBy", "Model.algorithm", "Model.localcode", "Model.dataset", "uncompress(actualModel)", "uncompress(MetaInfo.meta)");
+        setInnerJoin("OTComponent ON Model.id=OTComponent.id "
+                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id "
+                + "OR OTComponent.meta IS NULL");
         if (!includeDisabled) {
             if (where == null) {
                 setWhere("OTComponent.enabled=true");
@@ -87,7 +89,6 @@ public class FindModel extends DbReader<Model> {
                 setWhere(where + " AND OTComponent.enabled=true");
             }
         }
-              
         Connection connection = null;
         connection = getConnection();
         try {

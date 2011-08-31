@@ -74,6 +74,7 @@ public class ListModelTest {
 
     @Test
     public void testListModelMultithreadedly() throws InterruptedException {
+        System.out.println("Crash test: multi-threaded reading from the DB");
         /*
          * c3p0.numHelperThreads=110 and it works fine!
          * Note... Setting minPoolSize=maxPoolSize=initialPoolSize=1000 and numHelperThreads=50
@@ -111,14 +112,14 @@ public class ListModelTest {
     @Test
     public void testListModels() throws DbException {
         ListModel lister = new ListModel();
-        lister.setPageSize(100);
+        lister.setPageSize(10);
         IDbIterator<String> list = lister.list();
         int i=0;
         while (list.hasNext()) {
             assertNotNull(list.next());
             i++;
         }
-        assertEquals(100, i);
+        assertEquals(10, i);
         list.close();
         lister.close();
 

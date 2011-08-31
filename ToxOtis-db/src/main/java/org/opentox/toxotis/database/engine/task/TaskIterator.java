@@ -117,7 +117,8 @@ public class TaskIterator extends DbIterator<Task> {
                 if (er == null) {
                     if (resolveErrorReport) {
                         FindError fe = new FindError(baseVri);
-                        fe.setWhere("id='" + errorReportString + "'");
+                        fe.setRetrieveStackTrace(true);
+                        fe.setSearchById(errorReportString);                        
                         IDbIterator<ErrorReport> errorIt = fe.list();
                         if (errorIt.hasNext()) {
                             er = errorIt.next();
@@ -128,7 +129,6 @@ public class TaskIterator extends DbIterator<Task> {
                 }                
                 t.setErrorReport(er);
             }
-
 
             String taskCreator = rs.getString("createdBy");
 

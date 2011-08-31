@@ -71,8 +71,10 @@ public class FindTask extends DbReader<Task> {
     public IDbIterator<Task> list() throws DbException {
         setTable("Task");
         setTableColumns("Task.id", "Task.resultUri", "Task.httpStatus", "Task.percentageCompleted",
-                "Task.status", "Task.duration", "Task.errorReport", "Task.createdBy", "OTComponent.enabled", "uncompress(meta)");
-        setInnerJoin("OTComponent ON Task.id=OTComponent.id");
+                "Task.status", "Task.duration", "Task.errorReport", "Task.createdBy", "OTComponent.enabled", "uncompress(MetaInfo.meta)");
+        setInnerJoin("OTComponent ON Task.id=OTComponent.id "
+                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id "
+                + "OR OTComponent.meta IS NULL");
         if (!includeDisabled) {
             if (where == null) {
                 setWhere("OTComponent.enabled=true");

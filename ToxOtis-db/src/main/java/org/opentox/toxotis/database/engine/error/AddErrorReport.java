@@ -32,15 +32,11 @@ public class AddErrorReport extends DbWriter {
                     + "connection. This most probably means that the connection is closed.", ex);
         }
         try {
-            stmt = getConnection().createStatement();
-            ErrorReportBatchWriter writer = new ErrorReportBatchWriter(stmt, error);
-            writer.batchStatement();
-            int[] ints = stmt.executeBatch();
-            connection.commit();
-            int result = 0;
-            for (int i : ints) {
-                result += i;
-            }
+            connection.setAutoCommit(false);
+            stmt = connection.createStatement();
+            ErrorReportBatchWriter writer = new ErrorReportBatchWriter(connection, error);
+            int result = writer.batchStatement();
+            connection.commit();          
             return result;
         } catch (final SQLException ex) {
             final String msg = "failed to execute statement";

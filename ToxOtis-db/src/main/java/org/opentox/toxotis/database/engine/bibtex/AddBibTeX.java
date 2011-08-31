@@ -23,8 +23,10 @@ public class AddBibTeX extends DbWriter {
     private final BibTeX bibtex;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddBibTeX.class);
     PreparedStatement ps = null;
-    private final String insertBibTeXAsComponentTemplate = "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s', ?,compress(?))";//write component stuff related to model
+    private final String insertMeta = "INSERT IGNORE INTO MetaInfo (id, meta) VALUES (?,compress(?))";
+    private final String insertBibTeXAsComponentTemplate = "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s', ?,?)";//write component stuff related to model
     private PreparedStatement writeComponent = null;
+    private PreparedStatement writeMeta = null;
 
     public AddBibTeX(final BibTeX bibtex) {
         super();
@@ -46,17 +48,33 @@ public class AddBibTeX extends DbWriter {
 
         String insertBibTeXAsComponent = String.format(insertBibTeXAsComponentTemplate, bibtex.getUri().getId());
         try {
+            connection.setAutoCommit(false);
+
+            if (bibtex.getMeta() != null) {
+                writeMeta = connection.prepareStatement(insertMeta);
+                writeMeta.setInt(1, bibtex.getMeta().hashCode());
+                MetaInfoBlobber mib = new MetaInfoBlobber(bibtex.getMeta());
+                Blob miBlob = null;
+                try {
+                    miBlob = mib.toBlob();
+                    writeMeta.setBlob(2, miBlob);
+                } catch (Exception ex) {
+                    logger.error("Exception while creating and setting meta-info BLOB", ex);
+                }
+                writeMeta.executeUpdate();
+            }
+
+
             writeComponent = connection.prepareStatement(insertBibTeXAsComponent);
             writeComponent.setBoolean(1, bibtex.isEnabled());
-            MetaInfoBlobber mib = new MetaInfoBlobber(bibtex.getMeta());
-            Blob miBlob = null;
-            try {
-                miBlob = mib.toBlob();
-                writeComponent.setBlob(2, miBlob);
-            } catch (Exception ex) {
-                logger.error("Exception while creating and setting meta-info BLOB", ex);
+            if (bibtex.getMeta() != null) {
+                writeComponent.setInt(2, bibtex.getMeta().hashCode());
+            } else {
+                writeComponent.setNull(2, Types.INTEGER);
             }
             writeComponent.executeUpdate();
+
+
         } catch (SQLException ex) {
             logger.error("", ex);
             throw new DbException("", ex);
@@ -125,6 +143,11 @@ public class AddBibTeX extends DbWriter {
             }
             ps.setString(25, bibtex.getCreatedBy().getUid());
             int update = ps.executeUpdate();
+
+            /*
+             * COMMIT :)
+             */
+            connection.commit();
             return update;
         } catch (SQLException ex) {
             final String msg = "BibTeX could not be added in the database";

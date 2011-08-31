@@ -39,13 +39,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.database.DbOperation;
-import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.ResultSetIterator;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**

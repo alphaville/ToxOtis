@@ -32,12 +32,8 @@
  */
 package org.opentox.toxotis.database.engine.model;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import java.io.NotSerializableException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.UUID;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.junit.After;
@@ -46,17 +42,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.component.Algorithm;
-import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Model;
-import org.opentox.toxotis.core.component.Parameter;
-import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.ontology.LiteralValue;
-import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
-import java.util.Random;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Feature;
+import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
+import org.opentox.toxotis.ontology.ResourceValue;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import static org.junit.Assert.*;
 
 /**
@@ -67,18 +62,19 @@ public class AddModelTest {
 
     private static Throwable failure = null;
     private static final VRI baseVri = Services.ntua();
-    private static final Random RND = new Random(117543 + System.currentTimeMillis());
+    private static final ROG _ROG_ = new ROG();
 
     public AddModelTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        DataSourceFactory.getInstance().ping(100);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -151,7 +147,8 @@ public class AddModelTest {
 
     @Test
     public synchronized void testAddModel() throws Exception {
-        Model m = createRandomModel();
+        Model m = _ROG_.nextModel();
+        m.setMeta(null);
         AddModel adder = new AddModel(m);
         adder.write();
         adder.close();
@@ -160,7 +157,7 @@ public class AddModelTest {
 
     @Test
     public synchronized void testAddAndFindModel() throws Exception {
-        Model m = createRandomModel();
+        Model m = _ROG_.nextModel();
         AddModel adder = null;
         try {
             adder = new AddModel(m);
@@ -184,18 +181,49 @@ public class AddModelTest {
             finder.setSearchById(m.getUri().getId());
             list = finder.list();
             assertNotNull(list);
-            if (list.hasNext()) {
-                Model found = list.next();
-                assertNotNull(found);
-                assertNotNull(found.getDataset());
-                assertEquals(m.getDataset(), found.getDataset());
-                assertNotNull(found.getActualModel());
-                assertNotNull(found.getAlgorithm().getUri());
-                assertEquals(m.getAlgorithm().getUri(), found.getAlgorithm().getUri());
-                assertNotNull(found.getCreatedBy());
-                assertNotNull("Mail of retrieved user not found", found.getCreatedBy().getMail());
-                assertNotNull("Name of retrieved user not found", found.getCreatedBy().getName());
+            assertTrue(list.hasNext());
+            Model found = list.next();
+            assertNotNull(found);
+            assertNotNull(found.getDataset());
+            assertEquals(m.getDataset(), found.getDataset());
+            assertEquals(m.getAlgorithm(), found.getAlgorithm());
+            assertEquals(m.getMeta(), found.getMeta());
+            assertNotNull(found.getActualModel());
+            assertNotNull(found.getAlgorithm().getUri());
+            assertEquals(m.getAlgorithm().getUri(), found.getAlgorithm().getUri());
+            assertNotNull(found.getCreatedBy());
+            assertNotNull("Mail of retrieved user not found", found.getCreatedBy().getMail());
+            assertNotNull("Name of retrieved user not found", found.getCreatedBy().getName());
+
+            assertNotNull(found.getIndependentFeatures());
+            assertFalse(found.getIndependentFeatures().isEmpty());
+            assertNotNull(found.getDependentFeatures());
+            assertFalse(found.getDependentFeatures().isEmpty());
+
+            /*
+             * An empty list was set for the predicted features.
+             */
+            assertNotNull(found.getPredictedFeatures());
+            assertTrue(found.getPredictedFeatures().isEmpty());
+
+            Set<Parameter> foundParameters = found.getParameters();
+            assertNotNull(foundParameters);
+            assertFalse(foundParameters.isEmpty());
+            assertTrue(foundParameters.size() == m.getParameters().size());
+
+            for (Parameter q : foundParameters) {
+                HashSet<ResourceValue> sources = q.getMeta().getHasSources();
+                assertNotNull(sources);
+                assertFalse(sources.isEmpty());
+                assertTrue(sources.iterator().next().getUri().equals(m.getUri()));
             }
+
+            for (Parameter p : m.getParameters()) {
+                assertTrue(foundParameters.contains(p));
+            }
+
+
+
         } catch (DbException ex) {
             throw ex;
         } finally {
@@ -221,38 +249,37 @@ public class AddModelTest {
         }
     }
 
-    private Model createRandomModel() throws NotSerializableException, URISyntaxException {
-        VRI vri1 = new VRI(baseVri).augment("model", UUID.randomUUID().toString());
-        VRI datasetUri = new VRI("http://otherServer.com:7000/dataset/1");
-
-        VRI f1 = new VRI("http://otherServer.com:7000/feature/1");
-        VRI f2 = new VRI("http://otherServer.com:7000/feature/2");
-        VRI f3 = new VRI("http://otherServer.com:7000/feature/3");
-
-
-        Parameter p = new Parameter();
-        p.setUri(new VRI("http://no.such.service.net/jaqpot/parameter/" + UUID.randomUUID().toString()));
-        p.setName("alpha");
-        p.setScope(Parameter.ParameterScope.OPTIONAL);
-        p.setTypedValue(new LiteralValue(RND.nextInt(), XSDDatatype.XSDint));
-
-
-        Model m = new Model(vri1);
-        m.setParameters(new HashSet<Parameter>());
-        m.getParameters().add(p);
-        m.setDataset(datasetUri);
-
-        m.setDependentFeatures(new ArrayList<Feature>());
-        m.setIndependentFeatures(new ArrayList<Feature>());
-
-        m.getIndependentFeatures().add(new Feature(f1));
-        m.getDependentFeatures().add(new Feature(f1));
-        m.getDependentFeatures().add(new Feature(f2));
-        m.getDependentFeatures().add(new Feature(f3));
-        m.setCreatedBy(User.GUEST);
-        m.setActualModel(new MetaInfoImpl());// just for the sake to write something in there!
-        m.setLocalCode(UUID.randomUUID().toString());
-        m.setAlgorithm(new Algorithm("http://algorithm.server.co.uk:9000/algorithm/mlr"));
-        return m;
+    @Test
+    public void testAddModelNoFeatures() throws Exception {
+        Model m = _ROG_.nextModel();
+        m.setDependentFeatures(null);
+        m.setIndependentFeatures(null);
+        m.setPredictedFeatures(null);
+        AddModel adder = null;
+        try {
+            adder = new AddModel(m);
+            adder.write();
+        } catch (DbException ex) {
+            throw ex;
+        } finally {
+            if (adder != null) {
+                adder.close();
+            }
+        }
+    }
+    
+    @Test
+    public void testModelMeta() throws Exception {
+        //TODO: Implementation WANTED!
+    }
+    
+    @Test
+    public void testModelCreator() throws Exception {
+        //TODO: Implementation WANTED!
+    }
+    
+    @Test
+    public void testModelFeatureUnits() throws Exception {
+        //TODO: Implementation WANTED!
     }
 }

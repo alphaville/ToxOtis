@@ -81,95 +81,96 @@ public class AddQprf extends DbWriter {
 
     @Override
     public int write() throws DbException {
-        BatchAddFoaf foafAdder = new BatchAddFoaf(report.getAuthors());
-        try {
-            ps = getConnection().prepareStatement(getSql());
-            ps.setString(1, report.getUri().getId());
-            if (report.getModelUri() != null) {
-                ps.setString(2, report.getModelUri().toString());
-            } else {
-                ps.setNull(2, Types.VARCHAR);
-            }
-            if (report.getCompoundUri() != null) {
-                ps.setString(3, report.getCompoundUri().toString());
-            } else {
-                ps.setNull(3, Types.VARCHAR);
-            }
-            if (report.getDoaUri() != null) {
-                ps.setString(4, report.getDoaUri().toString());
-            } else {
-                ps.setNull(4, Types.VARCHAR);
-            }
-            if (report.getKeywords() != null) {
-                ps.setString(5, report.getKeywords().toString());
-            } else {
-                ps.setNull(5, Types.VARCHAR);
-            }
-            if (report.getReportDate() != null) {
-                ps.setLong(6, report.getReportDate());
-            } else {
-                ps.setNull(6, Types.BIGINT);
-            }
-            if (report.getModelDate() != null) {
-                ps.setLong(7, report.getModelDate());
-            } else {
-                ps.setNull(7, Types.BIGINT);
-            }
-
-            if (report.getDatasetStructuralAnalogues() != null) {
-                ps.setString(8, report.getDatasetStructuralAnalogues().toString());
-            } else {
-                ps.setNull(8, Types.VARCHAR);
-            }
-            if (report.getApplicabilityDomainResult() != null) {
-                ps.setString(9, report.getApplicabilityDomainResult().toString());
-            } else {
-                ps.setNull(9, Types.VARCHAR);
-            }
-            if (report.getPredictionResult() != null) {
-                ps.setString(10, report.getPredictionResult().toString());
-            } else {
-                ps.setNull(10, Types.VARCHAR);
-            }
-            if (report.getExperimentalResult() != null) {
-                ps.setString(11, report.getExperimentalResult().toString());
-            } else {
-                ps.setNull(11, Types.VARCHAR);
-            }
-            ps.setString(12, report.getQMRFreference());
-            QprfReportMetaSerializer serializer = new QprfReportMetaSerializer(report.getReportMeta());
-            try {
-                ps.setBlob(13, serializer.toBlob());
-            } catch (Exception ex) {
-                Logger.getLogger(AddQprf.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException(ex);
-            }
-            ps.setString(14, report.getCreatedBy().getUid());
-            int result = ps.executeUpdate();
-            result += foafAdder.write();
-            return result;
-        } catch (SQLException ex) {
-            throw new DbException(ex);
-        } finally {
-            DbException event = null;
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (final SQLException ex) {
-                    final String msg = "Prepared statement for adding BibTeX in the database cannot be closed";
-                    event = new DbException(ex);
-                    // logger.warn(msg, ex);
-                }
-            }
-            try {
-                foafAdder.close();
-            } catch (final DbException ex) {
-                event = ex;
-            }
-            close();
-            if (event != null) {
-                throw event;
-            }
-        }
+        throw new UnsupportedOperationException();
+//        BatchAddFoaf foafAdder = new BatchAddFoaf(report.getAuthors());
+//        try {
+//            ps = getConnection().prepareStatement(getSql());
+//            ps.setString(1, report.getUri().getId());
+//            if (report.getModelUri() != null) {
+//                ps.setString(2, report.getModelUri().toString());
+//            } else {
+//                ps.setNull(2, Types.VARCHAR);
+//            }
+//            if (report.getCompoundUri() != null) {
+//                ps.setString(3, report.getCompoundUri().toString());
+//            } else {
+//                ps.setNull(3, Types.VARCHAR);
+//            }
+//            if (report.getDoaUri() != null) {
+//                ps.setString(4, report.getDoaUri().toString());
+//            } else {
+//                ps.setNull(4, Types.VARCHAR);
+//            }
+//            if (report.getKeywords() != null) {
+//                ps.setString(5, report.getKeywords().toString());
+//            } else {
+//                ps.setNull(5, Types.VARCHAR);
+//            }
+//            if (report.getReportDate() != null) {
+//                ps.setLong(6, report.getReportDate());
+//            } else {
+//                ps.setNull(6, Types.BIGINT);
+//            }
+//            if (report.getModelDate() != null) {
+//                ps.setLong(7, report.getModelDate());
+//            } else {
+//                ps.setNull(7, Types.BIGINT);
+//            }
+//
+//            if (report.getDatasetStructuralAnalogues() != null) {
+//                ps.setString(8, report.getDatasetStructuralAnalogues().toString());
+//            } else {
+//                ps.setNull(8, Types.VARCHAR);
+//            }
+//            if (report.getApplicabilityDomainResult() != null) {
+//                ps.setString(9, report.getApplicabilityDomainResult().toString());
+//            } else {
+//                ps.setNull(9, Types.VARCHAR);
+//            }
+//            if (report.getPredictionResult() != null) {
+//                ps.setString(10, report.getPredictionResult().toString());
+//            } else {
+//                ps.setNull(10, Types.VARCHAR);
+//            }
+//            if (report.getExperimentalResult() != null) {
+//                ps.setString(11, report.getExperimentalResult().toString());
+//            } else {
+//                ps.setNull(11, Types.VARCHAR);
+//            }
+//            ps.setString(12, report.getQMRFreference());
+//            QprfReportMetaSerializer serializer = new QprfReportMetaSerializer(report.getReportMeta());
+//            try {
+//                ps.setBlob(13, serializer.toBlob());
+//            } catch (Exception ex) {
+//                Logger.getLogger(AddQprf.class.getName()).log(Level.SEVERE, null, ex);
+//                throw new RuntimeException(ex);
+//            }
+//            ps.setString(14, report.getCreatedBy().getUid());
+//            int result = ps.executeUpdate();
+//            result += foafAdder.write();
+//            return result;
+//        } catch (SQLException ex) {
+//            throw new DbException(ex);
+//        } finally {
+//            DbException event = null;
+//            if (ps != null) {
+//                try {
+//                    ps.close();
+//                } catch (final SQLException ex) {
+//                    final String msg = "Prepared statement for adding BibTeX in the database cannot be closed";
+//                    event = new DbException(ex);
+//                    // logger.warn(msg, ex);
+//                }
+//            }
+//            try {
+//                foafAdder.close();
+//            } catch (final DbException ex) {
+//                event = ex;
+//            }
+//            close();
+//            if (event != null) {
+//                throw event;
+//            }
+//        }
     }
 }

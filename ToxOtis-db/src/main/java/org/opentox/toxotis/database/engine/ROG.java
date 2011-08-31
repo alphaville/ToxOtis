@@ -1,7 +1,10 @@
 package org.opentox.toxotis.database.engine;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import java.io.NotSerializableException;
+import java.net.URISyntaxException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.UUID;
@@ -9,8 +12,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Algorithm;
 import org.opentox.toxotis.core.component.BibTeX;
+import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Model;
+import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.core.component.qprf.QprfReport;
 import org.opentox.toxotis.core.component.qprf.QprfReportMeta;
@@ -53,33 +59,76 @@ public class ROG {
     }
 
     public Model nextModel() {
-        Model nextModel = new Model(Services.ntua().augment("model", nextUuid()));
-        nextModel.setCreatedBy(User.GUEST);
-        return nextModel;
+        Model m = new Model(Services.ntua().augment("model", nextUuid()));
+        m.setCreatedBy(User.GUEST);
+        VRI datasetUri;
+        try {
+            datasetUri = new VRI("http://otherServer.com:7000/dataset/1");
+
+
+            VRI f1 = new VRI("http://otherServer.com:7000/feature/1");
+            VRI f2 = new VRI("http://otherServer.com:7000/feature/2");
+            VRI f3 = new VRI("http://otherServer.com:7000/feature/3");
+
+
+            Parameter p = new Parameter();            
+            p.setName("alpha");
+            p.setScope(Parameter.ParameterScope.OPTIONAL);
+            p.setTypedValue(new LiteralValue(RNG.nextInt(), XSDDatatype.XSDint));
+            p.setUri(Services.ntua().augment("parameter",nextUuid()));
+            
+            Parameter p2 = new Parameter();            
+            p2.setName("beta");
+            p2.setScope(Parameter.ParameterScope.MANDATORY);
+            p2.setTypedValue(new LiteralValue(5, XSDDatatype.XSDint));
+            p2.setUri(Services.ntua().augment("parameter",nextUuid()));
+
+            m.setParameters(new HashSet<Parameter>());
+            m.getParameters().add(p);
+            m.getParameters().add(p2);
+            m.setDataset(datasetUri);
+
+            m.setDependentFeatures(new ArrayList<Feature>());
+            m.setIndependentFeatures(new ArrayList<Feature>());
+
+            m.getIndependentFeatures().add(new Feature(f1));
+            m.getDependentFeatures().add(new Feature(f1));
+            m.getDependentFeatures().add(new Feature(f2));
+            m.getDependentFeatures().add(new Feature(f3));
+            m.setCreatedBy(User.GUEST);
+            m.setActualModel(new MetaInfoImpl());// just for the sake to write something in there!
+            m.setLocalCode(UUID.randomUUID().toString());
+            m.setAlgorithm(new Algorithm("http://algorithm.server.co.uk:9000/algorithm/mlr"));
+        } catch (NotSerializableException ex) {
+            Logger.getLogger(ROG.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(ROG.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return m;
     }
 
     public QprfReport nextReport(int nAuthors) {
         QprfReport random = new QprfReport(Services.anonymous().augment("report", "qprf", nextUuid()));
         QprfReportMeta randomReportMeta = new QprfReportMeta();
-        random.setApplicabilityDomainResult(new LiteralValue(RNG.nextBoolean(), XSDDatatype.XSDboolean));
+        random.setApplicabilityDomainResult(nextString(100));
         HashSet<VRI> authrors = new HashSet<VRI>();
         for (int i = 0; i < nAuthors; i++) {
             authrors.add(Services.anonymous().augment("foaf", nextString(80)));
         }
-        random.setCreatedBy(User.GUEST);
-        random.setAuthors(authrors);
-        random.setCompoundUri(Services.anonymous().augment("compound", nextString(80)));
-        random.setDatasetStructuralAnalogues(Services.anonymous().augment("dataset", Math.abs(RNG.nextInt())));
+//        random.setCreatedBy(User.GUEST);
+//        random.setAuthors(authrors);
+//        random.setCompoundUri(Services.anonymous().augment("compound", nextString(80)));
+//        random.setDatasetStructuralAnalogues(Services.anonymous().augment("dataset", Math.abs(RNG.nextInt())));
         randomReportMeta.setDescriptorDomain(nextString(10000));
-        random.setDoaUri(Services.anonymous().augment("model", nextUuid()));
-        random.setExperimentalResult(new LiteralValue(RNG.nextFloat(), XSDDatatype.XSDfloat));
-        random.setKeywords(nextString(20));
+//        random.setDoaUri(Services.anonymous().augment("model", nextUuid()));
+//        random.setExperimentalResult(new LiteralValue(RNG.nextFloat(), XSDDatatype.XSDfloat));
+//        random.setKeywords(nextString(20));
         randomReportMeta.setMechanismDomain(nextString(2000));
         randomReportMeta.setMetabolicDomain(nextString(2000));
-        random.setModelUri(Services.anonymous().augment("model", nextUuid()));
+//        random.setModelUri(Services.anonymous().augment("model", nextUuid()));
         randomReportMeta.setModelVersion(nextString(2000));
         random.setModelDate(System.currentTimeMillis() / 2);
-        random.setPredictionResult(new LiteralValue(RNG.nextFloat(), XSDDatatype.XSDfloat));
+//        random.setPredictionResult(new LiteralValue(RNG.nextFloat(), XSDDatatype.XSDfloat));
         randomReportMeta.setQMRFReportDiscussion(nextString(2000));
         random.setQMRFreference(nextString(255));
         random.setReportDate(System.currentTimeMillis());
@@ -147,7 +196,7 @@ public class ROG {
         }
     }
 
-    private static String getSeed(int len){
+    private static String getSeed(int len) {
         String str = new String("#. aF$0b9338nH94&cLdU|K2eHfJgTP8XhiFj61DOk.lNm9n/BoI5pGqYVrs3C tSuMZvwWx4yE7zR");
         StringBuffer sb = new StringBuffer();
         int te = 0;

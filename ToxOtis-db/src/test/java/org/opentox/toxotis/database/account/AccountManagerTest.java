@@ -42,6 +42,7 @@ import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
@@ -54,10 +55,12 @@ public class AccountManagerTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        DataSourceFactory.getInstance().ping(100);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        DataSourceFactory.getInstance().close();
     }
 
     @Before

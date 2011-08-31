@@ -81,5 +81,18 @@ public class FindErrorTest {
         it.close();
         fe.close();
     }
+    @Test
+    public void testFindError2() throws DbException {
+        FindError fe = new FindError(Services.ntua());
+        fe.setPageSize(1);
+        fe.setSearchById("002453c6-17c5-4d08-9eb6-d8dee3d9b1fd");
+        IDbIterator<ErrorReport> it = fe.list();
+        
+        while (it.hasNext()){
+            System.out.println(it.next().getUri());
+        }
+        it.close();
+        fe.close();
+    }
 
 }

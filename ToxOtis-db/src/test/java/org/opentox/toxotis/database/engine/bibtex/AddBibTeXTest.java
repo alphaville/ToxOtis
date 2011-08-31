@@ -44,6 +44,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
+import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import static org.junit.Assert.*;
@@ -74,7 +75,7 @@ public class AddBibTeXTest {
         
     }
 
-//    @Test
+    @Test
     public void testWriteBibTex() throws InterruptedException {
         int poolSize = 100;
         int folds = 1 * poolSize + 100;// just to make sure!!! (brutal?!)

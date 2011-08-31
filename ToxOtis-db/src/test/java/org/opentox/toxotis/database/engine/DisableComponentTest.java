@@ -75,6 +75,12 @@ public class DisableComponentTest {
         }
     }
 
+    
+    @Test
+    public void testEnableDisable() throws Exception {
+        
+    }
+    
     @Test
     public void testSomeMethod() throws Exception {
 

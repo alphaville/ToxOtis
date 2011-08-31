@@ -13,13 +13,13 @@
 
     <groupId>org.opentox.toxotis.database</groupId>
     <artifactId>ToxOtis-db</artifactId>
-    <version>0.2.24</version>
+    <version>0.3</version>
     <name>ToxOtis Database Module</name>
     <developers>
         <developer>
             <name>Sopasakis Pantelis</name>
             <organization>NTUA</organization>
-            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <organizationUrl>http://opentox.ntua.gr</organizationUrl>
             <url>https://github.com/alphaville</url>
             <email>chvng@mail.ntua.gr</email>
         </developer>
@@ -65,9 +65,29 @@
         <dependency>
             <groupId>org.opentox.toxotis</groupId>
             <artifactId>ToxOtis-core</artifactId>
-            <version>0.5.39</version>
+            <version>0.8.1</version>
         </dependency>       
     </dependencies>
+
+
+    <repositories>
+        <!-- AMBIT PLOVDIV REPO -->
+        <repository>
+            <id>ambit-plovdiv</id>
+            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>      
+        <repository>
+            <id>opentox-ntua-gr</id>
+            <url>http://opentox.ntua.gr:8081/nexus/content/repositories/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>      
+    </repositories>
+
 
     <build>
         <resources>

@@ -76,10 +76,13 @@ public class FindModelTest  {
     @Test
     public synchronized void testFindModel() throws DbException {
         FindModel fm = new FindModel(Services.ntua());
-        fm.setSearchById("3ec661f6-b1a0-4d02-8090-80f9e8e8373d");
-        IDbIterator<Model> mods = fm.list();
+        fm.setSearchById("1faae8e3-bc4b-4714-ae5b-8c24645ae6a0");
+        IDbIterator<Model> mods = fm.list();        
         while (mods.hasNext()){
-            assertTrue((mods.next().getActualModel() instanceof MetaInfo) );
+            Model nextModel = mods.next();
+            assertNotNull(nextModel);
+            assertNotNull(nextModel.getMeta());
+            assertNotNull(nextModel.getActualModel());
         }
         mods.close();
         fm.close();

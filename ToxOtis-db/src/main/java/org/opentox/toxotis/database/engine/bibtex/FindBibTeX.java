@@ -146,8 +146,10 @@ public class FindBibTeX extends DbReader<BibTeX> {
                 "BibTeX.url",
                 "BibTeX.volume",
                 "BibTeX.year",
-                "uncompress(meta)");
-        setInnerJoin("OTComponent ON BibTeX.id=OTComponent.id");
+                "uncompress(MetaInfo.meta)");
+        setInnerJoin("OTComponent ON BibTeX.id=OTComponent.id "
+                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id "
+                + "OR OTComponent.meta IS NULL");
         if (!includeDisabled) {
             if (where == null) {
                 setWhere("OTComponent.enabled=true");

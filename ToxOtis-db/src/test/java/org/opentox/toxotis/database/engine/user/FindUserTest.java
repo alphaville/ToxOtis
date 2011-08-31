@@ -72,6 +72,21 @@ public class FindUserTest {
 
     @Test
     public void testFindUser() throws DbException {
+
+        ListUsers list = new ListUsers();
+        list.setMode(ListUsers.ListUsersMode.BY_NAME);
+        try {
+            IDbIterator<String> userNames = list.list();
+            String nextName = null;
+            while (userNames.hasNext()) {
+                nextName = userNames.next();
+            }
+        } catch (DbException ex) {
+            
+        } finally {
+            list.close();
+        }
+
         FindUser fu = new FindUser();
         fu.setWhere("name LIKE 'Pan%'");
         IDbIterator<User> users = fu.list();

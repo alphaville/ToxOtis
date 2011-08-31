@@ -63,7 +63,7 @@ public class AssociateBibTeX extends DbWriter {
 
     /**
      *
-     * @param modelId
+     * @param modelIdo
      *      The id of the model
      * @param bibTex
      *      The <b>URIs</b> of the BibTeX resources (not the IDs)

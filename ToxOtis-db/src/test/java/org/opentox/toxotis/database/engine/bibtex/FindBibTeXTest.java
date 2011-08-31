@@ -71,12 +71,28 @@ public class FindBibTeXTest {
     }
 
     @Test
+    public void testWriteReadBibTeXNullMeta() throws DbException {
+        ROG rog = new ROG();
+        BibTeX bibtex = rog.nextBibTeX();
+        bibtex.setMeta(null);
+        AddBibTeX adder = new AddBibTeX(bibtex);
+        adder.write();
+        adder.close();
+
+        FindBibTeX finder = new FindBibTeX(Services.anonymous());
+        finder.setResolveUsers(true);
+        finder.setSearchById(bibtex.getUri().getId());
+        IDbIterator<BibTeX> iterator = finder.list();
+        assertTrue(iterator.hasNext());
+    }
+
+    @Test
     public void testWriteReadBibTeX() throws DbException {
-        ROG rog = new ROG();        
+        ROG rog = new ROG();
 
         for (int i = 1; i < 10; i++) {
             BibTeX bibtex = rog.nextBibTeX();
-            
+
             AddBibTeX adder = new AddBibTeX(bibtex);
             adder.write();
             adder.close();

@@ -20,6 +20,15 @@ public class FindError extends DbReader<ErrorReport> {
     private final VRI baseUri;
     private Statement statement = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FindError.class);
+    private boolean retrieveStackTrace = true;
+
+    public boolean isRetrieveStackTrace() {
+        return retrieveStackTrace;
+    }
+
+    public void setRetrieveStackTrace(boolean retrieveStackTrace) {
+        this.retrieveStackTrace = retrieveStackTrace;
+    }
 
     public FindError(final VRI baseUri) {
         if (baseUri == null) {
@@ -35,6 +44,11 @@ public class FindError extends DbReader<ErrorReport> {
             throw iae;
         }
         this.baseUri = baseUri;
+        setTable("ErrorReport");
+        setTableColumns("ErrorReport.id", "httpStatus", "actor", "message", "details",
+                "errorCode", "errorCause", "uncompress(MetaInfo.meta)");
+        setInnerJoin("OTComponent ON ErrorReport.id=OTComponent.id "
+                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id OR OTComponent.meta IS NULL" );
     }
 
     public void setSearchById(String id) {
@@ -43,9 +57,7 @@ public class FindError extends DbReader<ErrorReport> {
     }
 
     @Override
-    public IDbIterator<ErrorReport> list() throws DbException {
-        setTable("ErrorReport");
-        setTableColumns("id", "httpStatus", "actor", "message", "details", "errorCode", "errorCause");
+    public IDbIterator<ErrorReport> list() throws DbException {        
         statement = null;
         Connection connection = null;
         try {
@@ -53,6 +65,7 @@ public class FindError extends DbReader<ErrorReport> {
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(getSql());
             ErrorIterator it = new ErrorIterator(rs, baseUri);
+            it.setRetrieveStackTrace(retrieveStackTrace);
             return it;
         } catch (SQLException ex) {
             final String msg = "Database exception while searching for error reports in the database.";

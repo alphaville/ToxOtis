@@ -73,6 +73,7 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateSql() throws DbException {
+        //TODO: First get a list of tasks and pick randomly one - then update it!
         Task newTask = new Task(Services.ntua().augment("task","00024363-e51e-468b-b42c-b1f6491614de")).setDuration(666L).setHttpStatus(101).setMeta(new MetaInfoImpl().addComment("XX"));
         newTask.setPercentageCompleted(23.5234f);
         UpdateTask ut = new UpdateTask(newTask);
@@ -85,6 +86,21 @@ public class UpdateTaskTest {
             ut.setUpdateMeta(true);
         ut.update();
         ut.close();
+    }
+    
+    @Test
+    public void testCrash() throws DbException {
+        
+    }
+    
+    @Test
+    public void testUpdateDuration() throws DbException {
+        
+    }
+    
+    @Test
+    public void testUpdateErrorReportAndFind() throws DbException {
+        
     }
 
 }

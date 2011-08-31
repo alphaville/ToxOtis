@@ -1,20 +1,30 @@
 /* 
- * DATABASE VERSION : 1.5 
+ * DATABASE VERSION : 2.0
  */
+DROP DATABASE IF EXISTS `toxotisdb2`;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `toxotisdb2` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `toxotisdb2`;
 
-DROP DATABASE IF EXISTS `toxotisdb`;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `toxotisdb` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `toxotisdb`;
+DROP TABLE IF EXISTS `MetaInfo`;
+CREATE TABLE `MetaInfo` (
+ `id` int(11) NOT NULL COMMENT 'HASH Key of MetaInfo obect',
+ `meta` blob COMMENT 'Actual Data',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 DROP TABLE IF EXISTS `OTComponent`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `OTComponent` (
-  `id` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'This is a UUID identifying the component, not a URI',
-  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'You can virtually "delete" a component without removing it from the DB',
-  `meta` blob COMMENT 'Meta information about the component',
+  `id` varchar(255) COLLATE utf8_bin NOT NULL 
+     COMMENT 'This is a UUID identifying the component, not a URI',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' 
+     COMMENT 'You can virtually "delete" a component without removing it from the DB',
+  `meta` int(11) COMMENT 'FK to Meta (Hashing)',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation timestamp',
   `deletionDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Disablement timestamp',
   PRIMARY KEY (`id`),
+  CONSTRAINT `metainfoFK` FOREIGN KEY (`meta`) REFERENCES `MetaInfo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   KEY `otcomponent_id_index` (`id`) USING BTREE,
   KEY `index_enabled` (`enabled`) USING BTREE,
   KEY `index_created` (`created`) USING BTREE
@@ -43,7 +53,8 @@ CREATE TABLE `User` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 LOCK TABLE `User` WRITE;
-INSERT INTO `User` (`uid`,`name`,`mail`,`password`,`maxParallelTasks`,`maxModels`,`maxBibTeX`) VALUES ('guest@opensso.in-silico.ch','Guest','anonymous@anonymous.org','{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H',5,2000,2000);
+INSERT INTO `User` (`uid`,`name`,`mail`,`password`,`maxParallelTasks`,`maxModels`,`maxBibTeX`) 
+VALUES ('guest@opensso.in-silico.ch','Guest','anonymous@anonymous.org','{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H',5,2000,2000);
 UNLOCK TABLE ;
 DROP TABLE IF EXISTS `BibTeX`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -82,7 +93,7 @@ CREATE TABLE `BibTeX` (
   KEY `index_bibtex_url` (`url`) USING BTREE,
   CONSTRAINT `bibtex_extends_component_key` FOREIGN KEY (`id`) REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `bibtex_user_reference` FOREIGN KEY (`createdBy`) REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -240,44 +251,6 @@ CREATE TABLE `ModelBibTeX` (
   CONSTRAINT `modelId_ref_Model` FOREIGN KEY (`modelId`) REFERENCES `Model` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `Foaf`;
-CREATE TABLE `Foaf` (
-    `id` varchar(255) COLLATE utf8_bin NOT NULL,
-     PRIMARY KEY (`id`),
-     KEY `foaf_id` USING BTREE  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-DROP TABLE IF EXISTS `QprfReport`;
-CREATE TABLE `QprfReport` (
-    `id` varchar(255) COLLATE utf8_bin NOT NULL,
-    `modelUri` varchar(2000) COLLATE utf8_bin NOT NULL,
-    `compoundUri` varchar(2000) COLLATE utf8_bin NOT NULL,    
-    `doaUri` varchar(2000) COLLATE utf8_bin DEFAULT NULL,
-    `keywords`  varchar(2000) COLLATE utf8_bin DEFAULT NULL,
-    `report_date` BIGINT,
-    `model_date` BIGINT,
-    `datasetStructuralAnalogues`  varchar(2000) COLLATE utf8_bin DEFAULT NULL,
-    `applicabilityDomainResult` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-    `predictionResult` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-    `experimentalResult` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-    `QMRFreference` varchar(2000) COLLATE utf8_bin DEFAULT NULL,
-    `more` BLOB DEFAULT NULL COMMENT 'Additional information about he QPRF Report and user input',
-    `createdBy` varchar(255) COLLATE utf8_bin DEFAULT "guest@opensso.in-silico.ch",
-    PRIMARY KEY (`id`),
-    KEY `index_id_QPRFReport` USING BTREE  (`id`),
-    KEY `index_modelUri_QPRFReport` USING BTREE  (`modelUri`),
-    KEY `index_compoundUri_QPRFReport` USING BTREE  (`compoundUri`),
-    KEY `index_doaUri_QPRFReport` USING BTREE  (`doaUri`),
-    KEY `index_keywords_QPRFReport` USING BTREE  (`keywords`),
-    CONSTRAINT `qprfReprot_user_reference` FOREIGN KEY (`createdBy`) REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-DROP TABLE IF EXISTS `QprfReportFoaf`;
-CREATE TABLE `QprfReportFoaf` (
-    `qprf` varchar(255) COLLATE utf8_bin NOT NULL,
-    `foaf` varchar(255) COLLATE utf8_bin NOT NULL,
-    PRIMARY KEY (`qprf`,`foaf`),
-    CONSTRAINT `FK_qprf` FOREIGN KEY (`qprf`) REFERENCES `QprfReport` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `FK_foaf` FOREIGN KEY (`foaf`) REFERENCES `Foaf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 DELIMITER $$
 CREATE TRIGGER `bibtex_trigger_create` BEFORE INSERT ON BibTeX
 FOR EACH ROW BEGIN
@@ -290,3 +263,26 @@ FOR EACH ROW BEGIN
     DELETE FROM `OTComponent` WHERE OTComponent.`id`=OLD.id;
 END $$
 DELIMITER ;
+LOCK TABLE `BibTeX` WRITE;
+INSERT INTO `BibTeX` 
+(`id`,`abstract`,`address`,`annotation`,`author`,`bibType`,
+ `bookTitle`,`chapter`,`copyright`, `crossref`,`edition`,`editor`,
+ `isbn` ,`issn` ,`journal`,`bibkey` ,`keywords`,`number` ,`pages` ,
+ `series`,`title` ,  `url` ,`volume` ,`year` ,`createdBy`) VALUES 
+( 'caco2', 
+  'The correlations between Caco-2 permeability (logPapp) and molecular properties have been investigated. A training set of 77 structurally diverse organic molecules was used to construct significant QSAR models for Caco-2 cell permeation. Cellular permeation was found to depend primarily upon experimental distribution coefficient (logD) at pH = 7.4, high charged polar surface area (HCPSA), and radius of gyration (rgyr). Among these three descriptors, logD may have the largest impact on diffusion through Caco-2 cell because logD shows obvious linear correlation with logPapp (r=0.703) when logD is smaller than 2.0. High polar surface area will be unfavorable to achieve good Caco-2 permeability because higher polar surface area will introduce stronger H-bonding interactions between Caco-2 cells and drugs. The comparison among HCPSA, PSA (polar surface area), and TPSA (topological polar surface area) implies that high-charged atoms may be more important to the interactions between Caco-2 cell and drugs. Besides logD and HCPSA, rgyr is also closely connected with Caco-2 permeabilities. The molecules with larger rgyr are more difficult to cross Caco-2 monolayers than those with smaller rgyr. The descriptors included in the prediction models permit the interpretation in structural terms of the passive permeability process, evidencing the main role of lipholiphicity, H-bonding, and bulk properties. Besides these three molecular descriptors, the influence of other molecular descriptors was also investigated. From the calculated results, it can be found that introducing descriptors concerned with molecular flexibility can improve the linear correlation. The resulting model with four descriptors bears good statistical significance, n = 77, r = 0.82, q = 0.79, s = 0.45, F = 35.7. The actual predictive abilities of the QSAR model were validated through an external validation test set of 23 diverse compounds. The predictions for the tested compounds are as the same accuracy as the compounds of the training set and significantly better than those predicted by using the model reported. The good predictive ability suggests that the proposed model may be a good tool for fast screening of logPapp for compound libraries or large sets of new chemical entities via combinatorial chemistry synthesis.',
+  'College of Chemistry and Molecular Engineering, Peking University, Beijing 100871, China', 
+  NULL, 'T. J. Hou, W. Zhang, K. Xia, X. B. Qiao, and X. J. Xu' , 
+  'Article',NULL,NULL,'Copyright &copy; 2004 American Chemical Society',
+  NULL,NULL,NULL,NULL,NULL,'J. Chem. Inf. Comput. Sci.',NULL,NULL,
+  5 , '1585-1600' , 'ADME Evaluation in Drug Discovery' , 
+  'Correlation of Caco-2 Permeation with Simple Molecular Properties', 
+  'http://pubs.acs.org/doi/abs/10.1021/ci049884m' ,44,2004,'guest@opensso.in-silico.ch'),
+( 'FastRbfNn-Sarimveis-Alexandridis-Bafas', 
+  'A new algorithm for training radial basis function neural networks is presented in this paper. The algorithm, which is based on the subtractive clustering technique, has a number of advantages compared to the traditional learning algorithms, including faster training times and more accurate predictions. Due to these advantages the method proves suitable for developing models for complex nonlinear systems.',
+  'National Technical University of Athens, School of Chemical Engineering, 9 Heroon Polytechniou str., Zografou Campus, Athens 15780, Greece',
+   NULL,'Sarimveis H., Alexandridis A., Bafas G.','Article',NULL,NULL,'Copyright &copy; 2003 Elsevier Science B.V. All rights reserved.',
+   NULL,NULL,NULL,NULL,NULL,'Neurocomputing',NULL,'Radial basis function networks, Training algorithms, Model selection',NULL,'501-505',NULL,
+   'A fast training algorithm for RBF networks based on subtractive clustering',
+   'http://dx.doi.org/10.1016/S0925-2312(03)00342-4' ,51,2003,'guest@opensso.in-silico.ch');
+UNLOCK TABLE ;

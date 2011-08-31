@@ -47,7 +47,6 @@ import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.pool.DataSourceFactory;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -84,12 +83,13 @@ public class AddTaskTest {
     }
 
     @Test
-    public void testWriteTask() throws Exception {
+    public void testWriteReadTask() throws Exception {
         ErrorReport er_trace_2 = new ErrorReport(400, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
         ErrorReport er_trace_1 = new ErrorReport(400, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
         ErrorReport er = new ErrorReport(502, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
         er_trace_1.setErrorCause(er_trace_2);
         er.setErrorCause(er_trace_1);
+
 
         Task t = new Task(Services.ntua().augment("task", UUID.randomUUID()));
         t.setMeta(new MetaInfoImpl().addTitle("ZZZZZZZZZz").
@@ -138,7 +138,7 @@ public class AddTaskTest {
                 @Override
                 public void run() {
                     try {
-                        new AddTaskTest().testWriteTask();
+                        new AddTaskTest().testWriteReadTask();
                     } catch (final Throwable ex) {
                         failure = ex;
                         ex.printStackTrace();

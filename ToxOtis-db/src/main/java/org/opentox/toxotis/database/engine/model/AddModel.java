@@ -62,12 +62,14 @@ public class AddModel extends DbWriter {
 
     private final Model model;
     private Statement modelStatement = null;
+    private PreparedStatement writeMeta = null;
     private PreparedStatement writeFeature = null;
     private PreparedStatement writeComponent = null;
     private PreparedStatement writeModel = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddModel.class);
     private final String insertFeatureSql = "INSERT IGNORE Feature (uri, units) VALUES (?,?)";//write all features (if not already)
-    private final String insertModelAsComponentTemplate = "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,compress(?))";//write component stuff related to model
+    private final String insertMeta = "INSERT IGNORE INTO MetaInfo (id, meta) VALUES (?,compress(?))";
+    private final String insertModelAsComponentTemplate = "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,?)";//write component stuff related to model
     private final String insertModelSqlTemplate = "INSERT INTO Model (id, createdBy, algorithm, localCode, dataset, actualModel) VALUES ('%s', ?,?,?,?,compress(?))";//write model (blob is compressed)
     private final String insertModelDependentFeatures = "INSERT INTO ModelDepFeatures (modelId,featureUri,idx) VALUES ";//write model dep. feature
     private final String insertModelIndependentFeatures = "INSERT INTO ModelIndepFeatures (modelId,featureUri,idx) VALUES ";//write model indep. features
@@ -103,7 +105,7 @@ public class AddModel extends DbWriter {
         if (model.getParameters() == null || (model.getParameters() != null && model.getParameters().isEmpty())) {
             throw new IllegalArgumentException("This method should not have been invoked! Programatic error!");
         }
-        StringBuilder insertParametersSB = new StringBuilder("INSERT INTO Parameter (id,name,scope,value,valueType,modelId) VALUES ");
+        StringBuilder insertParametersSB = new StringBuilder("INSERT IGNORE Parameter (id,name,scope,value,valueType,modelId) VALUES ");
         int length = model.getParameters().size();
         Set<Parameter> params = model.getParameters();
         Iterator<Parameter> iter = params.iterator();
@@ -154,9 +156,13 @@ public class AddModel extends DbWriter {
             /*
              * Prepare statements
              */
+            if (model.getMeta() != null) {
+                writeMeta = connection.prepareStatement(insertMeta);
+            }
             writeFeature = connection.prepareStatement(insertFeatureSql);
             writeComponent = connection.prepareStatement(insertModelAsComponent);
             writeModel = connection.prepareStatement(insertModelSql);
+
 
             /*
              * Write all features in the database!
@@ -174,18 +180,32 @@ public class AddModel extends DbWriter {
             }
 
             /*
+             * Write MetaInfo
+             */
+            if (writeMeta != null) {
+                writeMeta.setInt(1, model.getMeta().hashCode());
+                MetaInfoBlobber mib = new MetaInfoBlobber(model.getMeta());
+                Blob miBlob = null;
+                try {
+                    miBlob = mib.toBlob();
+                    writeMeta.setBlob(2, miBlob);
+                } catch (final Exception ex) {
+                    logger.error("Not Serializable?!", ex);
+                }
+                writeMeta.executeUpdate();
+            }
+
+
+            /*
              * Write model in the database
              */
             // INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,?)
             // INSERT INTO `Model` (createdBy, algorithm, localCode, dataset, actualModel) VALUES ('%s', ?,?,?,?)
             writeComponent.setBoolean(1, model.isEnabled());
-            MetaInfoBlobber mib = new MetaInfoBlobber(model.getMeta());
-            Blob miBlob = null;
-            try {
-                miBlob = mib.toBlob();
-                writeComponent.setBlob(2, miBlob);
-            } catch (Exception ex) {
-                Logger.getLogger(AddModel.class.getName()).log(Level.SEVERE, null, ex);
+            if (model.getMeta() != null) {
+                writeComponent.setInt(2, model.getMeta().hashCode());
+            } else {
+                writeComponent.setNull(2, Types.INTEGER);
             }
             writeComponent.executeUpdate();
             String modelCreator = User.GUEST.getUid();//default user is User.GUEST
@@ -216,7 +236,6 @@ public class AddModel extends DbWriter {
                 modelStatement.addBatch(predFeatSQL);
             }
             if (model.getParameters() != null && !model.getParameters().isEmpty()) {
-                System.out.println(prepareQueryForParameters());
                 modelStatement.addBatch(prepareQueryForParameters());
             }
             modelStatement.executeBatch();
@@ -259,6 +278,16 @@ public class AddModel extends DbWriter {
                 } catch (SQLException ex) {
                     final String msg = "SQL exception occured while closing the SQL statement for "
                             + "adding a model in the database : ".concat(insertFeatureSql);
+                    logger.warn(msg, ex);
+                    sqlOnClose = ex;
+                }
+            }
+            if (writeMeta != null) {
+                try {
+                    writeMeta.close();
+                } catch (SQLException ex) {
+                    final String msg = "SQL exception occured while closing the SQL statement for "
+                            + "adding a model in the database : ".concat(insertMeta != null ? insertMeta : "N/A");
                     logger.warn(msg, ex);
                     sqlOnClose = ex;
                 }

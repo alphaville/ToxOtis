@@ -45,6 +45,9 @@ import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.database.DbOperation;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.ontology.LiteralValue;
+import org.opentox.toxotis.ontology.ResourceValue;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
  *
@@ -65,7 +68,7 @@ public class FindModelParameters extends DbOperation {
 
     @Override
     public String getSqlTemplate() {
-        String SQL = "SELECT id,name,scope,value,valueType FROM Parameter WHERE modelId='%s'";
+        String SQL = "SELECT id,name,scope,value,valueType,modelId FROM Parameter WHERE modelId='%s'";
         return SQL;
     }
 
@@ -89,6 +92,15 @@ public class FindModelParameters extends DbOperation {
             lv.setType(xsd);
         }
         p.setTypedValue(lv);
+
+        ResourceValue paramSource = new ResourceValue(
+                new VRI(baseUri).augment("model", rs.getString(6)),
+                OTClasses.Model());
+        if (p.getMeta() == null) {
+            p.setMeta(new MetaInfoImpl().addHasSource(paramSource));
+        } else {
+            p.getMeta().addHasSource(paramSource);
+        }
         return p;
     }
 

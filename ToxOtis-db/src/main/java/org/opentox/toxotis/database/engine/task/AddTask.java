@@ -73,29 +73,38 @@ public class AddTask extends DbWriter {
         setTableColumns("id", "httpStatus", "percentageCompleted", "status", "errorReport", "createdBy");
 
         Connection connection = getConnection();
+        PreparedStatement stmtMeta = null;
         PreparedStatement stmt = null;
         try {
             connection.setAutoCommit(false);
-            stmt = connection.prepareStatement("INSERT INTO OTComponent (id,meta) VALUES (?, compress(?))");
-            stmt.setString(1, task.getUri().getId());
             if (task.getMeta() != null) {
+                stmtMeta = connection.prepareStatement("INSERT IGNORE MetaInfo (id, meta)  VALUES (?, compress(?))");
+                stmtMeta.setInt(1, task.getMeta().hashCode());
                 MetaInfoBlobber mib = new MetaInfoBlobber(task.getMeta());
                 try {
                     Blob blob = mib.toBlob();
-                    stmt.setBlob(2, blob);
+                    stmtMeta.setBlob(2, blob);
                 } catch (final SQLException ex) {
                     logger.warn("Improper parametrization of prepared statement", ex);
                     throw ex;
                 } catch (final Exception ex) {
                     logger.warn("MetaInfo serialization exception", ex);
                 }
-            } else {
-                stmt.setNull(2, Types.BLOB);// no meta!
+                stmtMeta.executeUpdate();
             }
-            stmt.execute();
+            
+            stmt = connection.prepareStatement("INSERT INTO OTComponent (id,meta) VALUES (?, ?)");
+            stmt.setString(1, task.getUri().getId());
+            if (task.getMeta() != null) {
+                stmt.setInt(2, task.getMeta().hashCode());
+            } else {
+                stmt.setNull(2, Types.INTEGER);// no meta!
+            }
+            stmt.executeUpdate();
 
             if (task.getErrorReport() != null) {
-                ErrorReportBatchWriter errorReportWriter = new ErrorReportBatchWriter(stmt, task.getErrorReport());
+                ErrorReportBatchWriter errorReportWriter = new ErrorReportBatchWriter(getConnection(), 
+                        task.getErrorReport());
                 errorReportWriter.batchStatement();
             }
             String sqlTask = getSql().replaceAll("\\?", "%s");
@@ -127,6 +136,7 @@ public class AddTask extends DbWriter {
             for (int i : updates) {
                 result += i;
             }
+            
             return result;
         } catch (final SQLException ex) {
             logger.debug("SQLException caught while adding task in the database", ex);

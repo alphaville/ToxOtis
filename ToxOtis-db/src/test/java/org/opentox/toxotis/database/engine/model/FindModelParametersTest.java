@@ -83,10 +83,11 @@ public class FindModelParametersTest {
         }
         l.close();
         lister.close();
+        
         FindModelParameters finder = new FindModelParameters(modelId, Services.anonymous());
         Set<Parameter> params = finder.listParameters();
         if (!params.isEmpty()) {
-            System.out.println(params.iterator().next().getTypedValue());
+            assertNotNull(params.iterator().next().getTypedValue());
         }
         finder.close();
     }

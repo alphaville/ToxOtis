@@ -1,4 +1,4 @@
---DB Version : 1.5
+--DB Version : 2.0
 DROP DATABASE IF EXISTS toxotisdb;
 CREATE DATABASE IF NOT EXISTS toxotisdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
 USE toxotisdb;

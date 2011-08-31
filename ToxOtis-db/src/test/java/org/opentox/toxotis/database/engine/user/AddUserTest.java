@@ -43,6 +43,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.exception.DbException;
 
 import static org.junit.Assert.*;
@@ -58,17 +59,17 @@ public class AddUserTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
-                } catch (DbException ex) {
-                    Logger.getLogger(AddUserTest.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }));
+//        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                try {
+//                    org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+//                } catch (DbException ex) {
+//                    Logger.getLogger(AddUserTest.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }));
 
     }
 
@@ -87,15 +88,9 @@ public class AddUserTest {
 
     @Test
     public void testAddUser() throws Exception {
-        User mockUser = new User();
-        mockUser.setHashedPass("kjsgrls");
-        mockUser.setMail("me_" + new Random(5 * System.currentTimeMillis() + 73).nextInt() + "@mail.ntua.gr");
-        mockUser.setName("Pantelis S.");
-        mockUser.setUid(UUID.randomUUID().toString());
-        mockUser.setMaxBibTeX(1004);
-        mockUser.setMaxParallelTasks(4);
-        mockUser.setMaxModels(781);
-
+        ROG rog = new ROG();
+        User mockUser = rog.nextUser();
+        
         AddUser au = new AddUser(mockUser);
         assertEquals(1, au.write());
         au.close();
@@ -114,12 +109,9 @@ public class AddUserTest {
         } else {
             fail("No such user in the database");
         }
-
+        iterator.close();
+        finder.close();
 
         // CLOSE THE DATASOURCE!
-
-
-
-
     }
 }

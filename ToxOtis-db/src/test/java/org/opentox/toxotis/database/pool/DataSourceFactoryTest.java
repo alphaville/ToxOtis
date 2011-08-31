@@ -40,12 +40,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
-import org.opentox.toxotis.util.aa.AuthenticationToken;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author chung
+ * @author Pantelis Sopasakis
  */
 public class DataSourceFactoryTest {
 
@@ -70,19 +69,14 @@ public class DataSourceFactoryTest {
     }
 
     @Test
-    public void testInvokeDataSource() throws ServiceInvocationException, ToxOtisException {
-        AuthenticationToken token = new AuthenticationToken("guest","guest");
-        System.out.println(token);
-
-//        try {
-//            DataSourceFactory factory = DataSourceFactory.getInstance();
-//            Connection connection = factory.getDataSource().getConnection();
-//            assertNotNull(connection);
-//            assertTrue(factory.ping(50));
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            fail("Database is inaccessible!");
-//        }
+    public void testInvokeDataSource() {
+        try {
+            DataSourceFactory factory = DataSourceFactory.getInstance();
+            Connection connection = factory.getDataSource().getConnection();
+            assertNotNull(connection);
+            assertTrue(factory.ping(50));
+        } catch (Exception ex) {
+            fail("Database is inaccessible! " + ex);
+        }
     }
 }

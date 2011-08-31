@@ -60,7 +60,7 @@ public class FindTaskTest {
 
     @AfterClass
     public synchronized static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+       // org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -73,15 +73,19 @@ public class FindTaskTest {
 
     @Test
     public void testSomeMethod() throws DbException, URISyntaxException {
+        
+        
+        //TODO: Re-implement
         VRI baseUri = new VRI("http://alphaville:4000/jaqpot");
         FindTask ft = new FindTask(baseUri,true,true);
         ft.setPageSize(1);
-        ft.setWhere("Task.status='ERROR'");
+        ft.setWhere("Task.status='ERROR' AND errorReport IS NOT NULL");
         IDbIterator<Task> it = ft.list();
         while (it.hasNext()) {
             Task nextTsk = it.next();
             assertNotNull(nextTsk.getCreatedBy());
             assertNotNull(nextTsk.getCreatedBy().getUid());
+            System.out.println(nextTsk.getUri());
             System.out.println(nextTsk.getDuration());
             System.out.println(nextTsk.getErrorReport().getUri());
             System.out.println(nextTsk.getResultUri());

@@ -45,7 +45,12 @@ public class FindParameter extends DbReader<Parameter> {
     @Override
     public IDbIterator<Parameter> list() throws DbException {
         setTable("Parameter");
-        setTableColumns("id", "name", "scope", "value", "valueType");
+        setTableColumns("Parameter.id", "name", "scope", "value", "valueType",
+                "uncompress(MetaInfo.meta)");
+        setInnerJoin("OTComponent ON Parameter.id=OTComponent.id "
+                + "INNER JOIN MetaInfo ON OTComponent.meta=MetaInfo.id "
+                + "OR OTComponent.meta IS NULL");
+        
         statement = null;
         Connection connection = null;
         try {
