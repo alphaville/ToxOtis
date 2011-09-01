@@ -143,7 +143,7 @@ public class FindParameterTest {
             assertNotNull("META is NULL", p.getMeta());
             assertNotNull("Descriptions is NULL", p.getMeta().getDescriptions());
             assertTrue(!p.getMeta().getDescriptions().isEmpty());
-            assertTrue(p.getMeta().equals(p1.getMeta()));
+            assertEquals(p.getMeta(),p1.getMeta());
         } else {
             fail("Param not registered");
         }

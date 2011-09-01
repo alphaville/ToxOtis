@@ -46,6 +46,7 @@ import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.exception.DbException;
@@ -145,7 +146,7 @@ public class AddModelTest {
         }
     }
 
-   @Test
+    @Test
     public synchronized void testAddModel() throws Exception {
         Model m = _ROG_.nextModel();
         m.setMeta(null);
@@ -155,7 +156,7 @@ public class AddModelTest {
 
     }
 
-   @Test
+    @Test
     public synchronized void testAddAndFindModel() throws Exception {
         Model m = _ROG_.nextModel();
         AddModel adder = null;
@@ -266,6 +267,18 @@ public class AddModelTest {
                 adder.close();
             }
         }
+
+        FindModel finder = new FindModel(new VRI(baseVri));
+        finder.setSearchById(m.getUri().getId());
+        IDbIterator<Model> list = finder.list();
+        assertTrue(list.hasNext());
+        Model found = list.next();
+        assertTrue(found.getDependentFeatures().isEmpty());
+        assertTrue(found.getIndependentFeatures().isEmpty());
+        assertTrue(found.getPredictedFeatures().isEmpty());
+        assertFalse(list.hasNext());
+        list.close();
+        finder.close();
     }
 
     @Test
@@ -290,6 +303,29 @@ public class AddModelTest {
         assertTrue(list.hasNext());
         Model found = list.next();
         assertNull(found.getMeta());
+        assertFalse(list.hasNext());
+        list.close();
+        finder.close();
+    }
+
+    @Test
+    public void testModelNoUser() throws Exception {
+        Model m = _ROG_.nextModel();
+        m.setMeta(null);
+        m.setCreatedBy(null);
+        AddModel adder = new AddModel(m);
+        adder.write();
+        adder.close();
+
+
+        FindModel finder = new FindModel(new VRI(baseVri));
+        finder.setSearchById(m.getUri().getId());
+        IDbIterator<Model> list = finder.list();
+        assertTrue(list.hasNext());
+        
+        Model found = list.next();
+        assertNotNull(found.getCreatedBy());
+        assertEquals(User.GUEST,found.getCreatedBy());
         assertFalse(list.hasNext());
         list.close();
         finder.close();

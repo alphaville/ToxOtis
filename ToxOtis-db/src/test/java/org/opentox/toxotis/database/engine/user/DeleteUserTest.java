@@ -30,18 +30,14 @@
  * tel. +30 210 7723236
  *
  */
+package org.opentox.toxotis.database.engine.user;
 
-package org.opentox.toxotis.database.engine.task;
-
-import java.net.URISyntaxException;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 
@@ -49,9 +45,9 @@ import org.opentox.toxotis.database.exception.DbException;
  *
  * @author chung
  */
-public class FindTaskTest {
+public class DeleteUserTest {
 
-    public FindTaskTest() {
+    public DeleteUserTest() {
     }
 
     @BeforeClass
@@ -59,41 +55,48 @@ public class FindTaskTest {
     }
 
     @AfterClass
-    public synchronized static void tearDownClass() throws Exception {
-       // org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    public static void tearDownClass() throws Exception {
     }
 
     @Test
-    public void testSomeMethod() throws DbException, URISyntaxException {
-                
-        //TODO: Re-implement
-        VRI baseUri = new VRI("http://alphaville:4000/jaqpot");
-        FindTask ft = new FindTask(baseUri,true,true);
-        ft.setPageSize(1);
-        ft.setWhere("Task.status='ERROR' AND errorReport IS NOT NULL");
-        IDbIterator<Task> it = ft.list();
-        while (it.hasNext()) {
-            Task nextTsk = it.next();
-            assertNotNull(nextTsk.getCreatedBy());
-            assertNotNull(nextTsk.getCreatedBy().getUid());
-            System.out.println(nextTsk.getUri());
-            System.out.println(nextTsk.getDuration());
-            System.out.println(nextTsk.getErrorReport().getUri());
-            System.out.println(nextTsk.getResultUri());
-            System.out.println(nextTsk.getStatus());
-            System.out.println(nextTsk.getCreatedBy().getMail());
+    public void testDeleteGuest() throws DbException {
+        boolean assertionError = false;
+        try {
+            DeleteUser delete = new DeleteUser(User.GUEST.getUid());
+            delete.delete();
+            fail("It should have failed");
+        } catch (final AssertionError er) {
+            assertionError = true;
         }
-        // GOOD PRACTISE : Close the iterator AND the Finder!!!
-        // i.e. the result set and the connection
+        assertTrue(assertionError);
+    }
+
+    @Test
+    public void testDeleteUser() throws DbException {
+        ROG rog = new ROG();
+        User u = rog.nextUser();
+        AddUser add = new AddUser(u);
+        add.write();
+        add.close();
+
+        ListUsers lister = new ListUsers();
+        lister.setMode(ListUsers.ListUsersMode.BY_UID);
+        IDbIterator<String> it = lister.list();
+        String uid = null;
+        assertTrue(it.hasNext());
+        boolean execution_flag = false;
+        loo:
+        while (it.hasNext()) {
+            uid = it.next();
+            if (!uid.equals(User.GUEST.getUid())) {
+                execution_flag = true;
+                DeleteUser deleter = new DeleteUser(uid);
+                assertEquals(1, deleter.delete());
+                break loo;
+            }
+        }
         it.close();
-        ft.close();
+        lister.close();
+        assertTrue(execution_flag);
     }
 }
