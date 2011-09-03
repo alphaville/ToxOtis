@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
+import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.engine.model.AddModelTest;
 import static org.junit.Assert.*;
 
@@ -72,12 +73,15 @@ public class CountTasksTest {
      */
     @Test
     public void testCountTasks() throws Exception {
+             
+        new AddTaskTest().testWriteReadTask();
+        
         CountTasks ct = null;
         try {
             ct = new CountTasks();
             ct.setWhere(String.format("createdBy='%s'", User.GUEST.getUid()));
             int result = ct.count();
-            assertTrue(result > 0);
+            assertTrue(result >= 1);
         } catch (Exception ex) {
             throw ex;
         } finally {

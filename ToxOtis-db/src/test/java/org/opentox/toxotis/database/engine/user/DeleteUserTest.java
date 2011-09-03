@@ -76,17 +76,18 @@ public class DeleteUserTest {
         ROG rog = new ROG();
         User u = rog.nextUser();
         AddUser add = new AddUser(u);
-        add.write();
+        assertTrue(add.write()>0);
         add.close();
 
         ListUsers lister = new ListUsers();
         lister.setMode(ListUsers.ListUsersMode.BY_UID);
         IDbIterator<String> it = lister.list();
-        String uid = null;
-        assertTrue(it.hasNext());
+        String uid = null;       
+        boolean hasNext = false;
         boolean execution_flag = false;
         loo:
         while (it.hasNext()) {
+            hasNext = true;
             uid = it.next();
             if (!uid.equals(User.GUEST.getUid())) {
                 execution_flag = true;
@@ -97,6 +98,7 @@ public class DeleteUserTest {
         }
         it.close();
         lister.close();
+        assertTrue(hasNext);
         assertTrue(execution_flag);
     }
 }

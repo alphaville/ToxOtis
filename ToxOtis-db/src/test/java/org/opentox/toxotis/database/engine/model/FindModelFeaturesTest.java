@@ -55,6 +55,7 @@ public class FindModelFeaturesTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        new AddModelTest().testWriteBruteForce();
     }
 
     @AfterClass

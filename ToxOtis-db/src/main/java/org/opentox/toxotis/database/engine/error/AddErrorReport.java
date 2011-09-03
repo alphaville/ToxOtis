@@ -6,6 +6,7 @@ import java.sql.Statement;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *

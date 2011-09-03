@@ -72,6 +72,7 @@ public class DataSourceFactoryTest {
     public void testInvokeDataSource() {
         try {
             DataSourceFactory factory = DataSourceFactory.getInstance();
+            
             Connection connection = factory.getDataSource().getConnection();
             assertNotNull(connection);
             assertTrue(factory.ping(50));
