@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.error;
 
 import org.junit.After;
@@ -40,7 +39,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.ErrorReport;
+import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
@@ -74,27 +75,89 @@ public class FindErrorTest {
 
     @Test
     public void testFindError() throws DbException {
+        System.out.println("0::: Running Test: testFindError()");
         FindError fe = new FindError(Services.ntua());
+        fe.setRetrieveStackTrace(false);
         fe.setPageSize(10);
         IDbIterator<ErrorReport> it = fe.list();
-        while (it.hasNext()){
-            System.out.println(it.next().getMessage());
-        }
-        it.close();
-        fe.close();
-    }
-    @Test
-    public void testFindError2() throws DbException {
-        FindError fe = new FindError(Services.ntua());
-        fe.setPageSize(1);
-        fe.setSearchById("002453c6-17c5-4d08-9eb6-d8dee3d9b1fd");
-        IDbIterator<ErrorReport> it = fe.list();
-        
-        while (it.hasNext()){
+        while (it.hasNext()) {
             System.out.println(it.next().getUri());
         }
         it.close();
         fe.close();
+        System.out.println("1::: Completed Test: testFindError()");
     }
 
+    @Test
+    public void testFindError2() throws DbException {
+        System.out.println("0::: Running Test: testFindError2()");
+        FindError fe = new FindError(Services.ntua());
+        fe.setRetrieveStackTrace(false);
+        fe.setPageSize(1);
+        IDbIterator<ErrorReport> it = fe.list();
+
+        while (it.hasNext()) {
+            System.out.println(it.next().getUri());
+        }
+        it.close();
+        fe.close();
+        System.out.println("1::: Completed Test: testFindError2()");
+    }
+
+    @Test
+    public void testFindHugeReport() throws DbException {
+        System.out.println("0::: Running Test: testFindHugeReport()");
+        ErrorReport er = new ROG().nextErrorReport(20);
+        DbWriter writer = new AddErrorReport(er);
+        writer.write();
+        writer.close();
+
+        FindError fe = new FindError(Services.ntua());
+        fe.setRetrieveStackTrace(true);
+        fe.setPageSize(1);
+        fe.setSearchById(er.getUri().getId());
+
+        IDbIterator<ErrorReport> it = fe.list();
+        boolean found = false;
+        while (it.hasNext()) {
+            found = true;
+            assertEquals(er.getUri().getId(), it.next().getUri().getId());
+        }
+        assertTrue(found);
+        it.close();
+        fe.close();
+        System.out.println("1::: Completed Test: testFindHugeReport()");
+    }
+
+    @Test
+    public void testCrashDB() throws DbException {
+        System.out.println("0::: Running Test: testCrashDB()");
+        int N = 10;
+        for (int i = 0; i < N; i++) {
+            ErrorReport er = new ROG().nextErrorReport(20);
+            DbWriter writer = new AddErrorReport(er);
+            writer.write();
+            writer.close();
+
+            FindError fe = new FindError(Services.ntua());
+            fe.setRetrieveStackTrace(true);
+            fe.setSearchById(er.getUri().getId());
+
+            IDbIterator<ErrorReport> it = fe.list();
+            boolean found = false;
+            while (it.hasNext()) {
+                found = true;
+                ErrorReport nextReport = it.next();
+                assertEquals(er.getUri().getId(), nextReport.getUri().getId());
+                assertEquals(er.getMessage(), nextReport.getMessage());
+                assertEquals(er.getDetails(), nextReport.getDetails());
+                assertEquals(er.getActor(), nextReport.getActor());
+                assertEquals(er.getMeta(), nextReport.getMeta());
+            }
+            assertTrue(found);
+            it.close();
+            fe.close();
+        }
+        System.out.println("1::: Completed Test: testCrashDB()");
+    }
 }

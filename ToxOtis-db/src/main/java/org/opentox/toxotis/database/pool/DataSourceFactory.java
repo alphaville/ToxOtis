@@ -88,6 +88,7 @@ public class DataSourceFactory {
     }
 
     public void close() throws DbException {
+        System.out.println("[Shuting Down the Connection Pool]");
         if (datasource != null) {
             try {
                 /*
@@ -97,7 +98,7 @@ public class DataSourceFactory {
 
                 logger.trace("closing datasource [".concat(datasource.getTicket()).concat("]"));
                 synchronized (this) {// Absolutely necessary to be synchronized!
-                    Thread.sleep(10000);
+                    Thread.sleep(1000);
                     datasource.close();
                     datasource = null;
                 }

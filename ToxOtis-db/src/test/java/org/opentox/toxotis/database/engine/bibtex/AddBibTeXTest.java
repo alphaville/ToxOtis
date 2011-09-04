@@ -83,6 +83,7 @@ public class AddBibTeXTest {
 
     @Test
     public void testWriteBibTex() throws InterruptedException {
+        System.out.println("0::: Running Test: testWriteBibTex()");
         int poolSize = 100;
         int folds = 1 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
@@ -113,6 +114,7 @@ public class AddBibTeXTest {
 
     @Test
     public void testRegisterBibTeX() throws DbException {
+        System.out.println("0::: Running Test: testRegisterBibTeX()");
         User u = User.GUEST;
         BibTeX bt = null;
         try {
