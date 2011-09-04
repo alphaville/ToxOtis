@@ -124,11 +124,8 @@ public class FindParameterTest {
         adder.write();
         adder.close();
         
-        System.out.println(p1.getUri());
+//        System.out.println(p1.getUri());
 
-        /*
-         * Check whether exactly the same object is retrieved...
-         */
         FindParameter finder = new FindParameter(Services.anonymous());
         finder.setWhere(String.format("Parameter.id='%s'", p1.getUri().getId()));
         IDbIterator<Parameter> iterator = finder.list();
@@ -137,6 +134,9 @@ public class FindParameterTest {
             assertNotNull(p.getMeta());
             assertTrue(p.getMeta().isEmpty());
             assertEquals(p1.getName(), p.getName());
+            assertEquals(p1.getType(), p.getType());
+            assertEquals(p1.getTypedValue(), p.getTypedValue());
+            assertEquals(p1.getScope(), p.getScope());
         } else {
             fail("Param not registered");
         }
@@ -187,6 +187,10 @@ public class FindParameterTest {
             assertNotNull("Descriptions is NULL", p.getMeta().getDescriptions());
             assertTrue(!p.getMeta().getDescriptions().isEmpty());
             assertEquals(p.getMeta(), p1.getMeta());
+            assertEquals(p.getName(), p1.getName());
+            assertEquals(p.getScope(), p1.getScope());
+            assertEquals(p.getType(), p1.getType());
+            assertEquals(p.getTypedValue(), p1.getTypedValue());
         } else {
             fail("Param not registered");
         }
