@@ -107,7 +107,7 @@ public class FindErrorTest {
     @Test
     public void testFindHugeReport() throws DbException {
         System.out.println("0::: Running Test: testFindHugeReport()");
-        ErrorReport er = new ROG().nextErrorReport(20);
+        ErrorReport er = new ROG().nextErrorReport(100);
         DbWriter writer = new AddErrorReport(er);
         writer.write();
         writer.close();

@@ -43,6 +43,8 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.database.engine.model.AddModelTest;
 import org.opentox.toxotis.database.engine.model.ListModel;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
@@ -65,6 +67,7 @@ public class FindParameterTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         DataSourceFactory.getInstance().ping(100);
+        new AddModelTest().testAddAndFindModel();
     }
 
     @AfterClass
@@ -99,6 +102,46 @@ public class FindParameterTest {
         AddParameter adder = new AddParameter(p, modelVri);
         adder.write();
         adder.close();
+    }
+
+    @Test
+    public void testAddParameterNullMeta() throws Exception {
+
+        ListModel lister = new ListModel();
+        lister.setPageSize(1);
+        IDbIterator<String> iter = lister.list();
+        assertTrue(iter.hasNext());
+        String modelId = iter.next();
+        iter.close();
+
+        Parameter p1 = new Parameter();
+        p1.setName("d");
+        p1.setScope(Parameter.ParameterScope.OPTIONAL);
+        p1.setTypedValue(new LiteralValue(5.3254234, XSDDatatype.XSDdouble));
+        p1.setUri(Services.ntua().augment("parameter", UUID.randomUUID().toString()));
+        p1.setMeta(null);
+        AddParameter adder = new AddParameter(p1, Services.anonymous().augment("model", modelId));
+        adder.write();
+        adder.close();
+        
+        System.out.println(p1.getUri());
+
+        /*
+         * Check whether exactly the same object is retrieved...
+         */
+        FindParameter finder = new FindParameter(Services.anonymous());
+        finder.setWhere(String.format("Parameter.id='%s'", p1.getUri().getId()));
+        IDbIterator<Parameter> iterator = finder.list();
+        if (iterator.hasNext()) {
+            Parameter p = iterator.next();
+            assertNotNull(p.getMeta());
+            assertTrue(p.getMeta().isEmpty());
+            assertEquals(p1.getName(), p.getName());
+        } else {
+            fail("Param not registered");
+        }
+        iterator.close();
+        finder.close();
     }
 
     @Test
@@ -143,7 +186,7 @@ public class FindParameterTest {
             assertNotNull("META is NULL", p.getMeta());
             assertNotNull("Descriptions is NULL", p.getMeta().getDescriptions());
             assertTrue(!p.getMeta().getDescriptions().isEmpty());
-            assertEquals(p.getMeta(),p1.getMeta());
+            assertEquals(p.getMeta(), p1.getMeta());
         } else {
             fail("Param not registered");
         }

@@ -42,9 +42,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
+import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
@@ -83,7 +85,6 @@ public class AddBibTeXTest {
 
     @Test
     public void testWriteBibTex() throws InterruptedException {
-        System.out.println("0::: Running Test: testWriteBibTex()");
         int poolSize = 100;
         int folds = 1 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
@@ -113,8 +114,63 @@ public class AddBibTeXTest {
     }
 
     @Test
+    public void testRegisterBibTeXWithNULL() throws DbException {
+        BibTeX bt = new ROG().nextBibTeX();
+        bt.setVolume(null);
+        bt.setAddress(null);
+        bt.setChapter(null);
+        DbWriter writer = new AddBibTeX(bt);
+        assertEquals(1, writer.write());
+        writer.close();
+
+        FindBibTeX finder = new FindBibTeX(Services.anonymous());
+        finder.setSearchById(bt.getUri().getId());
+        IDbIterator<BibTeX> iterator = finder.list();
+        boolean hasNext = false;
+        if (iterator.hasNext()) {
+            hasNext = true;
+            BibTeX next = iterator.next();
+            assertNotNull(next.getAbstract());
+            assertNull(next.getAddress());
+            assertNull(next.getVolume());
+            assertEquals(bt.getAuthor(), next.getAuthor());
+            assertEquals(bt.getJournal(), next.getJournal());
+            assertEquals(bt.getYear(), next.getYear());
+        }
+        assertTrue(hasNext);
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
+    public void testAddBibTeXNullMeta() throws DbException {
+        BibTeX bt = new ROG().nextBibTeX();
+        bt.setMeta(null);
+        bt.setPages(null);
+        DbWriter writer = new AddBibTeX(bt);
+        assertEquals(1, writer.write());
+        writer.close();
+
+        System.out.println(bt.getUri().getId());
+
+        FindBibTeX finder = new FindBibTeX(Services.anonymous());
+        finder.setSearchById(bt.getUri().getId());
+        IDbIterator<BibTeX> iterator = finder.list();
+        boolean hasNext = false;
+        if (iterator.hasNext()) {
+            hasNext = true;
+            BibTeX next = iterator.next();
+            assertNull(next.getPages());
+            assertNotNull(next.getMeta());
+            assertTrue(next.getMeta().isEmpty());
+        }
+        assertTrue(hasNext);
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
     public void testRegisterBibTeX() throws DbException {
-        System.out.println("0::: Running Test: testRegisterBibTeX()");
         User u = User.GUEST;
         BibTeX bt = null;
         try {
