@@ -55,7 +55,7 @@ public class AccountManagerTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        DataSourceFactory.getInstance().ping(100);
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass

@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
@@ -56,7 +57,7 @@ public class AddErrorReportTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        DataSourceFactory.getInstance().ping(10);
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass
@@ -70,6 +71,23 @@ public class AddErrorReportTest {
 
     @After
     public synchronized void tearDown() {
+    }
+
+    @Test
+    public void testLongError() throws DbException {
+        int N = 3000;
+        ErrorReport er = new ROG().nextErrorReport(N);
+        System.out.println(er.getUri());
+        ErrorReport current = er;
+        int n = 0;
+        while (current != null) {
+            current = current.getErrorCause();
+            n++;
+        }
+        assertEquals(N, n);
+        AddErrorReport adder = new AddErrorReport(er);
+        assertEquals(2 * N, adder.write());
+        adder.close();
     }
 
     @Test
@@ -101,7 +119,7 @@ public class AddErrorReportTest {
         finder.close();
     }
 
-    //@Test
+    @Test
     public void testAddErrorReport() throws DbException {
         ErrorReport er_trace_2 = new ErrorReport(400, "fds43tgdfag", "agtdsfd", "asdfsaf", "jyfrggr");
         ErrorReport er_trace_1 = new ErrorReport(400, "fdsa5yaergg", "agtdsfd", "asdfsaf", "jyfrggr");
@@ -131,6 +149,34 @@ public class AddErrorReportTest {
             assertNotNull(found.getErrorCause().getMeta());
             assertEquals(er_trace_1.getMeta(), found.getErrorCause().getMeta());
             assertEquals(er_trace_2.getMeta(), found.getErrorCause().getErrorCause().getMeta());
+        } else {
+            fail();
+        }
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
+    public void testWriteReadErrorReport() throws DbException {
+        ErrorReport er = new ROG().nextErrorReport(4);
+
+        AddErrorReport adder = new AddErrorReport(er);
+        adder.write();
+        adder.close();
+
+        FindError finder = new FindError(Services.ntua());
+        finder.setSearchById(er.getUri().getId());
+        IDbIterator<ErrorReport> iterator = finder.list();
+        if (iterator.hasNext()) {
+            ErrorReport found = iterator.next();
+            assertEquals(er.getUri().getId(), found.getUri().getId());
+            assertEquals(er.getMessage(), found.getMessage());
+            assertEquals(er.getDetails(), found.getDetails());
+            assertEquals(er.getActor(), found.getActor());
+            assertEquals(er.getHttpStatus(), found.getHttpStatus());
+            assertNotNull(found.getErrorCause());
+            assertEquals(found.getMeta(), er.getMeta());
+            assertNotNull(found.getErrorCause().getMeta());
         } else {
             fail();
         }

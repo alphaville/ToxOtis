@@ -45,6 +45,7 @@ import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 import static org.junit.Assert.*;
 
@@ -59,23 +60,12 @@ public class AddUserTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                try {
-//                    org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
-//                } catch (DbException ex) {
-//                    Logger.getLogger(AddUserTest.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        }));
-
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        DataSourceFactory.getInstance().close();
     }
 
     @Before

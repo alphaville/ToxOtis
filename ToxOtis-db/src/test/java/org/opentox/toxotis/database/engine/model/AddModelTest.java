@@ -61,7 +61,7 @@ import static org.junit.Assert.*;
  */
 public class AddModelTest {
 
-    private static Throwable failure = null;
+    private static volatile Throwable failure = null;
     private static final VRI baseVri = Services.ntua();
     private static final ROG _ROG_ = new ROG();
 
@@ -70,12 +70,12 @@ public class AddModelTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        //DataSourceFactory.getInstance().ping(10);
+        DataSourceFactory.getInstance().ping(10);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        //DataSourceFactory.getInstance().close();
+        DataSourceFactory.getInstance().close();
     }
 
     @Before

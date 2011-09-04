@@ -30,9 +30,10 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.task;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,6 +41,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
@@ -50,16 +53,30 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
  */
 public class UpdateTaskTest {
 
+    private static final ROG __ROG = new ROG();
+    private static String taskInDb = null;
+    private static volatile Throwable failure = null;
+
     public UpdateTaskTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        AddTask adder = new AddTask(__ROG.nextTask(1));
+        adder.write();
+        adder.close();
+
+        ListTasks lister = new ListTasks();
+        IDbIterator<String> it = lister.list();
+        if (it.hasNext()) {
+            taskInDb = it.next();
+        }
+        it.close();
+        lister.close();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
@@ -72,35 +89,220 @@ public class UpdateTaskTest {
     }
 
     @Test
-    public void testUpdateSql() throws DbException {
-        //TODO: First get a list of tasks and pick randomly one - then update it!
-        Task newTask = new Task(Services.ntua().augment("task","00024363-e51e-468b-b42c-b1f6491614de")).setDuration(666L).setHttpStatus(101).setMeta(new MetaInfoImpl().addComment("XX"));
-        newTask.setPercentageCompleted(23.5234f);
-        UpdateTask ut = new UpdateTask(newTask);
-            ut.setUpdateErrorReport(true);
-            ut.setUpdateHttpStatus(true);
-            ut.setUpdatePercentageCompleted(true);
-            ut.setUpdateTaskStatus(true);
-            ut.setUpdateResultUri(true);
-            ut.setUpdateDuration(true);
-            ut.setUpdateMeta(true);
+    public void testUpdateHttpStatus() throws DbException {
+        Task t = new Task(Services.anonymous().augment("task", taskInDb));
+        t.setHttpStatus(__ROG.nextFloat());
+        UpdateTask ut = new UpdateTask(t);
+        ut.setUpdateHttpStatus(true);
         ut.update();
         ut.close();
-    }
-    
-    @Test
-    public void testCrash() throws DbException {
-        
-    }
-    
-    @Test
-    public void testUpdateDuration() throws DbException {
-        
-    }
-    
-    @Test
-    public void testUpdateErrorReportAndFind() throws DbException {
-        
+
+        FindTask finder = new FindTask(Services.anonymous(), true, true);
+        finder.setSearchById(taskInDb);
+        IDbIterator<Task> iterator = finder.list();
+        if (iterator.hasNext()) {
+            Task found = iterator.next();
+            assertTrue(Math.pow(t.getHttpStatus() - found.getHttpStatus(), 2) < 0.00000001);
+        }
+        iterator.close();
+        finder.close();
     }
 
+    @Test
+    public void testUpdateResultUri() throws DbException {
+        Task t = new Task(Services.anonymous().augment("task", taskInDb));
+        t.setResultUri(__ROG.nextVri());
+        UpdateTask ut = new UpdateTask(t);
+        ut.setUpdateResultUri(true);
+        ut.update();
+        ut.close();
+
+        FindTask finder = new FindTask(Services.anonymous(), true, true);
+        finder.setSearchById(taskInDb);
+        IDbIterator<Task> iterator = finder.list();
+        if (iterator.hasNext()) {
+            Task found = iterator.next();
+            assertEquals(t.getResultUri(), found.getResultUri());
+        }
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
+    public void testUpdateStatus() throws DbException {
+        Task t = new Task(Services.anonymous().augment("task", taskInDb));
+        t.setStatus(__ROG.nextTaskStatus());
+        UpdateTask ut = new UpdateTask(t);
+        ut.setUpdateTaskStatus(true);
+        ut.update();
+        ut.close();
+
+        FindTask finder = new FindTask(Services.anonymous(), true, true);
+        finder.setSearchById(taskInDb);
+        IDbIterator<Task> iterator = finder.list();
+        if (iterator.hasNext()) {
+            Task found = iterator.next();
+            assertEquals(t.getStatus(), found.getStatus());
+        }
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
+    public void testUpdateVarious() throws DbException {
+        Task t = new Task(Services.anonymous().augment("task", taskInDb));
+        t.setStatus(__ROG.nextTaskStatus());
+        t.setErrorReport(__ROG.nextErrorReport(3));
+        t.setDuration(__ROG.nextLong());
+        UpdateTask ut = new UpdateTask(t);
+        ut.setUpdateTaskStatus(true);
+        ut.setUpdateErrorReport(true);
+        ut.setUpdateDuration(true);
+        ut.setUpdateAndRegisterErrorReport(true);
+        ut.update();
+        ut.close();
+
+        FindTask finder = new FindTask(Services.anonymous(), true, true);
+        finder.setSearchById(taskInDb);
+        IDbIterator<Task> iterator = finder.list();
+        if (iterator.hasNext()) {
+            Task found = iterator.next();
+            assertEquals(t.getStatus(), found.getStatus());
+            assertEquals(t.getDuration(), found.getDuration());
+            assertEquals(t.getErrorReport().getUri().getId(),
+                    found.getErrorReport().getUri().getId());
+            assertEquals(t.getErrorReport().getActor(), found.getErrorReport().getActor());
+            assertEquals(t.getErrorReport().getDetails(), found.getErrorReport().getDetails());
+            assertEquals(t.getErrorReport().getMessage(), found.getErrorReport().getMessage());
+            assertEquals(t.getErrorReport().getMeta(), found.getErrorReport().getMeta());
+            assertEquals(t.getErrorReport().getErrorCause().getMeta(),
+                    found.getErrorReport().getErrorCause().getMeta());
+            assertNotNull(t.getErrorReport().getErrorCause().getErrorCause());
+            assertNotNull(t.getErrorReport().getErrorCause().getErrorCause().getMeta());
+            assertNotNull(t.getErrorReport().getErrorCause().getErrorCause().getActor());
+        }
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
+    public void testUpdateError() throws DbException {
+        Task t = new Task(Services.anonymous().augment("task", taskInDb));
+        t.setErrorReport(__ROG.nextErrorReport(5));
+        UpdateTask ut = new UpdateTask(t);
+        ut.setUpdateErrorReport(true);
+        ut.setUpdateAndRegisterErrorReport(true);
+        ut.update();
+        ut.close();
+
+        FindTask finder = new FindTask(Services.anonymous(), true, true);
+        finder.setSearchById(taskInDb);
+        IDbIterator<Task> iterator = finder.list();
+        if (iterator.hasNext()) {
+            Task found = iterator.next();
+            assertEquals(t.getErrorReport().getUri().getId(),
+                    found.getErrorReport().getUri().getId());
+            assertEquals(t.getErrorReport().getActor(), found.getErrorReport().getActor());
+            assertEquals(t.getErrorReport().getDetails(), found.getErrorReport().getDetails());
+            assertEquals(t.getErrorReport().getMessage(), found.getErrorReport().getMessage());
+            assertEquals(t.getErrorReport().getMeta(), found.getErrorReport().getMeta());
+        }
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
+    public void testUpdateDuration() throws DbException {
+        Task t = new Task(Services.anonymous().augment("task", taskInDb));
+        t.setDuration(__ROG.nextLong());
+        UpdateTask ut = new UpdateTask(t);
+        ut.setUpdateDuration(true);
+        ut.update();
+        ut.close();
+
+        FindTask finder = new FindTask(Services.anonymous(), true, true);
+        finder.setSearchById(taskInDb);
+        IDbIterator<Task> iterator = finder.list();
+        if (iterator.hasNext()) {
+            Task found = iterator.next();
+            assertEquals(t.getDuration(), found.getDuration());
+        }
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
+    public void testUpdateSql() throws DbException {
+        Task t = __ROG.nextTask(2);
+        AddTask adder = new AddTask(t);
+        adder.write();
+        adder.close();
+
+        System.out.println(t.getStatus());
+
+        //TODO: First get a list of tasks and pick randomly one - then update it!
+        Task newTask = t;
+        newTask.setDuration(666L).
+                setHttpStatus(101).
+                setMeta(new MetaInfoImpl().addComment("XX"));
+        newTask.setPercentageCompleted(23.5234f);
+        UpdateTask ut = new UpdateTask(newTask);
+        ut.setUpdateErrorReport(true);
+        ut.setUpdateHttpStatus(true);
+        ut.setUpdatePercentageCompleted(true);
+        ut.setUpdateTaskStatus(true);
+        ut.setUpdateResultUri(true);
+        ut.setUpdateDuration(true);
+        ut.setUpdateMeta(false);
+        ut.update();
+        ut.close();
+
+        FindTask finder = new FindTask(Services.anonymous(), true, true);
+        finder.setSearchById(t.getUri().getId());
+        IDbIterator<Task> iterator = finder.list();
+        if (iterator.hasNext()) {
+            Task found = iterator.next();
+            assertEquals(Task.Status.ERROR, found.getStatus());
+            assertEquals(101f, found.getHttpStatus());
+        }
+        iterator.close();
+        finder.close();
+    }
+
+    @Test
+    public void testCrash() throws DbException, InterruptedException {
+        int poolSize = 80;
+        int folds = 4 * poolSize + 100;// just to make sure!!! (brutal?!)
+        final ExecutorService es = Executors.newFixedThreadPool(poolSize);
+        for (int i = 1; i <= folds; i++) {
+            es.submit(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        Task t = new Task(Services.anonymous().augment("task", taskInDb));
+                        t.setHttpStatus(__ROG.nextFloat());
+                        UpdateTask ut = new UpdateTask(t);
+                        ut.setUpdateHttpStatus(true);
+                        ut.update();
+                        ut.close();
+                    } catch (final Throwable ex) {
+                        failure = ex;
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        es.shutdown();
+        while (!es.isTerminated()) {
+            Thread.sleep(100);
+        }
+
+        if (failure != null) {
+            fail();
+        }
+    }
+
+    
 }

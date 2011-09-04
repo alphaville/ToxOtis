@@ -39,6 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.model.ListModel;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 import static org.junit.Assert.*;
 
 /**
@@ -52,12 +53,12 @@ public class DisableComponentTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
-
     @AfterClass
-    public static synchronized void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+    public static void tearDownClass() throws Exception {
+        DataSourceFactory.getInstance().close();
     }
 
     @Before

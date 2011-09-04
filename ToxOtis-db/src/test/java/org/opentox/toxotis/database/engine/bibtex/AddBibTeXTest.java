@@ -39,6 +39,7 @@ import java.util.concurrent.Executors;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.BibTeX;
@@ -46,6 +47,7 @@ import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import static org.junit.Assert.*;
 
@@ -61,9 +63,14 @@ public class AddBibTeXTest {
         super();
     }
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        assertTrue(DataSourceFactory.getInstance().ping(10));
+    }
+
     @AfterClass
     public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -72,7 +79,6 @@ public class AddBibTeXTest {
 
     @After
     public void tearDown() throws DbException {
-        
     }
 
     @Test

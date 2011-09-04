@@ -47,6 +47,8 @@ import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
@@ -60,18 +62,19 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 public class AddTaskTest {
 
     private static volatile Throwable failure = null;
+    private static final ROG __ROG = new ROG();
 
     public AddTaskTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass
     public synchronized static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -83,13 +86,39 @@ public class AddTaskTest {
     }
 
     @Test
+    public void testWriteReadTaskRandom() throws Exception {
+        Task t = __ROG.nextTask(10);
+        DbWriter writer = new AddTask(t);
+        assertTrue(writer.write() > 0);
+        writer.close();
+        
+        FindTask ft = new FindTask(new VRI("http://alphaville:4000/jaqpot"), false, false);
+        ft.setWhere("Task.id='" + t.getUri().getId() + "'");
+        IDbIterator<Task> iter = ft.list();
+
+        while (iter.hasNext()) {
+            Task nextTask = iter.next();
+            MetaInfo mi = nextTask.getMeta();
+            assertEquals(t.getMeta(), mi);
+            assertEquals(t.getUri().getId(), nextTask.getUri().getId());
+            assertEquals(t.getDuration(), nextTask.getDuration());
+            assertEquals(t.getHttpStatus(), nextTask.getHttpStatus());
+            assertEquals(t.getStatus(), nextTask.getStatus());
+            assertEquals(t.getResultUri(), nextTask.getResultUri());
+        }
+
+        iter.close();
+        ft.close();
+        
+    }
+
+    @Test
     public void testWriteReadTask() throws Exception {
         ErrorReport er_trace_2 = new ErrorReport(400, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
         ErrorReport er_trace_1 = new ErrorReport(400, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
         ErrorReport er = new ErrorReport(502, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
         er_trace_1.setErrorCause(er_trace_2);
         er.setErrorCause(er_trace_1);
-
 
         Task t = new Task(Services.ntua().augment("task", UUID.randomUUID()));
         t.setMeta(new MetaInfoImpl().addTitle("ZZZZZZZZZz").
@@ -105,7 +134,6 @@ public class AddTaskTest {
         DbWriter writer = new AddTask(t);
         assertTrue(writer.write() > 0);
         writer.close(); // CLOSE the writer!!! (SHORTLY after you don't need it!!!)
-
 
         FindTask ft = new FindTask(new VRI("http://alphaville:4000/jaqpot"), false, false);
         ft.setWhere("Task.id='" + t.getUri().getId() + "'");
@@ -123,7 +151,7 @@ public class AddTaskTest {
         }
 
         iter.close();
-        ft.close();       
+        ft.close();
     }
 
     @Test
@@ -156,6 +184,4 @@ public class AddTaskTest {
             fail();
         }
     }
-
-    
 }

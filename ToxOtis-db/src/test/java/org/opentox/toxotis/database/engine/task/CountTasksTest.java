@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.engine.model.AddModelTest;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 import static org.junit.Assert.*;
 
 /**
@@ -53,11 +54,12 @@ public class CountTasksTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        DataSourceFactory.getInstance().close();
     }
 
     @Before

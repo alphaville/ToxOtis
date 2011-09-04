@@ -43,6 +43,7 @@ import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
@@ -56,12 +57,13 @@ public class FindModelFeaturesTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         new AddModelTest().testWriteBruteForce();
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         System.out.println("Shuting down the pool...");
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        DataSourceFactory.getInstance().close();
         System.out.println("OK");
     }
 

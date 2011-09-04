@@ -70,7 +70,7 @@ public class AddTask extends DbWriter {
          * `createdBy` varchar(255) COLLATE utf8_bin DEFAULT NULL,
          */
         setTable("Task");
-        setTableColumns("id", "httpStatus", "percentageCompleted", "status", "errorReport", "createdBy");
+        setTableColumns("id", "httpStatus", "percentageCompleted", "status", "errorReport", "createdBy", "resultUri");
 
         Connection connection = getConnection();
         PreparedStatement stmtMeta = null;
@@ -92,7 +92,7 @@ public class AddTask extends DbWriter {
                 }
                 stmtMeta.executeUpdate();
             }
-            
+
             stmt = connection.prepareStatement("INSERT INTO OTComponent (id,meta) VALUES (?, ?)");
             stmt.setString(1, task.getUri().getId());
             if (task.getMeta() != null) {
@@ -103,7 +103,7 @@ public class AddTask extends DbWriter {
             stmt.executeUpdate();
 
             if (task.getErrorReport() != null) {
-                ErrorReportBatchWriter errorReportWriter = new ErrorReportBatchWriter(getConnection(), 
+                ErrorReportBatchWriter errorReportWriter = new ErrorReportBatchWriter(getConnection(),
                         task.getErrorReport());
                 errorReportWriter.batchStatement();
             }
@@ -120,6 +120,12 @@ public class AddTask extends DbWriter {
             } else {
                 errorReportInTask = "NULL";
             }
+            String resultUri = null;
+            if (task.getResultUri() != null) {
+                resultUri = "'" + task.getResultUri().toString() + "'";
+            } else {
+                resultUri = "NULL";
+            }
             String taskCreator = null;
             if (task.getCreatedBy() != null) {
                 taskCreator = "'" + task.getCreatedBy().getUid() + "'";
@@ -128,7 +134,7 @@ public class AddTask extends DbWriter {
             }
             String taskWriteSql = String.format(sqlTask, "'" + task.getUri().getId() + "'",
                     task.getHttpStatus(), task.getPercentageCompleted(),
-                    taskStatus, errorReportInTask, taskCreator);
+                    taskStatus, errorReportInTask, taskCreator, resultUri);
             stmt.addBatch(taskWriteSql);
             int[] updates = stmt.executeBatch();
             connection.commit();
@@ -136,7 +142,7 @@ public class AddTask extends DbWriter {
             for (int i : updates) {
                 result += i;
             }
-            
+
             return result;
         } catch (final SQLException ex) {
             logger.debug("SQLException caught while adding task in the database", ex);

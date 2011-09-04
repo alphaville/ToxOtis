@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.task;
 
 import java.net.URISyntaxException;
@@ -44,6 +43,7 @@ import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
@@ -56,11 +56,12 @@ public class FindTaskTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass
-    public synchronized static void tearDownClass() throws Exception {
-       // org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+    public static void tearDownClass() throws Exception {
+        DataSourceFactory.getInstance().close();
     }
 
     @Before
@@ -73,10 +74,10 @@ public class FindTaskTest {
 
     @Test
     public void testSomeMethod() throws DbException, URISyntaxException {
-                
+
         //TODO: Re-implement
         VRI baseUri = new VRI("http://alphaville:4000/jaqpot");
-        FindTask ft = new FindTask(baseUri,true,true);
+        FindTask ft = new FindTask(baseUri, true, true);
         ft.setPageSize(1);
         ft.setWhere("Task.status='ERROR' AND errorReport IS NOT NULL");
         IDbIterator<Task> it = ft.list();

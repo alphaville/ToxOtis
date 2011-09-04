@@ -46,6 +46,7 @@ import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
@@ -58,11 +59,12 @@ public class FindModelParametersTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
+        DataSourceFactory.getInstance().close();
     }
 
     @Before

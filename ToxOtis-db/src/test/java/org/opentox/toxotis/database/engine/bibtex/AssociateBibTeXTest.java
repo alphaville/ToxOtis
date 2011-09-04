@@ -18,6 +18,7 @@ import org.opentox.toxotis.database.engine.model.FindModel;
 import org.opentox.toxotis.database.engine.model.ListModel;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
@@ -28,12 +29,14 @@ public class AssociateBibTeXTest {
     public AssociateBibTeXTest() {
     }
 
-    @BeforeClass
+     @BeforeClass
     public static void setUpClass() throws Exception {
+        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        DataSourceFactory.getInstance().close();
     }
 
     @Test
