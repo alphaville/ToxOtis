@@ -118,7 +118,8 @@ CREATE TABLE `BibTeX` (
     REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 --
--- Foreign Features (possibly on different servers)
+-- Foreign Features (most probably on different servers)
+-- Note: OUR Features are found in JFeature
 -- 
 DROP TABLE IF EXISTS `Feature`;
 CREATE TABLE `Feature` (
@@ -220,7 +221,7 @@ DROP TABLE IF EXISTS `Parameter`;
 CREATE TABLE `Parameter` (
   `id` varchar(50) COLLATE utf8_bin NOT NULL,
   `name` varchar(16) COLLATE utf8_bin NOT NULL,
-  `scope` varchar(16) COLLATE utf8_bin DEFAULT "OPTIONAL",
+  `scope` varchar(16) COLLATE utf8_bin NOT NULL DEFAULT "OPTIONAL",
   `value` varchar(255) COLLATE utf8_bin DEFAULT "",
   `valueType` varchar(50) COLLATE utf8_bin DEFAULT "string" 
     COMMENT 'can be String, Double, Integer, Float, Double etc',
@@ -296,33 +297,43 @@ CREATE TABLE `ModelBibTeX` (
 DROP TABLE IF EXISTS `Conformer`;
 CREATE TABLE `Conformer` (
   `id` varchar(255) COLLATE utf8_bin NOT NULL,
-  `molecularStructure` TEXT COLLATE utf8_bin,
-  `representation` varchar(255) COLLATE utf8_bin,
-  `reliability` int(11) unsigned DEFAULT 0, 
   PRIMARY KEY (`id`),
   CONSTRAINT `id_in_conformer_references_OTComponent` FOREIGN KEY (`id`) 
     REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-LOCK TABLE `OTComponent` WRITE;
-INSERT IGNORE INTO `OTComponent` (`id`) VALUES ('benzene'); 
-UNLOCK TABLE;
-LOCK TABLE `Conformer` WRITE;
-INSERT IGNORE INTO `Conformer` (`id`,`molecularStructure`,`representation`,`reliability`) 
-  VALUES ('benzene','c1cccc1c','smiles',5); 
-UNLOCK TABLE;
+--
+-- Molecular Representation
+--
+DROP TABLE IF EXISTS `Representation`;
+CREATE TABLE `Representation` (
+  `id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `molecularStructure` TEXT COLLATE utf8_bin,
+  `representation` varchar(255) COLLATE utf8_bin,
+  `reliability` int(11) unsigned DEFAULT 0, 
+  PRIMARY KEY (`id`),
+  CONSTRAINT `id_represent_references_OTComponent` FOREIGN KEY (`id`) 
+    REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 --
 -- Local features
+-- OUR Features: When a client creates a feature on our server, it is stored 
+-- in this table. The table Feature holds links to features in foreign/remote
+-- servers.
 --
 DROP TABLE IF EXISTS `JFeature`;
 CREATE TABLE `JFeature` (
   `id` varchar(255) COLLATE utf8_bin NOT NULL,
   `units` text  COLLATE utf8_bin NOT NULL,
-  `type` varchar(255) COLLATE utf8_bin NOT NULL,  
+  `type` SET('num','nom','str','dat') NOT NULL,  
+  `createdBy` varchar(255) COLLATE utf8_bin DEFAULT 'guest@opensso.in-silico.ch',
   PRIMARY KEY (`id`),
   CONSTRAINT `id_in_jfeature_references_OTComponent` FOREIGN KEY (`id`) 
-    REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `jfeature_user_reference` FOREIGN KEY (`createdBy`) 
+    REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
 --
 -- Features Values
 --
@@ -406,6 +417,10 @@ CREATE TRIGGER `bibtex_trigger_create` BEFORE INSERT ON BibTeX
 FOR EACH ROW BEGIN
     INSERT IGNORE INTO OTComponent (id) VALUES (NEW.id);
 END $$
+CREATE TRIGGER `jfeature_trigger_create` BEFORE INSERT ON JFeature
+FOR EACH ROW BEGIN
+    INSERT IGNORE INTO OTComponent (id) VALUES (NEW.id);
+END $$
 DELIMITER ;
 --
 -- When deleting a BibTex also delete OTComponent
@@ -417,6 +432,7 @@ FOR EACH ROW BEGIN
     DELETE FROM `OTComponent` WHERE OTComponent.`id`=OLD.id;
 END $$
 DELIMITER ;
+
 --
 -- Initialization of BibTeX...
 --
@@ -442,4 +458,103 @@ INSERT INTO `BibTeX`
    NULL,NULL,NULL,NULL,NULL,'Neurocomputing',NULL,'Radial basis function networks, Training algorithms, Model selection',NULL,'501-505',NULL,
    'A fast training algorithm for RBF networks based on subtractive clustering',
    'http://dx.doi.org/10.1016/S0925-2312(03)00342-4' ,51,2003,'guest@opensso.in-silico.ch');
-UNLOCK TABLE ;
+UNLOCK TABLE;
+
+-- Some initial features that are hosted on our server
+LOCK TABLE `JFeature` WRITE;
+INSERT INTO JFeature (id,units,type) VALUES 
+('smiles','','str'),
+('inchi','','str'),
+('inchiKey','','str'),
+('synonyms','','str'),
+('casrn','','str'),
+('regDate','',('str,dat')),
+('mw','g/mol','num'),
+('iupacName','','str');
+UNLOCK TABLE;
+
+
+
+LOCK TABLE `OTComponent` WRITE;
+INSERT IGNORE INTO OTComponent(id) VALUES ('benzene_conf'),('benzene'),('benzene_rep_1'),('benzene_rep_2'),('benzene_rep_3'),('benzene_rep_4');
+UNLOCK TABLE;
+
+LOCK TABLE `Representation` WRITE;
+INSERT INTO Representation(id,molecularStructure,representation,reliability) VALUES('benzene_rep_1','
+C6H6
+APtclcactv09040904043D 0   0.00000     0.00000
+ 
+ 12 12  0  0  0  0  0  0  0  0999 V2000
+    0.1416   -1.3751   -0.0002 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.1201   -0.8102   -0.0001 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2616   -0.5649   -0.0002 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2616    0.5649   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1201    0.8102   -0.0001 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.1416    1.3751    0.0004 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.2522   -2.4494    0.0043 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.2473    1.0063   -0.0007 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.9951    1.4431   -0.0001 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9951   -1.4431   -0.0005 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.2473   -1.0063    0.0001 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.2522    2.4494   -0.0002 H   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  0
+  1  3  1  0  0  0  0
+  1  7  1  0  0  0  0
+  2  4  1  0  0  0  0
+  3  5  2  0  0  0  0
+  4  6  2  0  0  0  0
+  4  8  1  0  0  0  0
+  5  9  1  0  0  0  0
+  5  6  1  0  0  0  0
+  2 10  1  0  0  0  0
+  3 11  1  0  0  0  0
+  6 12  1  0  0  0  0
+M  END
+$$$$','sdf',5),
+('benzene_rep_2','<?xml version="1.0" encoding="ISO-8859-1"?><list xmlns="http://www.xml-cml.org/schema">
+<molecule id="m1" xmlns="http://www.xml-cml.org/schema">
+  <atomArray>
+    <atom id="a1" elementType="C" x3="0.1416" y3="-1.3751" z3="-2.0E-4" formalCharge="0" isotopeNumber="12"/>
+    <atom id="a2" elementType="C" x3="-1.1201" y3="-0.8102" z3="-1.0E-4" formalCharge="0" isotopeNumber="12"/>
+    <atom id="a3" elementType="C" x3="1.2616" y3="-0.5649" z3="-2.0E-4" formalCharge="0" isotopeNumber="12"/>
+    <atom id="a4" elementType="C" x3="-1.2616" y3="0.5649" z3="-0.0" formalCharge="0" isotopeNumber="12"/>
+    <atom id="a5" elementType="C" x3="1.1201" y3="0.8102" z3="-1.0E-4" formalCharge="0" isotopeNumber="12"/>
+    <atom id="a6" elementType="C" x3="-0.1416" y3="1.3751" z3="4.0E-4" formalCharge="0" isotopeNumber="12"/>
+    <atom id="a7" elementType="H" x3="0.2522" y3="-2.4494" z3="0.0043" formalCharge="0" isotopeNumber="1"/>
+    <atom id="a8" elementType="H" x3="-2.2473" y3="1.0063" z3="-7.0E-4" formalCharge="0" isotopeNumber="1"/>
+    <atom id="a9" elementType="H" x3="1.9951" y3="1.4431" z3="-1.0E-4" formalCharge="0" isotopeNumber="1"/>
+    <atom id="a10" elementType="H" x3="-1.9951" y3="-1.4431" z3="-5.0E-4" formalCharge="0" isotopeNumber="1"/>
+    <atom id="a11" elementType="H" x3="2.2473" y3="-1.0063" z3="1.0E-4" formalCharge="0" isotopeNumber="1"/>
+    <atom id="a12" elementType="H" x3="-0.2522" y3="2.4494" z3="-2.0E-4" formalCharge="0" isotopeNumber="1"/>
+  </atomArray>
+  <bondArray>
+    <bond id="b1" atomRefs2="a1 a2" order="D"/>
+    <bond id="b2" atomRefs2="a1 a3" order="S"/>
+    <bond id="b3" atomRefs2="a1 a7" order="S"/>
+    <bond id="b4" atomRefs2="a2 a4" order="S"/>
+    <bond id="b5" atomRefs2="a3 a5" order="D"/>
+    <bond id="b6" atomRefs2="a4 a6" order="D"/>
+    <bond id="b7" atomRefs2="a4 a8" order="S"/>
+    <bond id="b8" atomRefs2="a5 a9" order="S"/>
+    <bond id="b9" atomRefs2="a5 a6" order="S"/>
+    <bond id="b10" atomRefs2="a2 a10" order="S"/>
+    <bond id="b11" atomRefs2="a3 a11" order="S"/>
+    <bond id="b12" atomRefs2="a6 a12" order="S"/>
+  </bondArray>
+</molecule>
+</list>','cml',5),
+('benzene_rep_3','c1ccccc1','smi',5),
+('benzene_rep_4','InChI=1S/C6H6/c1-2-4-6-5-3-1/h1-6H','inchi',5);
+UNLOCK TABLE;
+
+LOCK TABLE `Compound` WRITE;
+INSERT IGNORE INTO Compound(id) VALUES ('benzene');
+UNLOCK TABLE;
+
+LOCK TABLE `Conformer` WRITE;
+INSERT IGNORE INTO Conformer(id) VALUES ('benzene_conf');
+UNLOCK TABLE;
+
+LOCK TABLE `CompoundConformers` WRITE;
+INSERT IGNORE INTO CompoundConformers(compoundId,conformerId) VALUES ('benzene',  'benzene_conf');
+UNLOCK TABLE;
