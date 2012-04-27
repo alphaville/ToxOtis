@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine.task;
 
 import java.sql.Blob;
@@ -119,7 +118,7 @@ public class UpdateTask extends DbUpdater {
 
     public void setUpdateAndRegisterErrorReport(boolean updateAndRegisterErrorReport) {
         this.updateAndRegisterErrorReport = updateAndRegisterErrorReport;
-    }        
+    }
     //</editor-fold>
 
     public UpdateTask(Task task) {
@@ -223,7 +222,7 @@ public class UpdateTask extends DbUpdater {
             /*
              * New Error Report
              */
-            if (updateAndRegisterErrorReport){
+            if (updateAndRegisterErrorReport) {
                 ErrorReportBatchWriter writer = new ErrorReportBatchWriter(connection, newTask.getErrorReport());
                 writer.batchStatement();
             }
@@ -238,7 +237,6 @@ public class UpdateTask extends DbUpdater {
                 try {
                     Blob blob = blobber.toBlob();
                     metaInsertPS.setBlob(2, blob);
-                    blob.free();
                 } catch (Exception ex) {
                     Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -251,41 +249,42 @@ public class UpdateTask extends DbUpdater {
                 otComponentUpdatePS = connection.prepareStatement(getComponentUpdateSql());
                 if (updateMeta) {
                     int metaHashCode = newTask.getMeta().hashCode();
-                    otComponentUpdatePS.setInt(componentPsMapping.get("meta"), metaHashCode);
+                    otComponentUpdatePS.setInt(1, metaHashCode);
                 }
-                if (updateId) {
-                    otComponentUpdatePS.setString(componentPsMapping.get("id"), newId);
-                }
+                otComponentUpdatePS.setString(2, newId);
+                try{
                 otComponentUpdatePS.executeUpdate();
+                } catch (Exception e){
+                }
             }
 
             /*
              * Update task
              */
-            taskUpdatePS = connection.prepareStatement(getTaskUpdateSql());
+            taskUpdatePS = connection.prepareStatement(getTaskUpdateSql());           
             if (updateDuration) {
                 taskUpdatePS.setLong(taskPsMapping.get("duration"), newTask.getDuration());
             }
             if (updateErrorReport) {
-                taskUpdatePS.setString(taskPsMapping.get("errorReport"), 
+                taskUpdatePS.setString(taskPsMapping.get("errorReport"),
                         newTask.getErrorReport().getUri().getId());
             }
             if (updateHttpStatus) {
-                taskUpdatePS.setFloat(taskPsMapping.get("httpStatus"), 
+                taskUpdatePS.setFloat(taskPsMapping.get("httpStatus"),
                         newTask.getHttpStatus());
             }
             if (updatePercentageCompleted) {
-                taskUpdatePS.setFloat(taskPsMapping.get("percentageCompleted"), 
+                taskUpdatePS.setFloat(taskPsMapping.get("percentageCompleted"),
                         newTask.getPercentageCompleted());
             }
             if (updateResultUri) {
-                taskUpdatePS.setString(taskPsMapping.get("resultUri"), 
+                taskUpdatePS.setString(taskPsMapping.get("resultUri"),
                         newTask.getResultUri().toString());
             }
             if (updateTaskStatus) {
-                taskUpdatePS.setString(taskPsMapping.get("status"), 
+                taskUpdatePS.setString(taskPsMapping.get("status"),
                         newTask.getStatus().toString());
-            }            
+            }
             taskUpdatePS.setString(taskPsMapping.get("id"), newTask.getUri().getId());
             taskUpdatePS.executeUpdate();
 

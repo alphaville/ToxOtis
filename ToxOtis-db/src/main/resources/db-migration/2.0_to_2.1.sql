@@ -1,0 +1,2 @@
+alter table `JFeature` add `createdBy` varchar(255) COLLATE utf8_bin DEFAULT 'guest@opensso.in-silico.ch';
+alter table `JFeature` add constraint `jfeature_user_reference` FOREIGN KEY (`createdBy`) REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE;

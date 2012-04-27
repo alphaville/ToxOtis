@@ -157,7 +157,7 @@ public class AddTaskTest {
     @Test
     public void testWriteTaskMultithreadedly() throws InterruptedException {
         int poolSize = 50;
-        int folds = 5 * poolSize + 10;// just to make sure!!! (brutal?!)
+        int folds = 10 * poolSize + 10;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
 

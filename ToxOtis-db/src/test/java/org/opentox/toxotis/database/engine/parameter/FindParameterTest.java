@@ -99,9 +99,21 @@ public class FindParameterTest {
         Parameter p = new Parameter(Services.ntua().augment(
                 "parameter", System.currentTimeMillis()),
                 "x", new LiteralValue(5, XSDDatatype.XSDbyte));
+        p.setScope(null);
         AddParameter adder = new AddParameter(p, modelVri);
         adder.write();
         adder.close();
+
+        FindParameter finder = new FindParameter(Services.anonymous());
+        IDbIterator<Parameter> iterator = finder.list();
+        boolean hasNext = false;
+        if (iterator.hasNext()) {
+            hasNext = true;
+            Parameter found = iterator.next();
+            assertNotNull(found.getScope());
+            assertEquals(Parameter.ParameterScope.OPTIONAL, found.getScope());
+        }
+        assertTrue(hasNext);
     }
 
     @Test
@@ -123,13 +135,13 @@ public class FindParameterTest {
         AddParameter adder = new AddParameter(p1, Services.anonymous().augment("model", modelId));
         adder.write();
         adder.close();
-        
-//        System.out.println(p1.getUri());
 
         FindParameter finder = new FindParameter(Services.anonymous());
-        finder.setWhere(String.format("Parameter.id='%s'", p1.getUri().getId()));
+        finder.setSearchById(p1.getUri().getId());
         IDbIterator<Parameter> iterator = finder.list();
+        boolean hasNext = false;
         if (iterator.hasNext()) {
+            hasNext = true;
             Parameter p = iterator.next();
             assertNotNull(p.getMeta());
             assertTrue(p.getMeta().isEmpty());
@@ -140,6 +152,7 @@ public class FindParameterTest {
         } else {
             fail("Param not registered");
         }
+        assertTrue(hasNext);
         iterator.close();
         finder.close();
     }
@@ -167,7 +180,6 @@ public class FindParameterTest {
         p1.setMeta(new MetaInfoImpl().addDescription("XXXYYY").
                 addSameAs(new ResourceValue(modelVri, OTClasses.Conformer())));
 
-
         /*
          * Add parameter
          */
@@ -179,9 +191,11 @@ public class FindParameterTest {
          * Check whether exactly the same object is retrieved...
          */
         FindParameter finder = new FindParameter(Services.anonymous());
-        finder.setWhere(String.format("Parameter.id='%s'", p1.getUri().getId()));
+        finder.setSearchById(p1.getUri().getId());
         IDbIterator<Parameter> iterator = finder.list();
+        boolean hasNext = false;
         if (iterator.hasNext()) {
+            hasNext = true;
             Parameter p = iterator.next();
             assertNotNull("META is NULL", p.getMeta());
             assertNotNull("Descriptions is NULL", p.getMeta().getDescriptions());
@@ -194,6 +208,7 @@ public class FindParameterTest {
         } else {
             fail("Param not registered");
         }
+        assertTrue(hasNext);
         iterator.close();
         finder.close();
     }

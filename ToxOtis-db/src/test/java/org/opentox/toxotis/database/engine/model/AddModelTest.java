@@ -90,7 +90,7 @@ public class AddModelTest {
     @Test
     public synchronized void testWriteBruteForce() throws InterruptedException {
         int poolSize = 50;
-        int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
+        int folds = 5 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
             es.submit(new Runnable() {

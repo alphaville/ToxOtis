@@ -86,7 +86,7 @@ public class AddBibTeXTest {
     @Test
     public void testWriteBibTex() throws InterruptedException {
         int poolSize = 100;
-        int folds = 1 * poolSize + 100;// just to make sure!!! (brutal?!)
+        int folds = 10 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
         for (int i = 1; i <= folds; i++) {
             es.submit(new Runnable() {

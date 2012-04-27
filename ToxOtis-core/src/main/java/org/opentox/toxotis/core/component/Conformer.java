@@ -68,9 +68,7 @@ public class Conformer extends Compound {
 
     public String getConformerId(){
         throw new UnsupportedOperationException();
-    }
-
-        
+    }        
 
     @Override
     public Individual asIndividual(OntModel model) {

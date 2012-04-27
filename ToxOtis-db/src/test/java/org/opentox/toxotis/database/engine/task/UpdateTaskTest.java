@@ -238,7 +238,7 @@ public class UpdateTaskTest {
         adder.write();
         adder.close();
 
-        System.out.println(t.getStatus());
+        System.out.println("Task status is : "+t.getStatus());
 
         //TODO: First get a list of tasks and pick randomly one - then update it!
         Task newTask = t;

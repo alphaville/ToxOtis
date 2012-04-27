@@ -123,7 +123,7 @@ public class AddParameter extends DbWriter {
             ps = getConnection().prepareStatement(insertParameter);
             ps.setString(1, parameter.getUri().getId());
             ps.setString(2, parameter.getName() != null ? parameter.getName().getValueAsString() : null);
-            ps.setString(3, parameter.getScope()!=null ? parameter.getScope().toString() : null);            
+            ps.setString(3, parameter.getScope()!=null ? parameter.getScope().toString() : "OPTIONAL");            
             ps.setString(4, parameter.getTypedValue()!=null ? 
                     parameter.getValue().toString() : null);
             ps.setString(5, parameter.getType()!=null ? parameter.getType().getURI() : null);

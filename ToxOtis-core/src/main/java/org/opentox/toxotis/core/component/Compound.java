@@ -43,7 +43,6 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -97,6 +96,11 @@ public class Compound extends DescriptorCaclulation<Compound> {
     private String registrationDate;
     private String casrn;
     private String smiles;
+    /**
+     * Can be anything; varying from a SMILES String to a MOL file or an SD file
+     * of anything.
+     */
+    private String molecularStructure;
     private HashSet<Conformer> conformers;
 
     /**
@@ -656,4 +660,21 @@ public class Compound extends DescriptorCaclulation<Compound> {
     public void setConformers(HashSet<Conformer> conformers) {
         this.conformers = conformers;
     }
+
+    /**
+     * The molecular structure or a compound (MOL file, SDF etc).
+     * @return The molecular structure as a string
+     */
+    public String getMolecularStructure() {
+        return molecularStructure;
+    }
+
+    /**
+     * Define the molecular structure or a compound (MOL file, SDF etc).
+     */
+    public void setMolecularStructure(String molecularStructure) {
+        this.molecularStructure = molecularStructure;
+    }
+    
+    
 }
