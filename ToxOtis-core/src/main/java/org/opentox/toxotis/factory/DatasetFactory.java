@@ -52,11 +52,13 @@ import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.FeatureValue;
 import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.spiders.TaskSpider;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -70,6 +72,28 @@ import weka.core.Instances;
  * @author Pantelis Sopasakis
  */
 public class DatasetFactory {
+
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DatasetFactory.class);
+    private static DatasetFactory factory = null;
+
+    /**
+     * Returns the DatasetFactory object associated with the current Java application.
+     * All factories in ToxOtis are singletons and have a single access point.
+     *
+     * @return
+     *      The DatasetFactory object associated with the current Java application.
+     */
+    public static DatasetFactory getInstance() {
+        if (factory == null) {
+            factory = new DatasetFactory();
+        }
+        return factory;
+    }
+
+    /** dummy constructor */
+    private DatasetFactory() {
+        super();
+    }
 
     /**
      * Create a dataset using a <code>weka.core.Instances</code> object (based on
@@ -91,7 +115,7 @@ public class DatasetFactory {
      *      In case the conversion is not possible due to structural inconsistencies
      *      of the provided Instances object.
      */
-    public static Dataset createFromArff(Instances instances) throws ToxOtisException {
+    public Dataset createFromArff(Instances instances) throws ToxOtisException {
         if (instances.attribute("compound_uri") == null && instances.attribute("URI") == null) {
             throw new ToxOtisException("Cannot create an OpenTox dataset out of this dataset because "
                     + "'compound_uri' was not found in it's attribute list");
@@ -130,7 +154,7 @@ public class DatasetFactory {
      *      In case the conversion is not possible due to structural inconsistencies
      *      of the provided Instances object or the file is not found.
      */
-    public static Dataset createFromArff(File file) throws ToxOtisException {
+    public Dataset createFromArff(File file) throws ToxOtisException {
         try {
             return createFromArff(new FileReader(file));
         } catch (FileNotFoundException ex) {
@@ -138,11 +162,11 @@ public class DatasetFactory {
         }
     }
 
-    public static Dataset createFromArff(InputStream stream) throws ToxOtisException {
+    public Dataset createFromArff(InputStream stream) throws ToxOtisException {
         return createFromArff(new InputStreamReader(stream));
     }
 
-    public static Dataset createFromArff(Reader reader) throws ToxOtisException {
+    public Dataset createFromArff(Reader reader) throws ToxOtisException {
         try {
             return createFromArff(new Instances(reader));
         } catch (IOException ex) {
@@ -157,7 +181,7 @@ public class DatasetFactory {
      *      A Data Entry that corresponds to the provided instance.
      * @throws ToxOtisException
      */
-    public static DataEntry createDataEntry(Instance instance) throws ToxOtisException {
+    public DataEntry createDataEntry(Instance instance) throws ToxOtisException {
         Enumeration attributes = instance.enumerateAttributes();
         DataEntry de = new DataEntry();
         try {
@@ -205,10 +229,37 @@ public class DatasetFactory {
      * @return
      * @throws ServiceInvocationException 
      */
-    public static Task publishFromFile(File sourceFile, String fileType, AuthenticationToken token, String service)
+    public Task publishFromFile(File sourceFile, String fileType, AuthenticationToken token, String service)
             throws ServiceInvocationException {
-        IPostClient post = ClientFactory.createPostClient(null);
-        throw new UnsupportedOperationException("This is just a prototype!");
+        try {
+            IPostClient postClient = ClientFactory.createPostClient(new VRI(service));
+            postClient.authorize(token);
+            postClient.setPostable(sourceFile);
+            postClient.setContentType(fileType);
+            postClient.setMediaType(Media.TEXT_URI_LIST);
+            postClient.post();
+            VRI newVRI = new VRI(postClient.getResponseText());
+            int responseStatus = -1;
+            responseStatus = postClient.getResponseCode();
+
+            if (responseStatus == 202) {
+                TaskSpider tskSp = new TaskSpider(newVRI);
+                return tskSp.parse();
+            } else if (responseStatus == 200) {
+                Task t = new Task();
+                t.setResultUri(newVRI);
+                t.setStatus(Task.Status.COMPLETED);
+                return t;
+            } else {
+                String message = "HTTP Status : " + responseStatus;
+                logger.debug(message);
+                throw new ServiceInvocationException(message);
+            }
+        } catch (final URISyntaxException ex) {
+            String message = "Service URI is invalid";
+            logger.debug(message, ex);
+            throw new RemoteServiceException(message, ex);
+        }
     }
 
     /**
