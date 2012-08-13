@@ -42,15 +42,21 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.core.component.DataEntry;
 import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.FeatureValue;
+import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -188,5 +194,33 @@ public class DatasetFactory {
             throw new ToxOtisException(ex);
         }
         return de;
+    }
+
+    /**
+     * Published a 
+     * @param sourceFile
+     * @param fileType
+     * @param token
+     * @param service
+     * @return
+     * @throws ServiceInvocationException 
+     */
+    public static Task publishFromFile(File sourceFile, String fileType, AuthenticationToken token, String service)
+            throws ServiceInvocationException {
+        IPostClient post = ClientFactory.createPostClient(null);
+        throw new UnsupportedOperationException("This is just a prototype!");
+    }
+
+    /**
+     * 
+     * @param sourceFile
+     * @param fileType
+     * @param token
+     * @return
+     * @throws ServiceInvocationException 
+     */
+    public Task publishFromFile(File sourceFile, Media fileType, AuthenticationToken token)
+            throws ServiceInvocationException {
+        throw new UnsupportedOperationException("This is just a prototype!");
     }
 }
