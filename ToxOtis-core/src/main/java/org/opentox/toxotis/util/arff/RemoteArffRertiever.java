@@ -136,13 +136,5 @@ public class RemoteArffRertiever implements Closeable {
         is.close();
         client.close();
     }
-
-    public static void main(String... args) throws Exception {
-        RemoteArffRertiever rar = new RemoteArffRertiever(Services.ideaconsult().augment("dataset", "585036").addUrlParameter("max", 5));
-        rar.initializeInstances();
-        while (rar.nextData() != null) {
-        }
-
-        rar.close();
-    }
+    
 }

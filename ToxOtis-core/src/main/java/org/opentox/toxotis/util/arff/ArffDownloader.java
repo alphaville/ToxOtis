@@ -49,10 +49,5 @@ public class ArffDownloader {
         }
         return null;
     }
-
-    public static void main(String... args) throws Exception{
-           Dataset d = new Dataset(new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/R545")) ;
-           d.loadFromRemote();
-           System.out.println(d.getInstances());
-    }
+    
 }

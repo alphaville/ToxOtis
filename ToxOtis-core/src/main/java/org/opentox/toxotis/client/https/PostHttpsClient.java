@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -317,5 +318,10 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     @Override
     public WriteLock getPostLock() {
         return postLock;
+    }
+
+    @Override
+    public IPostClient setPostable(InputStream model) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

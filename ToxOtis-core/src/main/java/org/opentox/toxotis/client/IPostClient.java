@@ -34,6 +34,7 @@ package org.opentox.toxotis.client;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.File;
+import java.io.InputStream;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.client.collection.Media;
@@ -101,6 +102,8 @@ public interface IPostClient extends IClient {
      * The PostHttpClient with the updated Ontological Model.
      */
     IPostClient setPostable(OntModel model);
+    
+    IPostClient setPostable(InputStream inputStream);
 
     /**
      * Set a StAX-writeable component to be posted to the remote location

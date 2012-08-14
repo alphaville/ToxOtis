@@ -156,7 +156,7 @@ public class PolicyWrapper implements IPolicyWrapper {
         }
 
         if (policyServer == null) {
-            policyServer = Services.SingleSignOn.ssoPolicyOld();
+            policyServer = Services.SingleSignOn.ssoPolicy();
         }
         IPostClient spc = ClientFactory.createPostClient(policyServer);
         spc.setContentType(Media.APPLICATION_XML);

@@ -38,7 +38,7 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 
 
 /**
- * An invokation that will be repeated after a certain time if it fails. The invokation
+ * An invocation that will be repeated after a certain time if it fails. The invocation
  * is retried for a specified number of times.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -88,7 +88,7 @@ public class RetriableRequest<T> {
     }
 
     public T retry(int maxRetries, long milliSecondsDelay) throws ToxOtisException {
-        return retry(1, maxRetries, milliSecondsDelay);
+        return retry((int)1, (long) maxRetries, milliSecondsDelay);
     }
     
 }

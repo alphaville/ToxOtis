@@ -34,6 +34,7 @@ package org.opentox.toxotis.factory;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -42,10 +43,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.core.component.DataEntry;
 import org.opentox.toxotis.core.component.Dataset;
@@ -163,9 +167,22 @@ public class DatasetFactory {
     }
 
     public Dataset createFromArff(InputStream stream) throws ToxOtisException {
-        return createFromArff(new InputStreamReader(stream));
+        InputStreamReader isr = new InputStreamReader(stream);
+        Dataset ds = createFromArff(isr);
+        try {
+            isr.close();
+        } catch (IOException ex) {
+            throw new ToxOtisException("Could not close input stream reader", ex);
+        }
+        return ds;
     }
 
+    /**
+     * 
+     * @param reader
+     * @return
+     * @throws ToxOtisException 
+     */
     public Dataset createFromArff(Reader reader) throws ToxOtisException {
         try {
             return createFromArff(new Instances(reader));
@@ -221,20 +238,81 @@ public class DatasetFactory {
     }
 
     /**
-     * Published a 
+     * Publishes a dataset reading from a file. The mediatype of the file
+     * should be provided.
+     * @param sourceFile
+     *      The source file which can be any sort of 'chemical' file format,
+     *      such as {@link Media#CHEMICAL_MDLSDF SFD}, {@link Media#CHEMICAL_MDLMOL MOL} 
+     *      etc. Check out in {@link Media} for more.
+     * @param fileType
+     *      MIME type of the file provided as a string.
+     * @param token
+     *      An authentication token is usually necessary to upload data.
+     * @param service
+     *      The remote dataset service to undertake the uploading and storage.
+     * @return
+     *      A Task with which to monitor the progress of the upload process.
+     * @throws ServiceInvocationException 
+     *      In case the remote service does not respond as expected.
+     * @throws FileNotFoundException
+     *      In case the specified file cannot be located on the file-system.
+     * 
+     * @see #publishFromFile(java.io.File, org.opentox.toxotis.client.collection.Media, org.opentox.toxotis.util.aa.AuthenticationToken) 
+     */
+    public Task publishFromFile(File sourceFile, String fileType, AuthenticationToken token, VRI service)
+            throws ServiceInvocationException, FileNotFoundException {
+        if (!sourceFile.exists()) {
+            throw new FileNotFoundException(String.format("The file '%s' was not found", sourceFile.getAbsolutePath()));
+        }
+        InputStream is = null;
+        try {
+            is = new FileInputStream(sourceFile);
+        } catch (final FileNotFoundException ex) {
+            String msg = String.format("Cannot open a stream to the file '%s'", sourceFile.getAbsolutePath());
+            logger.error(msg, ex);
+            throw new RuntimeException(msg, ex);
+        }
+        // Use the method publishFromStream
+        Task task = publishFromStream(is, fileType, token, service);
+        // and then close the input stream
+        if (is != null) {
+            try {
+                is.close();
+            } catch (IOException ex) {
+                String msg = String.format("There is a stream established towards '%s' which cannot close!!!",
+                        sourceFile.getAbsolutePath());
+                logger.error(msg, ex);
+                throw new RuntimeException(msg, ex);
+            }
+        }
+        return task;
+    }
+
+    public Task publishFromFile(File sourceFile, Media fileType, AuthenticationToken token, VRI service)
+            throws ServiceInvocationException, FileNotFoundException {
+        return publishFromFile(sourceFile, fileType.getMime(), token, service);
+    }
+
+    /**
+     * 
      * @param sourceFile
      * @param fileType
      * @param token
-     * @param service
      * @return
      * @throws ServiceInvocationException 
      */
-    public Task publishFromFile(File sourceFile, String fileType, AuthenticationToken token, String service)
+    public Task publishFromFile(File sourceFile, Media fileType, AuthenticationToken token)
+            throws ServiceInvocationException, FileNotFoundException {
+        VRI standardDatasetVri = Services.ideaconsult().augment("dataset");
+        return publishFromFile(sourceFile, fileType, token, standardDatasetVri);
+    }
+
+    public Task publishFromStream(InputStream source, String fileType, AuthenticationToken token, VRI service)
             throws ServiceInvocationException {
         try {
             IPostClient postClient = ClientFactory.createPostClient(new VRI(service));
             postClient.authorize(token);
-            postClient.setPostable(sourceFile);
+            postClient.setPostable(source);
             postClient.setContentType(fileType);
             postClient.setMediaType(Media.TEXT_URI_LIST);
             postClient.post();
@@ -262,15 +340,7 @@ public class DatasetFactory {
         }
     }
 
-    /**
-     * 
-     * @param sourceFile
-     * @param fileType
-     * @param token
-     * @return
-     * @throws ServiceInvocationException 
-     */
-    public Task publishFromFile(File sourceFile, Media fileType, AuthenticationToken token)
+    public Task publishFromStream(InputStream source, Media fileType, AuthenticationToken token)
             throws ServiceInvocationException {
         throw new UnsupportedOperationException("This is just a prototype!");
     }

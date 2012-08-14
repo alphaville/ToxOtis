@@ -34,6 +34,7 @@ package org.opentox.toxotis.factory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Set;
 import org.opentox.toxotis.client.IPostClient;
@@ -95,13 +96,13 @@ public class CompoundFactory {
      *      The Content-type of the file to be posted.
      * @return
      *      The compound created by the Service.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      */
-    public Task publishFromFile(File sourceFile, String fileType, AuthenticationToken token) throws ServiceInvocationException
-             {
+    public Task publishFromFile(File sourceFile, String fileType, AuthenticationToken token) 
+            throws ServiceInvocationException {
         return publishFromFile(sourceFile, fileType, token, Services.ideaconsult().augment("compound").toString());
     }
 
@@ -120,7 +121,7 @@ public class CompoundFactory {
      *      The Content-type of the file to be posted.
      * @return
      *      The compound created by the Service.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
@@ -147,7 +148,7 @@ public class CompoundFactory {
      *      The URI of the service on which the new Compound will be posted.
      * @return
      *      The compound created by the Service.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
@@ -204,7 +205,7 @@ public class CompoundFactory {
      *      The URI of the service on which the new Compound will be posted.
      * @return
      *      The compound created by the Service.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
@@ -217,5 +218,56 @@ public class CompoundFactory {
 
     public Set<VRI> lookUpComponent(VRI lookUpService, String keyword) {
         throw new UnsupportedOperationException();
+    }
+
+    public Task publishFromStream(
+            InputStream source, String fileType, AuthenticationToken token, String service)
+            throws ServiceInvocationException {
+        try {
+            IPostClient postClient = new PostHttpClient(
+                    new VRI(service));
+            postClient.authorize(token);
+            postClient.setPostable(source);
+            postClient.setContentType(fileType);
+            postClient.setMediaType(Media.TEXT_URI_LIST.getMime());
+            postClient.post();
+            VRI newVRI = new VRI(postClient.getResponseText());
+            int responseStatus = -1;
+            responseStatus = postClient.getResponseCode();
+
+            if (responseStatus == 202) {
+                TaskSpider tskSp = new TaskSpider(newVRI);
+                return tskSp.parse();
+            } else if (responseStatus == 200) {
+                Task t = new Task();
+                t.setResultUri(newVRI);
+                t.setStatus(Task.Status.COMPLETED);
+                return t;
+            } else {
+                String message = "HTTP Status : " + responseStatus;
+                logger.debug(message);
+                throw new ServiceInvocationException(message);
+            }
+        } catch (URISyntaxException ex) {
+            String message = "Service URI is invalid";
+            logger.debug(message, ex);
+            throw new RemoteServiceException(message, ex);
+        }
+    }
+
+    public Task publishFromStream(
+            InputStream source, Media fileType, AuthenticationToken token, String service)
+            throws ServiceInvocationException {
+        return publishFromStream(source, fileType.getMime(), token, service);
+    }
+
+    public Task publishFromStream(InputStream source, Media fileType, AuthenticationToken token)
+            throws ServiceInvocationException {
+        return publishFromStream(source, fileType.getMime(), token, Services.ideaconsult().augment("compound").toString());
+    }
+
+    public Task publishFromStream(InputStream source, String fileType, AuthenticationToken token)
+            throws ServiceInvocationException {
+        return publishFromStream(source, fileType, token, Services.ideaconsult().augment("compound").toString());
     }
 }

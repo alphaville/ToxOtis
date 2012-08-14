@@ -32,15 +32,18 @@
  */
 package org.opentox.toxotis.client.http;
 
+import java.io.InputStream;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import org.opentox.toxotis.client.IPostClient;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -67,7 +70,6 @@ import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 public class PostHttpClient extends AbstractHttpClient implements IPostClient {
 
     //TODO: Add postable InputStream (What else?)
-    
     /** Type of the posted content*/
     private String contentType = null;
     /** Parameters to be posted as application/x-www-form-urlencoded (if any) */
@@ -76,6 +78,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     private OntModel model;
     /** Arbitrary object to be posted to the remote server s*/
     private File fileContentToPost = null;
+    private InputStream inputStream = null;
     /** A simple string to be posted to the remote service */
     private String stringToPost;
     private String bytesToPost;
@@ -231,7 +234,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
         return super.addHeaderParameter(paramName, paramValue);
     }
 
-    private String getParametersAsQuery() {
+    String getParametersAsQuery() {
         if (postParameters.isEmpty()) {
             return "";
         }
@@ -251,7 +254,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                 }
             }
         }
-        string.deleteCharAt(string.length()-1);
+        string.deleteCharAt(string.length() - 1);
         return new String(string);
     }
 
@@ -325,19 +328,31 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                 wr.writeChars(stringToPost);
             } else if (bytesToPost != null) {
                 wr.writeBytes(bytesToPost);
-            } else if (fileContentToPost != null) {
-                FileReader fr = null;
+            } else if (fileContentToPost != null || inputStream != null) {
+                // Post from file (binary data) or from other input stream
+                InputStream is = null;
+                InputStreamReader isr = null;
                 BufferedReader br = null;
+                boolean doCloseInputStream = false;
+                // choose input stream (used-defined or from file)
+                if (fileContentToPost != null) {
+                    is = new FileInputStream(fileContentToPost);
+                    doCloseInputStream = true;
+                } else {
+                    is = inputStream;
+                }
                 try {
-                    fr = new FileReader(fileContentToPost);
-                    br = new BufferedReader(fr);
+                    isr = new InputStreamReader(is);
+                    br = new BufferedReader(isr);
                     String line;
                     while ((line = br.readLine()) != null) {
                         wr.writeBytes(line);
                         wr.writeChars("\n");
                     }
                 } catch (IOException ex) {
-                    throw new ConnectionException("Unable to post data to the remote service at '" + getUri() + "' - The connection dropped "
+                    throw new ConnectionException(
+                            "Unable to post data to the remote service at '"
+                            + getUri() + "' - The connection dropped "
                             + "unexpectidly while POSTing.", ex);
                 } finally {
                     Throwable thr = null;
@@ -348,9 +363,16 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                             thr = ex;
                         }
                     }
-                    if (fr != null) {
+                    if (isr != null) {
                         try {
-                            fr.close();
+                            isr.close();
+                        } catch (final IOException ex) {
+                            thr = ex;
+                        }
+                    }
+                    if (doCloseInputStream) {
+                        try {
+                            is.close();
                         } catch (final IOException ex) {
                             thr = ex;
                         }
@@ -378,13 +400,9 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
         return postLock;
     }
 
-    public static void main(String... args){
-        PostHttpClient client = new PostHttpClient();
-        client.addPostParameter("a", "1");
-        client.addPostParameter("a", "2");
-        client.addPostParameter("b", "3");
-        client.addPostParameter("c", "3");
-        client.addPostParameter("c", "3");
-        System.out.println(client.getParametersAsQuery());
+    @Override
+    public IPostClient setPostable(InputStream inputStream) {
+        this.inputStream = inputStream;
+        return this;
     }
 }

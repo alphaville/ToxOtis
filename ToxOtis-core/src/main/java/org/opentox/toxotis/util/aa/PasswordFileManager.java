@@ -278,7 +278,9 @@ public class PasswordFileManager extends Observable {
             try {
                 File secretFile = new File(masterPasswordFile);
                 if (!secretFile.exists()) {
-                    throw new RuntimeException("File containing the master password was not found at : '" + masterPasswordFile + "'");
+                    throw new RuntimeException(
+                            String.format("File containing the master password was not found at : '%s'",
+                            secretFile.getAbsolutePath()));
                 }
                 fr = new FileReader(secretFile);
                 br = new BufferedReader(fr);

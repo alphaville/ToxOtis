@@ -77,7 +77,7 @@ public class PolicyManager {
         }
         //TODO: We need a secure DELETE client here!
         if (policyServiceUri == null) {
-            policyServiceUri = Services.SingleSignOn.ssoPolicyOld();
+            policyServiceUri = Services.SingleSignOn.ssoPolicy();
         }
         DeleteHttpsClient sdc = null;
         try {
@@ -112,9 +112,9 @@ public class PolicyManager {
 
     /**
      * Obtain the username of the owner of a policy for a given URI.
-     * @param serviceUri
-     *      URI of an (OpenTox) web service for which the username of its creator
-     *      is requested
+     * @param resourceUri
+     *      URI of an (OpenTox) resource for which the username of its creator
+     *      is requested.
      * @param policyService
      *      URI of the SSO service used to carry out our request. In case this
      *      argument is set to <code>null</code>, the default SSO service URI
@@ -137,7 +137,10 @@ public class PolicyManager {
      *      If the token the user uses is not active (because it has been invalidated,
      *      expired, or not initialized yet).
      */
-    public static String getPolicyOwner(VRI serviceUri, VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
+    public static String getPolicyOwner(VRI resourceUri, VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
+        if (token==null){
+            throw new NullPointerException("You should provide a token!");
+        }
         if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
             throw new ForbiddenRequest("This token is not active: " + token.getStatus());
         }
@@ -149,7 +152,7 @@ public class PolicyManager {
             // REQUEST
             sgt = ClientFactory.createGetClient(policyService);
             sgt.addHeaderParameter(SUBJECT_ID, token.stringValue());
-            sgt.addHeaderParameter("uri", serviceUri.clearToken().toString());
+            sgt.addHeaderParameter("uri", resourceUri.clearToken().toString());
 
             // RETURN RESPONSE
             int responseStatus = sgt.getResponseCode();
@@ -301,6 +304,20 @@ public class PolicyManager {
         return null;
     }
 
+    /**
+     * Creates the default policy for a user. If the user if <code>guest</code>
+     * then the created policy allows everyone to access the resource (it is 
+     * made public). In any other case, only the creator has access to the resource.
+     * By default, the policy allows users to GET, POST, PUT and DELETE.
+     * @param policyName
+     *      Name of the policy to be created (has to be unique).
+     * @param componentUri
+     *      The URI of the resource for which the policy is created.
+     * @param userName
+     *      The name of the user to which the privileges are assigned.
+     * @return 
+     *      A Policy which can be published to the policy server.
+     */
     public static IPolicyWrapper defaultSignleUserPolicy(String policyName, VRI componentUri, String userName) {
 
         Policy pol = new Policy();

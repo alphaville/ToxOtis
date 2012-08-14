@@ -19,7 +19,9 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Downloads ARFF from a remote location. If text/x-arff is available, the it's directly donwloaded
+ * Downloads ARFF from a remote location. If text/x-arff is available, 
+ * then it's directly downloaded from the remote location without the need for
+ * conversion.
  * @author Pantelis Sopasakis
  */
 public class GetArff {
