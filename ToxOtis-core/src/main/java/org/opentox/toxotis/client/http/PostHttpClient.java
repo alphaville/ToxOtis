@@ -42,10 +42,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +66,8 @@ import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
  */
 public class PostHttpClient extends AbstractHttpClient implements IPostClient {
 
+    //TODO: Add postable InputStream (What else?)
+    
     /** Type of the posted content*/
     private String contentType = null;
     /** Parameters to be posted as application/x-www-form-urlencoded (if any) */
@@ -81,7 +81,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     private String bytesToPost;
     /** A StAX component that implements the interface {@link IStAXWritable }
     that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
-    write(OutputStream)} that writes the component to an outputstream pointing to the
+    write(OutputStream)} that writes the component to an output stream pointing to the
     remote stream
      */
     private IStAXWritable staxComponent;
@@ -115,8 +115,8 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
 
     /**
      * Set an ontological data model which is to be posted to the remote location
-     * as application/rdf+xml. Invokations of this method set automatically the content-type
-     * to application/rdf+xml though it can be overriden afterwards.
+     * as application/rdf+xml. Invocations of this method set automatically the content-type
+     * to application/rdf+xml though it can be overridden afterwards.
      * @param model
      *      Ontological Model to be posted
      * @return
@@ -297,11 +297,11 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     }
 
     /**
-     * According to the the configuration of the PostHttpClient, permorms a remote POST
-     * request to the server identified by the URI provided in the contructor. First,
+     * According to the the configuration of the PostHttpClient, performs a remote POST
+     * request to the server identified by the URI provided in the constructor. First,
      * the protected method {@link PostHttpClient#initializeConnection(java.net.URI)
      * initializeConnection(URI)} is invoked and then a DataOutputStream opens to
-     * tranfer the data to the server.
+     * transfer the data to the server.
      *
      * @throws ToxOtisException
      *      Encapsulates an IOException which might be thrown due to I/O errors

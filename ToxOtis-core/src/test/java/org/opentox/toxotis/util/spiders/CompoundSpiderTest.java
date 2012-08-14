@@ -74,13 +74,12 @@ public class CompoundSpiderTest {
     /**
      * Test of parse method, of class CompoundSpider.
      */
-    @Test
+    @Test(timeout=10000)
     public void testParse() throws Exception {
         System.out.println("parse");        
         
 //        CompoundSpider spider = new CompoundSpider("phenol", null);
-        CompoundSpider spider = new CompoundSpider("http://apps.ideaconsult.net:8080/ambit2/compound/24793",
-                "http://apps.ideaconsult.net:8080/ambit2/query/compound/%s/all");
+        CompoundSpider spider = new CompoundSpider("phenol", null);
         Compound cmp = spider.parse();        
         System.out.println(cmp.getIupacName());
         System.out.println(cmp.getUri());

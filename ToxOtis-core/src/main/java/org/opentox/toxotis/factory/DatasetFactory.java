@@ -102,9 +102,9 @@ public class DatasetFactory {
      * data and nodes that do not appear in Instances object (or ARFF files), the
      * provided object has to possess a certain structure: The first attribute of
      * it has to be always named <code>compound_uri</code> and be of type <code>string</code>.
-     * This attribute stores the URIs of the compounds of the dataset. Secondd, the rest
+     * This attribute stores the URIs of the compounds of the dataset. Second, the rest
      * attributes have to be of type <code>string</code> or <code>numeric</code> or
-     * <code>nominal</code> and their name should be an acceptable feature uri (for
+     * <code>nominal</code> and their name should be an acceptable feature URI (for
      * example <code>http://someserver.com:1234/opentox/feature/54234</code>).
      *
      * @param instances
@@ -141,9 +141,9 @@ public class DatasetFactory {
      * data and nodes that do not appear in Instances object (or ARFF files), the
      * provided ARFF file has to possess a certain structure: The first attribute of
      * it has to be always named <code>compound_uri</code> and be of type <code>string</code>.
-     * This attribute stores the URIs of the compounds of the dataset. Secondd, the rest
+     * This attribute stores the URIs of the compounds of the dataset. Second, the rest
      * attributes have to be of type <code>string</code> or <code>numeric</code> or
-     * <code>nominal</code> and their name should be an acceptable feature uri (for
+     * <code>nominal</code> and their name should be an acceptable feature URI (for
      * example <code>http://someserver.com:1234/opentox/feature/54234</code>).
      *
      * @param file

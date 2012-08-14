@@ -30,12 +30,12 @@ public class BayesTest {
 //            learner.buildStructure(bn, ins);
 //            estimator.estimateCPTs(bn);
 
-            Model jenaModel = ModelFactory.createOntologyModel();
-            long mem0 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            System.out.println("Memory used: " + mem0 / 1024 + " K bytes");
-            jenaModel.read("http://apps.ideaconsult.net:8080/ambit2/dataset/585036", null);
-            long mem1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            System.out.println("Memory used for Jena object " + (mem1 - mem0) / (1024) + " K bytes");
+//            Model jenaModel = ModelFactory.createOntologyModel();
+//            long mem0 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+//            System.out.println("Memory used: " + mem0 / 1024 + " K bytes");
+//            jenaModel.read("http://apps.ideaconsult.net:8080/ambit2/dataset/585036", null);
+//            long mem1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+//            System.out.println("Memory used for Jena object " + (mem1 - mem0) / (1024) + " K bytes");
 
         } catch (Exception ex) {
             ex.printStackTrace();
