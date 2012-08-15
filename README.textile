@@ -13,12 +13,14 @@ h2. About
 
 <b>Description:</b>
  + ToxOtis is the Greek word for Sagittarius, that actually means 'archer'. ToxOtis is a Java interface to the predictive toxicology services of "OpenTox":http://opentox.org. ToxOtis is being developed to help both those who need a painless way to consume "OpenTox":http://opentox.org services and for ambitious service providers that don't want to spend half of their time in RDF parsing and creation.
- + You can use ToxOtis to search in databases with chemical compounds, download a compound in any supported MIME type (e.g. SDF, SMILES, MOL etc), find a property for a compound (e.g. its LD ~50~ lethal dose concentration), publish your chemicals in an online database, train QSAR models (regression, classification, clustering etc) and lots of other functionalities. Incorporation of ToxOtis into your services will relieve you from the labour of creating RDF documents. 
+ + You can use ToxOtis to search in databases with chemical compounds, download a compound in any supported MIME type (e.g. SDF, SMILES, MOL etc), find a property for a compound (e.g. its LD50 lethal dose concentration), publish your chemicals in an online database, train QSAR models (regression, classification, clustering etc) and lots of other functionalities. Incorporation of ToxOtis into your services will relieve you from the labour of creating RDF documents. 
  + You can find full documentation at the "doc":http://github.com/alphaville/ToxOtis/tree/master/doc/ directory including lots of examples. For any questions don't hesitate contact to the authors by sending a message to "alphaville":http://github.com/alphaville or "hampos":http://github.com/hampos (on "github":http://github.com ).
 
 <b>Quality Control:</b>
 + For every piece of code introduced in ToxOtis we write extensive unit tests. Recently (since version 0.8.2) we started using the Cobertura Maven plugin calculate our overall code coverage in ToxOtis-core (which was found to be 41% - fair enough!). You can access the report online "here":http://opentox.ntua.gr/cobertura .
 
+<b>Documentation:</b>
+You will find numerous examples and hints on our "wiki page":http://opentox.ntua.gr/wiki. Additionally, the source code is accompanied by javadoc that is available on our "Nexus repository":http://opentox.ntua.gr:8081/nexus/index.html#view-repositories;releases~browsestorage.
 
 h2. Use ToxOtis
 
@@ -42,10 +44,10 @@ and add once the following repository:
 
 <pre>
 <repositories>
-  <!-- ambit-plovdiv repository -->
+  <!-- NTUA Repository -->
   <repository>
-    <id>ambit-plovdiv</id>
-    <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
+    <id>ntua-public</id>
+    <url>http://opentox.ntua.gr:8081/nexus/content/repositories/public/</url>
     <snapshots>
       <enabled>false</enabled>
     </snapshots>
@@ -56,7 +58,7 @@ and add once the following repository:
 
 h3. With Ant
 
-   If you prefer the ant-based ToxOtis the build.xml files are also distributed along with the source code. Alternatively run <code>mvn ant:ant</code> and create your own XML files for ant. Alternatively, you can download the latest version from the nexus repository and add it to your classpath.
+  If you prefer the ant-based ToxOtis the build.xml files are also distributed along with the source code. Alternatively run <code>mvn ant:ant</code> and create your own XML files for ant. Alternatively, you can download the latest version from our "Nexus repository":http://opentox.ntua.gr:8081/nexus/index.html#view-repositories;releases~browsestorage and add it to your classpath.
 
 
 h2. Source Code and Javadoc
