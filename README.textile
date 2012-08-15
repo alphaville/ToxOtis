@@ -5,7 +5,7 @@ h1. Τοξότης : Core Project
 h2. About
 
 <b>Version:</b>
- + "0.5.3":http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty/org/opentox/toxotis/ (Available from the "AMBIT":http://ambit.uni-plovdiv.bg:8083/nexus/index.html#view-repositories;thirdparty~browsestorage Maven repository.
+ + "0.8.4":http://opentox.ntua.gr:8081/nexus/index.html#view-repositories;releases~browsestorage (Available from the  "NTUA":http://ambit.uni-plovdiv.bg:8083/nexus/index.html#view-repositories;thirdparty~browsestorage Maven repository).
 
 <b>Authors:</b>
  + "Sopasakis Pantelis":http://gr.linkedin.com/in/sopasakis
@@ -17,6 +17,10 @@ h2. About
  + You can use ToxOtis to search in databases with chemical compounds, download a compound in any supported MIME type (e.g. SDF, SMILES, MOL etc), find a property for a compound (e.g. its LD ~50~ lethal dose concentration), publish your chemicals in an online database, train QSAR models (regression, classification, clustering etc) and lots of other functionalities. Incorporation of ToxOtis into your services will relieve you from the labour of creating RDF documents. 
 
  + You can find full documentation at the "doc":http://github.com/alphaville/ToxOtis/tree/master/doc/ directory including lots of examples. For any questions don't hesitate contact to the authors by sending a message to "alphaville":http://github.com/alphaville or "hampos":http://github.com/hampos (in "github":http://github.com ).
+
+<b>Quality Control:</b>
+
++ For every piece of code introduced in ToxOtis we write extensive unit tests. Recently (since version 0.8.2) we started using the Cobertura Maven plugin calculate our overall code coverage in ToxOtis-core (which was found to be 41% - fair enough!). You can access the report online "here":http://opentox.ntua.gr/cobertura .
 
 
 h2. Use ToxOtis
@@ -52,84 +56,10 @@ and add once the following repository:
 </repositories>
 </pre>
 
-As an example we provide here a template pom.xml file you can use in your project if you need to make use of ToxOtis-Persistence:
-
-<pre>
-<project    xmlns="http://maven.apache.org/POM/4.0.0" 
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.mygroup.myproject</groupId>
-    <artifactId>ProjectId</artifactId>
-    <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>NameOfMyProject</name>
-    <url>http://myproject.com/myPage#home</url>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-	<!-- 
-		Maven will automatically download ToxOtis-persitence ( with 
-		all its dependencies (like ToxOtis-core ) from the ambit-plovdiv
-		repository (see below at the repositories section).
-	-->
-        <dependency>
-            <groupId>org.opentox.toxotis.persistence</groupId>
-            <artifactId>ToxOtis-persistence</artifactId>
-            <version>0.4.3</version>
-        </dependency>
-    </dependencies>
-
-    <repositories>
-        <!-- AMBIT PLOVDIV REPO -->
-        <repository>
-            <id>ambit-plovdiv</id>
-            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>bc-public</id>
-            <name>Public Maven Repository at Brockmann-Consult</name>
-            <url>http://www.brockmann-consult.de/mvn/os</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.1</version>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>        
-    </build>
-</project>
-</pre>
 
 h3. With Ant
 
-   If you prefer the ant-based ToxOtis the build.xml files are also distributed along with the source code. Alternatively run <code>mvn ant:ant</code> and create your own XML files for ant.
+   If you prefer the ant-based ToxOtis the build.xml files are also distributed along with the source code. Alternatively run <code>mvn ant:ant</code> and create your own XML files for ant. Alternatively, you can download the latest version from the nexus repository and add it to your classpath.
 
 
 h2. Source Code and Javadoc
