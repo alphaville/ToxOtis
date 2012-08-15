@@ -99,7 +99,6 @@ public class CompoundTest {
         Compound compound = spider.parse();
         ImageIcon icon = compound.getDepiction(null);
         int height = icon.getIconHeight();
-        System.out.println(height);
         assertTrue(height>0);
     }
 
@@ -150,10 +149,14 @@ public class CompoundTest {
 
     @Test
     public void testGetFeatValue() throws Exception {
-        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/144317/conformer/413851"));
-        Feature f = new Feature(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/22200"));
+        Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/287/conformer/5418684"));
+        Feature f = new Feature(new VRI("http://apps.ideaconsult.net:8080/ambit2/feature/7885337"));
         LiteralValue lv = c.getProperty(f, null);
-        System.out.println(lv);
+        assertNotNull(lv);
+        assertNotNull(lv.getHash());
+        assertNotNull(lv.getType());
+        assertNotNull(lv.getValue());
+        assertNotNull(lv.getValueAsString());
 
     }
 
@@ -161,7 +164,9 @@ public class CompoundTest {
     public void testSimilar() throws Exception{
         AuthenticationToken at = new AuthenticationToken("guest", "guest");
         Compound c = new Compound(new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/144317/conformer/413851"));
-        System.out.println(c.getSimilar(0.95, at));
+        Set<VRI> similar = c.getSimilar(0.95, at);
+        assertNotNull(similar);
+        assertFalse(similar.isEmpty());
         at.invalidate();
     }
 }

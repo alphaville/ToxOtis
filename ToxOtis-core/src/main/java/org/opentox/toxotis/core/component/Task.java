@@ -369,7 +369,7 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         StringBuilder sb = new StringBuilder();
         sb.append("Task {");
         sb.append(getUri());
-        sb.append("\n");
+        sb.append("}\n");
         sb.append("HTTP Status : ");
         sb.append(getHttpStatus());
         sb.append("\n");

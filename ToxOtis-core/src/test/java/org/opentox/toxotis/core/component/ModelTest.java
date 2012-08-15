@@ -71,6 +71,7 @@ public class ModelTest {
     public void testModel() throws ServiceInvocationException {
         AuthenticationToken token = new AuthenticationToken("guest", "guest");                
         Model m = new Model(Services.ntua().augment("algorithm", "mlr")).loadFromRemote(token);
-        System.out.println(m.getMeta().getRights());
+        assertNotNull(m.getMeta());
+        assertNotNull(m.getMeta().getRights());
     }
 }

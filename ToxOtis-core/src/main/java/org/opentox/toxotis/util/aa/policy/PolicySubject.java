@@ -54,4 +54,28 @@ public abstract class PolicySubject {
 
     public abstract String getValue();
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PolicySubject other = (PolicySubject) obj;
+        if ((this.subjectName == null) ? (other.subjectName != null) : !this.subjectName.equals(other.subjectName)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 37 * hash + (this.subjectName != null ? this.subjectName.hashCode() : 0);
+        return hash;
+    }
+    
+    
+
 }

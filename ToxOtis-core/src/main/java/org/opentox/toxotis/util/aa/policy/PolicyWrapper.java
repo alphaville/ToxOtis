@@ -34,6 +34,7 @@ package org.opentox.toxotis.util.aa.policy;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -82,9 +83,7 @@ public class PolicyWrapper implements IPolicyWrapper {
 
     public PolicyWrapper(Policy... pols) {
         this();
-        for (Policy p : pols) {
-            this.pols.add(p);
-        }
+        this.pols.addAll(Arrays.asList(pols));
     }
 
     public Set<Policy> getPolicies() {
@@ -146,6 +145,9 @@ public class PolicyWrapper implements IPolicyWrapper {
 
     @Override
     public Document getDocument() {
+        if (document == null) {
+            createDocument();
+        }
         return document;
     }
 

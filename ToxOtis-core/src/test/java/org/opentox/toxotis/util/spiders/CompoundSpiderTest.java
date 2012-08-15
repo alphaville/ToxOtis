@@ -33,17 +33,13 @@
 package org.opentox.toxotis.util.spiders;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.core.component.Algorithm;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.core.component.Compound;
-import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.util.SimilarityRetriever;
 
 /**
@@ -75,20 +71,24 @@ public class CompoundSpiderTest {
      * Test of parse method, of class CompoundSpider.
      */
     @Test(timeout=10000)
-    public void testParse() throws Exception {
-        System.out.println("parse");        
-        
-//        CompoundSpider spider = new CompoundSpider("phenol", null);
+    public void testParse() throws Exception {  
         CompoundSpider spider = new CompoundSpider("phenol", null);
         Compound cmp = spider.parse();        
-        System.out.println(cmp.getIupacName());
-        System.out.println(cmp.getUri());
-        System.out.println(cmp.getUri().getOntologicalClass());
-        System.out.println(cmp.getUri().getOpenToxType());
+        assertNotNull(cmp.getIupacName());
+        assertNotNull(cmp.getUri());
+        assertNotNull(cmp.getUri().getOntologicalClass());
+        assertNotNull(cmp.getUri().getOpenToxType());
         SimilarityRetriever sr = new SimilarityRetriever(0.95, cmp);
         ArrayList<Compound> sim = sr.similarCompounds();
+        boolean isAllNull = true;
         for (Compound c : sim){
-            System.out.println("  o  -->  "+c.getUri()+c.getSynonyms());
+            assertNotNull(c.getUri());
+            if (c.getSynonyms()!=null){
+                isAllNull = false;
+            }
+        }
+        if (isAllNull){
+            fail("No synonyms?!");
         }
     }
 }

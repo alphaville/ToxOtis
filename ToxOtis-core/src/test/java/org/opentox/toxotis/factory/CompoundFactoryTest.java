@@ -42,9 +42,11 @@ import java.net.URISyntaxException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.PasswordFileManager;
 import static org.junit.Assert.*;
@@ -75,12 +77,16 @@ public class CompoundFactoryTest {
         }
         Task t = CompoundFactory.getInstance().publishFromFile(f, Media.CHEMICAL_MDLSDF, at);
         t = t.loadFromRemote(at);
-        System.out.println(t.getUri());
+        assertNotNull(t);
+        assertNotNull(t.getUri());
+        assertEquals(OTClasses.Task(), t.getUri().getOntologicalClass());
         while (!Task.Status.COMPLETED.equals(t.getStatus())) {
             t = t.loadFromRemote(at);
             System.out.println(t.getUri());
         }
-        System.out.println("Result URI = " + t.getResultUri());
+        VRI resultUri = t.getResultUri();
+        assertNotNull(resultUri);
+        assertEquals(OTClasses.Conformer(), resultUri.getOntologicalClass());
         at.invalidate();
     }
 
@@ -103,7 +109,9 @@ public class CompoundFactoryTest {
                 t = t.loadFromRemote(at);
                 System.out.println(t.getUri());
             }
-            assertNotNull(t.getResultUri());
+            VRI resultUri = t.getResultUri();
+            assertNotNull(resultUri);
+            assertEquals(OTClasses.Conformer(), resultUri.getOntologicalClass());
         } finally {
             at.invalidate();
             is.close();

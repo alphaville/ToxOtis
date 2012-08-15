@@ -93,12 +93,12 @@ public class SimilarityRetriever {
     }
 
     public ArrayList<Compound> similarCompounds() throws ServiceInvocationException {
-        System.out.println("Similarity Search engine started");
+//        System.out.println("Similarity Search engine started");
         Set<VRI> similarCompoundVRIs = compound.getSimilar(similarity, token);
-        System.out.println("  L similar compounds found (listing uris)");
-        for (VRI v : similarCompoundVRIs) {
-            System.out.println("        L  o --> " + v);
-        }
+//        System.out.println("  L similar compounds found (listing uris)");
+//        for (VRI v : similarCompoundVRIs) {
+//            System.out.println("        L  o --> " + v);
+//        }
         Compound current;
         ArrayList<Compound> similarCompounds = new ArrayList<Compound>(similarCompoundVRIs.size());
         for (VRI sVri : similarCompoundVRIs) {
@@ -116,7 +116,7 @@ public class SimilarityRetriever {
                 System.out.println("xxx : Compound download failure for " + sVri);
             }
         }
-        System.out.println("Similar compounds downloaded!");
+//        System.out.println("Similar compounds downloaded!");
         return similarCompounds;
     }
 }

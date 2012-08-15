@@ -30,9 +30,9 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.factory;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -86,21 +86,26 @@ public class FeatureFactoryTest {
         f.loadFromRemote();
         assertEquals(newFeatureTitle, f.getMeta().getTitles().iterator().next().getValueAsString());
         assertEquals(units, f.getUnits());
-        System.out.println(f.getUri());
+        assertNotNull(f.getUri());
     }
 
     @Test
     public void testCreateFeatureOnBadFeatureService() throws ServiceInvocationException, URISyntaxException {
         String newFeatureTitle = "New feature - Just for testing";
         String units = "mA";
-        try{
-        Feature f = FeatureFactory.createAndPublishFeature(newFeatureTitle, units,
-                new ResourceValue(Services.ntua().augment("model", "x"), OTClasses.Model()), new VRI("http://alphaville:4000/algorithm/mlr"), null);
-        } catch (ServiceInvocationException ex){
-            ex.asErrorReport().asOntModel().write(System.out);
+        try {
+            Feature f = FeatureFactory.createAndPublishFeature(newFeatureTitle, units,
+                    new ResourceValue(Services.ntua().augment("model", "x"), OTClasses.Model()), 
+                    new VRI("http://alphaville:4000/algorithm/mlr"), null);
+        } catch (ServiceInvocationException ex) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ex.asErrorReport().asOntModel().write(baos);
+            byte[] binary = baos.toByteArray();
+            assertNotNull(binary);
+            assertTrue(binary.length > 0);
             return;
         }
         fail("Should have failed!");
-        
+
     }
 }

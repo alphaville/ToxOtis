@@ -65,8 +65,7 @@ public class Policy implements IPolicy {
     private String subjectsDescription = "";
     private Document policyDocument = null;
 
-    @Override
-    public Element xmlElement(Document doc, Element policies) {
+    Element xmlElement(Document doc, Element policies) {
         Element policy = (Element) doc.createElement("Policy");
         policy.setAttribute("name", getPolicyName());
         policy.setAttribute("referralPolicy", "false");
@@ -136,14 +135,15 @@ public class Policy implements IPolicy {
 
     @Override
     public String getText() {
-        PolicyWrapper pw = new PolicyWrapper();
+        PolicyWrapper pw = new PolicyWrapper(this);
         return pw.getText();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     @Override
     public Document getDocument() {
-        return policyDocument;
+        PolicyWrapper pw = new PolicyWrapper(this);
+        return pw.getDocument();
     }
 
     @Override

@@ -32,7 +32,6 @@
  */
 package org.opentox.toxotis.training;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
@@ -59,7 +58,7 @@ public class Trainer {
     private Feature predictionFeature;
 
     public Trainer(Algorithm algorithm, Dataset dataset, Feature predictionFeature) {
-        setAlgorithm(algorithm);
+        this.algorithm = algorithm;
         this.dataset = dataset;
         this.predictionFeature = predictionFeature;
     }

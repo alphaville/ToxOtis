@@ -8,12 +8,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.exceptions.IClientException;
 import org.opentox.toxotis.exceptions.ISecurityException;
 import org.opentox.toxotis.exceptions.IUnauthorized;
+import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.util.aa.policy.IPolicyWrapper;
+import org.opentox.toxotis.util.aa.policy.PolicyManager;
 
 /**
  *
@@ -50,7 +54,7 @@ public class AuthenticationTokenTest {
         AuthenticationToken at = null;
         try {
             at = new AuthenticationToken("guest", "guest");
-            System.out.println(at.toString());
+            assertNotNull(at.toString());
             User userGuest = at.getUser();
             assertEquals("anonymous@anonymous.org", userGuest.getMail());
             assertEquals("Guest", userGuest.getName());
@@ -66,10 +70,10 @@ public class AuthenticationTokenTest {
 
     }
 
-    //@Test
+    @Test
     public void testGetUserWrongCredentials() throws Exception {
         try {
-            new AuthenticationToken("wrongUser", "wrongPass");
+            AuthenticationToken authenticationToken = new AuthenticationToken("wrongUser", "wrongPass");
         } catch (ServiceInvocationException ex) {
             assertTrue(ex instanceof IClientException);
             assertTrue(ex instanceof ISecurityException);
@@ -79,23 +83,23 @@ public class AuthenticationTokenTest {
         fail("Should have failed (Wrong credentials provided)");
     }
 
-//    @Test
+    @Test
     public void testAuthenticationFromFile() throws Exception {
-        File passwordFile = new File(System.getProperty("user.home")+"/toxotisKeys/my.key");
+        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/.my.key");
         AuthenticationToken at = new AuthenticationToken(passwordFile);
         at.invalidate();
     }
 
- //   @Test
+    @Test
     public void testGetStatus() throws Exception {
         assertEquals(AuthenticationToken.TokenStatus.DEAD, new AuthenticationToken().getStatus());
         AuthenticationToken token = new AuthenticationToken("guest", "guest");
-        assertEquals(AuthenticationToken.TokenStatus.ACTIVE,token.getStatus());
+        assertEquals(AuthenticationToken.TokenStatus.ACTIVE, token.getStatus());
         token.invalidate();
         assertEquals(AuthenticationToken.TokenStatus.INACTIVE, token.getStatus());
     }
 
-   // @Test
+    @Test
     public void testGetUser() throws Exception {
         AuthenticationToken guest = new AuthenticationToken("guest", "guest");
         User u = guest.getUser();
@@ -104,19 +108,33 @@ public class AuthenticationTokenTest {
         assertEquals("anonymous@anonymous.org", u.getMail());
     }
 
-//    @Test
+    @Test
     public void testSecureDatasetService() throws Exception {
-        AuthenticationToken at = null;
-        try {
-            at = new AuthenticationToken("guest", "guest");
-        } catch (ServiceInvocationException ex) {
-            ex.printStackTrace();
-            return;
-        }
+        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/.my.key");
+        AuthenticationToken at = new AuthenticationToken(passwordFile);
         int maxCompounds = 2;
-        Dataset ds = new Dataset(new VRI("https://ambit.uni-plovdiv.bg:8443/ambit2/dataset/54").addUrlParameter("max", maxCompounds)).loadFromRemote(at);
-//        Dataset ds = new Dataset(new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/6").addUrlParameter("max", maxCompounds)).loadFromRemote(at);
-        assertEquals(maxCompounds, ds.getInstances().numInstances());
-        at.invalidate();
+        VRI datasetUri = Services.ambitUniPlovdiv().augment("dataset", "54").
+                addUrlParameter("max", maxCompounds);
+        Dataset ds = null;
+        try {
+            ds = new Dataset(datasetUri).loadFromRemote(at);
+            assertNotNull(ds);
+            assertNotNull(ds.getInstances());
+        } catch (final ForbiddenRequest ex) {
+            String policyOwner = PolicyManager.getPolicyOwner(datasetUri, null, at);
+            if (policyOwner == null) {
+                System.out.println("[INFO] No policy owner found");
+                VRI dsUriNoParams = new VRI(datasetUri).removeUrlParameter("max");
+                IPolicyWrapper ipw = PolicyManager.defaultSignleUserPolicy("dataset_54_ambitUniPlovdiv", dsUriNoParams, at);
+                ipw.publish(null, at);
+            }
+            System.out.println("[INFO] Policy Owner is : " + policyOwner);
+            ds = new Dataset(datasetUri).loadFromRemote(at);
+            assertNotNull(ds);
+        } finally {
+            at.invalidate();
+        }
+
+
     }
 }

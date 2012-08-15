@@ -25,6 +25,8 @@ public class PasswordFileManagerTest {
 
     @Test
     public void testCreateMasterPWDFile() throws IOException {
-        PasswordFileManager.CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/test-master.key", 500, true);
+        PasswordFileManager.CRYPTO.
+                createMasterPasswordFile("/dev/urandom", 
+                "/home/chung/toxotisKeys/test-master.key", 500, false);
     }
 }

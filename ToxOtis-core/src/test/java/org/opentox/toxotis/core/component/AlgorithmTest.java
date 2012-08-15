@@ -100,10 +100,10 @@ public class AlgorithmTest {
         a.loadFromRemote();
         HTMLPage document = new HTMLPageImpl();
         document.getHtmlBody().addComponent(a.inHtml());
-        System.out.println(document.toString());
+        assertNotNull(document.toString());
     }
 
-    //@Test
+    @Test
     public void testDownloadNotFoundAlgorithm() throws ToxOtisException, ServiceInvocationException {
         try {
             new Algorithm(Services.ntua().augment("algorithm", "notFoundAlgorithm")).loadFromRemote();
@@ -115,7 +115,7 @@ public class AlgorithmTest {
         }
     }
 
-    //@Test
+    @Test
     public void testDownload_resourceNotAvailable() throws ServiceInvocationException, ToxOtisException, URISyntaxException {
         try {
             new Algorithm(new VRI("http://asdf.wqret.fd:8765").augment("algorithm", "xyz")).loadFromRemote();

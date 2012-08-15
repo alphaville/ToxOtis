@@ -32,31 +32,34 @@
  */
 package org.opentox.toxotis.util.aa.policy;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 /**
- * An individual user as it is defined and used for the purposes of an SSO Policy.
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ *
+ * @author chung
  */
-public class SingleSubject extends PolicySubject {
-
-    public static final SingleSubject YAQPservice = new SingleSubject("YAQPservice");
-    public static final SingleSubject Admin1 = new SingleSubject("Sopasakis");
-    public static final SingleSubject Admin2 = new SingleSubject("hampos");
-
-
-    public SingleSubject() {
-        LDAP_Type = "LDAPUsers";
-    }
-
-    public SingleSubject(String subjectName) {
-        this();
-        setSubjectName(subjectName);
-    }
-
-    @Override
-    public String getValue() {
-        return "uid=" + getSubjectName() + ", ou=people, dc=opentox,dc=org";
-    }
+public class SingleSubjectTest {
     
-    
+    public SingleSubjectTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Test
+    public void testSignleSubject() {
+        SingleSubject ss = new SingleSubject();
+        ss.setSubjectName("Sopasakis");
+        assertEquals(SingleSubject.Admin1, ss);
+        assertEquals("Sopasakis", SingleSubject.Admin1.getSubjectName());
+        assertNotNull(ss.getValue());
+    }
 }

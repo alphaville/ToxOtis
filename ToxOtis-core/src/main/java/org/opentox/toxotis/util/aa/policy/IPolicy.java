@@ -58,5 +58,5 @@ public interface IPolicy extends IPolicyWrapper {
 
     void setSubjectsDescription(String subjectsDescription);
 
-    Element xmlElement(Document doc, Element policies);
+    //Element xmlElement(Document doc, Element policies);
 }

@@ -43,9 +43,7 @@ import org.opentox.toxotis.client.VRI;
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
- * @deprecated Use {@link Services} instead
  */
-@Deprecated
 public enum OpenToxAlgorithms {
 
     NTUA_MLR(Services.ntua().augment("algorithm","mlr")),
