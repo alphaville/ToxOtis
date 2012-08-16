@@ -70,14 +70,14 @@ h2. Source Code and Javadoc
 <dependency>
   <groupId>org.opentox.toxotis</groupId>
   <artifactId>ToxOtis-core</artifactId>
-  <version>0.5.2</version>
+  <version>0.8.4</version>
   <classifier>javadoc</classifier>
 </dependency>
 <!-- Dependency for Sources -->
 <dependency>
   <groupId>org.opentox.toxotis</groupId>
   <artifactId>ToxOtis-core</artifactId>
-  <version>0.5.2</version>
+  <version>0.8.4</version>
   <classifier>sources</classifier>
 </dependency>
 </pre>
