@@ -34,7 +34,7 @@ h3. With Maven
   <dependency>
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
-    <version>0.5.2</version>
+    <version>0.8.4</version>
   </dependency>
   <!-- Other Dependencies you might have... -->
 </dependencies>
