@@ -43,49 +43,49 @@ import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
  */
 public class OTRestDatatypeProperties {
 
-    private static OTDatatypeProperty ms_hasAttribute;
-    private static OTDatatypeProperty ms_hasURI;
-    private static OTDatatypeProperty ms_paramName;
-    private static OTDatatypeProperty ms_paramOptional;
+    private static OTDatatypeProperty hasAttribute;
+    private static OTDatatypeProperty hasURI;
+    private static OTDatatypeProperty paramName;
+    private static OTDatatypeProperty paramOptional;
 
     public static OTDatatypeProperty hasAttribute() {
-        if (ms_hasAttribute == null) {
+        if (hasAttribute == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAttribute");
             property.getDomain().add(OTRestClasses.RESTTemplateAttribute());
             property.getRange().add(XSDDatatype.XSDstring);
-            ms_hasAttribute = property;
+            hasAttribute = property;
         }
-        return ms_hasAttribute;
+        return hasAttribute;
     }
 
     public static OTDatatypeProperty hasURI() {
-        if (ms_hasURI == null) {
+        if (hasURI == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasURI");
             property.getDomain().add(OTRestClasses.RESTTemplate());
             property.getRange().add(XSDDatatype.XSDstring);
-            ms_hasURI = property;
+            hasURI = property;
         }
-        return ms_hasURI;
+        return hasURI;
     }
 
     public static OTDatatypeProperty paramName() {
-        if (ms_paramName == null) {
+        if (paramName == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramName");
             property.getDomain().add(OTRestClasses.InputParameter());
             property.getRange().add(XSDDatatype.XSDstring);
-            ms_paramName = property;
+            paramName = property;
         }
-        return ms_paramName;
+        return paramName;
     }
 
     public static OTDatatypeProperty paramOptional() {
-        if (ms_paramOptional == null) {
+        if (paramOptional == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramOptional");
             property.getDomain().add(OTRestClasses.InputParameter());
             property.getRange().add(XSDDatatype.XSDboolean);
-            ms_paramOptional = property;
+            paramOptional = property;
         }
-        return ms_paramOptional;
+        return paramOptional;
     }
 
 

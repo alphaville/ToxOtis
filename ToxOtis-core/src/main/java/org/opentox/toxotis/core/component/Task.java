@@ -353,7 +353,7 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
         }
         if (resultUri != null) {
             indiv.addLiteral(OTDatatypeProperties.resultURI().asDatatypeProperty(model),
-                    model.createTypedLiteral(resultUri.clearToken().toString(), XSDDatatype.XSDanyURI));
+                    model.createTypedLiteral(resultUri.toString(), XSDDatatype.XSDanyURI));
         }
         if (errorReport != null) {
             indiv.addProperty(OTObjectProperties.errorReport().asObjectProperty(model), errorReport.asIndividual(model));

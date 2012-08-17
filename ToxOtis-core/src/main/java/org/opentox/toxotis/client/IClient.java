@@ -221,9 +221,9 @@ public interface IClient extends Closeable {
      */
     Set<VRI> getResponseUriList() throws ServiceInvocationException;
 
-    public WriteLock getConnectionLock();
+    WriteLock getConnectionLock();
 
-    public ReadLock getReadLock();
+    ReadLock getReadLock();
 
     String getResponseHeader(String header) throws ServiceInvocationException;
 

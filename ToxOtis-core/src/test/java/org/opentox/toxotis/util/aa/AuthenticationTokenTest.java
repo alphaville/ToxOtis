@@ -30,10 +30,14 @@ public class AuthenticationTokenTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/.my.key");
+        TokenPool.getInstance().login(passwordFile);
+        TokenPool.getInstance().login("guest","guest");
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        TokenPool.getInstance().logoutAll();
     }
 
     @Before
@@ -53,21 +57,15 @@ public class AuthenticationTokenTest {
         // The user guest:guest is the public user of OpenTox (like Anonymous)
         AuthenticationToken at = null;
         try {
-            at = new AuthenticationToken("guest", "guest");
+            at = TokenPool.getInstance().getToken("guest");
             assertNotNull(at.toString());
             User userGuest = at.getUser();
             assertEquals("anonymous@anonymous.org", userGuest.getMail());
             assertEquals("Guest", userGuest.getName());
             assertEquals("guest@opensso.in-silico.ch", userGuest.getUid());
-            at.invalidate();
         } catch (ServiceInvocationException ex) {
             System.out.println(ex.getDetails());
-        } finally {
-            if (at != null) {
-                at.invalidate();
-            }
-        }
-
+        } 
     }
 
     @Test
@@ -82,18 +80,12 @@ public class AuthenticationTokenTest {
         }
         fail("Should have failed (Wrong credentials provided)");
     }
-
-    @Test
-    public void testAuthenticationFromFile() throws Exception {
-        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/.my.key");
-        AuthenticationToken at = new AuthenticationToken(passwordFile);
-        at.invalidate();
-    }
+    
 
     @Test
     public void testGetStatus() throws Exception {
-        assertEquals(AuthenticationToken.TokenStatus.DEAD, new AuthenticationToken().getStatus());
-        AuthenticationToken token = new AuthenticationToken("guest", "guest");
+        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/.sopasakis.key");
+        AuthenticationToken token = new AuthenticationToken(passwordFile);
         assertEquals(AuthenticationToken.TokenStatus.ACTIVE, token.getStatus());
         token.invalidate();
         assertEquals(AuthenticationToken.TokenStatus.INACTIVE, token.getStatus());
@@ -101,7 +93,7 @@ public class AuthenticationTokenTest {
 
     @Test
     public void testGetUser() throws Exception {
-        AuthenticationToken guest = new AuthenticationToken("guest", "guest");
+        AuthenticationToken guest = TokenPool.getInstance().getToken("guest");
         User u = guest.getUser();
         assertEquals("guest@opensso.in-silico.ch", u.getUid());
         assertEquals("Guest", u.getName());
@@ -109,9 +101,8 @@ public class AuthenticationTokenTest {
     }
 
     @Test
-    public void testSecureDatasetService() throws Exception {
-        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/.my.key");
-        AuthenticationToken at = new AuthenticationToken(passwordFile);
+    public void testSecureDatasetService() throws Exception {        
+        AuthenticationToken at = TokenPool.getInstance().getToken("hampos");
         int maxCompounds = 2;
         VRI datasetUri = Services.ambitUniPlovdiv().augment("dataset", "54").
                 addUrlParameter("max", maxCompounds);
@@ -131,10 +122,6 @@ public class AuthenticationTokenTest {
             System.out.println("[INFO] Policy Owner is : " + policyOwner);
             ds = new Dataset(datasetUri).loadFromRemote(at);
             assertNotNull(ds);
-        } finally {
-            at.invalidate();
-        }
-
-
+        } 
     }
 }

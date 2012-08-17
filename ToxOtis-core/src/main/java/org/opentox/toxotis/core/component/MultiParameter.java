@@ -36,6 +36,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.core.OTComponent;
@@ -52,14 +53,14 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 public class MultiParameter extends OTComponent<MultiParameter> {
 
     /** ParameterValue values to the multi-valued multi-parameter*/
-    private ArrayList<ParameterValue> parameterValues = new ArrayList<ParameterValue>();
+    private List<ParameterValue> parameterValues = new ArrayList<ParameterValue>();
     private Parameter.ParameterScope scope;
 
-    public ArrayList<ParameterValue> getParameterValues() {
+    public List<ParameterValue> getParameterValues() {
         return parameterValues;
     }
 
-    public void setParameterValues(ArrayList<ParameterValue> setValues) {
+    public void setParameterValues(List<ParameterValue> setValues) {
         this.parameterValues = setValues;
     }
 

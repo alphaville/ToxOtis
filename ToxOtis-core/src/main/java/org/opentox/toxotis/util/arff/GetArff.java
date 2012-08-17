@@ -73,11 +73,13 @@ public class GetArff {
             numericFeaturesIterator.close();
         }
 
-        if (parseString) {
-        }
-
-        if (parseNominal) {
-        }
+        //TODO: Parse String variables
+//        if (parseString) {
+//        }
+        
+        //TODO: Parse Nominal variables
+//        if (parseNominal) {
+//        }
 
         Instances data = new Instances(datasetUri.getStringNoQuery(), attributes, 0);
 

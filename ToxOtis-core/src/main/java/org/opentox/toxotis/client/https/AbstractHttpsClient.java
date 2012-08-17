@@ -198,7 +198,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
     @Override
     public java.io.InputStream getRemoteStream() throws ConnectionException, ServiceInvocationException {
 //        readLock.lock();       
-        try {
+//        try {
             if (con == null) {
                 con = connect(vri.toURI());
             }
@@ -216,9 +216,10 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
             } else {
                 return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);
             }
-        } finally {
-//            readLock.unlock();
-        }
+//        } 
+//        finally {
+////            readLock.unlock();
+//        }
     }
 
     /**
@@ -290,9 +291,10 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
                     + "the server", ex);
             connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
             throw connectionExc;
-        } finally {
-//            readLock.unlock();
-        }
+        } 
+//        finally {
+////            readLock.unlock();
+//        }
         return responseCode;
     }
 
@@ -333,9 +335,10 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
             ex.printStackTrace();
             throw new RemoteServiceException("Remote service at '" + getUri() + "' did not provide a valid "
                     + "RDF representation. The returned representation cannot be parsed", ex);
-        } finally {
-//            readLock.unlock();
-        }
+        } 
+//        finally {
+////            readLock.unlock();
+//        }
     }
 
     @Override

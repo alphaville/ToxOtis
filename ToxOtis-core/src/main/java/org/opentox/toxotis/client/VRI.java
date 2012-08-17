@@ -45,13 +45,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-import org.opentox.toxotis.core.*;
-import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.qprf.QprfReport;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.OTClasses;
-import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  * VRI is an alternative to URI. Being <code>final</code>, the class <code>java.net.URI</code>
@@ -69,7 +66,6 @@ public class VRI implements Serializable { // Well tested!
     private ArrayList<Pair<String, String>> urlParams = new ArrayList<Pair<String, String>>();
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
-    private static final String TOKENID = "tokenid";
     private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
 
@@ -202,7 +198,7 @@ public class VRI implements Serializable { // Well tested!
     }
 
     private void doProcessUri(String uri) throws URISyntaxException {
-        new URI(uri);
+        URI uRItest = new URI(uri);
         if (!uri.contains("://")) {
             uri = "http://" + uri;
         }
@@ -235,7 +231,7 @@ public class VRI implements Serializable { // Well tested!
                                 paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : ""));
                     }
                 } catch (UnsupportedEncodingException ex) {
-                    ex.printStackTrace();
+                    logger.error("Unsupported encoding!",ex);
                     throw new RuntimeException(ex);
                 }
             }
@@ -328,18 +324,6 @@ public class VRI implements Serializable { // Well tested!
         return this;
     }
 
-    /**
-     * Clears any tokens that might be contained in the URI. Though tokens are not
-     * provided any more within the set of URL parameters, this method is useful, and
-     * should be used, to avoid persistense of token-related parameter in URLs in
-     * case a client provides such information within the URL parameters.
-     *
-     * @return
-     *      Updated URI without tokens.    
-     */
-    public VRI clearToken() {
-        return removeUrlParameter(TOKENID);
-    }
 
     /**
      * Add a URL parameter. As soon as you provide the URL parameter and its value,
@@ -405,27 +389,7 @@ public class VRI implements Serializable { // Well tested!
         }
         return this;
     }
-
-    /**
-     * Adds a URL parameter that corresponds to an authentication token using the
-     * URL parameter <code>tokenid</code>.
-     * @param token
-     *      Authentication Token
-     * @return
-     *      The updated VRI with the token.
-     * @deprecated
-     *      This method is deprectated due to migration from OpenTox API 1.1.
-     *      to version 1.2. Authentication is materialized using the HTTP Header
-     *      <code>Authorization</code> instead of the URL parameter
-     *      <code>toked_id</code>.
-     */
-    @Deprecated
-    public VRI appendToken(AuthenticationToken token) {
-        if (token != null) {
-            return addUrlParameter(TOKENID, token.stringValue());
-        }
-        return this;
-    }
+    
 
     /**
      * Converts the VRI object into the corresponding <code>java.net.URI</code>

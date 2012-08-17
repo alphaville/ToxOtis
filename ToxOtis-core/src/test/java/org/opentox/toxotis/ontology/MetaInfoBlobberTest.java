@@ -83,12 +83,11 @@ public class MetaInfoBlobberTest {
         
         try {
             Blob blob = mib.toBlob();
-
+            assertNotNull(blob);
             MetaInfoDeblobber mid = new MetaInfoDeblobber(blob);
             MetaInfo backFromBlob = mid.toMetaInfo();
-
-            System.out.println(backFromBlob.equals(mi));
-
+            assertNotNull(backFromBlob);
+            assertTrue(backFromBlob.equals(mi));
         } catch (Exception ex) {
             Logger.getLogger(MetaInfoBlobberTest.class.getName()).log(Level.SEVERE, null, ex);
         }

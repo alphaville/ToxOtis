@@ -37,6 +37,8 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.core.OTComponent;
@@ -57,24 +59,22 @@ public class ParameterValue extends OTComponent<ParameterValue> {  // ot:Paramet
     public ParameterValue(VariableValue... values) {
         this();
         if (values != null) {
-            for (VariableValue vv : values) {
-                getValues().add(vv);
-            }
+            this.values.addAll(Arrays.asList(values));
         }
     }
 
     public ParameterValue(int index, VariableValue... values) {
         this(values);
-        setIndex(index);
+        this.index = index;
     }
     private int index = -1;// optional index for the ot:ParameterValue node.
-    private ArrayList<VariableValue> values = new ArrayList<VariableValue>();
+    private List<VariableValue> values = new ArrayList<VariableValue>();
 
-    public ArrayList<VariableValue> getValues() {
+    public List<VariableValue> getValues() {
         return values;
     }
 
-    public void setValues(ArrayList<VariableValue> values) {
+    public void setValues(List<VariableValue> values) {
         this.values = values;
     }
 

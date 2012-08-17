@@ -15,7 +15,7 @@ public class QprfAuthor implements Serializable {
     private String email;
     private String address;
     private String contactInfo;
-    private String URL;
+    private String url;
 
     public QprfAuthor() {
     }
@@ -27,15 +27,15 @@ public class QprfAuthor implements Serializable {
         this.email = email;
         this.address = address;
         this.contactInfo = contactInfo;
-        this.URL = URL;
+        this.url = URL;
     }
 
     public String getURL() {
-        return URL;
+        return url;
     }
 
     public void setURL(String URL) {
-        this.URL = URL;
+        this.url = URL;
     }
 
     public String getAddress() {

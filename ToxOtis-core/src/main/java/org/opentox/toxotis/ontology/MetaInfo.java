@@ -34,7 +34,6 @@ package org.opentox.toxotis.ontology;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
-import java.util.HashSet;
 import java.util.Set;
 import org.opentox.toxotis.core.IHTMLSupport;
 
@@ -74,7 +73,6 @@ import org.opentox.toxotis.core.IHTMLSupport;
  * @see http://dublincore.org/documents/usageguide/elements.shtml
  */
 public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
-    
 
     //// 1. comments
     ////
@@ -86,7 +84,8 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      A comment on the described entity.
      */
-    HashSet<LiteralValue> getComments();
+    Set<LiteralValue> getComments();
+
     /**
      * Setter for comments as a set.
      * @param comments
@@ -95,7 +94,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      The current modifiable MetaInfo object.
      */
     MetaInfo setComments(Set<LiteralValue> comments);
-    
+
     /**
      * Add comments to the current instance of MetaInfo
      * @param comment
@@ -121,7 +120,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      Set of copyright notes for the underlying resource for which this
      *      meta-info element is composed.
      */
-    HashSet<LiteralValue> getRights();
+    Set<LiteralValue> getRights();
 
     /**
      *
@@ -153,7 +152,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      Description as a typed value
      */
-    HashSet<LiteralValue> getDescriptions();
+    Set<LiteralValue> getDescriptions();
 
     /**
      * Provide set of descriptions
@@ -189,7 +188,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      Identifier as a Typed Value
      * @see <a href="http://dublincore.org/documents/usageguide/elements.shtml">http://dublincore.org/documents/usageguide/elements.shtml</a>
      */
-    HashSet<LiteralValue> getIdentifiers();
+    Set<LiteralValue> getIdentifiers();
 
     /**
      *
@@ -234,7 +233,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      A link to a resource that resembles the described entity
      *
      */
-    HashSet<ResourceValue> getSameAs(); // TODO: Change this into some other class...
+    Set<ResourceValue> getSameAs(); // TODO: Change this into some other class...
 
     /**
      *
@@ -262,7 +261,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      A reference to some other entity as a typed value.
      */
-    HashSet<ResourceValue> getSeeAlso(); // TODO: Change this into some other class...
+    Set<ResourceValue> getSeeAlso(); // TODO: Change this into some other class...
 
     /**
      *
@@ -286,7 +285,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      Tile as a Typed Value
      */
-    HashSet<LiteralValue> getTitles();
+    Set<LiteralValue> getTitles();
 
     /**
      *
@@ -319,7 +318,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      Subject as a typed value
      */
-    HashSet<LiteralValue> getSubjects();
+    Set<LiteralValue> getSubjects();
 
     /**
      *
@@ -348,7 +347,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *
      * @return
      */
-    HashSet<LiteralValue> getPublishers();
+    Set<LiteralValue> getPublishers();
 
     /**
      *
@@ -380,7 +379,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      *      Creator as a typed value
      */
-    HashSet<LiteralValue> getCreators();
+    Set<LiteralValue> getCreators();
 
     /**
      *
@@ -409,7 +408,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *
      * @return
      */
-    HashSet<ResourceValue> getHasSources();
+    Set<ResourceValue> getHasSources();
 
     /**
      *
@@ -426,12 +425,11 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
     MetaInfo addHasSource(ResourceValue hasSource);
 
     //// 11. Contributors
-
     /**
      *
      * @return
      */
-    HashSet<LiteralValue> getContributors();
+    Set<LiteralValue> getContributors();
 
     /**
      *
@@ -454,13 +452,11 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      */
     MetaInfo addContributor(String... contributor);
 
-
-
     /**
      *
      * @return
      */
-    HashSet<LiteralValue> getAudiences();
+    Set<LiteralValue> getAudiences();
 
     /**
      *

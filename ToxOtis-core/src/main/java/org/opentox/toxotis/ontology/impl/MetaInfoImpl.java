@@ -42,9 +42,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
-import com.ibm.icu.impl.CollectionUtilities;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -63,20 +61,20 @@ public class MetaInfoImpl implements MetaInfo {
     public MetaInfoImpl() {
     }
     private static final transient String DUBLIN_CORE_DOC = "http://dublincore.org/documents/usageguide/elements.shtml#%s";
-    private HashSet<LiteralValue> identifiers;
-    private HashSet<LiteralValue> comments;
-    private HashSet<LiteralValue> descriptions;
-    private HashSet<LiteralValue> titles;
-    private HashSet<LiteralValue> subjects;
-    private HashSet<LiteralValue> publishers;
-    private HashSet<LiteralValue> creators;
-    private HashSet<LiteralValue> contributors;
-    private HashSet<LiteralValue> audiences;
-    private HashSet<LiteralValue> rights;
+    private Set<LiteralValue> identifiers;
+    private Set<LiteralValue> comments;
+    private Set<LiteralValue> descriptions;
+    private Set<LiteralValue> titles;
+    private Set<LiteralValue> subjects;
+    private Set<LiteralValue> publishers;
+    private Set<LiteralValue> creators;
+    private Set<LiteralValue> contributors;
+    private Set<LiteralValue> audiences;
+    private Set<LiteralValue> rights;
     private LiteralValue date;
-    private HashSet<ResourceValue> sameAs;
-    private HashSet<ResourceValue> seeAlso;
-    private HashSet<ResourceValue> hasSources;
+    private Set<ResourceValue> sameAs;
+    private Set<ResourceValue> seeAlso;
+    private Set<ResourceValue> hasSources;
     private static final long serialVersionUID = 258712452874812L;
 
     @Override
@@ -300,7 +298,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getComments() {
+    public Set<LiteralValue> getComments() {
         return comments;
     }
 
@@ -324,21 +322,17 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addComment(LiteralValue... comment) {
         if (this.comments != null) {
-            for (LiteralValue lvc : comment) {
-                this.comments.add(lvc);
-            }
+            this.comments.addAll(Arrays.asList(comment));
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lvc : comment) {
-                values.add(lvc);
-            }
+            values.addAll(Arrays.asList(comment));
             setComments(values);
         }
         return this;
     }
 
     @Override
-    public HashSet<LiteralValue> getDescriptions() {
+    public Set<LiteralValue> getDescriptions() {
         return this.descriptions;
     }
 
@@ -351,15 +345,11 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addDescription(LiteralValue... description) {
         if (getDescriptions() != null) {
-            for (LiteralValue lv : description) {
-                getDescriptions().add(lv);
-            }
+            getDescriptions().addAll(Arrays.asList(description));
 
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lv : description) {
-                values.add(lv);
-            }
+            values.addAll(Arrays.asList(description));
             setDescriptions(values);
         }
         return this;
@@ -374,7 +364,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getIdentifiers() {
+    public Set<LiteralValue> getIdentifiers() {
         return identifiers;
     }
 
@@ -387,14 +377,10 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addIdentifier(LiteralValue... identifier) {
         if (getIdentifiers() != null) {
-            for (LiteralValue lv : identifier) {
-                getIdentifiers().add(lv);
-            }
+            getIdentifiers().addAll(Arrays.asList(identifier));
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lv : identifier) {
-                values.add(lv);
-            }
+            values.addAll(Arrays.asList(identifier));
             setIdentifiers(values);
         }
         return this;
@@ -409,7 +395,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<ResourceValue> getSameAs() {
+    public Set<ResourceValue> getSameAs() {
         return sameAs;
     }
 
@@ -432,7 +418,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<ResourceValue> getSeeAlso() {
+    public Set<ResourceValue> getSeeAlso() {
         return seeAlso;
     }
 
@@ -455,7 +441,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getTitles() {
+    public Set<LiteralValue> getTitles() {
         return titles;
     }
 
@@ -473,14 +459,10 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addTitle(LiteralValue... value) {
         if (getTitles() != null) {
-            for (LiteralValue lv : value) {
-                getTitles().add(lv);
-            }
+            getTitles().addAll(Arrays.asList(value));
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lv : value) {
-                values.add(lv);
-            }
+            values.addAll(Arrays.asList(value));
             setTitles(values);
         }
         return this;
@@ -495,7 +477,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getSubjects() {
+    public Set<LiteralValue> getSubjects() {
         return subjects;
     }
 
@@ -508,14 +490,10 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addSubject(LiteralValue... subject) {
         if (getSubjects() != null) {
-            for (LiteralValue lv : subject) {
-                getSubjects().add(lv);
-            }
+            getSubjects().addAll(Arrays.asList(subject));
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lv : subject) {
-                values.add(lv);
-            }
+            values.addAll(Arrays.asList(subject));
             setSubjects(values);
         }
         return this;
@@ -530,7 +508,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getPublishers() {
+    public Set<LiteralValue> getPublishers() {
         return publishers;
     }
 
@@ -543,14 +521,10 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addPublisher(LiteralValue... publisher) {
         if (getPublishers() != null) {
-            for (LiteralValue lv : publisher) {
-                getPublishers().add(lv);
-            }
+            getPublishers().addAll(Arrays.asList(publisher));
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lv : publisher) {
-                values.add(lv);
-            }
+            values.addAll(Arrays.asList(publisher));
             setPublishers(values);
         }
         return this;
@@ -565,7 +539,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getCreators() {
+    public Set<LiteralValue> getCreators() {
         return creators;
     }
 
@@ -578,14 +552,10 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addCreator(LiteralValue... creator) {
         if (getCreators() != null) {
-            for (LiteralValue lv : creator) {
-                getCreators().add(lv);
-            }
+            getCreators().addAll(Arrays.asList(creator));
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lv : creator) {
-                values.add(lv);
-            }
+            values.addAll(Arrays.asList(creator));
             setCreators(values);
         }
         return this;
@@ -600,7 +570,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<ResourceValue> getHasSources() {
+    public Set<ResourceValue> getHasSources() {
         return hasSources;
     }
 
@@ -623,7 +593,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getContributors() {
+    public Set<LiteralValue> getContributors() {
         return contributors;
     }
 
@@ -636,14 +606,10 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addContributor(LiteralValue... contributor) {
         if (getContributors() != null) {
-            for (LiteralValue lv : contributor) {
-                getContributors().add(lv);
-            }
+            getContributors().addAll(Arrays.asList(contributor));
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lv : contributor) {
-                values.add(lv);
-            }
+            values.addAll(Arrays.asList(contributor));
             setContributors(values);
         }
         return this;
@@ -658,7 +624,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getAudiences() {
+    public Set<LiteralValue> getAudiences() {
         return audiences;
     }
 
@@ -671,14 +637,10 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public MetaInfo addAudience(LiteralValue... audience) {
         if (getAudiences() != null) {
-            for (LiteralValue lv : audience) {
-                getAudiences().add(lv);
-            }
+            getAudiences().addAll(Arrays.asList(audience));
         } else {
             HashSet<LiteralValue> values = new HashSet<LiteralValue>();
-            for (LiteralValue lv : audience) {
-                values.add(lv);
-            }
+            values.addAll(Arrays.asList(audience));
             setAudiences(values);
         }
         return this;
@@ -924,8 +886,8 @@ public class MetaInfoImpl implements MetaInfo {
         return builder.getDiv();
     }
 
-    private static String createHtmlList(HashSet<LiteralValue> values) {
-        if (values.size() == 0) {
+    private static String createHtmlList(Set<LiteralValue> values) {
+        if (values.isEmpty()) {
             return "";
         } else if (values.size() == 1) {
             return HTMLUtils.linkUrlsInText(HTMLUtils.normalizeTextForHtml(values.iterator().next().getValueAsString()));
@@ -942,8 +904,8 @@ public class MetaInfoImpl implements MetaInfo {
         }
     }
 
-    private static String createHtmlList2(HashSet<ResourceValue> values) {
-        if (values.size() == 0) {
+    private static String createHtmlList2(Set<ResourceValue> values) {
+        if (values.isEmpty()) {
             return "";
         } else if (values.size() == 1) {
             return values.iterator().next().getUri().toString();
@@ -952,7 +914,11 @@ public class MetaInfoImpl implements MetaInfo {
             builder.append("<ol>\n");
             for (ResourceValue lv : values) {
                 builder.append("<li>");
-                builder.append("<a href=\"" + lv.getUri().toString() + "\">" + lv.getUri().toString() + "</a>");
+                builder.append("<a href=\"").
+                        append(lv.getUri().toString()).
+                        append("\">").
+                        append(lv.getUri().toString()).
+                        append("</a>");
                 builder.append("</li>");
             }
             builder.append("</ol>");
@@ -1008,7 +974,7 @@ public class MetaInfoImpl implements MetaInfo {
     }
 
     @Override
-    public HashSet<LiteralValue> getRights() {
+    public Set<LiteralValue> getRights() {
         return this.rights;
     }
 
@@ -1023,9 +989,7 @@ public class MetaInfoImpl implements MetaInfo {
         if (this.rights == null) {
             this.rights = new HashSet<LiteralValue>();
         }
-        for (LiteralValue lv : rights) {
-            this.rights.add(lv);
-        }
+        this.rights.addAll(Arrays.asList(rights));
         return this;
     }
 

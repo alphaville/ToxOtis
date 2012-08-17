@@ -6,18 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader.ArffReader;
@@ -29,17 +26,15 @@ import weka.core.converters.ArffLoader.ArffReader;
  */
 public class RemoteArffRertiever implements Closeable {
 
-    private final VRI datasetUri;
     private IGetClient client;
     private InputStream is;
     private Instances instances;
-    private Instance tempInstance;
+//    private Instance tempInstance;
     private BufferedReader br;
     private int nAttr;
     private double[] currentValues;
 
     public RemoteArffRertiever(VRI datasetUri) {
-        this.datasetUri = datasetUri;
         client = ClientFactory.createGetClient(datasetUri);
         client.setMediaType(Media.WEKA_ARFF);
     }
@@ -59,7 +54,7 @@ public class RemoteArffRertiever implements Closeable {
         if (instances.numInstances() > 0) {
             instances.delete(0);
         }
-        tempInstance = new Instance(nAttr);
+        Instance tempInstance = new Instance(nAttr);
         String currentLine = null;
 
         try {

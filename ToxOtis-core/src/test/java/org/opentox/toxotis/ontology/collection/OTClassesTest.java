@@ -30,25 +30,21 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.core.component;
 
-import org.junit.After;
+package org.opentox.toxotis.ontology.collection;
+
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.collection.Services;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  *
  * @author chung
  */
-public class ModelTest {
-
-    public ModelTest() {
+public class OTClassesTest {
+    
+    public OTClassesTest() {
     }
 
     @BeforeClass
@@ -59,20 +55,27 @@ public class ModelTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
-    public void testModel() throws ServiceInvocationException {
-        AuthenticationToken token = new AuthenticationToken("guest", "guest");                
-        Model m = new Model(Services.ntua().augment("algorithm", "mlr")).loadFromRemote(token);
-        assertNotNull(m.getMeta());
-        assertNotNull(m.getMeta().getRights());
+    public void testOtClasses() {
+        assertNotNull(OTClasses.forName("Algorithm"));
+        assertNotNull(OTClasses.Compound());
+        assertNotNull(OTClasses.Conformer());
+        assertNotNull(OTClasses.DataEntry());
+        assertNotNull(OTClasses.Dataset());
+        assertNotNull(OTClasses.ErrorReport());
+        assertNotNull(OTClasses.FeatureValueNumeric());
+        assertNotNull(OTClasses.Feature());
+        assertNotNull(OTClasses.FeatureValue());
+        assertNotNull(OTClasses.FeatureValueNominal());
+        assertNotNull(OTClasses.FeatureValuePair());
+        assertEquals(OTClasses.forName("Parameter"), OTClasses.Parameter());
+        assertEquals(OTClasses.forName("VariableInfo"), OTClasses.VariableInfo());
+        assertTrue(OTClasses.getAll().contains(OTClasses.forName("FeatureValueNumeric")));
+        assertTrue(OTClasses.getAll().contains(OTClasses.Feature()));
+        assertTrue(OTClasses.getAll().contains(OTClasses.MultiParameter()));
+        assertTrue(OTClasses.getAll().contains(OTClasses.Model()));
+        assertTrue(OTClasses.getAll().contains(OTClasses.OpenToxResource()));
+        assertTrue(OTClasses.getAll().contains(OTClasses.QPRFReport()));
+        assertTrue(OTClasses.getAll().contains(OTClasses.Report()));
     }
-    
 }

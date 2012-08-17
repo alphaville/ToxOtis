@@ -36,16 +36,20 @@ import java.util.concurrent.Callable;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.Task.Status;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  * Reloads a task until its status is no longer {@link Status#RUNNING }.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
+ * @see Task
  */
 public class TaskRunner implements Callable<Task> {
 
     private Task task;
     private long delay = 100;
+    private AuthenticationToken token;
 
     private TaskRunner() {
         throw new AssertionError("Dummy constructor invokation in TaskRunner!");
@@ -53,6 +57,27 @@ public class TaskRunner implements Callable<Task> {
 
     public TaskRunner(final Task task) {
         this.task = task;
+    }
+
+    public TaskRunner(Task task, AuthenticationToken token) {
+        this.task = task;
+        this.token = token;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public AuthenticationToken getToken() {
+        return token;
+    }
+
+    public void setToken(AuthenticationToken token) {
+        this.token = token;
     }
 
     /**
@@ -66,8 +91,8 @@ public class TaskRunner implements Callable<Task> {
         this.delay = delay;
     }
 
-    private Task updateTask(Task old) throws ServiceInvocationException  {
-        task.loadFromRemote();
+    private Task updateTask(Task old) throws ServiceInvocationException {
+        task.loadFromRemote(getToken());
         float taskHttpStatus = old.getHttpStatus();
         if (taskHttpStatus == 201) { // Created new task
             Task created = new Task(task.getResultUri());
@@ -84,10 +109,29 @@ public class TaskRunner implements Callable<Task> {
                 throw new RuntimeException(ex);
             }
         } else {
+            // This block is reached when the status code is some error code
             return old;
         }
     }
 
+    /**
+     * Runs a remote task until it completes. As long as the task returns a 202 or
+     * 201 status code, the client keeps monitoring the progress of the task every
+     * a certain time period which is specified by the method {@link #setDelay(long) setDelay}.
+     * When the task is over ({@link Status#COMPLETED completed}), this method returns
+     * the updated task which points to the result (see {@link Task#getResultUri() }.
+     * If the task fails to complete, i.e. it has some status different from
+     * {@link Status#RUNNING running} or {@link Status#QUEUED queued}, then the task
+     * is updated and returned directly to the invoker, but <b>no exception is thrown</b>
+     * in such a case. The invoking method should <b>always check</b> the status of
+     * the returned task!
+     * 
+     * @return
+     *      Completed or Failed Task
+     * @throws ServiceInvocationException 
+     *      In case the remote service is not accessible/available, the connection
+     *      breaks or other unexpected exception is caught.
+     */
     @Override
     public Task call() throws ServiceInvocationException {
         task.loadFromRemote();

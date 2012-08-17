@@ -57,7 +57,7 @@ public interface IOTComponent<T extends IOTComponent> {
      * @return
      *      The OpenTox component as an individual of a data model.
      */
-    public abstract Individual asIndividual(OntModel model);
+    Individual asIndividual(OntModel model);
 
     /**
      * Creates a new Ontological Model (uses an instance of {@link SimpleOntModelImpl })
@@ -68,7 +68,7 @@ public interface IOTComponent<T extends IOTComponent> {
      * @return
      *      An ontological model for the current OpenTox component.
      */
-    public OntModel asOntModel() ;
+    OntModel asOntModel() ;
 
     /**
      * Get the URI of the resource (as an instance of {@link VRI }. Anonymous
@@ -76,7 +76,7 @@ public interface IOTComponent<T extends IOTComponent> {
      * @return
      *      URI of the component or <code>null</code> if not any.
      */
-    public VRI getUri();
+    VRI getUri();
 
     /**
      * Obtain meta information about the underlying OpenTox resource/component.
@@ -87,7 +87,7 @@ public interface IOTComponent<T extends IOTComponent> {
      * @return
      *      Meta information about the resource
      */
-    public MetaInfo getMeta();
+    MetaInfo getMeta();
 
     /**
      * Set the meta-information of the component
@@ -97,13 +97,13 @@ public interface IOTComponent<T extends IOTComponent> {
      *      The component itself with the updated meta-information
      * @see MetaInfo Meta Information
      */
-    public T setMeta(MetaInfo meta);
+    T setMeta(MetaInfo meta);
 
-    public Set<OntologicalClass> getOntologicalClasses();
+    Set<OntologicalClass> getOntologicalClasses();
 
-    public T setOntologicalClasses(Set<OntologicalClass> ontClasses);
+    T setOntologicalClasses(Set<OntologicalClass> ontClasses);
     
-    public T addOntologicalClasses(OntologicalClass... ontClasses);
+    T addOntologicalClasses(OntologicalClass... ontClasses);
 
     boolean isEnabled();
 

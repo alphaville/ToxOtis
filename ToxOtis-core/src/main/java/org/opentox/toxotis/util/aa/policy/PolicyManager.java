@@ -152,7 +152,7 @@ public class PolicyManager {
             // REQUEST
             sgt = ClientFactory.createGetClient(policyService);
             sgt.addHeaderParameter(SUBJECT_ID, token.stringValue());
-            sgt.addHeaderParameter("uri", resourceUri.clearToken().toString());
+            sgt.addHeaderParameter("uri", resourceUri.toString());
 
             // RETURN RESPONSE
             int responseStatus = sgt.getResponseCode();

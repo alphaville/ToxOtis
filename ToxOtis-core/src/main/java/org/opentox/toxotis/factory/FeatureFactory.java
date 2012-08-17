@@ -189,8 +189,7 @@ public class FeatureFactory {
      *      conditions (e.g. error 500 or 503).
      */
     public static Set<VRI> listAllFeatures(VRI featureService, int page, int pagesize, AuthenticationToken token) throws ServiceInvocationException {
-        VRI featureServiceWithToken = new VRI(featureService).clearToken().
-                appendToken(token).removeUrlParameter("page").removeUrlParameter("pagesize");
+        VRI featureServiceWithToken = new VRI(featureService).removeUrlParameter("page").removeUrlParameter("pagesize");
         if (page > 0) {
             featureServiceWithToken.addUrlParameter("page", page);
         }

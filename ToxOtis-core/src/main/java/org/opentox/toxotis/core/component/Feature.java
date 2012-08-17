@@ -39,7 +39,6 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDFS;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,10 +47,8 @@ import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.core.IOTComponent;
 import org.opentox.toxotis.core.OTPublishable;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
-import org.opentox.toxotis.exceptions.impl.InternalServerError;
 import org.opentox.toxotis.exceptions.impl.MethodNotAllowed;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.Unauthorized;
@@ -141,17 +138,16 @@ public class Feature extends OTPublishable<Feature> {
             }
         }
         /* If the feature is not Numeric nor String, might be Nominal... */
-        if (mainType == null && (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty())) {
-            if (getOntologicalClasses().contains(OTClasses.NominalFeature())) {
-                mainType = (OTClasses.NominalFeature().inModel(model));
-            }
+        if (mainType == null && (getOntologicalClasses() != null
+                && !getOntologicalClasses().isEmpty())
+                && getOntologicalClasses().contains(OTClasses.NominalFeature())) {
+            mainType = (OTClasses.NominalFeature().inModel(model));
         }
         Individual indiv = model.createIndividual(featureUri, mainType != null ? mainType : OTClasses.Feature().inModel(model));
         /* Check again if the feature is additionaly nominal */
-        if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
-            if (getOntologicalClasses().contains(OTClasses.NominalFeature())) {
-                indiv.addRDFType(OTClasses.NominalFeature().inModel(model));
-            }
+        if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()
+                && getOntologicalClasses().contains(OTClasses.NominalFeature())) {
+            indiv.addRDFType(OTClasses.NominalFeature().inModel(model));
         }
 
         /* Add admissible values in the RDF graph */
@@ -214,7 +210,7 @@ public class Feature extends OTPublishable<Feature> {
     }
 
     @Override
-    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {        
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
         PostHttpClient client = new PostHttpClient(vri);
         client.authorize(token);
         client.setContentType(Media.APPLICATION_RDF_XML);
@@ -234,7 +230,7 @@ public class Feature extends OTPublishable<Feature> {
                 throw new ServiceInvocationException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
                         + "'. Received status code 200 and message:" + message, ex);
             }
-        } else {            
+        } else {
             ErrorReport remoteServiceErrorReport = null;
             try {
                 OntModel om = client.getResponseOntModel();
@@ -259,7 +255,7 @@ public class Feature extends OTPublishable<Feature> {
                 unauth.setActor("Client");
                 unauth.setErrorReport(remoteServiceErrorReport);
                 throw unauth;
-            }else{
+            } else {
                 throw new ServiceInvocationException();
             }
 
@@ -316,7 +312,7 @@ public class Feature extends OTPublishable<Feature> {
 
         Set<OntologicalClass> featureOntologies = null;
         writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
-        writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
+        writer.writeAttribute("rdf:about", getUri().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
         writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
         featureOntologies = getOntologicalClasses();
         boolean explicitTypeDeclaration = false;

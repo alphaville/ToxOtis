@@ -30,25 +30,21 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.core.component;
+package org.opentox.toxotis.ontology.collection;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.ontology.OTObjectProperty;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  *
  * @author chung
  */
-public class ModelTest {
+public class OTObjectPropertiesTest {
 
-    public ModelTest() {
+    public OTObjectPropertiesTest() {
     }
 
     @BeforeClass
@@ -59,20 +55,34 @@ public class ModelTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    @Test
+    public void testForNameAlgorithm() {
+        OTObjectProperty objPropAlgorithm = OTObjectProperties.forName("algorithm");
+        assertNotNull(objPropAlgorithm);
+        assertEquals(OTObjectProperties.algorithm(), objPropAlgorithm);
     }
 
     @Test
-    public void testModel() throws ServiceInvocationException {
-        AuthenticationToken token = new AuthenticationToken("guest", "guest");                
-        Model m = new Model(Services.ntua().augment("algorithm", "mlr")).loadFromRemote(token);
-        assertNotNull(m.getMeta());
-        assertNotNull(m.getMeta().getRights());
+    public void testForNameVariableInfo() {
+        OTObjectProperty objPropvariableInfo = OTObjectProperties.forName("variableInfo");
+        assertNotNull(objPropvariableInfo);
+        assertEquals(OTObjectProperties.variableInfo(), objPropvariableInfo);
     }
-    
+
+    @Test
+    public void testForNameIndependentVariables() {
+        OTObjectProperty objPropIndependentVariables = OTObjectProperties.forName("independentVariables");
+        assertNotNull(objPropIndependentVariables);
+        assertEquals(OTObjectProperties.independentVariables(), objPropIndependentVariables);
+    }
+
+    @Test
+    public void testForNameNotFound() {
+        try {
+            OTObjectProperties.forName("asdf");
+        } catch (IllegalArgumentException ex) {
+            return;
+        }
+        fail("Should have failed!");
+    }
 }

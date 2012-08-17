@@ -35,8 +35,9 @@ package org.opentox.toxotis.core.component.qprf;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.VRI;
@@ -86,7 +87,7 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
      * RDF is available using the FOAF web ontology.
      * see http://xmlns.com/foaf/spec/
      */
-    private HashSet<QprfAuthor> authors = new HashSet<QprfAuthor>();
+    private Set<QprfAuthor> authors = new HashSet<QprfAuthor>();
     /**
      * The date (timestamp) of the QPRF report. Can be easily exported as
      * java.util.Date or java.sql.Date.
@@ -137,11 +138,11 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
     /**
      * ArrayList of structural analogues as a list of compounds
      */
-    private ArrayList<Compound> structuralAnalogues;
+    private List<Compound> structuralAnalogues;
     /*
      * Experimental values for compounds
      */
-    private ArrayList<String> experimentalValues;
+    private List<String> experimentalValues;
 
     public QprfReport() {
         super();
@@ -177,7 +178,7 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         return this;
     }
 
-    public HashSet<QprfAuthor> getAuthors() {
+    public Set<QprfAuthor> getAuthors() {
         return authors;
     }
 
@@ -294,11 +295,11 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         this.model = model;
     }
 
-    public ArrayList<Compound> getStructuralAnalogues() {
+    public List<Compound> getStructuralAnalogues() {
         return structuralAnalogues;
     }
 
-    public void setStructuralAnalogues(ArrayList<Compound> structuralAnalogues) {
+    public void setStructuralAnalogues(List<Compound> structuralAnalogues) {
         this.structuralAnalogues = structuralAnalogues;
     }
 
@@ -337,11 +338,11 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         return this;
     }
 
-    public ArrayList<String> getExperimentalValues() {
+    public List<String> getExperimentalValues() {
         return experimentalValues;
     }
 
-    public void setExperimentalValues(ArrayList<String> experimentalValues) {
+    public void setExperimentalValues(List<String> experimentalValues) {
         this.experimentalValues = experimentalValues;
     }
     

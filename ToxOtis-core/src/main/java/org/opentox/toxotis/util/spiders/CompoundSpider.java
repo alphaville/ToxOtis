@@ -44,9 +44,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
@@ -60,7 +58,6 @@ import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.exceptions.impl.BadRequestException;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
-import org.opentox.toxotis.exceptions.impl.InternalServerError;
 import org.opentox.toxotis.exceptions.impl.NotFound;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
@@ -81,7 +78,6 @@ public class CompoundSpider extends Tarantula<Compound> {
     private boolean downloadDetails = true;
     private String keyword;
     private String lookupService;
-    private VRI queryVri;
 
     public void setDownloadDetails(boolean downloadDetails) {
         this.downloadDetails = downloadDetails;
@@ -124,7 +120,7 @@ public class CompoundSpider extends Tarantula<Compound> {
         ////// !!!! Now 'keyword' is UTF-8-encoded !!!!
         
         String queryUri = String.format(lookUpService, keyword);
-        queryVri = null;
+        VRI queryVri = null;
         try {            
             queryVri = !keywordIsVri?new VRI(queryUri):new VRI(lookUpService).addUrlParameter("search", keyword);
         } catch (URISyntaxException ex) {
@@ -198,7 +194,7 @@ public class CompoundSpider extends Tarantula<Compound> {
                     compoundClient.close();
                 } catch (IOException ex) {
                     throw new ConnectionException("Error while trying to close the stream "
-                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                            + "with the remote location at :'" + ((uri != null) ? uri.toString() : null) + "'", ex);
                 }
             }
         }
@@ -246,7 +242,7 @@ public class CompoundSpider extends Tarantula<Compound> {
                     compoundClient.close();
                 } catch (IOException ex) {
                     throw new ConnectionException("Error while trying to close the stream "
-                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                            + "with the remote location at :'" + ((uri != null) ? uri.toString() : null) + "'", ex);
                 }
             }
         }

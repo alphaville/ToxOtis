@@ -83,7 +83,6 @@ public class ModelSpider extends Tarantula<Model> {
             client.setMediaType(Media.APPLICATION_RDF_XML);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
-            uri.clearToken(); // << Token no needed any more!
             model = client.getResponseOntModel();
             resource = model.getResource(uri.toString());
         } finally {
@@ -92,7 +91,7 @@ public class ModelSpider extends Tarantula<Model> {
                     client.close();
                 } catch (IOException ex) {
                     throw new ConnectionException("StreamCouldNotClose: Error while trying to close the stream "
-                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                            + "with the remote location at :'" + ((uri != null) ? uri.toString() : null) + "'", ex);
                 }
             }
         }

@@ -45,60 +45,60 @@ public class OTEchaEndpoints {
 
     private static final String _NS = "http://www.opentox.org/echaEndpoints.owl#%s";
     public static final String NS = String.format(_NS, "");
-    private static OntologicalClass ms_Gastrointestinal_absorption;
-    private static OntologicalClass ms_Endpoints;
+    private static OntologicalClass msGastrointestinal_absorption;
+    private static OntologicalClass msEndpoints;
 
-    private static OntologicalClass ms_PhysicoChemicalEffects,
-            ms_AirWaterPartitionCoefficient,
-            ms_BoilingPoint,
-            ms_DissociationConstantPKa,
-            ms_MeltingPoint;
+    private static OntologicalClass msPhysicoChemicalEffects,
+            msAirWaterPartitionCoefficient,
+            msBoilingPoint,
+            msDissociationConstantPKa,
+            msMeltingPoint;
 
-    private static OntologicalClass ms_EnvironmentalFateParameters;
-    private static OntologicalClass ms_EcotoxicEffects;
+    private static OntologicalClass msEnvironmentalFateParameters;
+    private static OntologicalClass msEcotoxicEffects;
     
-    private static OntologicalClass ms_HumanHealthEffects,
-            ms_AcuteDermalToxicity,
-            ms_AcuteInhalationToxicity,
-            ms_AcuteOralToxicity,
-            ms_AcutePhotoirritation,
-            ms_Carcinogenicity,
-            ms_EndocrineActivity,
-            ms_Other,
-            ms_ReceptorBinding,
-            ms_ReceptorBindingAndGeneExpression,
-            ms_EyeIrritationCorrosion,
-            ms_InVitroReproductiveToxicity,
-            ms_InVivoPrePeriPostNatalDevelopment,
-            ms_InVivoPreNatalDevelopmentToxicity,
-            ms_Mutagenicity,
-            ms_PhotoCarcinogenicity,
-            ms_PhotoMutagenicity,
-            ms_PhotoSensitisation,
-            ms_RepeatedDoseToxicity,
-            ms_RespiratorySensitisation,
-            ms_SkinIrritationCorrosion,
-            ms_SkinSensitisation;
+    private static OntologicalClass msHumanHealthEffects,
+            msAcuteDermalToxicity,
+            msAcuteInhalationToxicity,
+            msAcuteOralToxicity,
+            msAcutePhotoirritation,
+            msCarcinogenicity,
+            msEndocrineActivity,
+            msOther,
+            msReceptorBinding,
+            msReceptorBindingAndGeneExpression,
+            msEyeIrritationCorrosion,
+            msInVitroReproductiveToxicity,
+            msInVivoPrePeriPostNatalDevelopment,
+            msInVivoPreNatalDevelopmentToxicity,
+            msMutagenicity,
+            msPhotoCarcinogenicity,
+            msPhotoMutagenicity,
+            msPhotoSensitisation,
+            msRepeatedDoseToxicity,
+            msRespiratorySensitisation,
+            msSkinIrritationCorrosion,
+            msSkinSensitisation;
     
-    private static OntologicalClass ms_ToxicoKinetics;
-    private static OntologicalClass ms_DNA_Binding;
+    private static OntologicalClass msToxicoKinetics;
+    private static OntologicalClass msDNA_Binding;
 
     public static OntologicalClass Endpoints() {
-        if (ms_Endpoints == null) {
-            ms_Endpoints = new OntologicalClassImpl("Endpoints", NS);
-            ms_Endpoints.getMetaInfo().addTitle("Endpoints");
+        if (msEndpoints == null) {
+            msEndpoints = new OntologicalClassImpl("Endpoints", NS);
+            msEndpoints.getMetaInfo().addTitle("Endpoints");
         }
-        return ms_Endpoints;
+        return msEndpoints;
     }
 
     public static OntologicalClass PhysicoChemicalEffects() {
-        if (ms_PhysicoChemicalEffects == null) {
-            ms_PhysicoChemicalEffects = new OntologicalClassImpl("PhysicoChemicalEffects", NS);
-            ms_PhysicoChemicalEffects.getMetaInfo().addTitle("Physicochemical effects");
-            ms_PhysicoChemicalEffects.getMetaInfo().addIdentifier("1");
-            ms_PhysicoChemicalEffects.getSuperClasses().add(Endpoints());
+        if (msPhysicoChemicalEffects == null) {
+            msPhysicoChemicalEffects = new OntologicalClassImpl("PhysicoChemicalEffects", NS);
+            msPhysicoChemicalEffects.getMetaInfo().addTitle("Physicochemical effects");
+            msPhysicoChemicalEffects.getMetaInfo().addIdentifier("1");
+            msPhysicoChemicalEffects.getSuperClasses().add(Endpoints());
         }
-        return ms_PhysicoChemicalEffects;
+        return msPhysicoChemicalEffects;
     }
 
     /**
@@ -107,136 +107,136 @@ public class OTEchaEndpoints {
      *      Ontological Class for <code>otee:Air-water_partition_coefficient_Henry_s_law_constant_H</code>.
      */
     public static OntologicalClass AirWaterPartitionCoefficient() {
-        if (ms_AirWaterPartitionCoefficient == null) {
-            ms_AirWaterPartitionCoefficient = new OntologicalClassImpl("Air-water_partition_coefficient_Henry_s_law_constant_H", NS);
-            ms_AirWaterPartitionCoefficient.getMetaInfo().addTitle("Air- water partition coefficient (Henry's law constant, H)");
-            ms_AirWaterPartitionCoefficient.getMetaInfo().addIdentifier("1.9");
-            ms_AirWaterPartitionCoefficient.getSuperClasses().add(PhysicoChemicalEffects());
+        if (msAirWaterPartitionCoefficient == null) {
+            msAirWaterPartitionCoefficient = new OntologicalClassImpl("Air-water_partition_coefficient_Henry_s_law_constant_H", NS);
+            msAirWaterPartitionCoefficient.getMetaInfo().addTitle("Air- water partition coefficient (Henry's law constant, H)");
+            msAirWaterPartitionCoefficient.getMetaInfo().addIdentifier("1.9");
+            msAirWaterPartitionCoefficient.getSuperClasses().add(PhysicoChemicalEffects());
         }
-        return ms_PhysicoChemicalEffects;
+        return msPhysicoChemicalEffects;
     }
 
     public static OntologicalClass BoilingPoint() {
-        if (ms_BoilingPoint == null) {
-            ms_BoilingPoint = new OntologicalClassImpl("Boiling_point", NS);
-            ms_BoilingPoint.getMetaInfo().addTitle("Boiling point");
-            ms_BoilingPoint.getMetaInfo().addIdentifier("1.2");
-            ms_BoilingPoint.getSuperClasses().add(PhysicoChemicalEffects());
+        if (msBoilingPoint == null) {
+            msBoilingPoint = new OntologicalClassImpl("Boiling_point", NS);
+            msBoilingPoint.getMetaInfo().addTitle("Boiling point");
+            msBoilingPoint.getMetaInfo().addIdentifier("1.2");
+            msBoilingPoint.getSuperClasses().add(PhysicoChemicalEffects());
         }
-        return ms_BoilingPoint;
+        return msBoilingPoint;
     }
 
     public static OntologicalClass DissociationConstantPKa() {
-        if (ms_DissociationConstantPKa == null) {
-            ms_DissociationConstantPKa = new OntologicalClassImpl("Dissociation_constant_pKa", NS);
-            ms_DissociationConstantPKa.getMetaInfo().addTitle("Dissociation constant (pKa)");
-            ms_DissociationConstantPKa.getMetaInfo().addIdentifier("1.10");
-            ms_DissociationConstantPKa.getSuperClasses().add(PhysicoChemicalEffects());
+        if (msDissociationConstantPKa == null) {
+            msDissociationConstantPKa = new OntologicalClassImpl("Dissociation_constant_pKa", NS);
+            msDissociationConstantPKa.getMetaInfo().addTitle("Dissociation constant (pKa)");
+            msDissociationConstantPKa.getMetaInfo().addIdentifier("1.10");
+            msDissociationConstantPKa.getSuperClasses().add(PhysicoChemicalEffects());
         }
-        return ms_DissociationConstantPKa;
+        return msDissociationConstantPKa;
     }
 
     public static OntologicalClass MeltingPoint() {
-        if (ms_MeltingPoint == null) {
-            ms_MeltingPoint = new OntologicalClassImpl("Melting_point", NS);
-            ms_MeltingPoint.getMetaInfo().addTitle("Melting point");
-            ms_MeltingPoint.getMetaInfo().addIdentifier("1.1");
-            ms_MeltingPoint.getSuperClasses().add(PhysicoChemicalEffects());
+        if (msMeltingPoint == null) {
+            msMeltingPoint = new OntologicalClassImpl("Melting_point", NS);
+            msMeltingPoint.getMetaInfo().addTitle("Melting point");
+            msMeltingPoint.getMetaInfo().addIdentifier("1.1");
+            msMeltingPoint.getSuperClasses().add(PhysicoChemicalEffects());
         }
-        return ms_MeltingPoint;
+        return msMeltingPoint;
     }
 
 
     
 
     public static OntologicalClass EnvironmentalFateParameters() {
-        if (ms_EnvironmentalFateParameters == null) {
-            ms_EnvironmentalFateParameters = new OntologicalClassImpl("EnvironmentalFateParameters", NS);
-            ms_EnvironmentalFateParameters.getMetaInfo().addTitle("Environmental fate parameters");
-            ms_EnvironmentalFateParameters.getMetaInfo().addIdentifier("2");
-            ms_EnvironmentalFateParameters.getSuperClasses().add(Endpoints());
+        if (msEnvironmentalFateParameters == null) {
+            msEnvironmentalFateParameters = new OntologicalClassImpl("EnvironmentalFateParameters", NS);
+            msEnvironmentalFateParameters.getMetaInfo().addTitle("Environmental fate parameters");
+            msEnvironmentalFateParameters.getMetaInfo().addIdentifier("2");
+            msEnvironmentalFateParameters.getSuperClasses().add(Endpoints());
         }
-        return ms_EnvironmentalFateParameters;
+        return msEnvironmentalFateParameters;
     }
 
     public static OntologicalClass EcotoxicEffects() {
-        if (ms_EcotoxicEffects == null) {
-            ms_EcotoxicEffects = new OntologicalClassImpl("EcotoxicEffects", NS);
-            ms_EcotoxicEffects.getMetaInfo().addTitle("Ecotoxic effects");
-            ms_EcotoxicEffects.getMetaInfo().addIdentifier("3");
-            ms_EcotoxicEffects.getSuperClasses().add(Endpoints());
+        if (msEcotoxicEffects == null) {
+            msEcotoxicEffects = new OntologicalClassImpl("EcotoxicEffects", NS);
+            msEcotoxicEffects.getMetaInfo().addTitle("Ecotoxic effects");
+            msEcotoxicEffects.getMetaInfo().addIdentifier("3");
+            msEcotoxicEffects.getSuperClasses().add(Endpoints());
         }
-        return ms_EcotoxicEffects;
+        return msEcotoxicEffects;
     }
 
     public static OntologicalClass HumanHealthEffects() {
-        if (ms_HumanHealthEffects == null) {
-            ms_HumanHealthEffects = new OntologicalClassImpl("HumanHealthEffects", NS);
-            ms_HumanHealthEffects.getMetaInfo().addTitle("Human Health effects");
-            ms_HumanHealthEffects.getMetaInfo().addIdentifier("4");
-            ms_HumanHealthEffects.getSuperClasses().add(Endpoints());
+        if (msHumanHealthEffects == null) {
+            msHumanHealthEffects = new OntologicalClassImpl("HumanHealthEffects", NS);
+            msHumanHealthEffects.getMetaInfo().addTitle("Human Health effects");
+            msHumanHealthEffects.getMetaInfo().addIdentifier("4");
+            msHumanHealthEffects.getSuperClasses().add(Endpoints());
         }
-        return ms_HumanHealthEffects;
+        return msHumanHealthEffects;
     }
 
     public static OntologicalClass AcuteDermalToxicity() {
-        if (ms_AcuteDermalToxicity == null) {
-            ms_AcuteDermalToxicity = new OntologicalClassImpl("AcuteDermalToxicity", NS);
-            ms_AcuteDermalToxicity.getMetaInfo().addTitle("Acute Dermal Toxicity");
-            ms_AcuteDermalToxicity.getMetaInfo().addIdentifier("4.3");
-            ms_AcuteDermalToxicity.getSuperClasses().add(HumanHealthEffects());
+        if (msAcuteDermalToxicity == null) {
+            msAcuteDermalToxicity = new OntologicalClassImpl("AcuteDermalToxicity", NS);
+            msAcuteDermalToxicity.getMetaInfo().addTitle("Acute Dermal Toxicity");
+            msAcuteDermalToxicity.getMetaInfo().addIdentifier("4.3");
+            msAcuteDermalToxicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_AcuteDermalToxicity;
+        return msAcuteDermalToxicity;
     }
 
     public static OntologicalClass AcuteInhalationToxicity() {
-        if (ms_AcuteInhalationToxicity == null) {
-            ms_AcuteInhalationToxicity = new OntologicalClassImpl("AcuteInhalationToxicity", NS);
-            ms_AcuteInhalationToxicity.getMetaInfo().addTitle("Acute Inhalation Toxicity");
-            ms_AcuteInhalationToxicity.getMetaInfo().addIdentifier("4.1");
-            ms_AcuteInhalationToxicity.getSuperClasses().add(HumanHealthEffects());
+        if (msAcuteInhalationToxicity == null) {
+            msAcuteInhalationToxicity = new OntologicalClassImpl("AcuteInhalationToxicity", NS);
+            msAcuteInhalationToxicity.getMetaInfo().addTitle("Acute Inhalation Toxicity");
+            msAcuteInhalationToxicity.getMetaInfo().addIdentifier("4.1");
+            msAcuteInhalationToxicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_AcuteInhalationToxicity;
+        return msAcuteInhalationToxicity;
     }
 
     public static OntologicalClass AcuteOralToxicity() {
-        if (ms_AcuteOralToxicity == null) {
-            ms_AcuteOralToxicity = new OntologicalClassImpl("AcuteOralToxicity", NS);
-            ms_AcuteOralToxicity.getMetaInfo().addTitle("Acute Oral Toxicity");
-            ms_AcuteOralToxicity.getMetaInfo().addIdentifier("4.2");
-            ms_AcuteOralToxicity.getSuperClasses().add(HumanHealthEffects());
+        if (msAcuteOralToxicity == null) {
+            msAcuteOralToxicity = new OntologicalClassImpl("AcuteOralToxicity", NS);
+            msAcuteOralToxicity.getMetaInfo().addTitle("Acute Oral Toxicity");
+            msAcuteOralToxicity.getMetaInfo().addIdentifier("4.2");
+            msAcuteOralToxicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_AcuteOralToxicity;
+        return msAcuteOralToxicity;
     }
 
     public static OntologicalClass AcutePhotoirritation() {
-        if (ms_AcutePhotoirritation == null) {
-            ms_AcutePhotoirritation = new OntologicalClassImpl("AcutePhotoirritation", NS);
-            ms_AcutePhotoirritation.getMetaInfo().addTitle("Acute Photoirritation");
-            ms_AcutePhotoirritation.getMetaInfo().addIdentifier("4.5");
-            ms_AcutePhotoirritation.getSuperClasses().add(HumanHealthEffects());
+        if (msAcutePhotoirritation == null) {
+            msAcutePhotoirritation = new OntologicalClassImpl("AcutePhotoirritation", NS);
+            msAcutePhotoirritation.getMetaInfo().addTitle("Acute Photoirritation");
+            msAcutePhotoirritation.getMetaInfo().addIdentifier("4.5");
+            msAcutePhotoirritation.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_AcutePhotoirritation;
+        return msAcutePhotoirritation;
     }
 
     public static OntologicalClass Carcinogenicity() {
-        if (ms_Carcinogenicity == null) {
-            ms_Carcinogenicity = new OntologicalClassImpl("Carcinogenicity", NS);
-            ms_Carcinogenicity.getMetaInfo().addTitle("Carcinogenicity");
-            ms_Carcinogenicity.getMetaInfo().addIdentifier("4.12");
-            ms_Carcinogenicity.getSuperClasses().add(HumanHealthEffects());
+        if (msCarcinogenicity == null) {
+            msCarcinogenicity = new OntologicalClassImpl("Carcinogenicity", NS);
+            msCarcinogenicity.getMetaInfo().addTitle("Carcinogenicity");
+            msCarcinogenicity.getMetaInfo().addIdentifier("4.12");
+            msCarcinogenicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_Carcinogenicity;
+        return msCarcinogenicity;
     }
 
     public static OntologicalClass EndocrineActivity() {
-        if (ms_EndocrineActivity == null) {
-            ms_EndocrineActivity = new OntologicalClassImpl("EndocrineActivity", NS);
-            ms_EndocrineActivity.getMetaInfo().addTitle("Endocrine Activity");
-            ms_EndocrineActivity.getMetaInfo().addIdentifier("4.18");
-            ms_EndocrineActivity.getSuperClasses().add(HumanHealthEffects());
+        if (msEndocrineActivity == null) {
+            msEndocrineActivity = new OntologicalClassImpl("EndocrineActivity", NS);
+            msEndocrineActivity.getMetaInfo().addTitle("Endocrine Activity");
+            msEndocrineActivity.getMetaInfo().addIdentifier("4.18");
+            msEndocrineActivity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_EndocrineActivity;
+        return msEndocrineActivity;
     }
 
     /**
@@ -246,66 +246,66 @@ public class OTEchaEndpoints {
      *      Ontological class for <code>otee:Other</code>
      */
     public static OntologicalClass Other(){
-        if (ms_Other == null) {
-            ms_Other = new OntologicalClassImpl("Other", NS);
-            ms_Other.getMetaInfo().addTitle("Other (e.g. inhibition of specific enzymes involved in hormone " +
+        if (msOther == null) {
+            msOther = new OntologicalClassImpl("Other", NS);
+            msOther.getMetaInfo().addTitle("Other (e.g. inhibition of specific enzymes involved in hormone " +
                     "synthesis or regulation, specify enzyme(s) and hormone)");
-            ms_Other.getMetaInfo().addIdentifier("4.18.c");
-            ms_Other.getSuperClasses().add(EndocrineActivity());
+            msOther.getMetaInfo().addIdentifier("4.18.c");
+            msOther.getSuperClasses().add(EndocrineActivity());
         }
-        return ms_Other;
+        return msOther;
     }
 
     public static OntologicalClass ReceptorBinding(){
-        if (ms_ReceptorBinding == null) {
-            ms_ReceptorBinding = new OntologicalClassImpl("ReceptorBinding", NS);
-            ms_ReceptorBinding.getMetaInfo().addTitle("Receptor-binding (specify receptor)");
-            ms_ReceptorBinding.getMetaInfo().addIdentifier("4.18.a");
-            ms_ReceptorBinding.getSuperClasses().add(EndocrineActivity());
+        if (msReceptorBinding == null) {
+            msReceptorBinding = new OntologicalClassImpl("ReceptorBinding", NS);
+            msReceptorBinding.getMetaInfo().addTitle("Receptor-binding (specify receptor)");
+            msReceptorBinding.getMetaInfo().addIdentifier("4.18.a");
+            msReceptorBinding.getSuperClasses().add(EndocrineActivity());
         }
-        return ms_ReceptorBinding;
+        return msReceptorBinding;
     }
 
     public static OntologicalClass ReceptorBindingAndGeneExpression(){
-        if (ms_ReceptorBindingAndGeneExpression == null) {
-            ms_ReceptorBindingAndGeneExpression = new OntologicalClassImpl("ReceptorBindingAndGeneExpression", NS);
-            ms_ReceptorBindingAndGeneExpression.getMetaInfo().addTitle("Receptor binding and gene expression (specify receptor)");
-            ms_ReceptorBindingAndGeneExpression.getMetaInfo().addIdentifier("4.18.b");
-            ms_ReceptorBindingAndGeneExpression.getSuperClasses().add(EndocrineActivity());
+        if (msReceptorBindingAndGeneExpression == null) {
+            msReceptorBindingAndGeneExpression = new OntologicalClassImpl("ReceptorBindingAndGeneExpression", NS);
+            msReceptorBindingAndGeneExpression.getMetaInfo().addTitle("Receptor binding and gene expression (specify receptor)");
+            msReceptorBindingAndGeneExpression.getMetaInfo().addIdentifier("4.18.b");
+            msReceptorBindingAndGeneExpression.getSuperClasses().add(EndocrineActivity());
         }
-        return ms_ReceptorBindingAndGeneExpression;
+        return msReceptorBindingAndGeneExpression;
     }
 
     public static OntologicalClass EyeIrritationCorrosion(){
-        if (ms_EyeIrritationCorrosion == null) {
-            ms_EyeIrritationCorrosion = new OntologicalClassImpl("EyeIrritationCorrosion", NS);
-            ms_EyeIrritationCorrosion.getMetaInfo().addTitle("Eye irritation/corrosion");
-            ms_EyeIrritationCorrosion.getMetaInfo().addIdentifier("4.9");
-            ms_EyeIrritationCorrosion.getSuperClasses().add(HumanHealthEffects());
+        if (msEyeIrritationCorrosion == null) {
+            msEyeIrritationCorrosion = new OntologicalClassImpl("EyeIrritationCorrosion", NS);
+            msEyeIrritationCorrosion.getMetaInfo().addTitle("Eye irritation/corrosion");
+            msEyeIrritationCorrosion.getMetaInfo().addIdentifier("4.9");
+            msEyeIrritationCorrosion.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_EyeIrritationCorrosion;
+        return msEyeIrritationCorrosion;
     }
 
     public static OntologicalClass InVitroReproductiveToxicity(){
-        if (ms_InVitroReproductiveToxicity == null) {
-            ms_InVitroReproductiveToxicity = new OntologicalClassImpl("InVitroReproductiveToxicity", NS);
-            ms_InVitroReproductiveToxicity.getMetaInfo().addTitle("In vitro reproductive toxicity (e.g. " +
+        if (msInVitroReproductiveToxicity == null) {
+            msInVitroReproductiveToxicity = new OntologicalClassImpl("InVitroReproductiveToxicity", NS);
+            msInVitroReproductiveToxicity.getMetaInfo().addTitle("In vitro reproductive toxicity (e.g. " +
                     "embryotoxic effects in cell culture such as embryo stem cells) ");
-            ms_InVitroReproductiveToxicity.getMetaInfo().addIdentifier("4.15");
-            ms_InVitroReproductiveToxicity.getSuperClasses().add(HumanHealthEffects());
+            msInVitroReproductiveToxicity.getMetaInfo().addIdentifier("4.15");
+            msInVitroReproductiveToxicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_InVitroReproductiveToxicity;
+        return msInVitroReproductiveToxicity;
     }
 
     public static OntologicalClass InVivoPrePeriPostNatalDevelopment(){
-        if (ms_InVivoPrePeriPostNatalDevelopment == null) {
-            ms_InVivoPrePeriPostNatalDevelopment = new OntologicalClassImpl("InVivoPrePeriPostNatalDevelopmentAndOrFertility", NS);
-            ms_InVivoPrePeriPostNatalDevelopment.getMetaInfo().addTitle("In vivo pre-, peri-, post natal development and / or " +
+        if (msInVivoPrePeriPostNatalDevelopment == null) {
+            msInVivoPrePeriPostNatalDevelopment = new OntologicalClassImpl("InVivoPrePeriPostNatalDevelopmentAndOrFertility", NS);
+            msInVivoPrePeriPostNatalDevelopment.getMetaInfo().addTitle("In vivo pre-, peri-, post natal development and / or " +
                     "fertility (1 or 2 gen. Study or enhanced 1 gen study) ");
-            ms_InVivoPrePeriPostNatalDevelopment.getMetaInfo().addIdentifier("4.17");
-            ms_InVivoPrePeriPostNatalDevelopment.getSuperClasses().add(HumanHealthEffects());
+            msInVivoPrePeriPostNatalDevelopment.getMetaInfo().addIdentifier("4.17");
+            msInVivoPrePeriPostNatalDevelopment.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_InVivoPrePeriPostNatalDevelopment;
+        return msInVivoPrePeriPostNatalDevelopment;
     }
 
     /**
@@ -314,105 +314,105 @@ public class OTEchaEndpoints {
      *      Ontological class for <code>otee:InVivoPreNatalDevelopmentToxicity</code>
      */
     public static OntologicalClass InVivoPreNatalDevelopmentToxicity(){
-        if (ms_InVivoPreNatalDevelopmentToxicity == null) {
-            ms_InVivoPreNatalDevelopmentToxicity = new OntologicalClassImpl("InVivoPreNatalDevelopmentToxicity", NS);
-            ms_InVivoPreNatalDevelopmentToxicity.getMetaInfo().addTitle("In vivo pre-natal-developmental toxicity");
-            ms_InVivoPreNatalDevelopmentToxicity.getMetaInfo().addIdentifier("4.16");
-            ms_InVivoPreNatalDevelopmentToxicity.getSuperClasses().add(HumanHealthEffects());
+        if (msInVivoPreNatalDevelopmentToxicity == null) {
+            msInVivoPreNatalDevelopmentToxicity = new OntologicalClassImpl("InVivoPreNatalDevelopmentToxicity", NS);
+            msInVivoPreNatalDevelopmentToxicity.getMetaInfo().addTitle("In vivo pre-natal-developmental toxicity");
+            msInVivoPreNatalDevelopmentToxicity.getMetaInfo().addIdentifier("4.16");
+            msInVivoPreNatalDevelopmentToxicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_InVivoPreNatalDevelopmentToxicity;
+        return msInVivoPreNatalDevelopmentToxicity;
     }
 
     public static OntologicalClass Mutagenicity() {
-        if (ms_Mutagenicity == null) {
-            ms_Mutagenicity = new OntologicalClassImpl("Mutagenicity", NS);
-            ms_Mutagenicity.getMetaInfo().addTitle("Mutagenicity");
-            ms_Mutagenicity.getMetaInfo().addIdentifier("4.10");
-            ms_Mutagenicity.getSuperClasses().add(HumanHealthEffects());
+        if (msMutagenicity == null) {
+            msMutagenicity = new OntologicalClassImpl("Mutagenicity", NS);
+            msMutagenicity.getMetaInfo().addTitle("Mutagenicity");
+            msMutagenicity.getMetaInfo().addIdentifier("4.10");
+            msMutagenicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_Mutagenicity;
+        return msMutagenicity;
     }
 
     public static OntologicalClass PhotoCarcinogenicity() {
-        if (ms_PhotoCarcinogenicity == null) {
-            ms_PhotoCarcinogenicity = new OntologicalClassImpl("PhotoCarcinogenicity", NS);
-            ms_PhotoCarcinogenicity.getMetaInfo().addTitle("PhotoCarcinogenicity");
-            ms_PhotoCarcinogenicity.getMetaInfo().addIdentifier("4.13");
-            ms_PhotoCarcinogenicity.getSuperClasses().add(HumanHealthEffects());
+        if (msPhotoCarcinogenicity == null) {
+            msPhotoCarcinogenicity = new OntologicalClassImpl("PhotoCarcinogenicity", NS);
+            msPhotoCarcinogenicity.getMetaInfo().addTitle("PhotoCarcinogenicity");
+            msPhotoCarcinogenicity.getMetaInfo().addIdentifier("4.13");
+            msPhotoCarcinogenicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_PhotoCarcinogenicity;
+        return msPhotoCarcinogenicity;
     }
 
     public static OntologicalClass PhotoMutagenicity() {
-        if (ms_PhotoMutagenicity == null) {
-            ms_PhotoMutagenicity = new OntologicalClassImpl("PhotoMutagenicity", NS);
-            ms_PhotoMutagenicity.getMetaInfo().addTitle("PhotoMutagenicity");
-            ms_PhotoMutagenicity.getMetaInfo().addIdentifier("4.11");
-            ms_PhotoMutagenicity.getSuperClasses().add(HumanHealthEffects());
+        if (msPhotoMutagenicity == null) {
+            msPhotoMutagenicity = new OntologicalClassImpl("PhotoMutagenicity", NS);
+            msPhotoMutagenicity.getMetaInfo().addTitle("PhotoMutagenicity");
+            msPhotoMutagenicity.getMetaInfo().addIdentifier("4.11");
+            msPhotoMutagenicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_PhotoMutagenicity;
+        return msPhotoMutagenicity;
     }
 
     public static OntologicalClass PhotoSensitisation() {
-        if (ms_PhotoSensitisation == null) {
-            ms_PhotoSensitisation = new OntologicalClassImpl("PhotoSensitisation", NS);
-            ms_PhotoSensitisation.getMetaInfo().addTitle("PhotoSensitisation");
-            ms_PhotoSensitisation.getMetaInfo().addIdentifier("4.8");
-            ms_PhotoSensitisation.getSuperClasses().add(HumanHealthEffects());
+        if (msPhotoSensitisation == null) {
+            msPhotoSensitisation = new OntologicalClassImpl("PhotoSensitisation", NS);
+            msPhotoSensitisation.getMetaInfo().addTitle("PhotoSensitisation");
+            msPhotoSensitisation.getMetaInfo().addIdentifier("4.8");
+            msPhotoSensitisation.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_PhotoSensitisation;
+        return msPhotoSensitisation;
     }
 
     public static OntologicalClass RepeatedDoseToxicity() {
-        if (ms_RepeatedDoseToxicity == null) {
-            ms_RepeatedDoseToxicity = new OntologicalClassImpl("RepeatedDoseToxicity", NS);
-            ms_RepeatedDoseToxicity.getMetaInfo().addTitle("Repeated Dose Toxicity");
-            ms_RepeatedDoseToxicity.getMetaInfo().addIdentifier("4.14");
-            ms_RepeatedDoseToxicity.getSuperClasses().add(HumanHealthEffects());
+        if (msRepeatedDoseToxicity == null) {
+            msRepeatedDoseToxicity = new OntologicalClassImpl("RepeatedDoseToxicity", NS);
+            msRepeatedDoseToxicity.getMetaInfo().addTitle("Repeated Dose Toxicity");
+            msRepeatedDoseToxicity.getMetaInfo().addIdentifier("4.14");
+            msRepeatedDoseToxicity.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_RepeatedDoseToxicity;
+        return msRepeatedDoseToxicity;
     }
 
     public static OntologicalClass RespiratorySensitisation() {
-        if (ms_RespiratorySensitisation == null) {
-            ms_RespiratorySensitisation = new OntologicalClassImpl("RespiratorySensitisation", NS);
-            ms_RespiratorySensitisation.getMetaInfo().addTitle("Respiratory Sensitisation");
-            ms_RespiratorySensitisation.getMetaInfo().addIdentifier("4.7");
-            ms_RespiratorySensitisation.getSuperClasses().add(HumanHealthEffects());
+        if (msRespiratorySensitisation == null) {
+            msRespiratorySensitisation = new OntologicalClassImpl("RespiratorySensitisation", NS);
+            msRespiratorySensitisation.getMetaInfo().addTitle("Respiratory Sensitisation");
+            msRespiratorySensitisation.getMetaInfo().addIdentifier("4.7");
+            msRespiratorySensitisation.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_RespiratorySensitisation;
+        return msRespiratorySensitisation;
     }
 
     public static OntologicalClass SkinIrritationCorrosion() {
-        if (ms_SkinIrritationCorrosion == null) {
-            ms_SkinIrritationCorrosion = new OntologicalClassImpl("SkinIrritationCorrosion", NS);
-            ms_SkinIrritationCorrosion.getMetaInfo().addTitle("Skin irritation /corrosion");
-            ms_SkinIrritationCorrosion.getMetaInfo().addIdentifier("4.4");
-            ms_SkinIrritationCorrosion.getSuperClasses().add(HumanHealthEffects());
+        if (msSkinIrritationCorrosion == null) {
+            msSkinIrritationCorrosion = new OntologicalClassImpl("SkinIrritationCorrosion", NS);
+            msSkinIrritationCorrosion.getMetaInfo().addTitle("Skin irritation /corrosion");
+            msSkinIrritationCorrosion.getMetaInfo().addIdentifier("4.4");
+            msSkinIrritationCorrosion.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_SkinIrritationCorrosion;
+        return msSkinIrritationCorrosion;
     }
 
     public static OntologicalClass SkinSensitisation() {
-        if (ms_SkinSensitisation == null) {
-            ms_SkinSensitisation = new OntologicalClassImpl("SkinSensitisation", NS);
-            ms_SkinSensitisation.getMetaInfo().addTitle("Skin Sensitisation");
-            ms_SkinSensitisation.getMetaInfo().addIdentifier("4.6");
-            ms_SkinSensitisation.getSuperClasses().add(HumanHealthEffects());
+        if (msSkinSensitisation == null) {
+            msSkinSensitisation = new OntologicalClassImpl("SkinSensitisation", NS);
+            msSkinSensitisation.getMetaInfo().addTitle("Skin Sensitisation");
+            msSkinSensitisation.getMetaInfo().addIdentifier("4.6");
+            msSkinSensitisation.getSuperClasses().add(HumanHealthEffects());
         }
-        return ms_SkinSensitisation;
+        return msSkinSensitisation;
     }
 
 
 
     public static OntologicalClass ToxicoKinetics() {
-        if (ms_ToxicoKinetics == null) {
-            ms_ToxicoKinetics = new OntologicalClassImpl("ToxicoKinetics", NS);
-            ms_ToxicoKinetics.getMetaInfo().addTitle("ToxicoKinetics");
-            ms_ToxicoKinetics.getMetaInfo().addIdentifier("4.5");
-            ms_ToxicoKinetics.getSuperClasses().add(Endpoints());
+        if (msToxicoKinetics == null) {
+            msToxicoKinetics = new OntologicalClassImpl("ToxicoKinetics", NS);
+            msToxicoKinetics.getMetaInfo().addTitle("ToxicoKinetics");
+            msToxicoKinetics.getMetaInfo().addIdentifier("4.5");
+            msToxicoKinetics.getSuperClasses().add(Endpoints());
         }
-        return ms_ToxicoKinetics;
+        return msToxicoKinetics;
     }
 
     /**
@@ -422,11 +422,11 @@ public class OTEchaEndpoints {
      *      <code>otee:Gastrointestinal_absorption</code>
      */
     public static OntologicalClass Gastrointestinal_absorption() {
-        if (ms_Gastrointestinal_absorption == null) {
-            ms_Gastrointestinal_absorption = new OntologicalClassImpl("Gastrointestinal_absorption", NS);
-            ms_Gastrointestinal_absorption.getSuperClasses().add(ToxicoKinetics());
+        if (msGastrointestinal_absorption == null) {
+            msGastrointestinal_absorption = new OntologicalClassImpl("Gastrointestinal_absorption", NS);
+            msGastrointestinal_absorption.getSuperClasses().add(ToxicoKinetics());
         }
-        return ms_Gastrointestinal_absorption;
+        return msGastrointestinal_absorption;
     }
 
     /**
@@ -436,11 +436,11 @@ public class OTEchaEndpoints {
      *
      */
     public static OntologicalClass DNA_Binding() {
-        if (ms_DNA_Binding == null) {
-            ms_DNA_Binding = new OntologicalClassImpl("DNA-binding", NS);
-            ms_DNA_Binding.getSuperClasses().add(ToxicoKinetics());
+        if (msDNA_Binding == null) {
+            msDNA_Binding = new OntologicalClassImpl("DNA-binding", NS);
+            msDNA_Binding.getSuperClasses().add(ToxicoKinetics());
         }
-        return ms_DNA_Binding;
+        return msDNA_Binding;
 
     }
 }

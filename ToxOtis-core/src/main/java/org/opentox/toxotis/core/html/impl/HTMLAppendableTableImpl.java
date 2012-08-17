@@ -33,6 +33,7 @@
 package org.opentox.toxotis.core.html.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.opentox.toxotis.core.html.HTMLComponent;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.HTMLTableRow;
@@ -44,14 +45,14 @@ import org.opentox.toxotis.core.html.HTMLTableRow;
  */
 public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl implements HTMLTable {
 
-    private int nRows;
+    //private int nRows;
     private final int nCols;
     private String summary;
     private int tableWidth;
     private int cellSpacing;
     private int cellPadding;
     private int tableBorder;
-    private ArrayList<HTMLTableRow> data;
+    private List<HTMLTableRow> data;
     private final int[] colWidths;
     private int cursor = 0;
 
@@ -65,8 +66,7 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
 
     public HTMLAppendableTableImpl(int nCols, int rowEstimate) {
         this.nCols = nCols;
-        this.nRows = rowEstimate;
-        data = new ArrayList<HTMLTableRow>(nRows);
+        data = new ArrayList<HTMLTableRow>(rowEstimate);
         // add nRows empty rows
         for (int index = 0; index < rowEstimate; index++) {
             data.add(new HTMLTableRowFixedLength(nCols));
@@ -97,19 +97,19 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
         StringBuilder builder = new StringBuilder();
         StringBuilder tableMetaData = new StringBuilder();
         if (tableWidth != 0) {
-            tableMetaData.append(" width=\"" + tableWidth + "\"");
+            tableMetaData.append(" width=\"").append(tableWidth).append("\"");
         }
         if (cellSpacing != 0) {
-            tableMetaData.append(" cellspacing=\"" + cellSpacing + "\"");
+            tableMetaData.append(" cellspacing=\"").append(cellSpacing).append("\"");
         }
         if (tableBorder != 0) {
-            tableMetaData.append(" border=\"" + tableBorder + "\"");
+            tableMetaData.append(" border=\"").append(tableBorder).append("\"");
         }
         if (cellPadding != 0) {
-            tableMetaData.append(" cellpadding=\"" + cellPadding + "\"");
+            tableMetaData.append(" cellpadding=\"").append(cellPadding).append("\"");
         }
         if (summary != null) {
-            tableMetaData.append(" summary=\"" + summary + "\"");
+            tableMetaData.append(" summary=\"").append(summary).append("\"");
         }
         builder.append("<table");
         builder.append(tableMetaData);

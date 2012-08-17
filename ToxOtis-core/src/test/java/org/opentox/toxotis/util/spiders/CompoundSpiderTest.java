@@ -70,7 +70,7 @@ public class CompoundSpiderTest {
     /**
      * Test of parse method, of class CompoundSpider.
      */
-    @Test(timeout=10000)
+    @Test(timeout=40000)
     public void testParse() throws Exception {  
         CompoundSpider spider = new CompoundSpider("phenol", null);
         Compound cmp = spider.parse();        

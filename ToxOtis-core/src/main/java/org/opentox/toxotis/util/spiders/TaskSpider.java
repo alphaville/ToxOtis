@@ -93,7 +93,7 @@ public class TaskSpider extends Tarantula<Task> {
                     throw new ConnectionException(
                             "StreamCouldNotClose: Error while trying to close the stream "
                             + "with the remote location at :'" + ((vri != null)
-                            ? vri.clearToken().toString() : null) + "'", ex);
+                            ? vri.toString() : null) + "'", ex);
                 }
             }
         }

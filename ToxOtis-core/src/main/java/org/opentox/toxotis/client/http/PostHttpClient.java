@@ -194,7 +194,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      * @throws NullPointerException If paramName is <code>null</code>.
      */
     @Override
-    public PostHttpClient addPostParameter(String paramName, String paramValue) throws NullPointerException {
+    public PostHttpClient addPostParameter(String paramName, String paramValue) {
         if (paramName == null) {
             throw new NullPointerException("paramName must be not null");
         }
@@ -216,7 +216,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     }
 
     @Override
-    public AbstractHttpClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException {
+    public AbstractHttpClient addHeaderParameter(String paramName, String paramValue) {
         if (paramName == null) {
             throw new NullPointerException("ParamName is null");
         }

@@ -87,7 +87,7 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
 public class Compound extends DescriptorCaclulation<Compound> {
 
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Compound.class);
-    private ArrayList<String> synonyms;
+    private List<String> synonyms;
     private javax.swing.ImageIcon depiction;
     private String iupacName;
     private String einecs;
@@ -101,7 +101,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      * of anything.
      */
     private String molecularStructure;
-    private HashSet<Conformer> conformers;
+    private Set<Conformer> conformers;
 
     /**
      * Construct a new compound identified by its URI. You should provide a
@@ -117,12 +117,10 @@ public class Compound extends DescriptorCaclulation<Compound> {
      */
     public Compound(VRI uri) throws ToxOtisException {
         super(uri);
-        if (uri != null) {
-            // Compound and Conformer URIs are allowed
-            if (!Compound.class.equals(uri.getOpenToxType()) && !Conformer.class.equals(uri.getOpenToxType())) {
-                throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
-                        + "' is not a valid Compound uri according to the OpenTox specifications.");
-            }
+        if (uri != null
+                && !Compound.class.equals(uri.getOpenToxType()) && !Conformer.class.equals(uri.getOpenToxType())) {
+            throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
+                    + "' is not a valid Compound uri according to the OpenTox specifications.");
         }
         this.meta = null;
     }
@@ -170,9 +168,14 @@ public class Compound extends DescriptorCaclulation<Compound> {
      */
     public Set<Conformer> listConformers(AuthenticationToken token) throws ServiceInvocationException {
         VRI newUri = null;
+
+
         if (uri.getOpenToxType().equals(Conformer.class)) {
             String uriString = uri.toString();
             String withoutConformer = uriString.split("/conformer/")[0];
+
+
+
             try {
                 newUri = new VRI(withoutConformer).augment("conformer");
             } catch (URISyntaxException ex) {
@@ -198,7 +201,18 @@ public class Compound extends DescriptorCaclulation<Compound> {
         return confmers;
     }
 
-    public Dataset getPropertiesByOnt(OntologicalClass featurePrototype, AuthenticationToken token) throws ServiceInvocationException {
+    /**
+     * Returns the sub-dataset that has properties of a given ontological
+     * type.
+     * @param featurePrototype
+     *      A feature ontological class.
+     * @param token
+     *      An authentication token
+     * @return
+     * @throws ServiceInvocationException 
+     */
+    public Dataset getPropertiesByOnt(OntologicalClass featurePrototype, AuthenticationToken token)
+            throws ServiceInvocationException {
         Set<VRI> features = FeatureFactory.lookupSameAs(featurePrototype, token);
         return getProperties(token, (VRI[]) features.toArray(new VRI[features.size()]));
     }
@@ -227,7 +241,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         /**
          *TODO: Should this request include the uri parameters for the feature?
          */
-        VRI dsUri = new VRI(getUri()).addUrlParameter("feature_uris[]", feature.getUri().toString());        
+        VRI dsUri = new VRI(getUri()).addUrlParameter("feature_uris[]", feature.getUri().toString());
         GetHttpClient client = new GetHttpClient();
         client.authorize(token);
         client.setUri(dsUri);
@@ -264,10 +278,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         for (VRI featureUri : featureUris) {
             dsUri.addUrlParameter("feature_uris[]", featureUri.toString());
         }
-
-        if (token != null) {
-            dsUri.clearToken().appendToken(token);
-        }
+        
         GetHttpClient client = new GetHttpClient();
         client.setUri(dsUri);
         client.setMediaType(Media.APPLICATION_RDF_XML);
@@ -309,13 +320,9 @@ public class Compound extends DescriptorCaclulation<Compound> {
     }
 
     @Override
-    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
-        /** Handle provided token */
-        if (token != null) {
-            // Replace existing token with the new one
-            vri.clearToken().appendToken(token);
-        }
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {                
         PostHttpClient client = new PostHttpClient(vri);
+        client.authorize(token);
         client.setContentType(Media.APPLICATION_RDF_XML.getMime());
         client.setPostable(asOntModel());
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
@@ -465,21 +472,21 @@ public class Compound extends DescriptorCaclulation<Compound> {
         /** Download the string representation of a */
         StringWriter smilesWriter = new StringWriter();
         download(smilesWriter, Media.CHEMICAL_SMILES, token);
-        String smiles = smilesWriter.toString().trim();
+        String smilesDownloaded = smilesWriter.toString().trim();
         VRI similarityService = new VRI(service);
-        similarityService.clearToken().appendToken(token).addUrlParameter("search", smiles).addUrlParameter("threshold", similarity);
+        similarityService.addUrlParameter("search", smilesDownloaded).addUrlParameter("threshold", similarity);
         GetHttpClient client = null;
         Set<VRI> resultSet = null;
         try {
             client = new GetHttpClient(similarityService);
             client.setMediaType(Media.TEXT_URI_LIST);
+            client.authorize(token);
 
             int status = client.getResponseCode();
-            if (status != 200) { // TODO: Tasks??? 201? 202?
+            if (status != 200) { //TODO: Tasks??? 201? 202?
                 throw new RemoteServiceException("Received a status code '" + status + "' from the service at"
-                        + similarityService.clearToken());
+                        + similarityService);
             }
-
             resultSet = client.getResponseUriList();
         } catch (ServiceInvocationException ex) {
             throw ex;
@@ -520,7 +527,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         return synonyms;
     }
 
-    public void setSynonyms(ArrayList<String> synonyms) {
+    public void setSynonyms(List<String> synonyms) {
         this.synonyms = synonyms;
     }
 
@@ -646,10 +653,12 @@ public class Compound extends DescriptorCaclulation<Compound> {
         this.smiles = smiles;
     }
 
-    public HashSet<Conformer> getConformers() {
+    public Set<Conformer> getConformers() {
         if (conformers == null) {
             try {
                 conformers = new HashSet<Conformer>(listConformers(null));
+
+
             } catch (ServiceInvocationException ex) {
                 Logger.getLogger(Compound.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -657,7 +666,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         return conformers;
     }
 
-    public void setConformers(HashSet<Conformer> conformers) {
+    public void setConformers(Set<Conformer> conformers) {
         this.conformers = conformers;
     }
 
@@ -675,6 +684,4 @@ public class Compound extends DescriptorCaclulation<Compound> {
     public void setMolecularStructure(String molecularStructure) {
         this.molecularStructure = molecularStructure;
     }
-    
-    
 }

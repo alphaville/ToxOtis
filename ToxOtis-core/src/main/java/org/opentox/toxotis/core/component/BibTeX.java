@@ -818,9 +818,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
         for (Field f : this.getClass().getDeclaredFields()) {
             try {
-                if (f.getName().equals("m_createdBy")) {
-                    // skip it
-                } else if (!f.getName().equals("m_author")
+                if (!f.getName().equals("m_createdBy")
+                        && !f.getName().equals("m_author")
                         && !f.getName().equals("m_bib_type")
                         && !f.getName().equals("logger")
                         && f.get(this) != null) {

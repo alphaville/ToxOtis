@@ -36,7 +36,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -44,8 +43,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
@@ -170,7 +167,7 @@ public class Dataset extends OTPublishable<Dataset> {
 
         writer.writeStartElement("ot:Dataset");// #NODE_BASE: Start Base Dataset Node
         if (getUri() != null) {
-            writer.writeAttribute("rdf:about", getUri().clearToken().toString()); // REFERS TO #NODE_BASE
+            writer.writeAttribute("rdf:about", getUri().toString()); // REFERS TO #NODE_BASE
         }
         /* Meta-information about the dataset */
         if (getMeta() != null) {
@@ -185,7 +182,7 @@ public class Dataset extends OTPublishable<Dataset> {
                 writer.writeStartElement("ot:values");// #NODE_VALUES_PROP
                 writer.writeStartElement("ot:FeatureValue");// #NODE_VALUES_HAS_FV_PROP
                 writer.writeEmptyElement("ot:feature");// #ENODE_VALUES_HAS_FEAT_PROP
-                writer.writeAttribute("rdf:resource", featureValue.getFeature().getUri().clearToken().toString()); // REFERS TO #ENODE_VALUES_HAS_FEAT_PROP
+                writer.writeAttribute("rdf:resource", featureValue.getFeature().getUri().toString()); // REFERS TO #ENODE_VALUES_HAS_FEAT_PROP
                 writer.writeStartElement("ot:value");// #NODE_VALUE_PROP
                 writer.writeAttribute("rdf:datatype", featureValue.getValue().getType().getURI()); // REFERS TO #NODE_VALUE_PROP
                 writer.writeCharacters(featureValue.getValue().getValue().toString());// REFERS TO #NODE_VALUE_PROP
@@ -196,7 +193,7 @@ public class Dataset extends OTPublishable<Dataset> {
             writer.writeStartElement("ot:compound");// #NODE_HAS_COMPOUND_PROP
                         /* Compound in Data Entry... */
             writer.writeStartElement("ot:Compound");// #NODE_COMPOUND
-            writer.writeAttribute("rdf:about", dataEntry.getConformer().getUri().clearToken().toString()); // REFERS TO #NODE_COMPOUND
+            writer.writeAttribute("rdf:about", dataEntry.getConformer().getUri().toString()); // REFERS TO #NODE_COMPOUND
             writer.writeEndElement();// #__NODE_COMPOUND
             writer.writeEndElement();// #__NODE_HAS_COMPOUND_PROP
             writer.writeEndElement();// // #__NODE_DE
@@ -236,7 +233,7 @@ public class Dataset extends OTPublishable<Dataset> {
         Set<String> sameAsFeatures = new HashSet<String>();
         for (Feature f : containedFeatures) {
             writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
-            writer.writeAttribute("rdf:about", f.getUri().clearToken().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
+            writer.writeAttribute("rdf:about", f.getUri().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
             featureOntologies = f.getOntologicalClasses();
             boolean explicitTypeDeclaration = false;
             if (featureOntologies != null && !featureOntologies.isEmpty()) {
@@ -315,8 +312,8 @@ public class Dataset extends OTPublishable<Dataset> {
 
         Task dsUpload = new Task();
         String remoteResult = client.getResponseText();
-        System.out.println("Publishing >> Response : " + remoteResult);
-        System.out.println("Publishing >> STATUS   : " + status);
+        logger.debug("Publishing >> Response : " + remoteResult);
+        logger.debug("Publishing >> STATUS   : " + status);
         if (status == 202) {
             try {
                 dsUpload.setUri(new VRI(remoteResult));
@@ -342,7 +339,7 @@ public class Dataset extends OTPublishable<Dataset> {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
             throw new ForbiddenRequest("The Provided token is inactive");
         }
-        return publishOnline(Services.ideaconsult(), token);
+        return publishOnline(Services.ideaconsult().augment("dataset"), token);
     }
 
     private enum WekaDataTypes {
@@ -406,11 +403,31 @@ public class Dataset extends OTPublishable<Dataset> {
         return this;
     }
 
+    /**
+     * All features in the dataset.
+     * @return 
+     *      A set of {@link Feature}
+     */
     public Set<Feature> getContainedFeatures() {
         Set<Feature> features = new LinkedHashSet<Feature>();
         for (DataEntry dataEntry : getDataEntries()) {
             for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
                 features.add(featureValue.getFeature());
+            }
+        }
+        return features;
+    }
+    
+    /**
+     * The set of all feature URIs in the dataset.
+     * @return 
+     *      A set of {@link VRI VRIs}
+     */
+    public Set<VRI> getContainedFeatureUris() {
+        Set<VRI> features = new LinkedHashSet<VRI>();
+        for (DataEntry dataEntry : getDataEntries()) {
+            for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
+                features.add(featureValue.getFeature().getUri());
             }
         }
         return features;
@@ -541,7 +558,6 @@ public class Dataset extends OTPublishable<Dataset> {
         }
         PostHttpClient client = new PostHttpClient(descriptorCalculationAlgorithm);
         client.setMediaType(Media.APPLICATION_RDF_XML);
-        descriptorCalculationAlgorithm.clearToken();
         IPostClient pc = new PostHttpClient(descriptorCalculationAlgorithm);
         pc.authorize(token);
         pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={dataset_uri}

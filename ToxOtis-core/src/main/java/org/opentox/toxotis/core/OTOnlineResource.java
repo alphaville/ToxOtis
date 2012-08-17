@@ -326,30 +326,38 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
                 if (remote != null) {
                     try {
                         remote.close();
-                    } catch (Throwable th) {
-                        failure = th;
+                    } catch (final Exception exc) {
+                        failure = exc;
+                    } catch (final Error er){
+                        failure = er;
                     }
                 }
                 if (isr != null) {
                     try {
                         isr.close();
-                    } catch (Throwable th) {
-                        failure = th;
+                    } catch (final Exception exc) {
+                        failure = exc;
+                    } catch (final Error er){
+                        failure = er;
                     }
                 }
                 if (remoteReader != null) {
                     try {
                         remoteReader.close();
-                    } catch (Throwable th) {
-                        failure = th;
+                    } catch (final Exception exc) {
+                        failure = exc;
+                    } catch (final Error er){
+                        failure = er;
                     }
                 }
                 if (bufferedWriter != null) {
                     try {
                         bufferedWriter.flush();
                         bufferedWriter.close();
-                    } catch (Throwable th) {
-                        failure = th;
+                    } catch (final Exception exc) {
+                        failure = exc;
+                    } catch (final Error er){
+                        failure = er;                       
                     }
                 }
                 if (failure != null) {

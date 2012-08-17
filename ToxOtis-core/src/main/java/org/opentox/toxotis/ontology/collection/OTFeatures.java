@@ -45,80 +45,80 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 public class OTFeatures {
 
     public static final String NS = "http://www.opentox.org/api/1.1#";
-    private static OntologicalClass ms_IUPACName;
-    private static OntologicalClass ms_ChemicalName;
-    private static OntologicalClass ms_CASRN;
-    private static OntologicalClass ms_EINECS;
-    private static OntologicalClass ms_SMILES;
-    private static OntologicalClass ms_REACHRegistrationDate;
-    private static OntologicalClass ms_InChI_std;
-    private static OntologicalClass ms_InChIKey_std;
-    private static java.util.Map<String, Method> ms_methodCache;
+    private static OntologicalClass IUPACName;
+    private static OntologicalClass ChemicalName;
+    private static OntologicalClass CASRN;
+    private static OntologicalClass EINECS;
+    private static OntologicalClass SMILES;
+    private static OntologicalClass REACHRegistrationDate;
+    private static OntologicalClass InChI_std;
+    private static OntologicalClass InChIKey_std;
+    private static java.util.Map<String, Method> methodCache;
 
     private synchronized static void initMethodCache() {
-        if (ms_methodCache == null) {
-            ms_methodCache = new java.util.HashMap<String, Method>();
+        if (methodCache == null) {
+            methodCache = new java.util.HashMap<String, Method>();
             for (Method method : OTFeatures.class.getDeclaredMethods()) {
                 if (OntologicalClass.class.equals(method.getReturnType()) && method.getParameterTypes().length == 0) {
-                    ms_methodCache.put(method.getName(), method);
+                    methodCache.put(method.getName(), method);
                 }
             }
         }
     }
 
     public static OntologicalClass IUPACName() {
-        if (ms_IUPACName == null) {
-            ms_IUPACName = new OntologicalClassImpl("IUPACName");
+        if (IUPACName == null) {
+            IUPACName = new OntologicalClassImpl("IUPACName");
         }
-        return ms_IUPACName;
+        return IUPACName;
     }
 
     public static OntologicalClass CASRN() {
-        if (ms_CASRN == null) {
-            ms_CASRN = new OntologicalClassImpl("CASRN");
+        if (CASRN == null) {
+            CASRN = new OntologicalClassImpl("CASRN");
         }
-        return ms_CASRN;
+        return CASRN;
     }
 
     public static OntologicalClass ChemicalName() {
-        if (ms_ChemicalName == null) {
-            ms_ChemicalName = new OntologicalClassImpl("ChemicalName");
+        if (ChemicalName == null) {
+            ChemicalName = new OntologicalClassImpl("ChemicalName");
         }
-        return ms_ChemicalName;
+        return ChemicalName;
     }
 
     public static OntologicalClass EINECS() {
-        if (ms_EINECS == null) {
-            ms_EINECS = new OntologicalClassImpl("EINECS");
+        if (EINECS == null) {
+            EINECS = new OntologicalClassImpl("EINECS");
         }
-        return ms_EINECS;
+        return EINECS;
     }
 
     public static OntologicalClass SMILES() {
-        if (ms_SMILES == null) {
-            ms_SMILES = new OntologicalClassImpl("SMILES");
+        if (SMILES == null) {
+            SMILES = new OntologicalClassImpl("SMILES");
         }
-        return ms_SMILES;
+        return SMILES;
     }
 
     public static OntologicalClass InChI_std() {
-        if (ms_InChI_std == null) {
-            ms_InChI_std = new OntologicalClassImpl("InChI_std");
+        if (InChI_std == null) {
+            InChI_std = new OntologicalClassImpl("InChI_std");
         }
-        return ms_InChI_std;
+        return InChI_std;
     }
 
     public static OntologicalClass InChIKey_std() {
-        if (ms_InChIKey_std == null) {
-            ms_InChIKey_std = new OntologicalClassImpl("InChIKey_std");
+        if (InChIKey_std == null) {
+            InChIKey_std = new OntologicalClassImpl("InChIKey_std");
         }
-        return ms_InChIKey_std;
+        return InChIKey_std;
     }
 
     public static OntologicalClass REACHRegistrationDate() {
-        if (ms_REACHRegistrationDate == null) {
-            ms_REACHRegistrationDate = new OntologicalClassImpl("REACHRegistrationDate");
+        if (REACHRegistrationDate == null) {
+            REACHRegistrationDate = new OntologicalClassImpl("REACHRegistrationDate");
         }
-        return ms_REACHRegistrationDate;
+        return REACHRegistrationDate;
     }
 }

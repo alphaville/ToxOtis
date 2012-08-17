@@ -335,6 +335,7 @@ public class DatasetFactory {
             }
         } catch (final URISyntaxException ex) {
             String message = "Service URI is invalid";
+            ex.printStackTrace();
             logger.debug(message, ex);
             throw new RemoteServiceException(message, ex);
         }
@@ -342,6 +343,8 @@ public class DatasetFactory {
 
     public Task publishFromStream(InputStream source, Media fileType, AuthenticationToken token)
             throws ServiceInvocationException {
-        throw new UnsupportedOperationException("This is just a prototype!");
+        return publishFromStream(source, fileType.getMime(), token, Services.ideaconsult().augment("dataset"));
     }
+    
+    
 }

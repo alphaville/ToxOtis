@@ -82,7 +82,7 @@ public class FeatureSpider extends Tarantula<Feature> {
                     client.close();
                 } catch (IOException ex) {
                     throw new ConnectionException( "Error while trying to close the stream "
-                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                            + "with the remote location at :'" + ((uri != null) ? uri.toString() : null) + "'", ex);
                 }
             }
         }

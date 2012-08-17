@@ -5,7 +5,7 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.8.5-SNAPSHOT</version>
+    <version>0.8.5</version>
     <name>ToxOtis Core Module</name>
     <description></description>
     <developers>
@@ -140,6 +140,19 @@
                     <artifactId>cobertura-maven-plugin</artifactId>
                     <version>2.5.1</version>
                     <configuration>
+                        <instrumentation>
+                            <excludes>
+                                <exclude>org/opentox/toxotis/exceptions/*.*</exclude>
+                                <exclude>org/opentox/toxotis/profiler/*</exclude>
+                                <exclude>org/opentox/toxotis/core/component/qprf/*</exclude>
+                                <exclude>org/opentox/toxotis/client/I*</exclude>
+                                <exclude>org/opentox/toxotis/core/I*</exclude>
+                                <exclude>org/opentox/toxotis/ontology/OT*</exclude>                                
+                                <exclude>org/opentox/toxotis/ontology/MetaInfo.class</exclude>                                
+                                <exclude>org/opentox/toxotis/ontology/OntologicalClass.class</exclude>                                
+                                <exclude>org/opentox/toxotis/util/spiders/MultiParameterSpider.class</exclude>                                
+                            </excludes>
+                        </instrumentation>
                         <formats>
                             <format>html</format>
                             <format>xml</format>

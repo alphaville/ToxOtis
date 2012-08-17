@@ -6,7 +6,6 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.policy.Policy;
 import org.opentox.toxotis.util.aa.policy.PolicyManager;
 import org.opentox.toxotis.util.aa.policy.PolicyRule;
-import org.opentox.toxotis.util.aa.policy.PolicyWrapper;
 import org.opentox.toxotis.util.aa.policy.SingleSubject;
 
 /**

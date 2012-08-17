@@ -97,7 +97,7 @@ public class HTMLHeadImpl implements HTMLHead {
             builder.append("</title>\n");
         }
         if (author != null) {
-            builder.append("<meta name=\"AUTHOR\" content=\"" + author + "\" />\n");
+            builder.append("<meta name=\"AUTHOR\" content=\"").append(author).append("\" />\n");
         }
         builder.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n");
         builder.append("</head>\n");

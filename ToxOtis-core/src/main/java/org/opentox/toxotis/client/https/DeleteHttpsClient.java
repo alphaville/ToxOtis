@@ -89,7 +89,7 @@ public class DeleteHttpsClient extends AbstractHttpsClient {
             try {
                 int code = con.getResponseCode();
                 if (code != 200) {
-                    throw new RemoteServiceException("DELETE failed on '" + vri.clearToken() + "'. The remote service responded "
+                    throw new RemoteServiceException("DELETE failed on '" + vri + "'. The remote service responded "
                             + "with status code " + code);
                 }
             } catch (IOException ex) {

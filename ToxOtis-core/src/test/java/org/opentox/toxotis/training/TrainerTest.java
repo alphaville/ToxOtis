@@ -40,6 +40,10 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IGetClient;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.OpenToxAlgorithms;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Algorithm;
@@ -51,8 +55,10 @@ import org.opentox.toxotis.core.component.Task;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.factory.DatasetFactory;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.util.TaskRunner;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.TokenPool;
 import org.opentox.toxotis.util.spiders.ModelSpider;
@@ -101,10 +107,18 @@ public class TrainerTest {
         fail("Should have failed!");
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 30000)
     public void testTrain() throws ToxOtisException, IOException, ServiceInvocationException {
         AuthenticationToken at = TokenPool.getInstance().getToken("hampos");
         try {
+            
+//            Task task = DatasetFactory.getInstance().publishFromStream(null, Media.CHEMICAL_MDLSDF, at);
+//            TaskRunner runner = new TaskRunner(task);
+//            task = runner.call();
+//            Model doAmodel = new Model(task.getResultUri());
+//            
+            
+            
             Dataset dataset = new Dataset(Services.ideaconsult().augment("dataset", "R545"));
             dataset.loadFromRemote(at);
             Feature f = new Feature(Services.ideaconsult().augment("feature", "22200"));
@@ -151,12 +165,9 @@ public class TrainerTest {
         assertNotNull(task.getUri());
         assertEquals(OTClasses.Task(), task.getUri().getOntologicalClass());
         assertEquals(202, task.getHttpStatus(), 1E-6);
-        while (!Task.Status.COMPLETED.equals(task.getStatus())) {
-            if (Task.Status.ERROR.equals(task.getStatus())) {
-                fail("Task finished with error!");
-            }
-            task.loadFromRemote(at);
-        }
+        TaskRunner runner = new TaskRunner(task);
+        runner.setDelay(1000);
+        task = runner.call();
         assertEquals(200f, task.getHttpStatus(), 1E-6);
         assertEquals(OTClasses.Model(), task.getResultUri().getOntologicalClass());
 
@@ -182,4 +193,31 @@ public class TrainerTest {
             fail("Parameter missing from model!");
         }
     }
+
+    @Test
+    public void trainUseLeverage() throws ServiceInvocationException, IOException {
+        VRI datasetUri = Services.ideaconsult().augment("dataset", 54).addUrlParameter("max", 10);
+        Dataset ds = new Dataset();
+        ds.setUri(datasetUri);
+        ds.loadFromRemote();
+        Set<VRI> featuresSet = ds.getContainedFeatureUris();
+        assertNotNull(featuresSet);
+        assertFalse(featuresSet.isEmpty());
+        IGetClient getCli = null;
+        try {
+            getCli = ClientFactory.createGetClient(new VRI(datasetUri).removeUrlParameter("max").augment("feature"));
+            getCli.setMediaType(Media.TEXT_URI_LIST);
+            int httpStatus = getCli.getResponseCode();
+            assertEquals(200, httpStatus);
+            Set<VRI> responseFeaturesList = getCli.getResponseUriList();
+            assertNotNull(responseFeaturesList);
+            assertFalse(responseFeaturesList.isEmpty());
+            assertEquals(responseFeaturesList, featuresSet);
+        } catch (Exception ex) {
+            fail(ex.getLocalizedMessage());
+        } finally {
+            getCli.close();
+        }
+    }
+    
 }

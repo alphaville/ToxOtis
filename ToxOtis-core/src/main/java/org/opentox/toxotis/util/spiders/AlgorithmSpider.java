@@ -175,7 +175,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                 } catch (IOException ex) {
                     throw new ConnectionException(
                             "Error while trying to close the stream "
-                            + "with the remote location at :'" + ((uri != null) ? uri.clearToken().toString() : null) + "'", ex);
+                            + "with the remote location at :'" + ((uri != null) ? uri.toString() : null) + "'", ex);
                 }
             }
         }
