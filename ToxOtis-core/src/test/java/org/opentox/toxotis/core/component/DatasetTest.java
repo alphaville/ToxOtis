@@ -33,13 +33,8 @@
 package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,11 +42,9 @@ import java.util.Random;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
-import org.opentox.toxotis.factory.DatasetFactory;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -94,7 +87,7 @@ public class DatasetTest {
         List<Feature> features = new LinkedList<Feature>();
         for (int i = 0; i < nFeatures; i++) {
             Feature currentFeature = new Feature(Services.anonymous().augment("feature", RNG.nextLong()));
-            currentFeature.getLowLevelOntologies().add(OTClasses.NumericFeature());
+            currentFeature.getOntologicalClasses().add(OTClasses.NumericFeature());
             features.add(currentFeature);
         }
         for (int i = 0; i < nCompounds; i++) {
@@ -120,7 +113,7 @@ public class DatasetTest {
         uploadTask = taskRunner.call();
         assertNotNull("No Task", uploadTask.getUri());
         assertNotNull("No result returned", uploadTask.getResultUri());
-
+        System.out.println("Uploaded dataset at : "+uploadTask.getResultUri());
         Dataset retrievedDataset = new Dataset(uploadTask.getResultUri());
         retrievedDataset.loadFromRemote(at);
         Instances retrievedInstances = retrievedDataset.getInstances();

@@ -32,8 +32,8 @@
  */
 package org.opentox.toxotis.core;
 
+import java.util.Arrays;
 import java.util.Set;
-import org.opentox.toxotis.core.component.Dataset;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -50,6 +50,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
+import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**
@@ -71,13 +72,15 @@ public abstract class OTComponent<T extends IOTComponent>
     protected static final String tokenid = "tokenid";
     /* Every component is enabled by default */
     private boolean enabled = true;
+    private Set<OntologicalClass> ontologicalClassVault = new HashSet<OntologicalClass>();
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
+    private static final int hashOffset = 7, hashMod = 79;
 
     /**
      * Constructor for an empty OpenTox Component
      */
     protected OTComponent() {
-        setEnabled(true);
+        this.enabled = true;
     }
 
     protected OTComponent(VRI uri) {
@@ -114,7 +117,7 @@ public abstract class OTComponent<T extends IOTComponent>
     @Override
     public MetaInfo getMeta() {
         return meta;
-    }    
+    }
 
     /**
      * Set the meta-information of the component
@@ -262,6 +265,25 @@ public abstract class OTComponent<T extends IOTComponent>
     protected void writeClass(javax.xml.stream.XMLStreamWriter writer, OntologicalClass clazz) throws javax.xml.stream.XMLStreamException {
         writer.writeEmptyElement(OWL.NS, "Class");//1
         writer.writeAttribute("rdf:about", clazz.getUri());
+        ontologicalClassVault.add(clazz);
+        for (OntologicalClass superClass : clazz.getSuperClasses()) {
+            if (!ontologicalClassVault.contains(superClass)) {
+                writeClass(writer, superClass);
+            }
+        }
+    }
+
+    protected void writeSuperClassRelationships(javax.xml.stream.XMLStreamWriter writer)
+            throws javax.xml.stream.XMLStreamException {
+        for (OntologicalClass oc : ontologicalClassVault) {
+            writer.writeStartElement("rdf:Description");
+            writer.writeAttribute("rdf:about", oc.getUri());
+            for (OntologicalClass ocSuper : oc.getSuperClasses()) {
+                writer.writeEmptyElement("rdfs:subClassOf");
+                writer.writeAttribute("rdf:resource", ocSuper.getUri());
+            }
+            writer.writeEndElement();
+        }
     }
 
     protected void writeObjectProperty(javax.xml.stream.XMLStreamWriter writer, OTObjectProperty property) throws javax.xml.stream.XMLStreamException {
@@ -295,9 +317,7 @@ public abstract class OTComponent<T extends IOTComponent>
         if (getOntologicalClasses() == null) {
             setOntologicalClasses(new HashSet<OntologicalClass>(ontClasses.length));
         }
-        for (OntologicalClass oc : ontClasses) {
-            getOntologicalClasses().add(oc);
-        }
+        getOntologicalClasses().addAll(Arrays.asList(ontClasses));
         return (T) this;
     }
 
@@ -318,8 +338,8 @@ public abstract class OTComponent<T extends IOTComponent>
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + (this.uri != null ? this.uri.hashCode() : 0);
+        int hash = hashOffset;
+        hash = hashMod * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
     }
 }

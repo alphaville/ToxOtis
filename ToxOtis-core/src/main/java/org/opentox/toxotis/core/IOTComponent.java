@@ -99,14 +99,54 @@ public interface IOTComponent<T extends IOTComponent> {
      */
     T setMeta(MetaInfo meta);
 
+    /**
+     * The list of ontological classes for the current entity.
+     * @return 
+     *      Set of {@link OntologicalClass ontological classes}.
+     */
     Set<OntologicalClass> getOntologicalClasses();
 
+    /**
+     * A simple setter for the ontological classes of the current OT-component.
+     * @param ontClasses
+     *      The Set of ontological classes to be prescribed for the current 
+     *      component.
+     * @return 
+     *      The current component with the updated set of ontological classes.
+     */
     T setOntologicalClasses(Set<OntologicalClass> ontClasses);
     
+    /**
+     * Adds a list of ontological classes to the current ones.
+     * @param ontClasses
+     *      An array of ontological classes.
+     * @return 
+     *      The current modifiable object updated with the new
+     *      ontological classes.
+     */
     T addOntologicalClasses(OntologicalClass... ontClasses);
 
+    /**
+     * Whether the current entity is enabled. Only enabled entities are presented to
+     * end-users. An entity can be virtually deleted it is set to be disabled. 
+     * Further action of course is need to handle enabled and disabled resources.
+     * Mainly, this serves as an auxiliary property of all OT-components for easier
+     * DB management.
+     * 
+     * @return 
+     *      <code>true</code> if the object is enabled and <code>false</code>
+     *      otherwise.
+     */
     boolean isEnabled();
 
+    /**
+     * Sets the status of the current modifiable entity. 
+     * @param enabled
+     *      Whether to enable or to disable the current instance.
+     * @return 
+     *      The current modifiable object updated with the new value of 
+     *      the <code>enabled</code> status.
+     */
     T setEnabled(boolean enabled);
 
 }

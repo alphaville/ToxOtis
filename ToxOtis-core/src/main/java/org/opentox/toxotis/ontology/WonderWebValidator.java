@@ -52,7 +52,7 @@ import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
  * <p align=justify width=80%>
  * Validate an ontological model against the online OWL validator at
  * <code>http://www.mygrid.org.uk/OWL/Validator</code>. A method returns either
- * <code>true</code> or <code>false</code> depending on whether the sumbitted OntModel object is OWL-*
+ * <code>true</code> or <code>false</code> depending on whether the submitted OntModel object is OWL-*
  * compliant or not. Users can configure the validator to use a certain specification such
  * as <code>OWL-DL</code>, <code>OWL-Full</code> or <code>OWL-Lite</code>.
  * </p>

@@ -77,6 +77,7 @@ public class Feature extends OTPublishable<Feature> {
     private String units;
     private Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Feature.class);
+    private static final int hashOffset=3, hashMod=19;
 
     public Feature() {
         super();
@@ -96,6 +97,16 @@ public class Feature extends OTPublishable<Feature> {
         this.admissibleValues = admissibleValue;
     }
 
+    /**
+     * The lower-level ontological classes that are necessary to characterize the
+     * features. For example, if the feature is both an instance of {@link OTClasses#Feature ot:Feature}
+     * and {@link OTClasses#NumericFeature ot:NumericFeature}, then the latter suffices to describe the
+     * ontological properties of the entity - therefore {@link OTClasses#Feature ot:Feature} can 
+     * be omitted as it offers no meaningful information.
+     * 
+     * @return 
+     *      Set of lower-level ontologies
+     */
     public Set<OntologicalClass> getLowLevelOntologies() {
         Set<OntologicalClass> lowLevel = new HashSet<OntologicalClass>();
         for (OntologicalClass oc : getOntologicalClasses()) {
@@ -109,6 +120,16 @@ public class Feature extends OTPublishable<Feature> {
         return lowLevel;
     }
 
+    /**
+     * What this method does is that it sets the ontological classes of the
+     * current entity to the prescribed values if there are no other ontological
+     * classes already defined. In any other case, the ontological classes provided
+     * are appended to the set of existing ones.
+     * 
+     * @param ontologies 
+     *      A set of ontological classes.
+     * @see OntologicalClass
+     */
     public void setLowLevelOntologies(Set<OntologicalClass> ontologies) {
         if (getOntologicalClasses() == null) {
             setOntologicalClasses(ontologies);
@@ -117,10 +138,20 @@ public class Feature extends OTPublishable<Feature> {
         }
     }
 
+    /**
+     * Returns the units of the feature as a string.
+     * @return 
+     *      Units string.
+     */
     public String getUnits() {
         return units;
     }
 
+    /**
+     * Setter method for the units of the feature.
+     * @param units 
+     *      Units of the feature.
+     */
     public void setUnits(String units) {
         this.units = units;
     }
@@ -193,7 +224,7 @@ public class Feature extends OTPublishable<Feature> {
             }
         }
         if (units != null && !units.isEmpty()) {
-            builder.append("Units : " + units);
+            builder.append("Units : ").append(units);
         }
 
         return new String(builder);
@@ -389,8 +420,8 @@ public class Feature extends OTPublishable<Feature> {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 19 * hash + (this.getUri() != null ? this.getUri().toString().hashCode() : 0);
+        int hash = hashOffset;
+        hash = hashMod * hash + (this.getUri() != null ? this.getUri().toString().hashCode() : 0);
         return hash;
     }
 }

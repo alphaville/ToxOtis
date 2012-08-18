@@ -139,6 +139,7 @@ public class Dataset extends OTPublishable<Dataset> {
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
         initRdfWriter(writer);
 
+        writeClass(writer, OTClasses.OpenToxResource());
         writeClass(writer, OTClasses.Dataset());
         writeClass(writer, OTClasses.DataEntry());
         writeClass(writer, OTClasses.Compound());
@@ -147,6 +148,9 @@ public class Dataset extends OTPublishable<Dataset> {
         writeClass(writer, OTClasses.NominalFeature());
         writeClass(writer, OTClasses.NumericFeature());
         writeClass(writer, OTClasses.StringFeature());
+        
+        
+        writeSuperClassRelationships(writer);
 
         /*
          * Append Object Properties
@@ -248,12 +252,14 @@ public class Dataset extends OTPublishable<Dataset> {
                         writer.writeEndElement();// #__NODE_ACCEPT_VALUE
                     }
                 }
-                if (featureOntologies.contains(OTClasses.NumericFeature()) || featureOntologies.contains(OTClasses.Numeric())) {
+                if (featureOntologies.contains(OTClasses.NumericFeature()) || 
+                        featureOntologies.contains(OTClasses.Numeric())) {
                     writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute("rdf:resource", OTClasses.NumericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 }
-                if (featureOntologies.contains(OTClasses.StringFeature()) || featureOntologies.contains(OTClasses.String())) {
+                if (featureOntologies.contains(OTClasses.StringFeature()) || 
+                        featureOntologies.contains(OTClasses.String())) {
                     writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute("rdf:resource", OTClasses.StringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
