@@ -34,9 +34,7 @@ package org.opentox.toxotis.client.https;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.RequestHeaders;
@@ -65,8 +63,8 @@ public class GetHttpsClient extends AbstractHttpsClient implements IGetClient{
     @Override
     protected HttpsURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
-            java.net.URL target_url = uri.toURL();
-            con = (javax.net.ssl.HttpsURLConnection) target_url.openConnection();
+            java.net.URL targetUrl = uri.toURL();
+            con = (javax.net.ssl.HttpsURLConnection) targetUrl.openConnection();
             con.setRequestMethod(METHOD);
             con.setDoInput(true);
             con.setDoOutput(true);

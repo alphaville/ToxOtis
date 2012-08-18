@@ -159,7 +159,7 @@ public class LiteralValue<T> implements Serializable {
                 } else if (clazz == Date.class) {
                     this.value = (T) new Date(value);
                 } else if (String.class.isAssignableFrom(clazz)) {
-                    this.value = (T) value.toString();
+                    this.value = (T) value;
                 }
             }
         } else {

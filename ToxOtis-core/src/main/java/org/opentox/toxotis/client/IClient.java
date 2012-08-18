@@ -46,13 +46,14 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
  * Generic interface for a client in ToxOtis. 
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public interface IClient extends Closeable {
 
     /** Standard UTF-8 Encoding */
-    final String URL_ENCODING = "UTF-8";
+    String URL_ENCODING = "UTF-8";
 
     /**
      * Note: if the parameter name (paramName) is either 'Accept' or 'Content-type', this
@@ -61,13 +62,16 @@ public interface IClient extends Closeable {
      * it is not advisable that you choose this method for setting values to these headers. Once the
      * parameter name and its value are submitted to the client, they are encoded using the
      * standard UTF-8 encoding.
-     * @param paramName Name of the parameter which will be posted in the header
-     * @param paramValue Parameter value
-     * @return This object
+     * @param paramName 
+     *      Name of the parameter which will be posted in the header
+     * @param paramValue 
+     *      Parameter value
+     * @return 
+     *      The current instance of client with updated headers.
      * @throws NullPointerException
      *      If any of the arguments is <code>null</code>.
      */
-    IClient addHeaderParameter(String paramName, String paramValue) throws NullPointerException, IllegalArgumentException;
+    IClient addHeaderParameter(String paramName, String paramValue);
 
     /**
      * Provide an authentication token to the client. This token is given to the
@@ -78,12 +82,13 @@ public interface IClient extends Closeable {
      * to provide accounting facilities.
      *
      * @param token
-     * Authentication token which will be provided in the request's header.
-     * Authentication/Authorization follow RFC's guidelines according to which
-     * the token is provided using the Header {@link RequestHeaders#AUTHORIZATION
-     * Authorization}.
+     *      Authentication token which will be provided in the request's header.
+     *      Authentication/Authorization follow RFC's guidelines according to which
+     *      the token is provided using the Header {@link RequestHeaders#AUTHORIZATION
+     *      Authorization}.
+     * 
      * @return
-     * This object with an updated header.
+     *      This object with an updated header.
      */
     IClient authorize(AuthenticationToken token);
 
@@ -186,26 +191,33 @@ public interface IClient extends Closeable {
     IClient setMediaType(String mediaType);
 
     /**
-     * Specify the mediatype to be used in the <tt>Accept</tt> header providing
+     * Specify the media-type to be used in the <tt>Accept</tt> header providing
      * an instance of {@link Media }.
+     * 
      * @param mediaType
-     * Accepted mediatype
+     *      Accepted media-type
+     * 
+     * 
      * @see RequestHeaders#ACCEPT
      */
     IClient setMediaType(Media mediaType);
 
     /**
      * Set the URI on which the GET method is applied.
+     * 
      * @param vri
-     * The URI that will be used by the client to perform the remote connection.
+     *      The URI that will be used by the client to perform the 
+     *      remote connection.
      */
     IClient setUri(VRI vri) throws ToxOtisException;
 
     /**
      * Provide the target URI as a String
-     * @param uri The target URI as a String.
-     * @throws java.net.URISyntaxException In case the provided URI is syntactically
-     * incorrect.
+     * 
+     * @param uri 
+     *      The target URI as a String.
+     * @throws java.net.URISyntaxException 
+     *      In case the provided URI is syntactically incorrect.
      */
     IClient setUri(String uri) throws URISyntaxException, ToxOtisException;
 
@@ -213,19 +225,61 @@ public interface IClient extends Closeable {
      * Get the response of the remote service as a Set of URIs. The media type of
      * the request, as specified by the <code>Accept</code> header is set to
      * <code>text/uri-list</code>.
+     * 
      * @return
-     * Set of URIs returned by the remote service.
+     *      Set of URIs returned by the remote service.
      * @throws ToxOtisException
-     * In case some I/O communication error inhibits the transimittance of
-     * data between the client and the server or a some stream cannot close.
+     *      In case some I/O communication error inhibits the transmittance of
+     *      data between the client and the server or a some stream cannot close.
      */
     Set<VRI> getResponseUriList() throws ServiceInvocationException;
 
+    /**
+     * Returns the connection lock. While a connection is being established
+     * this lock is held by the client. You can monitor it to know exactly when the
+     * connection has been established.
+     * 
+     * @return 
+     *      The connection Write Lock.
+     */
     WriteLock getConnectionLock();
 
+    /**
+     * Returns the read-lock of the client. As long as the client reads the
+     * response that is returned from the remote location, this lock is being
+     * held by the client. Use this lock to know exactly when the client starts
+     * and stops reading from the response stream.
+     * 
+     * @return 
+     *      The read-lock.
+     */
     ReadLock getReadLock();
 
+    /**
+     * The header of the response.
+     * 
+     * @param header
+     *      Name of the header.
+     * @return
+     *      The value of the header as it is specified in the response.
+     * 
+     * @throws ServiceInvocationException 
+     *      A ServiceInvocationException  is thrown is the response headers are
+     *      not accessible for any reason including, but not limited to, 
+     *      connectivity issues.
+     */
     String getResponseHeader(String header) throws ServiceInvocationException;
 
+    /**
+     * Returns the content-type of the response. This is a short-cut for
+     * {@link #getResponseHeader(java.lang.String) #getResponseHeader("Content-type")}.
+     * 
+     * @return
+     *      The content-type of the response.
+     * @throws ServiceInvocationException 
+     *      A ServiceInvocationException is thrown in case this header value 
+     *      is not accessible as for example if the remote server is not
+     *      reachable.
+     */
     String getResponseContentType() throws ServiceInvocationException;
 }

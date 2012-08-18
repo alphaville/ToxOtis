@@ -34,15 +34,10 @@ public class GetArffTest {
     }
 
     @Test
-    public void testSomeMethod() throws Exception {
-//        GetArff getArff = new GetArff(new VRI("http://toxcreate2.in-silico.ch/dataset/111"));
+    public void testIrrelevantThings() throws Exception {
         long mem0 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        System.out.println("Memory used: " + mem0 / 1024 + " K bytes");
         GetArff getArff = new GetArff(new VRI("http://apps.ideaconsult.net:8080/ambit2/dataset/585036?max=50"));
         getArff.getInstances();
-        System.out.println("Done");
         long mem1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        System.out.println("Memory used: " + mem1 / 1024 + " K bytes");
-        System.out.println("Memory used for Jena object " + (mem1 - mem0) / (1024) + " K bytes");
     }
 }

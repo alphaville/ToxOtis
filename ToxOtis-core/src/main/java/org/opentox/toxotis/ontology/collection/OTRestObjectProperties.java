@@ -40,12 +40,15 @@ import org.opentox.toxotis.ontology.impl.OTObjectPropertyImpl;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
- *
+ * OpenTox REST Object Properties.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTRestObjectProperties {
+public final class OTRestObjectProperties {
 
+    /**
+     * NameSpace of the OpenTox REST ontology.
+     */
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
     private static OTObjectProperty ms_aa;
     private static OTObjectProperty ms_hasHTTPMethod;

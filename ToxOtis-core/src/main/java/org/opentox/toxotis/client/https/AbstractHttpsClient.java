@@ -155,7 +155,6 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
      * @throws ToxOtisException
      *      If the provided URI is not secure (https)
      */
-    
     @Override
     public AbstractHttpsClient setUri(VRI vri) throws ToxOtisException {
         if (vri != null) {
@@ -169,7 +168,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
 
     protected abstract javax.net.ssl.HttpsURLConnection initializeConnection(final java.net.URI uri) throws ServiceInvocationException;
 
-    protected javax.net.ssl.HttpsURLConnection connect(final java.net.URI uri) throws ServiceInvocationException{
+    protected javax.net.ssl.HttpsURLConnection connect(final java.net.URI uri) throws ServiceInvocationException {
         connectionLock.lock();
         try {
             return initializeConnection(uri);
@@ -199,23 +198,23 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
     public java.io.InputStream getRemoteStream() throws ConnectionException, ServiceInvocationException {
 //        readLock.lock();       
 //        try {
-            if (con == null) {
-                con = connect(vri.toURI());
-            }
-            if (con == null) {
-                ConnectionException badConnection = new ConnectionException("Cannot establish connection to " + getUri());
-                badConnection.setActor(vri != null ? vri.toString() : "N/A");
-                badConnection.setDetails("An instance of java.net.HttpURLConnection was attempted but the connection failed. Null "
-                        + "connection returned. The remote resource at '" + getUri() + "' seems not to be responding. The stream could "
-                        + "not open.");
-                throw badConnection;
-            }
-            int connectionResponseCode = getResponseCode();
-            if (connectionResponseCode == 200 || connectionResponseCode == 202 || connectionResponseCode == 201) {
-                return new java.io.BufferedInputStream(getConnectionInputStream(), bufferSize);
-            } else {
-                return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);
-            }
+        if (con == null) {
+            con = connect(vri.toURI());
+        }
+        if (con == null) {
+            ConnectionException badConnection = new ConnectionException("Cannot establish connection to " + getUri());
+            badConnection.setActor(vri != null ? vri.toString() : "N/A");
+            badConnection.setDetails("An instance of java.net.HttpURLConnection was attempted but the connection failed. Null "
+                    + "connection returned. The remote resource at '" + getUri() + "' seems not to be responding. The stream could "
+                    + "not open.");
+            throw badConnection;
+        }
+        int connectionResponseCode = getResponseCode();
+        if (connectionResponseCode == 200 || connectionResponseCode == 202 || connectionResponseCode == 201) {
+            return new java.io.BufferedInputStream(getConnectionInputStream(), bufferSize);
+        } else {
+            return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);
+        }
 //        } 
 //        finally {
 ////            readLock.unlock();
@@ -278,7 +277,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
 
     /** Get the response status */
     @Override
-    public int getResponseCode() throws ConnectionException, ServiceInvocationException  {
+    public int getResponseCode() throws ConnectionException, ServiceInvocationException {
 //        readLock.lock();
         int responseCode = 0;
         try {
@@ -291,7 +290,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
                     + "the server", ex);
             connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
             throw connectionExc;
-        } 
+        }
 //        finally {
 ////            readLock.unlock();
 //        }
@@ -311,7 +310,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
     }
 
     @Override
-    public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ServiceInvocationException {        
+    public com.hp.hpl.jena.ontology.OntModel getResponseOntModel() throws ServiceInvocationException {
         return getResponseOntModel("RDF/XML");
     }
 
@@ -335,7 +334,7 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
             ex.printStackTrace();
             throw new RemoteServiceException("Remote service at '" + getUri() + "' did not provide a valid "
                     + "RDF representation. The returned representation cannot be parsed", ex);
-        } 
+        }
 //        finally {
 ////            readLock.unlock();
 //        }
@@ -429,7 +428,9 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
     @Override
     public String getResponseContentType() throws ServiceInvocationException {
         String ct = getResponseHeader(RequestHeaders.CONTENT_TYPE);
-        if (ct==null) return null;
+        if (ct == null) {
+            return null;
+        }
         return ct.split(";")[0];
 
     }

@@ -51,14 +51,14 @@ public class OntologicalClassImpl implements OntologicalClass {
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OntologicalClassImpl.class);
 
     /**
-     * Contruct an empty instance of OntologicalClass. The namespace is by default
+     * Construct an empty instance of OntologicalClass. The name-space is by default
      * set to {@link OTClasses#NS ot} and its name is <code>null</code>.
      */
     public OntologicalClassImpl() {
     }
 
     /**
-     * Create a new Ontological Class with gicen name. The namespace is by default
+     * Create a new Ontological Class with given name. The name-space is by default
      * set to {@link OTClasses#NS ot}. Thus the URI of this class will be
      * <code>ot:{name}</code>.
      * @param name
@@ -84,7 +84,7 @@ public class OntologicalClassImpl implements OntologicalClass {
     public OntologicalClassImpl(String name, String namespace) {
         this(name);
         if (namespace != null) {
-            setNameSpace(namespace);
+            this.ns = namespace;
         }
     }
 
@@ -112,7 +112,6 @@ public class OntologicalClassImpl implements OntologicalClass {
 
     @Override
     public Set<OntologicalClass> getDisjointWith() {
-        OntModel om = null;
         return disjointWith;
     }
 

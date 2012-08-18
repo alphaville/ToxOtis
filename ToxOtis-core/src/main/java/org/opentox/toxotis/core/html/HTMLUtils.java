@@ -130,7 +130,7 @@ public class HTMLUtils {
             sb.append("<li>");
             sb.append(o.getValueAsString());
             if (displayType) {
-                sb.append(" <sup>^^" + o.getType() + "</sup>");
+                sb.append(" <sup>^^").append(o.getType()).append("</sup>");
             }
             sb.append("</li>\n");
         }
@@ -165,13 +165,13 @@ public class HTMLUtils {
         for (ResourceValue o : objects) {
             sb.append("<li>");
             if (doLink) {
-                sb.append("<a href=\"" + o.getUri().toString() + "\">");
+                sb.append("<a href=\"").append(o.getUri().toString()).append("\">");
             }
             sb.append(o.getUri().toString());
             if (doLink) {
                 sb.append("</a>");
             }
-            sb.append("  <sup>(" + o.getOntologicalClass().getName() + ")</sup>");
+            sb.append("  <sup>(").append(o.getOntologicalClass().getName()).append(")</sup>");
             sb.append("</li>\n");
         }
         builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
@@ -204,7 +204,7 @@ public class HTMLUtils {
         for (OntologicalClass o : objects) {
             sb.append("<li>");
             if (doLink) {
-                sb.append("<a href=\"" + o.getUri().toString() + "\">");
+                sb.append("<a href=\"").append(o.getUri().toString()).append("\">");
             }
             sb.append(o.getUri().toString());
             if (doLink) {
@@ -236,13 +236,13 @@ public class HTMLUtils {
          */
         Pattern pattern = Pattern.compile("(?:https?|ftps?)://?(?://((?:(([^:@]*):?([^:@]*))?@)?([^:/?#]*)(?::(\\d*))?))?((((?:[^?#/]*/)*)([^?#]*))(?:\\?([^#]*))?(?:#(.*))?)");
         String[] fragments = plainText.split("\\s");// space
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (String word : fragments) {
             Matcher matcher = pattern.matcher(word);
             if (matcher.find()) {
-                sb.append("<a href=\"" + word + "\">" + word + "</a> ");
+                sb.append("<a href=\"").append(word).append("\">").append(word).append("</a> ");
             } else {
-                sb.append(word + " ");
+                sb.append(word).append(" ");
             }
         }
         return sb.toString();

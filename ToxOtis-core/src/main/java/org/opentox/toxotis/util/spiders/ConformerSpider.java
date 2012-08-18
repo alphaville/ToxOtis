@@ -40,8 +40,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
@@ -98,15 +96,10 @@ public class ConformerSpider extends Tarantula<Conformer> {
         try {
             conformer = new Conformer(uri);
         } catch (ToxOtisException ex) {
-            throw new BadRequestException("Not a valid conformer URI : '"+uri+"'. " +
-                    "Parsing of remote resource won't continue!",ex);
+            throw new BadRequestException("Not a valid conformer URI : '" + uri + "'. "
+                    + "Parsing of remote resource won't continue!", ex);
         }
-        StmtIterator it = model.listStatements(
-                new SimpleSelector(null,
-                OTObjectProperties.dataEntry().asObjectProperty(model), (RDFNode) null));
-        StmtIterator it2 = null, it3 = null, itCompound = null;
-
-        itCompound = model.listStatements(
+        StmtIterator itCompound = model.listStatements(
                 new SimpleSelector(null,
                 RDF.type,
                 OTClasses.Conformer().inModel(model)));

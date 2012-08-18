@@ -50,7 +50,6 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
-import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**

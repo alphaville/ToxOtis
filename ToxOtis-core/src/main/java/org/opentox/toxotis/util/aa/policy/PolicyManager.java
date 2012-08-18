@@ -48,10 +48,8 @@ import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.https.DeleteHttpsClient;
-import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
-import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
@@ -63,7 +61,7 @@ import org.xml.sax.SAXException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class PolicyManager {
+public final class PolicyManager {
 
     private static final String SUBJECT_ID = "subjectid";
 

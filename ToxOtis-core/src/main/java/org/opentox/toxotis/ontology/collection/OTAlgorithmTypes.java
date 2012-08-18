@@ -51,7 +51,7 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTAlgorithmTypes {
+public final class OTAlgorithmTypes {
 
     private OTAlgorithmTypes() {
         // Cannot be subclassed!
@@ -76,7 +76,6 @@ public class OTAlgorithmTypes {
     private static OntologicalClass Normalization;
     private static OntologicalClass Supervised;
     private static OntologicalClass Unsupervised;
-    private static OntologicalClass Thing;
     private static Map<String, Method> methodCache;
 
     private synchronized static void initMethodCache() {
@@ -105,19 +104,11 @@ public class OTAlgorithmTypes {
         return result;
     }
 
-      private static OntologicalClass Thing() {
-        if (Thing == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Thing");
-            clazz.setNameSpace(OWL.NS);
-            clazz.getMetaInfo().addComment("All classes are subclasses of owl:Thing");
-            Thing = clazz;
-        }
-        return Thing;
-    }
-
-
     public static OntologicalClass forName(String name) {
         initMethodCache();
+        if ("Thing".equals(name)){
+            return OTClasses.Thing();
+        }
         try {
             Method method = methodCache.get(name);
             if (method == null) {

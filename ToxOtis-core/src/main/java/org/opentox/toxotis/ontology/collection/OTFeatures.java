@@ -42,7 +42,7 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTFeatures {
+public final class OTFeatures {
 
     public static final String NS = "http://www.opentox.org/api/1.1#";
     private static OntologicalClass IUPACName;

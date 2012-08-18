@@ -109,7 +109,7 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  * @see PasswordFileManager#authFromFile(java.io.File)
  * @see PasswordFileManager#createPasswordFile(java.lang.String, java.lang.String, java.lang.String) 
  */
-public class PasswordFileManager extends Observable {
+public final class PasswordFileManager extends Observable {
 
     private int cryptoIterations = 23;
     private javax.crypto.Cipher eCipher;

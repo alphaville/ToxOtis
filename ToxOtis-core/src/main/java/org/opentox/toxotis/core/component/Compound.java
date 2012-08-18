@@ -193,9 +193,9 @@ public class Compound extends DescriptorCaclulation<Compound> {
         for (VRI confUri : uriList) {
             try {
                 confmers.add(new Conformer(new VRI(confUri)));
-            } catch (ToxOtisException ex) {
+            } catch (final ToxOtisException ex) {
                 throw new RemoteServiceException("Remote service returned the URI : " + confUri + " which is "
-                        + "not a valid conformer URI");
+                        + "not a valid conformer URI", ex);
             }
         }
         return confmers;
@@ -278,7 +278,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         for (VRI featureUri : featureUris) {
             dsUri.addUrlParameter("feature_uris[]", featureUri.toString());
         }
-        
+
         GetHttpClient client = new GetHttpClient();
         client.setUri(dsUri);
         client.setMediaType(Media.APPLICATION_RDF_XML);
@@ -320,7 +320,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
     }
 
     @Override
-    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {                
+    public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
         PostHttpClient client = new PostHttpClient(vri);
         client.authorize(token);
         client.setContentType(Media.APPLICATION_RDF_XML.getMime());
@@ -336,18 +336,18 @@ public class Compound extends DescriptorCaclulation<Compound> {
             try {
                 readyTask.setResultUri(new VRI(client.getResponseText()));
                 return readyTask;
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 throw new RemoteServiceException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
-                        + "'. Received status code 200 and messaage:" + client.getResponseText());
+                        + "'. Received status code 200 and messaage:" + client.getResponseText(), ex);
             }
         } else if (status == 202) {
             try {
                 VRI taskUri = new VRI(client.getResponseText());
                 TaskSpider tskSpider = new TaskSpider(taskUri);
                 return tskSpider.parse();
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 throw new RemoteServiceException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
-                        + "'. Received status code 202 and messaage:" + client.getResponseText());
+                        + "'. Received status code 202 and messaage:" + client.getResponseText(), ex);
             }
         }
 

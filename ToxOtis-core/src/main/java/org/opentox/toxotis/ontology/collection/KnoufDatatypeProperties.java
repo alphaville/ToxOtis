@@ -47,7 +47,7 @@ import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class KnoufDatatypeProperties {
+public final class KnoufDatatypeProperties {
 
     private KnoufDatatypeProperties() {
     }

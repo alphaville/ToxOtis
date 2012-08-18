@@ -41,7 +41,7 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTEchaEndpoints {
+public final class OTEchaEndpoints {
 
     private static final String _NS = "http://www.opentox.org/echaEndpoints.owl#%s";
     public static final String NS = String.format(_NS, "");

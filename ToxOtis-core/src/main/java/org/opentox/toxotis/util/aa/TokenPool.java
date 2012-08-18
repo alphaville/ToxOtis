@@ -49,7 +49,7 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class TokenPool {
+public final class TokenPool {
 
     private static TokenPool instanceOfThis;
     private Map<String, AuthenticationToken> pool = new HashMap<String, AuthenticationToken>();

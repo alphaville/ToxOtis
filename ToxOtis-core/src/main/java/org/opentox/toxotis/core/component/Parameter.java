@@ -50,7 +50,6 @@ import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
-import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
  * A parameter of an Algorithm characterized by its name, value and scope. Being an
@@ -65,6 +64,7 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupport {
 
     private String name;
+    private static final int hashOffset = 7, hashMod = 37;
 
     public void endowUri(final VRI baseUri) {
         if (super.uri == null) {
@@ -276,10 +276,10 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + (this.getName() != null ? this.getName().hashCode() : 0);
-        hash = 37 * hash + (this.typedValue != null ? this.typedValue.hashCode() : 0);
-        hash = 37 * hash + (this.scope != null ? this.scope.toString().hashCode() : 0);
+        int hash = hashOffset;
+        hash = hashMod * hash + (this.getName() != null ? this.getName().hashCode() : 0);
+        hash = hashMod * hash + (this.typedValue != null ? this.typedValue.hashCode() : 0);
+        hash = hashMod * hash + (this.scope != null ? this.scope.toString().hashCode() : 0);
         return hash;
     }
 }

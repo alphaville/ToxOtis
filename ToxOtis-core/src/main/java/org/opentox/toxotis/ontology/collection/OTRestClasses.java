@@ -41,15 +41,18 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
 /**
  * Collection of ontological classes needed to define the REST interface operations
- * over a URI that providesa access to web services.
+ * over a URI that provides access to web services.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTRestClasses {
+public final class OTRestClasses {
 
     private OTRestClasses() {
     }
     
+    /**
+     * NameSpace of the OpenTox ontology.
+     */
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
     private static OntologicalClass msHTTPMethod;
     private static OntologicalClass msHTTPStatus;

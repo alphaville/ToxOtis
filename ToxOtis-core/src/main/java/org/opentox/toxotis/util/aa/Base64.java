@@ -24,7 +24,7 @@ package org.opentox.toxotis.util.aa;
  * Author: Christian d'Heureuse, Inventec Informatik AG, Zurich, Switzerland<br>
  * Multi-licensed: EPL / LGPL / AL / BSD.
  */
-class Base64 {  /// <<<< Can be accessed only from inside this package!
+final class Base64 {  /// <<<< Can be accessed only from inside this package!
 
 // The line separator string of the operating system.
     private static final String systemLineSeparator = System.getProperty("line.separator");

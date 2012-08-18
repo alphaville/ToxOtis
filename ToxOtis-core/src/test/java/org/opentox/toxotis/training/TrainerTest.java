@@ -55,7 +55,6 @@ import org.opentox.toxotis.core.component.Task;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
-import org.opentox.toxotis.factory.DatasetFactory;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.TaskRunner;
@@ -110,40 +109,28 @@ public class TrainerTest {
     @Test(timeout = 30000)
     public void testTrain() throws ToxOtisException, IOException, ServiceInvocationException {
         AuthenticationToken at = TokenPool.getInstance().getToken("hampos");
-        try {
-            
-//            Task task = DatasetFactory.getInstance().publishFromStream(null, Media.CHEMICAL_MDLSDF, at);
-//            TaskRunner runner = new TaskRunner(task);
-//            task = runner.call();
-//            Model doAmodel = new Model(task.getResultUri());
-//            
-            
-            
-            Dataset dataset = new Dataset(Services.ideaconsult().augment("dataset", "R545"));
-            dataset.loadFromRemote(at);
-            Feature f = new Feature(Services.ideaconsult().augment("feature", "22200"));
-            Algorithm algorithm = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceVri());
-            Trainer trainer = new Trainer(algorithm, dataset, f);
-            assertEquals(algorithm, trainer.getAlgorithm());
-            assertEquals(f, trainer.getPredictionFeature());
-            assertEquals(dataset.getUri(), trainer.getDataset().getUri());
-            Task task = trainer.train(at);
-            task = task.loadFromRemote(at);
-            assertNotNull(task);
-            assertNotNull(task.getUri());
-            assertEquals(OTClasses.Task(), task.getUri().getOntologicalClass());
-            assertEquals(202, task.getHttpStatus(), 1E-6);
-            while (!Task.Status.COMPLETED.equals(task.getStatus())) {
-                if (Task.Status.ERROR.equals(task.getStatus())) {
-                    fail("Task finished with error!");
-                }
-                task.loadFromRemote(at);
+        Dataset dataset = new Dataset(Services.ideaconsult().augment("dataset", "R545"));
+        dataset.loadFromRemote(at);
+        Feature f = new Feature(Services.ideaconsult().augment("feature", "22200"));
+        Algorithm algorithm = new Algorithm(OpenToxAlgorithms.NTUA_MLR.getServiceVri());
+        Trainer trainer = new Trainer(algorithm, dataset, f);
+        assertEquals(algorithm, trainer.getAlgorithm());
+        assertEquals(f, trainer.getPredictionFeature());
+        assertEquals(dataset.getUri(), trainer.getDataset().getUri());
+        Task task = trainer.train(at);
+        task = task.loadFromRemote(at);
+        assertNotNull(task);
+        assertNotNull(task.getUri());
+        assertEquals(OTClasses.Task(), task.getUri().getOntologicalClass());
+        assertEquals(202, task.getHttpStatus(), 1E-6);
+        while (!Task.Status.COMPLETED.equals(task.getStatus())) {
+            if (Task.Status.ERROR.equals(task.getStatus())) {
+                fail("Task finished with error!");
             }
-            assertEquals(200f, task.getHttpStatus(), 1E-6);
-            assertEquals(OTClasses.Model(), task.getResultUri().getOntologicalClass());
-        } finally {
-//            at.invalidate();
+            task.loadFromRemote(at);
         }
+        assertEquals(200f, task.getHttpStatus(), 1E-6);
+        assertEquals(OTClasses.Model(), task.getResultUri().getOntologicalClass());
     }
 
     @Test(timeout = 20000)
@@ -195,11 +182,13 @@ public class TrainerTest {
     }
 
     @Test
-    public void trainUseLeverage() throws ServiceInvocationException, IOException {
+    public void trainUseLeverage() throws ServiceInvocationException, IOException, ToxOtisException {
+        AuthenticationToken at = TokenPool.getInstance().getToken("hampos");
         VRI datasetUri = Services.ideaconsult().augment("dataset", 54).addUrlParameter("max", 10);
+        System.out.println(datasetUri);
         Dataset ds = new Dataset();
         ds.setUri(datasetUri);
-        ds.loadFromRemote();
+        ds.loadFromRemote(at);
         Set<VRI> featuresSet = ds.getContainedFeatureUris();
         assertNotNull(featuresSet);
         assertFalse(featuresSet.isEmpty());
@@ -219,5 +208,4 @@ public class TrainerTest {
             getCli.close();
         }
     }
-    
 }

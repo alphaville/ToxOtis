@@ -44,7 +44,6 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.TaskSpider;
 
@@ -56,7 +55,7 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class CompoundFactory {
+public final class CompoundFactory {
 
     private static CompoundFactory factory = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CompoundFactory.class);

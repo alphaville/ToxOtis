@@ -46,7 +46,7 @@ import org.opentox.toxotis.ontology.impl.OTObjectPropertyImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTObjectProperties {
+public final class OTObjectProperties {
 
     private OTObjectProperties() {
     }
@@ -96,9 +96,9 @@ public class OTObjectProperties {
             }
             OTObjectProperty oc = (OTObjectProperty) method.invoke(null);
             return oc;
-        } catch (IllegalAccessException ex) {
+        } catch (final IllegalAccessException ex){
             throw new RuntimeException(ex);
-        } catch (InvocationTargetException ex) {
+        }catch (final  InvocationTargetException ex){
             throw new RuntimeException(ex);
         }
 

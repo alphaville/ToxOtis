@@ -118,8 +118,8 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     @Override
     protected HttpsURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
-            java.net.URL target_url = uri.toURL();
-            con = (javax.net.ssl.HttpsURLConnection) target_url.openConnection();
+            java.net.URL targetUrl = uri.toURL();
+            con = (javax.net.ssl.HttpsURLConnection) targetUrl.openConnection();
             con.setRequestMethod(METHOD);
             con.setDoInput(true);
             con.setDoOutput(true);

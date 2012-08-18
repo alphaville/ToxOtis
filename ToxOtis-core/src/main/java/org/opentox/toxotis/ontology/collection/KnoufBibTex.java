@@ -46,7 +46,7 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class KnoufBibTex {
+public final class KnoufBibTex {
 
     private KnoufBibTex() {
     }

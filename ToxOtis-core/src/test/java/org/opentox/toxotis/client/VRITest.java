@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.client;
 
 import java.net.URISyntaxException;
@@ -73,6 +71,36 @@ public class VRITest {
     }
 
     @Test
+    public void testVriValidity() {
+        VRI report2 = Services.anonymous().augment("xxx", "reach_report", "qprf", "1");
+        assertEquals(Services.anonymous().augment("xxx"), report2.getServiceBaseUri());
+        assertEquals("1", report2.getId());
+        assertEquals(OTClasses.QPRFReport(), report2.getOntologicalClass());
+        assertEquals(QprfReport.class, report2.getOpenToxType());
+    }
+
+    @Test
+    public void testModelUri() {
+        VRI model = Services.anonymous().augment("model", "x");
+        assertEquals(Services.anonymous(), model.getServiceBaseUri());
+        assertEquals(Services.anonymous().getHost(), model.getHost());
+        assertEquals(Model.class, model.getOpenToxType());
+        assertEquals("x", model.getId());
+        assertEquals(OTClasses.Model(), model.getOntologicalClass());
+    }
+
+    @Test
+    public void testModelUri2() {
+        VRI model2 = Services.anonymous().augment("a", "model", "x");
+        assertEquals(Services.anonymous().augment("a"), model2.getServiceBaseUri());
+        assertEquals(Services.anonymous().getHost(), model2.getHost());
+        assertEquals(Model.class, model2.getOpenToxType());
+        assertEquals("x", model2.getId());
+        assertEquals(OTClasses.Model(), model2.getOntologicalClass());
+        assertEquals("http", model2.getProtocol());
+    }
+
+    @Test
     public void testSomeMethod() throws URISyntaxException {
 
         VRI report = new VRI(Services.anonymous() + "reach_report/qprf/1");
@@ -81,28 +109,19 @@ public class VRITest {
         assertEquals("1", report.getId());
         assertEquals(QprfReport.class, report.getOpenToxType());
         assertEquals(OTClasses.QPRFReport(), report.getOntologicalClass());
+    }
 
-        VRI report2 = Services.anonymous().augment("xxx", "reach_report", "qprf", "1");
-        assertEquals(Services.anonymous().augment("xxx"), report2.getServiceBaseUri());
-        assertEquals("1", report2.getId());
-        assertEquals(OTClasses.QPRFReport(), report2.getOntologicalClass());
-        assertEquals(QprfReport.class, report2.getOpenToxType());
+    @Test
+    public void testMore() {
+        VRI dataset = Services.ambitUniPlovdiv().augment("dataset", "123").addUrlParameter("max", "10");
+        Pair<String, String> pair = dataset.getUrlParams().iterator().next();
+        assertEquals("max", pair.getKey());
+        assertEquals("10", pair.getValue());
+        assertEquals("max=10", dataset.getQueryAsString());
+        assertEquals(Services.ambitUniPlovdiv().augment("dataset", "123").toString(), dataset.getStringNoQuery());
+    }
 
-        VRI model = Services.anonymous().augment("model", "x");
-        assertEquals(Services.anonymous(), model.getServiceBaseUri());
-        assertEquals(Services.anonymous().getHost(), model.getHost());
-        assertEquals(Model.class, model.getOpenToxType());
-        assertEquals("x", model.getId());
-        assertEquals(OTClasses.Model(), model.getOntologicalClass());
-
-        VRI model2 = Services.anonymous().augment("a", "model", "x");
-        assertEquals(Services.anonymous().augment("a"), model2.getServiceBaseUri());
-        assertEquals(Services.anonymous().getHost(), model2.getHost());
-        assertEquals(Model.class, model2.getOpenToxType());
-        assertEquals("x", model2.getId());
-        assertEquals(OTClasses.Model(), model2.getOntologicalClass());
-        assertEquals("http", model2.getProtocol());
-
+    public void testVriOnceAgain() {
         VRI algo = Services.ideaconsult().augment("x", "y", "x", "x", "algorithm", "mlr");
         assertEquals("mlr", algo.getId());
         assertEquals(OTClasses.Algorithm(), algo.getOntologicalClass());
@@ -110,14 +129,13 @@ public class VRITest {
         assertEquals("", algo.getQueryAsString());
         assertEquals("http", algo.getProtocol());
         assertEquals(8080, algo.getPort());
+    }
 
-        VRI dataset = Services.ambitUniPlovdiv().augment("dataset", "123").addUrlParameter("max", "10");
-        Pair<String, String> pair = dataset.getUrlParams().iterator().next();
-        assertEquals("max", pair.getKey());
-        assertEquals("10", pair.getValue());
-        assertEquals("max=10", dataset.getQueryAsString());
-        assertEquals(Services.ambitUniPlovdiv().augment("dataset", "123").toString(), dataset.getStringNoQuery());        
-
-
+    @Test
+    public void testAugment() {
+        VRI myuri = Services.ideaconsult().augment("dataset", 54);
+        assertEquals("http://apps.ideaconsult.net:8080/ambit2/dataset/54", myuri.toString());
+        myuri.addUrlParameter("max", 123);
+        assertEquals("http://apps.ideaconsult.net:8080/ambit2/dataset/54?max=123", myuri.toString());
     }
 }

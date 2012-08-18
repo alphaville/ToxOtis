@@ -76,7 +76,10 @@ import org.opentox.toxotis.util.spiders.BibTeXSprider;
 /**
  * Bibliographic reference designed according to the BibTeX specifications. OpenTox
  * resource are pointing to bibliographic entries (articles, conferences etc) using the
- * Knouf ontology.
+ * Knouf ontology. Part of the JavaDoc documentation in this class has been 
+ * fetched from the manual: <em>BibTeXing The original manual (1988) by the 
+ * co-author of BibTeX, Oren Patashnik.</em>. You can find more information about
+ * BibTeX at <a href="http://en.wikipedia.org/wiki/BibTeX">en.wikipedia.org/wiki/BibTeX</a>.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -93,11 +96,14 @@ public class BibTeX extends OTPublishable<BibTeX>
     public enum BIB_TYPE {
 
         /**
-         * An article
+         * An article from a journal or magazine. Required fields: author, title,
+         * journal, year. Optional fields: volume, number, pages, month, note.
          */
         Article,
         /**
-         * A book
+         * A book with an explicit publisher. Required fields: author or editor,
+         * title, publisher, year. Optional fields: volume or number, series,
+         * address, edition, month, note.
          */
         Book,
         /**
@@ -107,21 +113,27 @@ public class BibTeX extends OTPublishable<BibTeX>
          */
         Conference,
         /**
-         * A PhD dissertation
+         * A PhD dissertation. Required fields: author, title, school, year. 
+         * Optional fields: type, address, month, note.
          */
         Phdthesis,
         /**
          * A work that is printed and bound, but without a named
-         * publisher or sponsoring institution.
+         * publisher or sponsoring institution. Required field: title. 
+         * Optional fields: author, howpublished, address, month, year, note.
          */
         Booklet,
         /**
          * A part of a book, which may be a chapter (or section or whatever)
-         * and/or a range of pages.
+         * and/or a range of pages. Required fields: author or editor, title,
+         * chapter and/or pages, publisher, year. Optional fields: volume or
+         * number, series, type, address, edition, month, note.
          */
         Inbook,
         /**
-         * A part of a book having its own title.
+         * A part of a book having its own title. Required fields: author,
+         * title, booktitle, publisher, year. Optional fields: editor, volume or
+         * number, series, type, chapter, pages, address, edition, month, note.
          */
         Incollection,
         /**
@@ -190,14 +202,28 @@ public class BibTeX extends OTPublishable<BibTeX>
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BibTeX.class);
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
+    /**
+     * The user that created the BibTeX object.
+     * @return 
+     *      Instance of {@link User}
+     */
     public User getCreatedBy() {
         return m_createdBy;
     }
 
+    /**
+     * Sets the user who created the current BibTeX object.
+     * @param createdBy 
+     *      Instance of {@link User}
+     */
     public void setCreatedBy(User createdBy) {
         this.m_createdBy = createdBy;
     }
 
+    /**
+     * The abstract of the BibTeX object.
+     * @return 
+     */
     public String getAbstract() {
         return m_abstract;
     }
@@ -207,6 +233,11 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * The name(s) of the author(s), in the format described in the LaTeX book.
+     * @return 
+     *      Name(s) of authors as String.
+     */
     public String getAuthor() {
         return m_author;
     }
@@ -216,15 +247,37 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * The bibliographic type.
+     * @return 
+     *      The bibliographic type of the current BibTeX object 
+     *      as an instance of {@link BIB_TYPE }.
+     */
     public BIB_TYPE getBibType() {
         return m_bib_type;
     }
 
-    public BibTeX setBibType(BIB_TYPE m_bib_type) {
-        this.m_bib_type = m_bib_type;
+    /**
+     * Setter for the bibliographic type.
+     * @param bibType
+     *      The bibliographic type you need to specify.
+     * @return 
+     *      The current modifiable instance of BibTeX with the updated
+     *      value of bibtype. 
+     * @see #getBibType() getBibType() 
+     */
+    public BibTeX setBibType(BIB_TYPE bibType) {
+        this.m_bib_type = bibType;
         return this;
     }
 
+    /**
+     * Title of a book, part of which is being cited. See the LaTeX book for
+     * how to type titles. For book entries, use the <code>title</code> field instead.
+     * 
+     * @return 
+     *      The <code>booktitle</code> as String.
+     */
     public String getBookTitle() {
         return m_bookTitle;
     }
@@ -261,19 +314,49 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * The edition of a book—for example, "Second". This should be an
+     * ordinal, and should have the first letter capitalized, as shown here; the
+     * standard styles convert to lower case when necessary.
+     * 
+     * @return 
+     *  The edition of the BibTeX object.
+     */
     public String getEdition() {
         return m_edition;
     }
 
-    public BibTeX setEdition(String m_edition) {
-        this.m_edition = m_edition;
+    /**
+     * Setter for the edition.
+     * @param edition
+     * @return 
+     *      The current modifiable BibTeX object updated with the value of edition.
+     * @see #getEdition() 
+     */
+    public BibTeX setEdition(String edition) {
+        this.m_edition = edition;
         return this;
     }
 
+    /**
+     * Name(s) of editor(s), typed as indicated in the LaTeX book. If there is
+     * also an author field, then the editor field gives the editor of the book or
+     * collection in which the reference appears.
+     * 
+     * @return 
+     *      Editor(s) as String.
+     */
     public String getEditor() {
         return m_editor;
     }
 
+    /**
+     * Setter for the editor(s).
+     * @param edition
+     * @return 
+     *      The current modifiable BibTeX object updated with the value of editor(s).
+     * @see #getEditor() 
+     */
     public BibTeX setEditor(String m_editor) {
         this.m_editor = m_editor;
         return this;
@@ -297,33 +380,88 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * A journal name. Abbreviations are provided for many journals; see
+     * the Local Guide.
+     * 
+     * @return 
+     *      The journal name as a String.
+     */
     public String getJournal() {
         return m_journal;
     }
 
+    /**
+     * Setter for the journal name.
+     * 
+     * @param journal
+     *      Name of the journal.
+     * @return 
+     *      The current BibTeX instance with updated <code>journal</code>.
+     * @see #getJournal() getJournal()
+     */
     public BibTeX setJournal(String journal) {
         this.m_journal = journal;
         return this;
     }
 
+    /**
+     * Used for alphabetizing, cross referencing, and creating a label when the
+     * "author" information (described in Section 4) is missing. This field should
+     * not be confused with the key that appears in the <code>\cite</code> command and at
+     * the beginning of the database entry.
+     * 
+     * @return 
+     */
     public String getKey() {
         return m_key;
     }
 
+    /**
+     * Setter for the variable key.
+     * 
+     * @param key
+     *      The key.
+     * @return 
+     *      The current object with updated value of key.
+     * @see #getKey() getKey()
+     */
     public BibTeX setKey(String key) {
         this.m_key = key;
         return this;
     }
 
+    /**
+     * A list of keywords separated by any custom delimiter.
+     * @return 
+     *      List of keywords as a single string.
+     */
     public String getKeywords() {
         return m_keywords;
     }
 
+    /**
+     * Set a list of keywords separated by any custom delimiter.
+     * 
+     * @param keywords
+     *      Keywords.
+     * @return 
+     *      The current object with updated value of keywords.
+     */
     public BibTeX setKeywords(String keywords) {
         this.m_keywords = keywords;
         return this;
     }
 
+    /**
+     * The number of a journal, magazine, technical report, or of a work in a
+     * series. An issue of a journal or magazine is usually identified by its volume
+     * and number; the organization that issues a technical report usually gives
+     * it a number; and sometimes books are given numbers in a named series.
+     * 
+     * @return 
+     *      The number of the current BibTeX object.
+     */
     public Integer getNumber() {
         if (m_number == null) {
             return null;
@@ -331,6 +469,15 @@ public class BibTeX extends OTPublishable<BibTeX>
         return Integer.parseInt(m_number);
     }
 
+    /**
+     * Setter method for the number of the current BibTeX object.
+     * 
+     * @param number
+     *      The <code>number</code> as Integer.
+     * @return 
+     *      The current modifiable BibTeX object updated number.
+     * @see #getNumber() getNumber()
+     */
     public BibTeX setNumber(Integer number) {
         if (number == null || (number != null && number < 0)) {
             this.m_number = null;
@@ -340,15 +487,40 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * One or more page numbers or range of numbers, such as 42--111 or
+     * 7,41,73--97 or 43+ (the ‘+’ in this last example indicates pages following
+     * that don’t form a simple range). To make it easier to maintain Scribe-
+     * compatible databases, the standard styles convert a single dash (as in
+     * 7-33) to the double dash used in TEX to denote number ranges (as in
+     * 7--33).
+     * 
+     * @return 
+     *      Pages as String.
+     */
     public String getPages() {
         return m_pages;
     }
 
+    /**
+     * Setter method for the pages of the current BibTeX object.
+     * @param pages
+     *      Pages as String
+     * @return 
+     *      The current modifiable BibTeX object updated pages.
+     * @see #getPages() getPages()
+     */
     public BibTeX setPages(String pages) {
         this.m_pages = pages;
         return this;
     }
 
+    /**
+     * The volume of a journal or multivolume book.
+     * 
+     * @return 
+     *      The volume as Integer.
+     */
     public Integer getVolume() {
         if (m_volume == null) {
             return null;
@@ -356,6 +528,13 @@ public class BibTeX extends OTPublishable<BibTeX>
         return Integer.parseInt(m_volume);
     }
 
+    /**
+     * Setter method for the volume of a journal or multivolume book.
+     * @param volume
+     *      The volume as Integer.
+     * @return 
+     *      The current modifiable BibTeX object updated volume.
+     */
     public BibTeX setVolume(Integer volume) {
         if (volume == null || (volume != null && volume < 0)) {
             this.m_volume = null;
@@ -365,6 +544,14 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * The year of publication or, for an unpublished work, the year it was written. 
+     * Generally it should consist of four numerals, such as <code>1984</code>. This
+     * method returns the year as Integer.
+     * 
+     * @return
+     *      The year of publication/inception as Integer.
+     */
     public Integer getYear() {
         if (m_year == null) {
             return null;
@@ -390,37 +577,99 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * Usually the address of the publisher or other type of institution. For
+     * major publishing houses, van Leunen recommends omitting the information 
+     * entirely. For small publishers, on the other hand, you can help the
+     * reader by giving the complete address.
+     * 
+     * @return 
+     *      The address as String.
+     */
     public String getAddress() {
         return m_address;
     }
 
+    /**
+     * Setter method for the address of the publisher or other type of institution. For
+     * major publishing houses, it is preferable to omit the information 
+     * entirely. For other smaller publishers, you can help the reader by giving 
+     * the complete address.
+     * 
+     * @param address
+     *      The address as a simple String.     
+     * @return 
+     *      The current modifiable BibTeX object updated address.
+     */
     public BibTeX setAddress(String address) {
         this.m_address = address;
         return this;
     }
 
+    /**
+     * An annotation. It is not used by the standard bibliography styles, but
+     * may be used by others that produce an annotated bibliography.
+     * 
+     * @return 
+     *      Annotation as String.
+     */
     public String getAnnotation() {
         return m_annotation;
     }
 
+    /**
+     * Setter method for the annotation.
+     * @param annotation
+     *      The annotation as String.
+     * @return 
+     *      The current modifiable BibTeX object updated annotation.
+     * @see #getAnnotation() getAnnotation()
+     */
     public BibTeX setAnnotation(String annotation) {
         this.m_annotation = annotation;
         return this;
     }
 
+    /**
+     * The name of a series or set of books. When citing an entire book, the
+     * the title field gives its title and an optional series field gives the name
+     * of a series or multi-volume set in which the book is published.
+     * 
+     * @return 
+     *      The <code>series</code> as String.
+     */
     public String getSeries() {
         return m_series;
     }
 
-    public BibTeX setSeries(String m_series) {
-        this.m_series = m_series;
+    /**
+     * Setter method for the <code>series</code> of the BibTeX entry.
+     * @param series
+     *      Series as String.
+     * @return 
+     *      The current modifiable BibTeX object updated series.
+     */
+    public BibTeX setSeries(String series) {
+        this.m_series = series;
         return this;
     }
 
+    /**
+     * The work’s title, typed as explained in the LaTeX book.
+     * @return 
+     *      The title as String.
+     */
     public String getTitle() {
         return m_title;
     }
 
+    /**
+     * Setter method for the title.
+     * @param title
+     *      The title as String.
+     * @return 
+     *      The current modifiable BibTeX object updated title.
+     */
     public BibTeX setTitle(String title) {
         this.m_title = title;
         return this;
@@ -430,17 +679,34 @@ public class BibTeX extends OTPublishable<BibTeX>
         return m_url;
     }
 
+    /**
+     * 
+     * @param Url
+     *      The URL of the BibTeX actual document.
+     * @return 
+     *      The current modifiable BibTeX object updated annotation.
+     */
     public BibTeX setUrl(String Url) {
         this.m_url = Url;
         return this;
     }// </editor-fold>
 
     //TODO: We could use this: http://www.bibtex.org/Convert/ to create HTML representations of BibTeXs!!! ;-)
+    /**
+     * Empty constructor for BibTeX objects.
+     */
     public BibTeX() {
         super();
         addOntologicalClasses(KnoufBibTex.Entry());
     }
 
+    /**
+     * Create a new BibTeX object with specified URI.
+     * @param uri
+     *      URI of the BibTeX.
+     * @throws ToxOtisException 
+     *      If the provided URI is not a valid BibTeX URI.
+     */
     public BibTeX(VRI uri) throws ToxOtisException {
         super(uri);
         addOntologicalClasses(KnoufBibTex.Entry());
@@ -452,6 +718,11 @@ public class BibTeX extends OTPublishable<BibTeX>
         }
     }
 
+    /**
+     * The bibtex service.
+     * @return 
+     *      The BibTeX service as a {@link VRI URI}.
+     */
     public VRI getBibTexService() {
         if (uri == null) {
             return null;
@@ -843,7 +1114,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * Create a new BibTeX resource from its String representation. Parses the
      * String representation of a BibTeX into an instance of BibTeX. Then you can
      * use the methods defined in {@link BibTeX } to publish the BibTeX in some
-     * BibTeX service or create an RDF rerpesentation of it (using the Knouf ontology).
+     * BibTeX service or create an RDF representation of it (using the Knouf ontology).
      * @param string
      *      String representation of the BibTeX entity. The provided string is not
      *      expected to be URL encoded. In case it is, you should consider using a
@@ -993,6 +1264,20 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * Reads from a file and parses a BibTeX document into an instance of
+     * {@link BibTeX}.
+     * @param bibFile
+     *      A file pointing to a <code>.bib</code> file.
+     * @return
+     *      The parsed BibTeX object.
+     * @throws NullPointerException
+     *      If the specified bibfile is <code>null</code>.
+     * @throws ToxOtisException 
+     *      If the file is not found, the exception is wrapped in a ToxOtisException
+     *      and thrown as such. Also any other exceptional event is wrapped in a 
+     *      ToxOtisException.
+     */
     public BibTeX readString(File bibFile) throws ToxOtisException {
         if (bibFile == null) {
             throw new NullPointerException("BibFile cannot be null!");
@@ -1009,6 +1294,7 @@ public class BibTeX extends OTPublishable<BibTeX>
                 fis.close();
             } catch (IOException ex) {
                 logger.warn(null, ex);
+                throw new ToxOtisException(ex);
             }
         }
     }

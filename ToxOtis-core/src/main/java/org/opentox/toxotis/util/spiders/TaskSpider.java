@@ -38,8 +38,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
@@ -113,9 +111,9 @@ public class TaskSpider extends Tarantula<Task> {
             try {
                 User u = token.getUser();
                 task.setCreatedBy(u);
-            } catch (ToxOtisException ex) {
+            } catch (final ToxOtisException ex) {
                 logger.info("BAD USER EMAIL!!!");
-                throw new RemoteServiceException("User with RFC-invalid email returned from remote SSO service");
+                throw new RemoteServiceException("User with RFC-invalid email returned from remote SSO service", ex);
             } catch (ServiceInvocationException ex) {
                 logger.info(null, ex);
                 throw ex;

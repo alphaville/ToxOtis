@@ -46,6 +46,7 @@ import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -108,11 +109,36 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private User createdBy;
     private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Model.class);
+    private static final int baosSize = 4000;
+    private static final int hashOffset = 3, hashMod = 71;
+    private static final int htmlTextBoxSize = 60,
+            interfaceCellPadding = 5,
+            interfaceCellSpacing = 2,
+            interfaceTableBorder = 0,
+            validationCellPadding = 5,
+            validationCellSpacing = 2,
+            validationTableBorder = 0, 
+            featuresCellPadding = 5, 
+            featuresCellSpacing = 2, 
+            featuresTableBorder = 1;
+    private static final int[] interfaceTableDimensions = new int[]{250, 550},
+            validationTableDimensions = new int[]{250, 550},
+            featuresTableDimensions = new int[]{150, 650},
+            parametersTableDimensions = new int[]{400, 150, 240},
+            metaTableDimensions = new int[]{150, 650};
 
+    /**
+     * Create a new empty Model with a given URI.
+     * @param uri 
+     *      URI of the model.
+     */
     public Model(VRI uri) {
         super(uri);
     }
 
+    /**
+     * Creates an empty model.
+     */
     public Model() {
         super();
     }
@@ -183,77 +209,167 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return localCode;
     }
 
+    /**
+     * Sets the local code of the model. With this code the model is locally 
+     * identified (e.g. on the file system).
+     * 
+     * @param localCode 
+     *      A custom (unique) identifier.
+     */
     public void setLocalCode(String localCode) {
         this.localCode = localCode;
     }
 
+    /**
+     * The algorithm with which the model was built/trained.
+     * @return 
+     *      An instance of {@link Algorithm}
+     */
     public Algorithm getAlgorithm() {
         return algorithm;
     }
 
+    /**
+     * Specify the algorithm that was used to train the model.
+     * @param algorithm 
+     *      An instance of {@link Algorithm}.
+     */
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
     }
 
+    /**
+     * The user that created the model.
+     * @return 
+     *      An instance of {@link User}
+     */
     public User getCreatedBy() {
         return createdBy;
     }
 
+    /**
+     * Specify who created this model.
+     * @param createdBy 
+     *      An instance of {@link User}
+     */
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
 
+    /**
+     * Get the URI of the dataset that was used to train the model.
+     * The actual data should be fetched from the remote location if
+     * necessary.
+     * 
+     * @return 
+     *      URI of training dataset.
+     */
     public VRI getDataset() {
         return dataset;
     }
 
+    /**
+     * Specify the URI of the training dataset.
+     * @param dataset
+     *      URI of the training set.
+     * @return 
+     *      The current modifiable instance of {@link Model} 
+     *      with updated training dataset.
+     */
     public Model setDataset(VRI dataset) {
         this.dataset = dataset;
         return this;
     }
 
+    /**
+     * A list of the dependent features of the model, i.e. the
+     * target property (the response, e.g. experimentally measured property).
+     * @return 
+     *      List of {@link Feature features}
+     */
     public List<Feature> getDependentFeatures() {
         return dependentFeatures;
     }
 
+    /**
+     * Set the list of dependent features of the current model
+     * @param dependentFeature
+     *      List of dependent features.
+     * @return 
+     *      The current Model instance with an updated list of features.
+     */
     public Model setDependentFeatures(List<Feature> dependentFeature) {
         this.dependentFeatures = dependentFeature;
         return this;
     }
 
+    /**
+     * Adds dependent features to the current list of features.
+     * @param features
+     *      Array of features.
+     * @return 
+     *      The current model with updated list of dependent features.
+     */
     public Model addDependentFeatures(Feature... features) {
         if (getDependentFeatures() == null) {
             setDependentFeatures(new ArrayList<Feature>(features.length));
         }
-        for (Feature f : features) {
-            getDependentFeatures().add(f);
-        }
+        getDependentFeatures().addAll(Arrays.asList(features));
         return this;
     }
 
+    /**
+     * A list of the independent features of the model, i.e. the
+     * descriptors.
+     * 
+     * @return 
+     *      List of {@link Feature features}
+     */
     public List<Feature> getIndependentFeatures() {
         return independentFeatures;
     }
 
+    /**
+     * Set the list of independent features of the current model.
+     * @param independentFeatures 
+     *      List of independent features.
+     * @return 
+     *      The current Model instance with an updated list of independent features.
+     */
     public Model setIndependentFeatures(List<Feature> independentFeatures) {
         this.independentFeatures = independentFeatures;
         return this;
     }
 
+    /**
+     * Adds independent features to the current list of features.
+     * @param features
+     *      Array of features.
+     * @return 
+     *      The current model with updated list of independent features.
+     */
     public Model addIndependentFeatures(Feature... features) {
         if (getIndependentFeatures() == null) {
             setIndependentFeatures(new ArrayList<Feature>(features.length));
         }
-        for (Feature f : features) {
-            getIndependentFeatures().add(f);
-        }
+        getIndependentFeatures().addAll(Arrays.asList(features));
         return this;
     }
 
+    /**
+     * The parameters of the model.
+     * @return 
+     *      A set of parameters for the current model.
+     * @see Parameter
+     */
     public Set<Parameter> getParameters() {
         return parameters;
     }
 
+    /**
+     * Specify the set of parameters for the current model.
+     * @param parameters 
+     */
     public void setParameters(Set<Parameter> parameters) {
         this.parameters = parameters;
     }
@@ -267,22 +383,41 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         return this;
     }
 
+    /**
+     * A list of the predicted features of the model, i.e. the properties
+     * that the model predicts.
+     * 
+     * @return 
+     *      List of predicted {@link Feature features}.
+     */
     public List<Feature> getPredictedFeatures() {
         return predictedFeatures;
     }
 
+    /**
+     * Set the list of predicted features of the current model.
+     * @param predictedFeature  
+     *      List of predicted features.
+     * @return 
+     *      The current Model instance with an updated list of predicted features.
+     */
     public Model setPredictedFeatures(List<Feature> predictedFeature) {
         this.predictedFeatures = predictedFeature;
         return this;
     }
 
+    /**
+     * Adds predicted features to the current list of features.
+     * @param features
+     *      Array of predicted features.
+     * @return 
+     *      The current model with updated list of predicted features.
+     */
     public Model addPredictedFeatures(Feature... features) {
         if (getPredictedFeatures() == null) {
             setPredictedFeatures(new ArrayList<Feature>(features.length));
         }
-        for (Feature f : features) {
-            getPredictedFeatures().add(f);
-        }
+        getPredictedFeatures().addAll(Arrays.asList(features));
         return this;
     }
 
@@ -366,7 +501,8 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     }
 
     @Override
-    public Model publishToOntService(VRI ontologyService, AuthenticationToken token) throws ServiceInvocationException {
+    public Model publishToOntService(VRI ontologyService, AuthenticationToken token)
+            throws ServiceInvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -387,8 +523,8 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 71 * hash + (getUri() != null ? getUri().hashCode() : 0);
+        int hash = hashOffset;
+        hash = hashMod * hash + (getUri() != null ? getUri().hashCode() : 0);
         return hash;
     }
 
@@ -434,7 +570,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
     private byte[] toByteArrayImpl(Blob fromModelBlob,
             ByteArrayOutputStream baos) throws SQLException, IOException {
-        byte buf[] = new byte[4000];
+        byte buf[] = new byte[baosSize];
         int dataSize;
         InputStream is = fromModelBlob.getBinaryStream();
         try {
@@ -465,20 +601,24 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         builder.addParagraph("Specify the dataset you want to submit for prediction", Alignment.justify);
         HTMLForm form = builder.addForm("", "POST");
         form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).setName("comingFrom").setValue("webInterface"));
-        int textBoxSize = 60;
         HTMLTable interfacetable = new HTMLAppendableTableImpl(2);
         interfacetable.setAtCursor(new HTMLTextImpl("Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_uri").setType(HTMLInput.HTMLInputType.TEXT).
-                setValue(getDataset() != null ? getDataset().toString() : "").setSize(textBoxSize)).
+                setValue(getDataset() != null ? getDataset().toString() : "").setSize(htmlTextBoxSize)).
                 setAtCursor(new HTMLTextImpl("Dataset Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_service").
-                setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset != null ? dataset.getServiceBaseUri().augment("dataset").toString() : "").setSize(textBoxSize)).
-                setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Predict")).setTextAtCursor("");
-        interfacetable.setCellPadding(5).
-                setCellSpacing(2).
-                setTableBorder(0).
-                setColWidth(1, 250).
-                setColWidth(2, 550);
+                setType(HTMLInput.HTMLInputType.TEXT).
+                setValue(dataset != null ? dataset.getServiceBaseUri().augment("dataset").toString() : "").
+                setSize(htmlTextBoxSize)).
+                setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).
+                setValue("Predict")).
+                setTextAtCursor("");
+
+        interfacetable.setCellPadding(interfaceCellPadding).
+                setCellSpacing(interfaceCellSpacing).
+                setTableBorder(interfaceTableBorder).
+                setColWidth(1, interfaceTableDimensions[0]).
+                setColWidth(2, interfaceTableDimensions[1]);
         form.addComponent(interfacetable);
 
         builder.getDiv().breakLine().breakLine();
@@ -500,16 +640,16 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setValue(getDataset() != null ? getDataset().toString() : "").setSize(textBoxSize2)).
                 setAtCursor(new HTMLTextImpl("Target Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("test_target_dataset_uri").
-                setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset!=null?dataset.toString():"").setSize(textBoxSize2)).
+                setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset != null ? dataset.toString() : "").setSize(textBoxSize2)).
                 setAtCursor(new HTMLTextImpl("Validation Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("validation_service").
                 setType(HTMLInput.HTMLInputType.TEXT).setValue("http://toxcreate2.in-silico.ch/validation/test_set_validation").setSize(textBoxSize2)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Validate")).setTextAtCursor("");
-        validationtable.setCellPadding(5).
-                setCellSpacing(2).
-                setTableBorder(0).
-                setColWidth(1, 250).
-                setColWidth(2, 550);
+        validationtable.setCellPadding(validationCellPadding).
+                setCellSpacing(validationCellSpacing).
+                setTableBorder(validationTableBorder).
+                setColWidth(1, validationTableDimensions[0]).
+                setColWidth(2, validationTableDimensions[1]);
         form2.addComponent(validationtable);
 
         builder.getDiv().breakLine().breakLine();
@@ -535,23 +675,23 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             StringBuilder refs = new StringBuilder();
             if (getBibTeXReferences().size() == 1) {
                 VRI nextVri = getBibTeXReferences().iterator().next();
-                refs.append("<a href=\"" + nextVri + "\">" + nextVri + "</a>\n");
+                refs.append("<a href=\"").append(nextVri).append("\">").append(nextVri).append("</a>\n");
             } else {
-                int i = 1;
                 refs.append("<ol>\n");
                 for (VRI vriRef : getBibTeXReferences()) {
-                    refs.append("<li><a href=\"" + vriRef + "\">" + vriRef + "</a></li>\n");
+                    refs.append("<li><a href=\"").append(vriRef).append("\">").append(vriRef).append("</a></li>\n");
                 }
                 refs.append("</ol>\n");
             }
             featuresTable.setTextAtCursor(refs.toString());
         }
 
-        featuresTable.setCellPadding(5).
-                setCellSpacing(2).
-                setTableBorder(1).
-                setColWidth(1, 150).
-                setColWidth(2, 650);
+
+        featuresTable.setCellPadding(featuresCellPadding).
+                setCellSpacing(featuresCellSpacing).
+                setTableBorder(featuresTableBorder).
+                setColWidth(1, featuresTableDimensions[0]).
+                setColWidth(2, featuresTableDimensions[1]);
 
         if (getParameters() != null && !getParameters().isEmpty()) {
             builder.addSubSubSubHeading("Model Parameters");
@@ -568,9 +708,9 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             parametersTable.setCellPadding(5).
                     setCellSpacing(2).
                     setTableBorder(1).
-                    setColWidth(1, 400).
-                    setColWidth(2, 150).
-                    setColWidth(3, 240);
+                    setColWidth(1, parametersTableDimensions[0]).
+                    setColWidth(2, parametersTableDimensions[1]).
+                    setColWidth(3, parametersTableDimensions[2]);
 
         }
 
@@ -579,17 +719,22 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             builder.addSubSubSubHeading("Meta Information");
             HTMLContainer metaContainer = getMeta().inHtml();
             HTMLTable metaTable = (HTMLTable) metaContainer.getComponents().get(0);
-            metaTable.setColWidth(1, 150).setColWidth(2, 650);
+            metaTable.setColWidth(1, metaTableDimensions[0]).
+                    setColWidth(2, metaTableDimensions[1]);
             builder.addComponent(metaContainer);
         }
 
-        builder.addParagraph("<small>Other Formats: "
-                + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"
-                + "<a href=\"" + getUri() + "?accept=application/x-turtle" + "\">Turtle</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/n-triples" + "\">N-Triple</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/uri-list" + "\">Uri-list</a>,"
-                + "</small>", Alignment.left);
-
+        StringBuilder paragraphBuilder = new StringBuilder();
+        paragraphBuilder.append("<small>Other Formats <a href=\"").
+                append(getUri()).
+                append("?accept=application/rdf%2Bxml\">RDF/XML</a>,<a href=\"").
+                append(getUri()).
+                append("?accept=application/x-turtle\">Turtle</a>,<a href=\"").
+                append(getUri()).
+                append("?accept=text/n-triples\">N-Triple</a><a href=\"").
+                append(getUri()).
+                append("?accept=text/uri-list\">Uri-list</a>.</small>");
+        builder.addParagraph(paragraphBuilder.toString(), Alignment.left);
         return builder.getDiv();
     }
 
@@ -600,9 +745,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
     @Override
     public IBibTexReferencable addBibTeXReferences(VRI... references) {
-        for (VRI x : references) {
-            this.references.add(x);
-        }
+        this.references.addAll(Arrays.asList(references));
         return this;
     }
 

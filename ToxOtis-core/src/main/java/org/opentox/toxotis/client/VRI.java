@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.client;
 
 import java.io.Serializable;
@@ -68,6 +66,9 @@ public class VRI implements Serializable { // Well tested!
     private static final String URL_ENCODING = "UTF-8";
     private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
+    private static final int hashOffset = 3, hashMod = 37;
+    private static final String msEndSlashOrNothing = "([^/]+/$|[^/]+)$";
+    private static final String msSlash = "/";
 
     /**
      * Keywords that appear in OpenTox URIs.
@@ -96,7 +97,6 @@ public class VRI implements Serializable { // Well tested!
             return keyword;
         }
     }
-    private static final String END_SLASH_orNothing = "([^/]+/$|[^/]+)$";
 
     /**
      * A collection of regular expressions for the identification of
@@ -104,18 +104,18 @@ public class VRI implements Serializable { // Well tested!
      */
     private enum OpenToxRegEx {
 
-        COMPOUND(OTClasses.Compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_orNothing),
-        CONFORMER(OTClasses.Conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_orNothing),
-        FEATURE(OTClasses.Feature(), Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_orNothing),
-        DATASET(OTClasses.Dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_orNothing,
-        ".+/(?i)query/(?i)compound/.+/" + END_SLASH_orNothing),
-        ALGORITHM(OTClasses.Algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_orNothing),
-        BIBTEX(KnoufBibTex.Entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_orNothing),
-        MODEL(OTClasses.Model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_orNothing),
-        TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_orNothing),
-        ERROR(OTClasses.ErrorReport(), ErrorReport.class, ".+/(?i)error(s||)/" + END_SLASH_orNothing),
-        PARAMETER(OTClasses.Parameter(), Parameter.class, ".+/(?i)parameter(s||)/" + END_SLASH_orNothing),
-        QPRFREPORT(OTClasses.QPRFReport(), QprfReport.class, ".+/(?i)reach_report(s||)/(?i)qprf/" + END_SLASH_orNothing);
+        COMPOUND(OTClasses.Compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + msEndSlashOrNothing),
+        CONFORMER(OTClasses.Conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + msEndSlashOrNothing),
+        FEATURE(OTClasses.Feature(), Feature.class, ".+/(?i)feature(s||)/" + msEndSlashOrNothing),
+        DATASET(OTClasses.Dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + msEndSlashOrNothing,
+        ".+/(?i)query/(?i)compound/.+/" + msEndSlashOrNothing),
+        ALGORITHM(OTClasses.Algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + msEndSlashOrNothing),
+        BIBTEX(KnoufBibTex.Entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + msEndSlashOrNothing),
+        MODEL(OTClasses.Model(), Model.class, ".+/(?i)model(s||)/" + msEndSlashOrNothing),
+        TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + msEndSlashOrNothing),
+        ERROR(OTClasses.ErrorReport(), ErrorReport.class, ".+/(?i)error(s||)/" + msEndSlashOrNothing),
+        PARAMETER(OTClasses.Parameter(), Parameter.class, ".+/(?i)parameter(s||)/" + msEndSlashOrNothing),
+        QPRFREPORT(OTClasses.QPRFReport(), QprfReport.class, ".+/(?i)reach_report(s||)/(?i)qprf/" + msEndSlashOrNothing);
         /**
          * ParameterValue of regular expressions that identify a
          * certain resource.
@@ -179,7 +179,7 @@ public class VRI implements Serializable { // Well tested!
     }
 
     /**
-     * Dummy contructor
+     * Dummy constructor
      */
     public VRI() {
     }
@@ -231,7 +231,7 @@ public class VRI implements Serializable { // Well tested!
                                 paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : ""));
                     }
                 } catch (UnsupportedEncodingException ex) {
-                    logger.error("Unsupported encoding!",ex);
+                    logger.error("Unsupported encoding!", ex);
                     throw new RuntimeException(ex);
                 }
             }
@@ -245,7 +245,7 @@ public class VRI implements Serializable { // Well tested!
      *      VRI to be cloned.
      */
     public VRI(VRI other) {
-        this.uri = new String(other.uri);
+        this.uri = String.valueOf(other.uri);//@chung: new String(#) replaced by String.valueOf(#)
         this.urlParams = new ArrayList<Pair<String, String>>(other.urlParams);
     }
 
@@ -324,7 +324,6 @@ public class VRI implements Serializable { // Well tested!
         return this;
     }
 
-
     /**
      * Add a URL parameter. As soon as you provide the URL parameter and its value,
      * these are encoded using the UTF-8 encoding so you do not need to encode them
@@ -389,7 +388,6 @@ public class VRI implements Serializable { // Well tested!
         }
         return this;
     }
-    
 
     /**
      * Converts the VRI object into the corresponding <code>java.net.URI</code>
@@ -421,11 +419,37 @@ public class VRI implements Serializable { // Well tested!
         return new String(string);
     }
 
+    /**
+     * Augments the URI with additional string blocks. Each string provided
+     * in the list of arguments of this method is URL-encoded and appended
+     * at the end of the current URI. The current URI is also modified and this is
+     * an important detail to take into account. So, for example consider the
+     * following piece of code:
+     * <pre>
+     * VRI myUri = new VRI("http://server.com/");
+     * VRI datasetUri = myUri.augment("dataset");
+     * VRI modelUri = myUri.augment("model");</pre>
+     * Not surprisingly, <code>modelUri</code> will be <code>http://server.com/dataset/model</code>
+     * instead of <code>http://server.com/model</code>. This is because the invocation
+     * <code>myUri.augment("dataset")</code> already modified the URI. In order to achieve the
+     * desired result, one should use:
+     * <pre>
+     * VRI myUri = new VRI("http://server.com/");
+     * VRI datasetUri = new VRI(myUri).augment("dataset");
+     * VRI modelUri = new VRI(myUri).augment("model");</pre>
+     * This way, a copy of the initial URI is created and modified on-the-fly.
+     * 
+     * @param fragments
+     *      List of fragments to be appended at the end of the current URI.
+     * @return 
+     *      The current modifiable URI updated with the new additional
+     *      fragments.
+     */
     public VRI augment(String... fragments) {
         String noQueryUri = getStringNoQuery();
         StringBuilder builder = new StringBuilder(getStringNoQuery());
         if (!noQueryUri.matches(".+/$")) {
-            builder.append("/"); // Append a slash at the end (if not any)
+            builder.append(msSlash); // Append a slash at the end (if not any)
         }
 
         for (int i = 0; i < fragments.length; i++) {
@@ -437,7 +461,7 @@ public class VRI implements Serializable { // Well tested!
                     throw new RuntimeException(ex);
                 }
                 if (i < fragments.length - 1) {
-                    builder.append("/");
+                    builder.append(msSlash);
                 }
             }
         }
@@ -450,6 +474,16 @@ public class VRI implements Serializable { // Well tested!
         return this;
     }
 
+    /**
+     * An alternative to {@link #augment(java.lang.String[]) 
+     * #augment(String[])}
+     * 
+     * @param params
+     *      List of fragments
+     * @return 
+     *      The instance of the current modifiable URI updated with the new additional
+     *      fragments.
+     */
     public VRI augment(Object... params) {
         if (params == null || (params != null && params.length == 0)) {
             return this;
@@ -563,6 +597,13 @@ public class VRI implements Serializable { // Well tested!
         return null;
     }
 
+    /**
+     * The Ontological Class of the URI. Every OpenTox resource follows a pattern
+     * according to the resource it points to. For example, all dataset URIs follow 
+     * the pattern <code>/dataset/{id}</code> or formally <code>.+/(?i)dataset(s||)/([^/]+/$|[^/]+)$</code>
+     * or as well <code>.+/(?i)query/(?i)compound/.+/([^/]+/$|[^/]+)$</code>.
+     * @return 
+     */
     public OntologicalClass getOntologicalClass() {
         OpenToxRegEx rex = getMatchingRegEx();
         if (rex == null) {
@@ -579,6 +620,11 @@ public class VRI implements Serializable { // Well tested!
         return null;
     }
 
+    /**
+     * Returns the host of the URI. This is a proxy method to URI#getHost().
+     * @return 
+     *      The host of the URI as a String.
+     */
     public String getHost() {
         URI asUri = this.toURI();
         return asUri != null ? asUri.getHost() : null;
@@ -601,7 +647,7 @@ public class VRI implements Serializable { // Well tested!
                             return new VRI(noQuery.split("/query/compound")[0]);
                         }
                     }
-                    return new VRI(noQuery.split("/" + fragment)[0]);
+                    return new VRI(noQuery.split(msSlash + fragment)[0]);
                 } catch (URISyntaxException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -617,7 +663,7 @@ public class VRI implements Serializable { // Well tested!
      */
     public String getStringNoQuery() {
         String stringNoQuery = uri;
-        if (stringNoQuery.endsWith("/")) {
+        if (stringNoQuery.endsWith(msSlash)) {
             stringNoQuery = stringNoQuery.substring(0, stringNoQuery.length() - 1);
         }
         return stringNoQuery;
@@ -644,8 +690,8 @@ public class VRI implements Serializable { // Well tested!
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + (this.uri != null ? this.uri.hashCode() : 0);
+        int hash = hashOffset;
+        hash = hashMod * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
     }
 
@@ -663,11 +709,11 @@ public class VRI implements Serializable { // Well tested!
 
     public String getId() {
         String residual = getStringNoQuery().replaceAll(getServiceBaseUri().toString(), "").trim();
-        String[] parts = residual.split("/");
+        String[] parts = residual.split(msSlash);
 
         if (parts.length == 3 || parts.length == 4) {
             String id = parts[parts.length - 1];
-            if (id.endsWith("/")) {
+            if (id.endsWith(msSlash)) {
                 id = id.substring(0, id.length() - 2);
             }
             return id;

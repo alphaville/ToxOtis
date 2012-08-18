@@ -41,7 +41,7 @@ import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTRestDatatypeProperties {
+public final class OTRestDatatypeProperties {
 
     private static OTDatatypeProperty hasAttribute;
     private static OTDatatypeProperty hasURI;

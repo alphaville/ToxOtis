@@ -43,8 +43,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
@@ -75,7 +73,7 @@ import weka.core.Instances;
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
-public class DatasetFactory {
+public final class DatasetFactory {
 
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DatasetFactory.class);
     private static DatasetFactory factory = null;
@@ -204,7 +202,7 @@ public class DatasetFactory {
         try {
             while (attributes.hasMoreElements()) {
                 Attribute attribute = (Attribute) attributes.nextElement();
-                if (attribute.name().equals(Dataset.compound_uri) || attribute.name().equals("URI")) {
+                if (attribute.name().equals(Dataset.compoundUri) || attribute.name().equals("URI")) {
                     de.setConformer(new Compound(new VRI(instance.stringValue(attribute))));
                 } else {
                     FeatureValue fv = new FeatureValue();

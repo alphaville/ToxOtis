@@ -36,7 +36,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 
-
 /**
  * An invocation that will be repeated after a certain time if it fails. The invocation
  * is retried for a specified number of times.
@@ -63,7 +62,7 @@ public class RetriableRequest<T> {
                 logger.debug(null, ex);
                 throw new ToxOtisException("Method " + method.getName() + " defined in " + method.getDeclaringClass().getName() + "should be accessible!", ex);
             } catch (IllegalArgumentException ex) {
-                logger.debug(null,ex);
+                logger.debug(null, ex);
                 throw new ToxOtisException("", ex);
             } catch (InvocationTargetException ex) {
                 if (currentTry != maxRetries) {
@@ -75,7 +74,7 @@ public class RetriableRequest<T> {
                     return retry(++currentTry, maxRetries, milliSecondsDelay, methodParams);
                 } else {
                     logger.debug(null, ex);
-                    throw new ToxOtisException(ex.getCause());
+                    throw new ToxOtisException("Failure", ex.getCause());
                 }
 
             }
@@ -88,7 +87,6 @@ public class RetriableRequest<T> {
     }
 
     public T retry(int maxRetries, long milliSecondsDelay) throws ToxOtisException {
-        return retry((int)1, (long) maxRetries, milliSecondsDelay);
+        return retry((int) 1, (long) maxRetries, milliSecondsDelay);
     }
-    
 }

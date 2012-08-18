@@ -51,6 +51,11 @@ public class GetHttpClient extends AbstractHttpClient implements IGetClient {
     public GetHttpClient() {
     }
 
+    /**
+     * Instantiates a GET client with a given target URI.
+     * @param uri 
+     *      The URI of the resource where the client should perform the request.
+     */
     public GetHttpClient(final VRI uri) {
         setUri(uri);
     }

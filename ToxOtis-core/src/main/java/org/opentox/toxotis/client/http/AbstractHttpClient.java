@@ -34,8 +34,6 @@ package org.opentox.toxotis.client.http;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.IClient;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,16 +41,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.exceptions.impl.BadRequestException;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
@@ -93,8 +87,9 @@ public abstract class AbstractHttpClient implements IClient {
     }
 
     /**
-     * Get the targetted URI
-     * @return The target URI
+     * Get the target URI.
+     * @return 
+     *      The target URI
      */
     @Override
     public VRI getUri() {
@@ -394,7 +389,7 @@ public abstract class AbstractHttpClient implements IClient {
             responseCode = con.getResponseCode();
         } catch (IOException ex) {
             ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
-                    + "the server at "+getUri(), ex);
+                    + "the server at " + getUri(), ex);
             connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
             throw connectionExc;
         }
@@ -538,7 +533,9 @@ public abstract class AbstractHttpClient implements IClient {
     @Override
     public String getResponseContentType() throws ServiceInvocationException {
         String ct = getResponseHeader(RequestHeaders.CONTENT_TYPE);
-        if (ct==null) return null;
+        if (ct == null) {
+            return null;
+        }
         return ct.split(";")[0];
 
     }
@@ -565,7 +562,6 @@ public abstract class AbstractHttpClient implements IClient {
         }
         return null;
     }
-
 //    public static void main(String... args) throws Exception {
 //        GetHttpClient client = new GetHttpClient(Services.ideaconsult().augment("dataset", "7"));
 //        client.setMediaType("application/rdf+xml");

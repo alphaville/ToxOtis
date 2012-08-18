@@ -47,7 +47,7 @@ import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTDatatypeProperties {
+public final class OTDatatypeProperties {
 
     //TODO: Populate the metadata...
     private OTDatatypeProperties() {

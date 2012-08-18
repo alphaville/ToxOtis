@@ -50,7 +50,7 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class OTClasses {
+public final class OTClasses {
 
     private OTClasses() {
     }
