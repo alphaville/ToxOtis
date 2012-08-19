@@ -2,6 +2,7 @@ package org.opentox.toxotis.util.aa.policy;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -177,7 +178,7 @@ public class PolicyTest {
         pol.addRule(pr);
         PolicyWrapper pw = new PolicyWrapper(pol);
 
-        ArrayList<String> pols = PolicyManager.listPolicyUris(null, at);
+        List<String> pols = PolicyManager.listPolicyUris(null, at);
         if (!pols.contains("NTUA_all_users")) {
             pw.publish(null, at);
         }

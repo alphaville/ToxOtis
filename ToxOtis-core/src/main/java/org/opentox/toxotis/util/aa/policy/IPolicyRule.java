@@ -33,39 +33,149 @@
 package org.opentox.toxotis.util.aa.policy;
 
 /**
- *
+ * Interface for Policy Rules.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public interface IPolicyRule {
 
+    /**
+     * Name of the rule.
+     * @return 
+     *      Name of the policy rule as String.
+     */
     String getName();
 
+    /**
+     * Name of the service.
+     * @return 
+     *      Service name as String.
+     */
     String getServiceName();
 
+    /**
+     * URI of the resource for which the rule is written.
+     * @return 
+     *      The URI of the target resource as a String.
+     */
     String getTargetUri();
 
+    /**
+     * Whether the DELETE method is allowed
+     * @return 
+     *      <code>true</code> if a DELETE is allowed and <code>false</code> otherwise.
+     */
     boolean isAllowDelete();
 
+    /**
+     * Whether the GET method is allowed
+     * @return 
+     *      <code>true</code> if a GET is allowed and <code>false</code> otherwise.
+     */
     boolean isAllowGet();
 
+    /**
+     * Whether the POST method is allowed
+     * @return 
+     *      <code>true</code> if a POST is allowed and <code>false</code> otherwise.
+     */
     boolean isAllowPost();
 
+    /**
+     * Whether the PUT method is allowed
+     * @return 
+     *      <code>true</code> if a PUT is allowed and <code>false</code> otherwise.
+     */
     boolean isAllowPut();
 
+    /**
+     * Set the access regime for the DELETE method.
+     * 
+     * @param allowDelete
+     *      Whether the DELETE method is allowed
+     * @return 
+     *      The current modifiable policy rule object with updated rule for the
+     *      DELETE method.
+     */
     IPolicyRule setAllowDelete(boolean allowDelete);
 
+    /**
+     * Set the access regime for the GET method.
+     * 
+     * @param allowDelete
+     *      Whether the GET method is allowed
+     * @return 
+     *      The current modifiable policy rule object with updated rule for the
+     *      GET method.
+     */
     IPolicyRule setAllowGet(boolean allowGet);
 
+    /**
+     * Set the access regime for the POST method.
+     * 
+     * @param allowDelete
+     *      Whether the POST method is allowed
+     * @return 
+     *      The current modifiable policy rule object with updated rule for the
+     *      POST method.
+     */
     IPolicyRule setAllowPost(boolean allowPost);
 
+    /**
+     * Set the access regime for the PUT method.
+     * 
+     * @param allowDelete
+     *      Whether the PUT method is allowed
+     * @return 
+     *      The current modifiable policy rule object with updated rule for the
+     *      PUT method.
+     */
     IPolicyRule setAllowPut(boolean allowPut);
 
+    /**
+     * A method to easily set which HTTP methods are allowed and which not.
+     * @param get
+     *      Whether GET is allowed.
+     * @param post
+     *      Whether POST is allowed.
+     * @param put
+     *      Whether PUT is allowed.
+     * @param delete
+     *      Whether DELETE is allowed.
+     * @return 
+     *      The current modifiable policy rule object with updated
+     *      rules per method.
+     */
     IPolicyRule setAllowances(boolean get, boolean post, boolean put, boolean delete);
 
+    /**
+     * Specify the name of the rule.
+     * 
+     * @param name
+     *      Name of the rule as a String.
+     * @return 
+     *      The current modifiable policy rule object with updated name.
+     */
     IPolicyRule setName(String name);
 
+    /**
+     * Setter method for the service name.
+     * 
+     * @param serviceName
+     *      The service name as a String.
+     * @return 
+     *      The current modifiable policy rule object with updated service name.
+     */
     IPolicyRule setServiceName(String serviceName);
 
+    /**
+     * Setter method for the URI of the target resource.
+     * 
+     * @param targetUri
+     *      The URI of the resource for which the rule is written.
+     * @return 
+     *      The current modifiable policy rule object with updated target URI.
+     */
     IPolicyRule setTargetUri(String targetUri);
 }

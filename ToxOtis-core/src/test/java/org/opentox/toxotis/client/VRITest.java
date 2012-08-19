@@ -40,6 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Algorithm;
+import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.qprf.QprfReport;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -137,5 +138,28 @@ public class VRITest {
         assertEquals("http://apps.ideaconsult.net:8080/ambit2/dataset/54", myuri.toString());
         myuri.addUrlParameter("max", 123);
         assertEquals("http://apps.ideaconsult.net:8080/ambit2/dataset/54?max=123", myuri.toString());
+    }
+
+    @Test
+    public void testVriAsString() {
+        VRI myuri = Services.ideaconsult().augment("services", "dataset", 54).
+                addUrlParameter("a", 1).
+                addUrlParameter("b", "5").
+                addUrlParameter("b", "45");
+        assertEquals("http://apps.ideaconsult.net:8080/ambit2/services/dataset/54?a=1&b=5&b=45", myuri.toString());
+        assertEquals(myuri.getUri(), myuri.toURI().toString());
+        myuri.removeUrlParameter("b");
+        assertEquals("http://apps.ideaconsult.net:8080/ambit2/services/dataset/54?a=1", myuri.toString());
+        myuri.addUrlParameter("a", " a b c @");
+        assertEquals("a=1&a=+a+b+c+%40", myuri.getQueryAsString());
+        assertEquals("apps.ideaconsult.net", myuri.getHost());
+        assertEquals("54", myuri.getId());
+        assertEquals(8080, myuri.getPort());
+        assertEquals(myuri.getUri(), myuri.toURI().toString());
+        assertEquals("http", myuri.getProtocol());
+        assertEquals(Dataset.class, myuri.getOpenToxType());
+        assertEquals(myuri.toString(), myuri.getUri());
+        assertEquals("http://apps.ideaconsult.net:8080/ambit2/services/dataset/54", myuri.getStringNoQuery());
+        assertEquals(Services.ideaconsult().augment("services", "dataset", 54).toString(), myuri.getStringNoQuery());
     }
 }

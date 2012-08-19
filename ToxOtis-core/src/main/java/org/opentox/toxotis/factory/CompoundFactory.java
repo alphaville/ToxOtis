@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Set;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
@@ -166,10 +167,11 @@ public final class CompoundFactory {
             int responseStatus = -1;
             responseStatus = postClient.getResponseCode();
 
-            if (responseStatus == 202) {
+            
+            if (responseStatus == HttpStatusCodes.Accepted.getStatus()) {
                 TaskSpider tskSp = new TaskSpider(newVRI);
                 return tskSp.parse();
-            } else if (responseStatus == 200) {
+            } else if (responseStatus == HttpStatusCodes.Success.getStatus()) {
                 Task t = new Task();
                 t.setResultUri(newVRI);
                 t.setStatus(Task.Status.COMPLETED);
@@ -233,10 +235,10 @@ public final class CompoundFactory {
             int responseStatus = -1;
             responseStatus = postClient.getResponseCode();
 
-            if (responseStatus == 202) {
+            if (responseStatus == HttpStatusCodes.Accepted.getStatus()) {
                 TaskSpider tskSp = new TaskSpider(newVRI);
                 return tskSp.parse();
-            } else if (responseStatus == 200) {
+            } else if (responseStatus == HttpStatusCodes.Success.getStatus()) {
                 Task t = new Task();
                 t.setResultUri(newVRI);
                 t.setStatus(Task.Status.COMPLETED);

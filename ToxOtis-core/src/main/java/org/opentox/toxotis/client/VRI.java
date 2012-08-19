@@ -41,6 +41,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.opentox.toxotis.core.component.qprf.QprfReport;
@@ -50,7 +51,7 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
  * VRI is an alternative to URI. Being <code>final</code>, the class <code>java.net.URI</code>
- * cannot be subclassed. VRI offers greater flexibility in this context as it stores in a
+ * cannot be sub-classed. VRI offers greater flexibility in this context as it stores in a
  * highly structured way the parameters of the URL and applies URL encoding where necessary.
  *
  * @author Pantelis Sopasakis
@@ -61,14 +62,14 @@ public class VRI implements Serializable { // Well tested!
     /** The URI as a string */
     private String uri;
     /** The mapping from parameter names to parameter values */
-    private ArrayList<Pair<String, String>> urlParams = new ArrayList<Pair<String, String>>();
+    private List<Pair<String, String>> urlParams = new ArrayList<Pair<String, String>>();
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
     private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
     private static final int hashOffset = 3, hashMod = 37;
     private static final String msEndSlashOrNothing = "([^/]+/$|[^/]+)$";
-    private static final String msSlash = "/";
+    private static final String msSlash = "/", msQuestionMark="?", msAmpbesand="&";
 
     /**
      * Keywords that appear in OpenTox URIs.
@@ -203,12 +204,12 @@ public class VRI implements Serializable { // Well tested!
             uri = "http://" + uri;
         }
         this.uri = uri;
-        if (uri.contains("?")) {
-            String[] splitted = uri.split(Pattern.quote("?"));
+        if (uri.contains(msQuestionMark)) {
+            String[] splitted = uri.split(Pattern.quote(msQuestionMark));
             this.uri = splitted[0];
             if (splitted.length >= 2) {// Could be http://something.abc/service? where there is no query...
                 String query = splitted[1];
-                String[] queryParts = query.split(Pattern.quote("&"));
+                String[] queryParts = query.split(Pattern.quote(msAmpbesand));
                 String paramName, paramValue;
                 try {
                     for (int i = 0; i < queryParts.length; i++) {
@@ -294,7 +295,7 @@ public class VRI implements Serializable { // Well tested!
      * @return
      *      The ArrayList of URL parameters as a list of name-value pairs.
      */
-    public ArrayList<Pair<String, String>> getUrlParams() {
+    public List<Pair<String, String>> getUrlParams() {
         return urlParams;
     }
 
@@ -413,7 +414,7 @@ public class VRI implements Serializable { // Well tested!
         StringBuilder string = new StringBuilder(uri);
         String query = getQueryAsString();
         if (query != null && !query.isEmpty()) {
-            string.append("?");
+            string.append(msQuestionMark);
             string.append(getQueryAsString());
         }
         return new String(string);
@@ -541,7 +542,7 @@ public class VRI implements Serializable { // Well tested!
                     string.append(e.getValue());
                 }
                 if (counter != nParams - 1) {
-                    string.append("&");
+                    string.append(msAmpbesand);
                 }
                 counter++;
             }
@@ -695,6 +696,11 @@ public class VRI implements Serializable { // Well tested!
         return hash;
     }
 
+    /**
+     * Equivalent method to {@link #toString() }.
+     * @return 
+     *      The current object as a String (representing the URI of the resource).
+     */
     public String getUri() {
         return toString();
     }

@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -94,18 +95,18 @@ public class FeatureFactory {
         int responseStatus;
         responseStatus = client.getResponseCode();
 
-        if (responseStatus == 200) {
+        if (responseStatus == HttpStatusCodes.Success.getStatus()) {
             Set<VRI> featureUris = client.getResponseUriList();
             Set<VRI> features = new HashSet<VRI>();
             for (VRI featureUri : featureUris) {
                 features.add(new VRI(featureUri));
             }
             return features;
-        } else if (responseStatus == 403) {
+        } else if (responseStatus == HttpStatusCodes.Forbidden.getStatus()) {
             throw new ForbiddenRequest("Authentication Faile: "
                     + "Client failed to authenticate itself against the SSO service due to "
                     + "incorrect credentials or due to invalid token");
-        } else if (responseStatus == 401) {
+        } else if (responseStatus == HttpStatusCodes.Unauthorized.getStatus()) {
             throw new Unauthorized("UnauthorizedUser: "
                     + "The client is authenticated but not authorized to perform this operation");
         } else {
@@ -199,7 +200,7 @@ public class FeatureFactory {
         IGetClient client = ClientFactory.createGetClient(featureServiceWithToken);
         client.setMediaType(Media.TEXT_URI_LIST);
         int httpStatus = client.getResponseCode();
-        if (httpStatus != 200) {
+        if (httpStatus != HttpStatusCodes.Success.getStatus()) {
             throw new ServiceInvocationException("Service returned status code :" + httpStatus);
         }
         Set<VRI> result = client.getResponseUriList();

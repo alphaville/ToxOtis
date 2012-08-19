@@ -97,6 +97,16 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
         this(uri, null);
     }
 
+    /**
+     * Constructor with an ontological resource and an ontological model.
+     * @param resource
+     *      Ontological resource to be parsed.
+     * @param model
+     *      Ontological model to be used for parsing.
+     * @throws BadRequestException 
+     *      If the URI of the provided resource is not a valid 
+     *      algorithm URI.
+     */
     public AlgorithmSpider(Resource resource, OntModel model) throws BadRequestException {
         super(resource, model);
         try {

@@ -44,7 +44,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import java.net.URISyntaxException;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.ErrorReport;
-import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
@@ -56,13 +55,30 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class ErrorReportSpider extends Tarantula<ErrorReport> {
 
+    /**
+     * Create an empty error report.
+     */
     public ErrorReportSpider() {
     }
 
+    /**
+     * Create an ErrorReportSpider entity using a given ontological resource and
+     * ontological model.
+     * 
+     * @param resource
+     *      The error report resource - the basis element.
+     * @param model 
+     *      The ontological model to contain the resource.
+     */
     public ErrorReportSpider(Resource resource, OntModel model) {
         super(resource, model);
     }
 
+    /**
+     * Create an ErrorReportSpider over a given ontological model.
+     * @param model 
+     *      An instance of OntModel.
+     */
     public ErrorReportSpider(OntModel model) {
         super();
         this.model = model;

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -43,7 +44,7 @@ public class ListModelRequest {
     private String sparql = DEFAULT_SPARQL;
     private String ontologyServer = "http://apps.ideaconsult.net:8080/ontology";
 
-    public ArrayList<String[]> getModelInfo() throws ServiceInvocationException, IOException, ToxOtisException {
+    public List<String[]> getModelInfo() throws ServiceInvocationException, IOException, ToxOtisException {
         VRI ontServer = null;
         try {
             ontServer = new VRI(ontologyServer);

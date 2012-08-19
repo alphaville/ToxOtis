@@ -248,6 +248,15 @@ public class HTMLUtils {
         return sb.toString();
     }
 
+    /**
+     * Normalizes a text for use in HTML. Replaces all new lines (<code>/n</code>)
+     * by the HTML element <code><br/></code> and all <code>&</code> by <code>&amp;</code>.
+     * 
+     * @param plainText
+     *      Text to be HTML-normalized
+     * @return 
+     *      HTML-normalized text.
+     */
     public static String normalizeTextForHtml(String plainText){
         return plainText.replaceAll("\n", "<br/>").replaceAll("&", "&amp;");
     }

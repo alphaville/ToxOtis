@@ -33,6 +33,7 @@
 package org.opentox.toxotis.core.html.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.opentox.toxotis.core.html.HTMLComponent;
 import org.opentox.toxotis.core.html.HTMLExpandableComponent;
 
@@ -43,7 +44,7 @@ import org.opentox.toxotis.core.html.HTMLExpandableComponent;
  */
 public abstract class HTMLExpandableComponentImpl implements HTMLExpandableComponent {
 
-    protected ArrayList<HTMLComponent> componentList = new ArrayList<HTMLComponent>();
+    protected List<HTMLComponent> componentList = new ArrayList<HTMLComponent>();
 
     public HTMLExpandableComponentImpl() {
     }
@@ -54,7 +55,7 @@ public abstract class HTMLExpandableComponentImpl implements HTMLExpandableCompo
     }
 
     @Override
-    public ArrayList<HTMLComponent> getComponents() {
+    public List<HTMLComponent> getComponents() {
         return componentList;
     }
     

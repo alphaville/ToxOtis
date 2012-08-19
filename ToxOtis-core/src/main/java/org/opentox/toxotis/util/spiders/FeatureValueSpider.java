@@ -51,6 +51,13 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class FeatureValueSpider extends Tarantula<FeatureValue> {
 
+    /**
+     * Default constructor.
+     * @param resource
+     *      Ontological resource.
+     * @param model 
+     *      Ontological model.
+     */
     public FeatureValueSpider(Resource resource, OntModel model) {
         super(resource, model);
     }

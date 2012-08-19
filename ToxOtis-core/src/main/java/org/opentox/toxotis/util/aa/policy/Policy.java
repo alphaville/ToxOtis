@@ -52,12 +52,21 @@ public class Policy implements IPolicy {
 
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Policy.class);
 
+    /**
+     * New empty policy.
+     */
     public Policy() {
     }
 
+    /**
+     * New policy with a policy name.
+     * @param policyName 
+     *      Name of the policy as a String.
+     */
     public Policy(String policyName) {
         this.policyName = policyName;
     }
+    
     private String policyName;
     private Set<IPolicyRule> rules = new HashSet<IPolicyRule>();
     private Set<PolicySubject> subjects = new HashSet<PolicySubject>();

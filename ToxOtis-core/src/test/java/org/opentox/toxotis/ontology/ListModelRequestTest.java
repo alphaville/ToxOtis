@@ -34,6 +34,7 @@
 package org.opentox.toxotis.ontology;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class ListModelRequestTest {
     @Test
     public void testGetModelInfo() throws Exception {
         ListModelRequest request = new ListModelRequest();
-        ArrayList<String[]> result = request.getModelInfo();
+        List<String[]> result = request.getModelInfo();
         assertNotNull(result);
         boolean fail = true;
         for (String[] array : result){

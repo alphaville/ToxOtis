@@ -5,7 +5,6 @@ import com.hp.hpl.jena.ontology.OntModel;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.core.IHTMLSupport;
-import org.opentox.toxotis.core.IOTComponent;
 import org.opentox.toxotis.core.OTComponent;
 import org.opentox.toxotis.core.html.HTMLContainer;
 

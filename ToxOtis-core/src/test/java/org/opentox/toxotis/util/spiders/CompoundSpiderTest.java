@@ -33,6 +33,7 @@
 package org.opentox.toxotis.util.spiders;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -79,7 +80,7 @@ public class CompoundSpiderTest {
         assertNotNull(cmp.getUri().getOntologicalClass());
         assertNotNull(cmp.getUri().getOpenToxType());
         SimilarityRetriever sr = new SimilarityRetriever(0.95, cmp);
-        ArrayList<Compound> sim = sr.similarCompounds();
+        List<Compound> sim = sr.similarCompounds();
         boolean isAllNull = true;
         for (Compound c : sim){
             assertNotNull(c.getUri());

@@ -33,6 +33,7 @@
 package org.opentox.toxotis.core.html;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A component that can include other HTML components in it like an HTML table. Following the
@@ -61,6 +62,6 @@ public interface  HTMLExpandableComponent extends HTMLComponent {
      *      an empty list if the currect object has been initialized but no elements
      *      have been added in the list.
      */
-    ArrayList<HTMLComponent> getComponents();
+    List<HTMLComponent> getComponents();
 
 }

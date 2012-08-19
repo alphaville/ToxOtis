@@ -48,14 +48,27 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
  * Parser for a DataEntry individual in an RDF graph.
+ * 
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
 public class DataEntrySpider extends Tarantula<DataEntry>{
 
+    /**
+     * Dummy empty constructor.
+     */
     public DataEntrySpider() {
+        super();
     }
 
+    /**
+     * DataEntrySpider constructor with an ontological resource and an ontological model.
+     * 
+     * @param resource
+     *      Ontological resource to be parsed.
+     * @param model
+     *      Ontological model to be used for parsing.
+     */
     public DataEntrySpider(Resource resource, OntModel model) {
         super(resource, model);
     }

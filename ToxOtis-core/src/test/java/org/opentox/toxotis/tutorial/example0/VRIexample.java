@@ -34,6 +34,7 @@ package org.opentox.toxotis.tutorial.example0;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import org.opentox.toxotis.client.Pair;
 import org.opentox.toxotis.client.VRI;
@@ -62,7 +63,7 @@ public class VRIexample {
         out.println("VRI query        : " + vri.getQueryAsString());
         out.println("VRI Base URI     : " + vri.getServiceBaseUri());
 
-        ArrayList<Pair<String, String>> pairs = vri.getUrlParams();
+        List<Pair<String, String>> pairs = vri.getUrlParams();
         Pair second = pairs.get(1);
         out.println("VRI has parameter : " + second.getKey() + " has value " + second.getValue());
 

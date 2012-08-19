@@ -54,6 +54,7 @@ import javax.swing.ImageIcon;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.http.GetHttpClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
@@ -273,6 +274,21 @@ public class Compound extends DescriptorCaclulation<Compound> {
         return getProperty(tempFeat, token);
     }
 
+    /**
+     * Creates a dataset with the current compound and the features 
+     * prescribed in the list of input arguments. The dataset is fetched from 
+     * a remote location.
+     * 
+     * @param token
+     *      Authentication token that will allow us to access the resource.
+     * @param featureUris
+     *      List of Feature URIs to be included in the dataset.
+     * @return
+     *      The requested dataset.
+     * @throws ServiceInvocationException 
+     *      In case some of the involved services experiences some error or
+     *      if the request is mal-formed.
+     */
     public Dataset getProperties(AuthenticationToken token, VRI... featureUris) throws ServiceInvocationException {
         VRI dsUri = new VRI(getUri());
         for (VRI featureUri : featureUris) {
@@ -329,7 +345,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         client.post();
         int status;
         status = client.getResponseCode();
-        if (status == 200) {
+        if (status == HttpStatusCodes.Success.getStatus()) {
             Task readyTask = new Task();
             readyTask.setPercentageCompleted(100);
             readyTask.setStatus(Task.Status.COMPLETED);
@@ -340,7 +356,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
                 throw new RemoteServiceException("Unexpected behaviour from the remote server at :'" + vri.getStringNoQuery()
                         + "'. Received status code 200 and messaage:" + client.getResponseText(), ex);
             }
-        } else if (status == 202) {
+        } else if (status == HttpStatusCodes.Accepted.getStatus()) {
             try {
                 VRI taskUri = new VRI(client.getResponseText());
                 TaskSpider tskSpider = new TaskSpider(taskUri);
@@ -483,7 +499,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
             client.authorize(token);
 
             int status = client.getResponseCode();
-            if (status != 200) { //TODO: Tasks??? 201? 202?
+            if (status != HttpStatusCodes.Success.getStatus()) { //TODO: Tasks??? 201? 202?
                 throw new RemoteServiceException("Received a status code '" + status + "' from the service at"
                         + similarityService);
             }

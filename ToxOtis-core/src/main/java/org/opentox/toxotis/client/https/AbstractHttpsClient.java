@@ -41,6 +41,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IClient;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.http.PostHttpClient;
@@ -210,7 +211,9 @@ public abstract class AbstractHttpsClient implements Closeable, IClient {
             throw badConnection;
         }
         int connectionResponseCode = getResponseCode();
-        if (connectionResponseCode == 200 || connectionResponseCode == 202 || connectionResponseCode == 201) {
+        if (connectionResponseCode == HttpStatusCodes.Accepted.getStatus()
+                || connectionResponseCode == HttpStatusCodes.Success.getStatus()
+                || connectionResponseCode == HttpStatusCodes.Created.getStatus()) {
             return new java.io.BufferedInputStream(getConnectionInputStream(), bufferSize);
         } else {
             return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);

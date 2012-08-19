@@ -43,6 +43,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
@@ -233,7 +234,9 @@ public abstract class AbstractHttpClient implements IClient {
                 throw badConnection;
             }
             int connectionResponseCode = getResponseCode();
-            if (connectionResponseCode == 200 || connectionResponseCode == 202 || connectionResponseCode == 201) {
+            if (connectionResponseCode == HttpStatusCodes.Accepted.getStatus() || 
+                    connectionResponseCode == HttpStatusCodes.Success.getStatus() || 
+                    connectionResponseCode == HttpStatusCodes.Created.getStatus()) {
                 return new java.io.BufferedInputStream(getConnectionInputStream(), bufferSize);
             } else {
                 return new java.io.BufferedInputStream(con.getErrorStream(), bufferSize);

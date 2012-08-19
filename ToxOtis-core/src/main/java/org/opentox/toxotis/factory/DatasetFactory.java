@@ -44,6 +44,7 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -318,10 +319,10 @@ public final class DatasetFactory {
             int responseStatus = -1;
             responseStatus = postClient.getResponseCode();
 
-            if (responseStatus == 202) {
+            if (responseStatus == HttpStatusCodes.Accepted.getStatus()) {
                 TaskSpider tskSp = new TaskSpider(newVRI);
                 return tskSp.parse();
-            } else if (responseStatus == 200) {
+            } else if (responseStatus == HttpStatusCodes.Success.getStatus()) {
                 Task t = new Task();
                 t.setResultUri(newVRI);
                 t.setStatus(Task.Status.COMPLETED);

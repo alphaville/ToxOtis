@@ -33,16 +33,14 @@
 package org.opentox.toxotis.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Compound;
-import org.opentox.toxotis.core.component.qprf.QprfReport;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
-import org.opentox.toxotis.ontology.MetaInfo;
-import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.CompoundSpider;
 
@@ -92,7 +90,7 @@ public class SimilarityRetriever {
         this.token = token;
     }
 
-    public ArrayList<Compound> similarCompounds() throws ServiceInvocationException {
+    public List<Compound> similarCompounds() throws ServiceInvocationException {
 //        System.out.println("Similarity Search engine started");
         Set<VRI> similarCompoundVRIs = compound.getSimilar(similarity, token);
 //        System.out.println("  L similar compounds found (listing uris)");

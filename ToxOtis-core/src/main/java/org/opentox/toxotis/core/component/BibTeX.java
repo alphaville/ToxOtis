@@ -55,6 +55,7 @@ import java.util.regex.Pattern;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -228,6 +229,14 @@ public class BibTeX extends OTPublishable<BibTeX>
         return m_abstract;
     }
 
+    /**
+     * Setter method for the abstract.
+     * 
+     * @param m_abstract
+     *      The abstract as a String.
+     * @return 
+     *      The current modifiable instance of BibTeX with the updated abstract. 
+     */
     public BibTeX setAbstract(String m_abstract) {
         this.m_abstract = m_abstract;
         return this;
@@ -242,6 +251,15 @@ public class BibTeX extends OTPublishable<BibTeX>
         return m_author;
     }
 
+    /**
+     * Setter method for the author(s).
+     * 
+     * @param m_author 
+     *      The list of authors or the single author as a String.
+     * @return 
+     *      The current modifiable instance of BibTeX with the updated author. 
+     * @see #getAuthor() #getAuthor
+     */
     public BibTeX setAuthor(String m_author) {
         this.m_author = m_author;
         return this;
@@ -282,15 +300,38 @@ public class BibTeX extends OTPublishable<BibTeX>
         return m_bookTitle;
     }
 
+    /**
+     * Setter method for the bookTitle.
+     * 
+     * @param m_bookTitle 
+     *      The bookTitle as a String.
+     * @return 
+     *      The current modifiable instance of BibTeX with the updated bookTitle. 
+     */
     public BibTeX setBookTitle(String m_bookTitle) {
         this.m_bookTitle = m_bookTitle;
         return this;
     }
 
+    /**
+     * A chapter (or section or whatever) number.
+     * 
+     * @return 
+     *      The chapter title/number as a String.
+     */
     public String getChapter() {
         return m_chapter;
     }
 
+    /**
+     * Setter method for the chapter of the BibTeX resource.
+     * 
+     * @param m_chapter  
+     *      The chapter as a String.
+     * @return 
+     *      The current modifiable instance of BibTeX with the updated chapter
+     *      parameter. 
+     */
     public BibTeX setChapter(String m_chapter) {
         this.m_chapter = m_chapter;
         return this;
@@ -300,15 +341,40 @@ public class BibTeX extends OTPublishable<BibTeX>
         return m_copyright;
     }
 
+    /**
+     * Setter method for the copyright notice of the BibTeX resource.
+     * 
+     * @param m_copyright 
+     *      The copyright notice as a String.
+     * @return 
+     *      The current modifiable instance of BibTeX with the updated copyright
+     *      parameter. 
+     */
     public BibTeX setCopyright(String m_copyright) {
         this.m_copyright = m_copyright;
         return this;
     }
 
+    /**
+     * The database key of the entry being cross referenced. A URI of 
+     * some other BibTeX resource should be ideal for a cross-reference.
+     * 
+     * @return 
+     *      Cross-reference to some other BibTeX resource or piece of work.
+     */
     public String getCrossref() {
         return m_crossref;
     }
 
+    /**
+     * Setter method for the cross-ref of this BibTeX resource. A URI of some
+     * other BibTeX entity should be ideally provided.
+     * 
+     * @param m_crossref 
+     *      The chapter as a String.
+     * @return 
+     *      The current modifiable instance of BibTeX with the updated cross-ref. 
+     */
     public BibTeX setCrossref(String m_crossref) {
         this.m_crossref = m_crossref;
         return this;
@@ -320,7 +386,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * standard styles convert to lower case when necessary.
      * 
      * @return 
-     *  The edition of the BibTeX object.
+     *      The edition of the BibTeX object.
      */
     public String getEdition() {
         return m_edition;
@@ -362,19 +428,61 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * The ISBN of the resource. ISBNs now come in two styles, containing 
+     * 10 digits or 13 digits, respectively (corresponding to the above 
+     * "ISBN-10:" and "ISBN-13:" numbers). Please use the 13-digit one if 
+     * available (if nowhere else, it is written under the barcode: the 
+     * hyphenation will be 978-, or in the future 979-, then the same as in 
+     * the 10-digit ISBN, but the last digit is different for ISBN-10 and 
+     * ISBN-13, as they use different checksum algorithms).
+     * 
+     * @return 
+     *      The ISBN of the current BibTeX object as a String.
+     */
     public String getIsbn() {
         return m_isbn;
     }
 
+    /**
+     * Setter method for the ISBN.
+     * 
+     * @param isbn
+     *      The ISBN.
+     * @return 
+     *      The current BibTeX instance with updated ISBN.
+     * @see #getIsbn() #getIsbn()
+     */
     public BibTeX setIsbn(String isbn) {
         this.m_isbn = isbn;
         return this;
     }
 
+    /**
+     * The ISSN of the resource. An International Standard Serial Number (ISSN) 
+     * is a unique eight-digit number used to identify a print or electronic
+     * periodical publication. Periodicals published in both print and electronic 
+     * form may have two ISSNs, a print ISSN (p-ISSN) and an electronic ISSN 
+     * (e-ISSN or eISSN). The ISSN system was first drafted as an ISO international 
+     * standard in 1971 and published as ISO 3297 in 1975. The ISO subcommittee 
+     * TC 46/SC 9 is responsible for the standard.
+     * 
+     * @return 
+     *      The ISSN of the current BibTeX object as a String.
+     */
     public String getIssn() {
         return m_issn;
     }
 
+    /**
+     * Setter method for the ISSN.
+     * 
+     * @param issn
+     *      The ISSN.
+     * @return 
+     *      The current BibTeX instance with updated ISSN.
+     * @see #getIssn() #getIssn()
+     */
     public BibTeX setIssn(String issn) {
         this.m_issn = issn;
         return this;
@@ -675,6 +783,14 @@ public class BibTeX extends OTPublishable<BibTeX>
         return this;
     }
 
+    /**
+     * A URL where more information about the work described by this 
+     * BibTeX can be found. Usually, it is the URL where someone may find
+     * the actual resource.
+     * 
+     * @return 
+     *      URL as String.
+     */
     public String getUrl() {
         return m_url;
     }
@@ -794,7 +910,7 @@ public class BibTeX extends OTPublishable<BibTeX>
             } catch (URISyntaxException ex) {
                 throw new RemoteServiceException("Invalid URI returned from remote service", ex);
             }
-        } else if (status == 202) {// Task
+        } else if (status == HttpStatusCodes.Accepted.getStatus()) {// Task
             String taskUriString = pc.getResponseText().trim();
             try {
                 VRI taskUri = new VRI(taskUriString);
@@ -1162,7 +1278,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * Create a new BibTeX resource from its String representation. Parses the
      * String representation of a BibTeX into an instance of BibTeX. Then you can
      * use the methods defined in {@link BibTeX } to publish the BibTeX in some
-     * BibTeX service or create an RDF rerpesentation of it (using the Knouf ontology).
+     * BibTeX service or create an RDF representation of it (using the Knouf ontology).
      * 
      * @param reader
      *     Reader used to acquire the String representation of the BibTeX. The method

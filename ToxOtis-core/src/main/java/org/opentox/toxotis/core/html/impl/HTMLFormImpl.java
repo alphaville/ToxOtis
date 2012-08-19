@@ -1,6 +1,7 @@
 package org.opentox.toxotis.core.html.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.opentox.toxotis.core.html.HTMLComponent;
 import org.opentox.toxotis.core.html.HTMLForm;
 
@@ -17,7 +18,7 @@ public class HTMLFormImpl implements HTMLForm {
 
     private String actionUrl;
     private String method;
-    private ArrayList<HTMLComponent> content = new ArrayList<HTMLComponent>();
+    private List<HTMLComponent> content = new ArrayList<HTMLComponent>();
 
     @Override
     public HTMLForm setActionUrl(String actionUrl) {
@@ -26,7 +27,7 @@ public class HTMLFormImpl implements HTMLForm {
     }
 
     @Override
-    public ArrayList<HTMLComponent> getComponents() {
+    public List<HTMLComponent> getComponents() {
         return content;
     }
 

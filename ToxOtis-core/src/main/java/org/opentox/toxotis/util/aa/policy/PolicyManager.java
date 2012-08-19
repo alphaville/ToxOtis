@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -102,7 +103,7 @@ public final class PolicyManager {
      * @throws ToxOtisException
      */
     public static void deleteAllMyPolicies(VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
-        ArrayList<String> policies = listPolicyUris(policyService, token);
+        List<String> policies = listPolicyUris(policyService, token);
         for (String policyName : policies) {
             deleteRemotePolicy(policyService, policyName, token);
         }
@@ -203,7 +204,7 @@ public final class PolicyManager {
      *      If the token the user uses is not active (because it has been invalidated,
      *      expired, or not initialized yet).
      */
-    public static ArrayList<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
+    public static List<String> listPolicyUris(VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
         if (!token.getStatus().equals(AuthenticationToken.TokenStatus.ACTIVE)) {
             throw new ForbiddenRequest("This token is not active: " + token.getStatus());
         }

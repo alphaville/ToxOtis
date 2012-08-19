@@ -48,6 +48,14 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
  */
 public class ParameterSpider extends Tarantula<Parameter> {
 
+    /**
+     * ParameterSpider constructor with an ontological resource and an ontological model.
+     * 
+     * @param resource
+     *      Ontological resource to be parsed.
+     * @param model
+     *      Ontological model to be used for parsing.
+     */
     public ParameterSpider(OntModel model, Resource resource) {
         super(resource, model);
     }

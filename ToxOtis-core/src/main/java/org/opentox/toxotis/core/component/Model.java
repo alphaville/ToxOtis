@@ -102,7 +102,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
      */
     private List<Feature> independentFeatures;
     private Set<Parameter> parameters;
-    private ArrayList<MultiParameter> multiParameters;
+    private List<MultiParameter> multiParameters;
     private String localCode;
     private Serializable actualModel;
     private byte[] modelBytes;
@@ -374,11 +374,11 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         this.parameters = parameters;
     }
 
-    public ArrayList<MultiParameter> getMultiParameters() {
+    public List<MultiParameter> getMultiParameters() {
         return multiParameters;
     }
 
-    public Model setMultiParameters(ArrayList<MultiParameter> multiParameters) {
+    public Model setMultiParameters(List<MultiParameter> multiParameters) {
         this.multiParameters = multiParameters;
         return this;
     }

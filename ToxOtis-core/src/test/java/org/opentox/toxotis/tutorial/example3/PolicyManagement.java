@@ -2,6 +2,7 @@ package org.opentox.toxotis.tutorial.example3;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
@@ -43,7 +44,7 @@ public class PolicyManagement {
         /*
          * Verify that policy has been created
          */
-        ArrayList<String> policiesPlusOne = PolicyManager.listPolicyUris(null, at);
+        List<String> policiesPlusOne = PolicyManager.listPolicyUris(null, at);
         assertTrue("A policy was created but is not found in the list of policies", policiesPlusOne.contains(policyName));
 
         /*
@@ -54,7 +55,7 @@ public class PolicyManagement {
         /*
          * Verify that policy has been deleted
          */
-        ArrayList<String> policies = PolicyManager.listPolicyUris(null, at);
+        List<String> policies = PolicyManager.listPolicyUris(null, at);
         assertTrue("Policy " + policyName + " was not deleted", !policies.contains(policyName));
 
         at.invalidate();
