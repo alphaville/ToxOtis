@@ -57,6 +57,7 @@ public class DataEntry extends OTComponent<DataEntry> {
     private Compound conformer;
     private List<FeatureValue> featureValues;
     private static final String DISCRIMINATOR = "dataEntry";
+    private static final int HASH_OFFSET = 7, HASH_MOD = 97;
 
     @Override
     public VRI getUri() {
@@ -167,9 +168,9 @@ public class DataEntry extends OTComponent<DataEntry> {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + (this.conformer != null ? this.conformer.hashCode() : 0);
-        hash = 97 * hash + (this.featureValues != null ? this.featureValues.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.conformer != null ? this.conformer.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.featureValues != null ? this.featureValues.hashCode() : 0);
         return hash;
     }
 }

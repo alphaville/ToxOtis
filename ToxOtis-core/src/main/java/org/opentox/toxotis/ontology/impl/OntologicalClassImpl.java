@@ -49,6 +49,8 @@ public class OntologicalClassImpl implements OntologicalClass {
     private Set<OntologicalClass> disjointWith = new HashSet<OntologicalClass>();
     private static final long serialVersionUID = 2954714099334L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OntologicalClassImpl.class);
+    
+    private static final int HASH_OFFSET = 7, HASH_MOD = 83;
 
     /**
      * Construct an empty instance of OntologicalClass. The name-space is by default
@@ -172,9 +174,9 @@ public class OntologicalClassImpl implements OntologicalClass {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + (this.ns != null ? this.ns.hashCode() : 0);
-        hash = 83 * hash + (this.name != null ? this.name.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.ns != null ? this.ns.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
 

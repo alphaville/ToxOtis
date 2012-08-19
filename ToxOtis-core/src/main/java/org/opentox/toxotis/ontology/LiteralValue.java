@@ -70,6 +70,8 @@ public class LiteralValue<T> implements Serializable {
     private transient XSDDatatype type = XSDDatatype.XSDstring;
     private String serializableTypeUri;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LiteralValue.class);
+    
+    private static final int HASH_OFFSET = 7, HASH_MOD = 59;
 
     /**
      * Dummy constructor for the class {@link LiteralValue } which initializes a new
@@ -201,9 +203,9 @@ public class LiteralValue<T> implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + (this.value != null ? this.value.toString().hashCode() : 0);
-        hash = 59 * hash + (this.type != null ? this.type.toString().hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.value != null ? this.value.toString().hashCode() : 0);
+        hash = HASH_MOD * hash + (this.type != null ? this.type.toString().hashCode() : 0);
         return hash;
     }
 
@@ -228,7 +230,7 @@ public class LiteralValue<T> implements Serializable {
      */
     public long getHash() {
         long hash = (value != null ? value.hashCode() : 0)
-                + 7 * (type != null ? type.hashCode() : 0);
+                + HASH_OFFSET * (type != null ? type.hashCode() : 0);
         return hash;
     }
 

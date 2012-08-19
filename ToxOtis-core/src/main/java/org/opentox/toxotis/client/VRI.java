@@ -67,9 +67,9 @@ public class VRI implements Serializable { // Well tested!
     private static final String URL_ENCODING = "UTF-8";
     private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
-    private static final int hashOffset = 3, hashMod = 37;
-    private static final String msEndSlashOrNothing = "([^/]+/$|[^/]+)$";
-    private static final String msSlash = "/", msQuestionMark="?", msAmpbesand="&";
+    private static final int HASH_OFFSET = 3, HASH_MOD = 37;
+    private static final String END_SLASH_OR_NOTHING = "([^/]+/$|[^/]+)$";
+    private static final String SLASH = "/", QUESTION_MARK = "?", AMPBESAND = "&", EQUALS="=";
 
     /**
      * Keywords that appear in OpenTox URIs.
@@ -105,18 +105,18 @@ public class VRI implements Serializable { // Well tested!
      */
     private enum OpenToxRegEx {
 
-        COMPOUND(OTClasses.Compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + msEndSlashOrNothing),
-        CONFORMER(OTClasses.Conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + msEndSlashOrNothing),
-        FEATURE(OTClasses.Feature(), Feature.class, ".+/(?i)feature(s||)/" + msEndSlashOrNothing),
-        DATASET(OTClasses.Dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + msEndSlashOrNothing,
-        ".+/(?i)query/(?i)compound/.+/" + msEndSlashOrNothing),
-        ALGORITHM(OTClasses.Algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + msEndSlashOrNothing),
-        BIBTEX(KnoufBibTex.Entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + msEndSlashOrNothing),
-        MODEL(OTClasses.Model(), Model.class, ".+/(?i)model(s||)/" + msEndSlashOrNothing),
-        TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + msEndSlashOrNothing),
-        ERROR(OTClasses.ErrorReport(), ErrorReport.class, ".+/(?i)error(s||)/" + msEndSlashOrNothing),
-        PARAMETER(OTClasses.Parameter(), Parameter.class, ".+/(?i)parameter(s||)/" + msEndSlashOrNothing),
-        QPRFREPORT(OTClasses.QPRFReport(), QprfReport.class, ".+/(?i)reach_report(s||)/(?i)qprf/" + msEndSlashOrNothing);
+        COMPOUND(OTClasses.Compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_OR_NOTHING),
+        CONFORMER(OTClasses.Conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_OR_NOTHING),
+        FEATURE(OTClasses.Feature(), Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_OR_NOTHING),
+        DATASET(OTClasses.Dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_OR_NOTHING,
+        ".+/(?i)query/(?i)compound/.+/" + END_SLASH_OR_NOTHING),
+        ALGORITHM(OTClasses.Algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_OR_NOTHING),
+        BIBTEX(KnoufBibTex.Entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_OR_NOTHING),
+        MODEL(OTClasses.Model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_OR_NOTHING),
+        TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_OR_NOTHING),
+        ERROR(OTClasses.ErrorReport(), ErrorReport.class, ".+/(?i)error(s||)/" + END_SLASH_OR_NOTHING),
+        PARAMETER(OTClasses.Parameter(), Parameter.class, ".+/(?i)parameter(s||)/" + END_SLASH_OR_NOTHING),
+        QPRFREPORT(OTClasses.QPRFReport(), QprfReport.class, ".+/(?i)reach_report(s||)/(?i)qprf/" + END_SLASH_OR_NOTHING);
         /**
          * ParameterValue of regular expressions that identify a
          * certain resource.
@@ -204,19 +204,19 @@ public class VRI implements Serializable { // Well tested!
             uri = "http://" + uri;
         }
         this.uri = uri;
-        if (uri.contains(msQuestionMark)) {
-            String[] splitted = uri.split(Pattern.quote(msQuestionMark));
+        if (uri.contains(QUESTION_MARK)) {
+            String[] splitted = uri.split(Pattern.quote(QUESTION_MARK));
             this.uri = splitted[0];
             if (splitted.length >= 2) {// Could be http://something.abc/service? where there is no query...
                 String query = splitted[1];
-                String[] queryParts = query.split(Pattern.quote(msAmpbesand));
+                String[] queryParts = query.split(Pattern.quote(AMPBESAND));
                 String paramName, paramValue;
                 try {
                     for (int i = 0; i < queryParts.length; i++) {
                         paramName = null;
                         paramValue = null;
                         String queryFragment = queryParts[i];
-                        String[] queryFragmentComponents = queryFragment.split(Pattern.quote("="));
+                        String[] queryFragmentComponents = queryFragment.split(Pattern.quote(EQUALS));
                         if (queryFragmentComponents.length == 1) {
                             paramName = queryFragmentComponents[0];
                         } else if (queryFragmentComponents.length > 1) {
@@ -224,7 +224,7 @@ public class VRI implements Serializable { // Well tested!
                             for (int k = 1; k < queryFragmentComponents.length; k++) {
                                 paramValue = paramValue == null ? queryFragmentComponents[k] : paramValue + queryFragmentComponents[k];
                                 if (k != queryFragmentComponents.length - 1) {
-                                    paramValue += "=";
+                                    paramValue += EQUALS;
                                 }
                             }
                         }
@@ -414,7 +414,7 @@ public class VRI implements Serializable { // Well tested!
         StringBuilder string = new StringBuilder(uri);
         String query = getQueryAsString();
         if (query != null && !query.isEmpty()) {
-            string.append(msQuestionMark);
+            string.append(QUESTION_MARK);
             string.append(getQueryAsString());
         }
         return new String(string);
@@ -450,7 +450,7 @@ public class VRI implements Serializable { // Well tested!
         String noQueryUri = getStringNoQuery();
         StringBuilder builder = new StringBuilder(getStringNoQuery());
         if (!noQueryUri.matches(".+/$")) {
-            builder.append(msSlash); // Append a slash at the end (if not any)
+            builder.append(SLASH); // Append a slash at the end (if not any)
         }
 
         for (int i = 0; i < fragments.length; i++) {
@@ -462,7 +462,7 @@ public class VRI implements Serializable { // Well tested!
                     throw new RuntimeException(ex);
                 }
                 if (i < fragments.length - 1) {
-                    builder.append(msSlash);
+                    builder.append(SLASH);
                 }
             }
         }
@@ -537,12 +537,12 @@ public class VRI implements Serializable { // Well tested!
             int counter = 0;
             for (Pair<String, String> e : urlParams) {
                 string.append(e.getKey());
-                string.append("=");
+                string.append(EQUALS);
                 if (e.getValue() != null) {
                     string.append(e.getValue());
                 }
                 if (counter != nParams - 1) {
-                    string.append(msAmpbesand);
+                    string.append(AMPBESAND);
                 }
                 counter++;
             }
@@ -648,7 +648,7 @@ public class VRI implements Serializable { // Well tested!
                             return new VRI(noQuery.split("/query/compound")[0]);
                         }
                     }
-                    return new VRI(noQuery.split(msSlash + fragment)[0]);
+                    return new VRI(noQuery.split(SLASH + fragment)[0]);
                 } catch (URISyntaxException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -664,7 +664,7 @@ public class VRI implements Serializable { // Well tested!
      */
     public String getStringNoQuery() {
         String stringNoQuery = uri;
-        if (stringNoQuery.endsWith(msSlash)) {
+        if (stringNoQuery.endsWith(SLASH)) {
             stringNoQuery = stringNoQuery.substring(0, stringNoQuery.length() - 1);
         }
         return stringNoQuery;
@@ -691,8 +691,8 @@ public class VRI implements Serializable { // Well tested!
 
     @Override
     public int hashCode() {
-        int hash = hashOffset;
-        hash = hashMod * hash + (this.uri != null ? this.uri.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
     }
 
@@ -715,11 +715,11 @@ public class VRI implements Serializable { // Well tested!
 
     public String getId() {
         String residual = getStringNoQuery().replaceAll(getServiceBaseUri().toString(), "").trim();
-        String[] parts = residual.split(msSlash);
+        String[] parts = residual.split(SLASH);
 
         if (parts.length == 3 || parts.length == 4) {
             String id = parts[parts.length - 1];
-            if (id.endsWith(msSlash)) {
+            if (id.endsWith(SLASH)) {
                 id = id.substring(0, id.length() - 2);
             }
             return id;

@@ -50,6 +50,7 @@ import org.opentox.toxotis.ontology.collection.OTRestClasses;
 public class HttpStatus extends OTComponent<HttpStatus> {
 
     private OntologicalClass httpStatusClass;
+    private static final int HASH_OFFSET = 5, HASH_MOD = 59;
 
     public HttpStatus(VRI uri) {
         super(uri);
@@ -105,8 +106,8 @@ public class HttpStatus extends OTComponent<HttpStatus> {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + (this.httpStatusClass != null ? this.httpStatusClass.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.httpStatusClass != null ? this.httpStatusClass.hashCode() : 0);
         return hash;
     }
 

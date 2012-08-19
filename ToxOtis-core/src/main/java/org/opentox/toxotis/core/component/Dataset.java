@@ -83,6 +83,7 @@ public class Dataset extends OTPublishable<Dataset> {
     private long timeParse = -1;
     private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
+    private static final int HASH_OFFSET = 7, HASH_MOD = 29;
 
     /**
      * Constructor for a Dataset object providing its URI.
@@ -597,8 +598,8 @@ public class Dataset extends OTPublishable<Dataset> {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + (this.dataEntries != null ? this.dataEntries.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.dataEntries != null ? this.dataEntries.hashCode() : 0);
         return hash;
     }
 }

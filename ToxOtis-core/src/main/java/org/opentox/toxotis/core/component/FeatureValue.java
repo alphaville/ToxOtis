@@ -56,6 +56,7 @@ public class FeatureValue extends OTComponent<FeatureValue> {
     private Feature feature;
     private LiteralValue value;
     private static final String DISCRIMINATOR = "featureValue";
+    private static final int HASH_OFFSET = 3, HASH_MOD = 67;
 
     @Override
     public VRI getUri() {
@@ -131,9 +132,9 @@ public class FeatureValue extends OTComponent<FeatureValue> {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + (this.feature != null ? this.feature.hashCode() : 0);
-        hash = 67 * hash + (this.value != null ? this.value.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.feature != null ? this.feature.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.value != null ? this.value.hashCode() : 0);
         return hash;
     }
 }

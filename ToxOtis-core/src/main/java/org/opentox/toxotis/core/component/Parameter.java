@@ -64,7 +64,7 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupport {
 
     private String name;
-    private static final int hashOffset = 7, hashMod = 37;
+    private static final int HASH_OFFSET = 7, HASH_MOD = 37;
 
     public void endowUri(final VRI baseUri) {
         if (super.uri == null) {
@@ -276,10 +276,10 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
 
     @Override
     public int hashCode() {
-        int hash = hashOffset;
-        hash = hashMod * hash + (this.getName() != null ? this.getName().hashCode() : 0);
-        hash = hashMod * hash + (this.typedValue != null ? this.typedValue.hashCode() : 0);
-        hash = hashMod * hash + (this.scope != null ? this.scope.toString().hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.getName() != null ? this.getName().hashCode() : 0);
+        hash = HASH_MOD * hash + (this.typedValue != null ? this.typedValue.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.scope != null ? this.scope.toString().hashCode() : 0);
         return hash;
     }
 }

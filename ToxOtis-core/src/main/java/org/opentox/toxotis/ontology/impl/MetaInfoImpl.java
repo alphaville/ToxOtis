@@ -58,6 +58,8 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 public class MetaInfoImpl implements MetaInfo {
 
+    private static final int HASH_OFFSET = 3, HASH_MOD = 89;
+    
     public MetaInfoImpl() {
     }
     private static final transient String DUBLIN_CORE_DOC = "http://dublincore.org/documents/usageguide/elements.shtml#%s";
@@ -784,20 +786,20 @@ public class MetaInfoImpl implements MetaInfo {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + (this.identifiers != null ? this.identifiers.hashCode() : 0);
-        hash = 89 * hash + (this.comments != null ? this.comments.hashCode() : 0);
-        hash = 89 * hash + (this.descriptions != null ? this.descriptions.hashCode() : 0);
-        hash = 89 * hash + (this.titles != null ? this.titles.hashCode() : 0);
-        hash = 89 * hash + (this.subjects != null ? this.subjects.hashCode() : 0);
-        hash = 89 * hash + (this.publishers != null ? this.publishers.hashCode() : 0);
-        hash = 89 * hash + (this.creators != null ? this.creators.hashCode() : 0);
-        hash = 89 * hash + (this.contributors != null ? this.contributors.hashCode() : 0);
-        hash = 89 * hash + (this.audiences != null ? this.audiences.hashCode() : 0);
-        hash = 89 * hash + (this.date != null ? this.date.hashCode() : 0);
-        hash = 89 * hash + (this.sameAs != null ? this.sameAs.hashCode() : 0);
-        hash = 89 * hash + (this.seeAlso != null ? this.seeAlso.hashCode() : 0);
-        hash = 89 * hash + (this.hasSources != null ? this.hasSources.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.identifiers != null ? this.identifiers.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.comments != null ? this.comments.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.descriptions != null ? this.descriptions.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.titles != null ? this.titles.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.subjects != null ? this.subjects.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.publishers != null ? this.publishers.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.creators != null ? this.creators.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.contributors != null ? this.contributors.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.audiences != null ? this.audiences.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.date != null ? this.date.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.sameAs != null ? this.sameAs.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.seeAlso != null ? this.seeAlso.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.hasSources != null ? this.hasSources.hashCode() : 0);
         return hash;
     }
 

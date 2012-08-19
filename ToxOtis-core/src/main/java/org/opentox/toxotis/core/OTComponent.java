@@ -73,7 +73,7 @@ public abstract class OTComponent<T extends IOTComponent>
     private boolean enabled = true;
     private Set<OntologicalClass> ontologicalClassVault = new HashSet<OntologicalClass>();
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
-    private static final int hashOffset = 7, hashMod = 79;
+    private static final int HASH_OFFSET = 7, HASH_MOD = 79;
 
     /**
      * Constructor for an empty OpenTox Component
@@ -337,8 +337,8 @@ public abstract class OTComponent<T extends IOTComponent>
 
     @Override
     public int hashCode() {
-        int hash = hashOffset;
-        hash = hashMod * hash + (this.uri != null ? this.uri.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.uri != null ? this.uri.hashCode() : 0);
         return hash;
     }
 }

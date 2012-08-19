@@ -110,7 +110,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Model.class);
     private static final int baosSize = 4000;
-    private static final int hashOffset = 3, hashMod = 71;
+    private static final int HASH_OFFSET = 3, HASH_MOD = 71;
     private static final int htmlTextBoxSize = 60,
             interfaceCellPadding = 5,
             interfaceCellSpacing = 2,
@@ -523,8 +523,8 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
     @Override
     public int hashCode() {
-        int hash = hashOffset;
-        hash = hashMod * hash + (getUri() != null ? getUri().hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (getUri() != null ? getUri().hashCode() : 0);
         return hash;
     }
 

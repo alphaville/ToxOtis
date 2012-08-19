@@ -39,6 +39,8 @@ package org.opentox.toxotis.util.aa.policy;
  * @author Charalampos Chomenides
  */
 public abstract class PolicySubject {
+    
+    private static final int HASH_OFFSET = 5, HASH_MOD = 37;
 
     protected String LDAP_Type;
 
@@ -71,8 +73,8 @@ public abstract class PolicySubject {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 37 * hash + (this.subjectName != null ? this.subjectName.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.subjectName != null ? this.subjectName.hashCode() : 0);
         return hash;
     }
     

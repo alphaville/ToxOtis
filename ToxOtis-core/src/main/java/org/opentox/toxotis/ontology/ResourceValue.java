@@ -50,6 +50,7 @@ public class ResourceValue implements Serializable {
 
     private VRI uri;
     private OntologicalClass ontologicalClass;
+    private static final int HASH_OFFSET = 19, HASH_MOD = 1;
 
     private ResourceValue() {
     }
@@ -99,7 +100,7 @@ public class ResourceValue implements Serializable {
     }
 
     public long getHash() {
-        long hash = 19 + (this.uri != null ? uri.toString().trim().hashCode() : 0);
+        long hash = HASH_OFFSET + HASH_MOD * (this.uri != null ? uri.toString().trim().hashCode() : 0);
         return hash;
     }
 

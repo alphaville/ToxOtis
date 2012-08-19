@@ -60,6 +60,8 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
  * @author Charalampos Chomenides
  */
 public class RestOperation extends OTComponent<RestOperation> implements IRestOperation {
+    
+    private static final int HASH_OFFSET = 7, HASH_MOD = 59;
 
     /**
      * Dummy constructor for the class {@link RestOperation } that creates an empty
@@ -324,12 +326,12 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + (this.restClasses != null ? this.restClasses.hashCode() : 0);
-        hash = 59 * hash + (this.method != null ? this.method.hashCode() : 0);
-        hash = 59 * hash + (this.httpParameters != null ? this.httpParameters.hashCode() : 0);
-        hash = 59 * hash + (this.httpStatusCodes != null ? this.httpStatusCodes.hashCode() : 0);
-        hash = 59 * hash + (this.mediaTypes != null ? this.mediaTypes.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.restClasses != null ? this.restClasses.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.method != null ? this.method.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.httpParameters != null ? this.httpParameters.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.httpStatusCodes != null ? this.httpStatusCodes.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.mediaTypes != null ? this.mediaTypes.hashCode() : 0);
         return hash;
     }
 

@@ -77,7 +77,7 @@ public class Feature extends OTPublishable<Feature> {
     private String units;
     private Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Feature.class);
-    private static final int hashOffset=3, hashMod=19;
+    private static final int HASH_OFFSET=3, HASH_MOD=19;
 
     public Feature() {
         super();
@@ -420,8 +420,8 @@ public class Feature extends OTPublishable<Feature> {
 
     @Override
     public int hashCode() {
-        int hash = hashOffset;
-        hash = hashMod * hash + (this.getUri() != null ? this.getUri().toString().hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.getUri() != null ? this.getUri().toString().hashCode() : 0);
         return hash;
     }
 }
