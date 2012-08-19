@@ -41,7 +41,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -51,6 +50,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.opentox.toxotis.client.AbstractClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -216,7 +216,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     }
 
     @Override
-    public AbstractHttpClient addHeaderParameter(String paramName, String paramValue) {
+    public AbstractClient addHeaderParameter(String paramName, String paramValue) {
         if (paramName == null) {
             throw new NullPointerException("ParamName is null");
         }

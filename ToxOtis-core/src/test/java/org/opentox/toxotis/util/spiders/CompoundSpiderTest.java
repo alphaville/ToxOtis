@@ -32,6 +32,7 @@
  */
 package org.opentox.toxotis.util.spiders;
 
+import org.opentox.toxotis.util.spiders.CompoundSpider;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;

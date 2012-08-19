@@ -52,6 +52,9 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  */
 public interface IClient extends Closeable {
 
+    String httpProtocol = "HTTP";
+    String httpSecureProtocol = "HTTPS";
+    
     /** Standard UTF-8 Encoding */
     String URL_ENCODING = "UTF-8";
 

@@ -74,6 +74,11 @@ public class Trainer {
         this.algorithm = algorithm;
     }
 
+    /**
+     * The dataset used to train the model.
+     * @return 
+     *      Training Dataset.
+     */
     public Dataset getDataset() {
         return dataset;
     }

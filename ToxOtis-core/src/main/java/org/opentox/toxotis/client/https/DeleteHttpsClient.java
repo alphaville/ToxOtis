@@ -74,7 +74,7 @@ public class DeleteHttpsClient extends AbstractHttpsClient {
                     con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
             }
-            return con;
+            return (HttpsURLConnection) con;
         } catch (final IOException ex) {
             throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
         } catch (final Exception unexpectedException) {

@@ -41,13 +41,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-import javax.net.ssl.HttpsURLConnection;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
@@ -116,7 +116,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
 
     /** Initialize a connection to the target URI */
     @Override
-    protected HttpsURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
+    protected HttpURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
             java.net.URL targetUrl = uri.toURL();
             con = (javax.net.ssl.HttpsURLConnection) targetUrl.openConnection();
