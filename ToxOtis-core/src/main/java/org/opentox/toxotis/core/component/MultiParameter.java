@@ -75,9 +75,9 @@ public class MultiParameter extends OTComponent<MultiParameter> {
     @Override
     public Individual asIndividual(OntModel model) {
 
-        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.SetValuedParameter().inModel(model));
+        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.setValuedParameter().inModel(model));
         if (parameterValues.size() > 1) {
-            indiv.addRDFType(OTClasses.VectorParameter().inModel(model));
+            indiv.addRDFType(OTClasses.vectorParameter().inModel(model));
             for (ParameterValue setValue : parameterValues) {
                 Individual valueIndiv = setValue.asIndividual(model);
                 indiv.addProperty(OTObjectProperties.parameterValues().asObjectProperty(model), valueIndiv);

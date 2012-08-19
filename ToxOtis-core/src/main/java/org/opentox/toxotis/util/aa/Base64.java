@@ -28,8 +28,11 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
 
 // The line separator string of the operating system.
     private static final String systemLineSeparator = System.getProperty("line.separator");
+    private static final int MAP1_SIZE = 64, MAP2_SIZE = 128, ENCODE_LINES_STD_LENGTH = 76,
+            ILEN_MOD = 4, ILEN_OFF = 2, ILEN_Q = 3, P2=2, P3=3, P6=6,
+            MAX_CHAR_INDEX = 127;
 // Mapping table from 6-bit nibbles to Base64 characters.
-    private static char[] map1 = new char[64];
+    private static char[] map1 = new char[MAP1_SIZE];
 
     static {
         int i = 0;
@@ -46,13 +49,13 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
         map1[i++] = '/';
     }
 // Mapping table from Base64 characters to 6-bit nibbles.
-    private static byte[] map2 = new byte[128];
+    private static byte[] map2 = new byte[MAP2_SIZE];
 
     static {
         for (int i = 0; i < map2.length; i++) {
             map2[i] = -1;
         }
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < MAP1_SIZE; i++) {
             map2[map1[i]] = (byte) i;
         }
     }
@@ -74,7 +77,7 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
      * @return    A String containing the Base64 encoded data, broken into lines.
      */
     public static String encodeLines(byte[] in) {
-        return encodeLines(in, 0, in.length, 76, systemLineSeparator);
+        return encodeLines(in, 0, in.length, ENCODE_LINES_STD_LENGTH, systemLineSeparator);
     }
 
     /**
@@ -87,12 +90,12 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
      * @return              A String containing the Base64 encoded data, broken into lines.
      */
     public static String encodeLines(byte[] in, int iOff, int iLen, int lineLen, String lineSeparator) {
-        int blockLen = (lineLen * 3) / 4;
+        int blockLen = (lineLen * ILEN_Q) / ILEN_MOD;
         if (blockLen <= 0) {
             throw new IllegalArgumentException();
         }
         int lines = (iLen + blockLen - 1) / blockLen;
-        int bufLen = ((iLen + 2) / 3) * 4 + lines * lineSeparator.length();
+        int bufLen = ((iLen + ILEN_OFF) / ILEN_Q) * ILEN_MOD + lines * lineSeparator.length();
         StringBuilder buf = new StringBuilder(bufLen);
         int ip = 0;
         while (ip < iLen) {
@@ -134,8 +137,8 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
      * @return      A character array containing the Base64 encoded data.
      */
     public static char[] encode(byte[] in, int iOff, int iLen) {
-        int oDataLen = (iLen * 4 + 2) / 3;       // output length without padding
-        int oLen = ((iLen + 2) / 3) * 4;         // output length including padding
+        int oDataLen = (iLen * ILEN_MOD + ILEN_OFF) / ILEN_Q;       // output length without padding
+        int oLen = ((iLen + ILEN_OFF) / ILEN_Q) * ILEN_MOD;         // output length including padding
         char[] out = new char[oLen];
         int ip = iOff;
         int iEnd = iOff + iLen;
@@ -144,9 +147,9 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
             int i0 = in[ip++] & 0xff;
             int i1 = ip < iEnd ? in[ip++] & 0xff : 0;
             int i2 = ip < iEnd ? in[ip++] & 0xff : 0;
-            int o0 = i0 >>> 2;
-            int o1 = ((i0 & 3) << 4) | (i1 >>> 4);
-            int o2 = ((i1 & 0xf) << 2) | (i2 >>> 6);
+            int o0 = i0 >>> P2;
+            int o1 = ((i0 & P3) << ILEN_MOD) | (i1 >>> ILEN_MOD);
+            int o2 = ((i1 & 0xf) << P2) | (i2 >>> P6);
             int o3 = i2 & 0x3F;
             out[op++] = map1[o0];
             out[op++] = map1[o1];
@@ -221,13 +224,13 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
      * @throws      IllegalArgumentException If the input is not valid Base64 encoded data.
      */
     public static byte[] decode(char[] in, int iOff, int iLen) {
-        if (iLen % 4 != 0) {
+        if (iLen % ILEN_MOD != 0) {
             throw new IllegalArgumentException("Length of Base64 encoded input string is not a multiple of 4.");
         }
         while (iLen > 0 && in[iOff + iLen - 1] == '=') {
             iLen--;
         }
-        int oLen = (iLen * 3) / 4;
+        int oLen = (iLen * ILEN_Q) / ILEN_MOD;
         byte[] out = new byte[oLen];
         int ip = iOff;
         int iEnd = iOff + iLen;
@@ -237,7 +240,7 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
             int i1 = in[ip++];
             int i2 = ip < iEnd ? in[ip++] : 'A';
             int i3 = ip < iEnd ? in[ip++] : 'A';
-            if (i0 > 127 || i1 > 127 || i2 > 127 || i3 > 127) {
+            if (i0 > MAX_CHAR_INDEX || i1 > MAX_CHAR_INDEX || i2 > MAX_CHAR_INDEX || i3 > MAX_CHAR_INDEX) {
                 throw new IllegalArgumentException("Illegal character in Base64 encoded data.");
             }
             int b0 = map2[i0];
@@ -247,9 +250,9 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
             if (b0 < 0 || b1 < 0 || b2 < 0 || b3 < 0) {
                 throw new IllegalArgumentException("Illegal character in Base64 encoded data.");
             }
-            int o0 = (b0 << 2) | (b1 >>> 4);
-            int o1 = ((b1 & 0xf) << 4) | (b2 >>> 2);
-            int o2 = ((b2 & 3) << 6) | b3;
+            int o0 = (b0 << P2) | (b1 >>> ILEN_MOD);
+            int o1 = ((b1 & 0xf) << ILEN_MOD) | (b2 >>> P2);
+            int o2 = ((b2 & P3) << P6) | b3;
             out[op++] = (byte) o0;
             if (op < oLen) {
                 out[op++] = (byte) o1;

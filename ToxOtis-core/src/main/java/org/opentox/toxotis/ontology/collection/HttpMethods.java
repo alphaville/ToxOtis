@@ -47,8 +47,9 @@ import org.opentox.toxotis.ontology.ResourceValue;
  */
 public class HttpMethods {
 
-    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(HttpMethods.class);
-    private static VRI POST_VRI, GET_VRI, PUT_VRI, DELETE_VRI, OPTIONS_VRI, HEAD_VRI;
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(HttpMethods.class);
+    private static final VRI POST_VRI, GET_VRI, PUT_VRI, DELETE_VRI, OPTIONS_VRI, HEAD_VRI;
+    public static final ResourceValue GET, POST, PUT, DELETE, HEAD, OPTIONS;
 
     static {
         try {
@@ -58,16 +59,17 @@ public class HttpMethods {
             DELETE_VRI = new VRI(OTRestClasses.NS + "DELETE");
             HEAD_VRI = new VRI(OTRestClasses.NS + "HEAD");
             OPTIONS_VRI = new VRI(OTRestClasses.NS + "OPTIONS");
+            GET = new ResourceValue(GET_VRI, OTRestClasses.httpMethod());
+            POST = new ResourceValue(POST_VRI, OTRestClasses.httpMethod());
+            PUT = new ResourceValue(PUT_VRI, OTRestClasses.httpMethod());
+            DELETE = new ResourceValue(DELETE_VRI, OTRestClasses.httpMethod());
+            HEAD = new ResourceValue(HEAD_VRI, OTRestClasses.httpMethod());
+            OPTIONS = new ResourceValue(OPTIONS_VRI, OTRestClasses.httpMethod());
         } catch (URISyntaxException ex) {
             logger.error(null, ex);
+            throw new IllegalArgumentException("Programming Error!");
         }
     }
-    public static ResourceValue GET = new ResourceValue(GET_VRI, OTRestClasses.HTTPMethod());
-    public static ResourceValue POST = new ResourceValue(POST_VRI, OTRestClasses.HTTPMethod());
-    public static ResourceValue PUT = new ResourceValue(PUT_VRI, OTRestClasses.HTTPMethod());
-    public static ResourceValue DELETE = new ResourceValue(DELETE_VRI, OTRestClasses.HTTPMethod());
-    public static ResourceValue HEAD = new ResourceValue(HEAD_VRI, OTRestClasses.HTTPMethod());
-    public static ResourceValue OPTIONS = new ResourceValue(OPTIONS_VRI, OTRestClasses.HTTPMethod());
 
     public enum MethodsEnum {
 

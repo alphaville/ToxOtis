@@ -62,7 +62,7 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
     private int maxParallelTasks = 0;
     private int maxModels = 0;
     private int maxBibTeX = 0;
-    public static User GUEST = new User("guest@opensso.in-silico.ch", "Guest", "anonymous@anonymous.org", "{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H");
+    public static final User GUEST = new User("guest@opensso.in-silico.ch", "Guest", "anonymous@anonymous.org", "{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H");
 
     public int getMaxBibTeX() {
         return maxBibTeX;

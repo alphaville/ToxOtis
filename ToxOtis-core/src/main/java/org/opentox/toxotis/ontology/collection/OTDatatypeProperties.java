@@ -52,31 +52,31 @@ public final class OTDatatypeProperties {
     //TODO: Populate the metadata...
     private OTDatatypeProperties() {
     }
-    private static OTDatatypeProperty ms_hasStatus;
-    private static OTDatatypeProperty ms_acceptValue;
-    private static OTDatatypeProperty ms_paramScope;
-    private static OTDatatypeProperty ms_paramValue;
-    private static OTDatatypeProperty ms_resultURI;
-    private static OTDatatypeProperty ms_value;
-    private static OTDatatypeProperty ms_units;
-    private static OTDatatypeProperty ms_classificationStatistics;
-    private static OTDatatypeProperty ms_percentageCompleted;
-    private static OTDatatypeProperty ms_errorReportProperty;
-    private static OTDatatypeProperty ms_actor;
-    private static OTDatatypeProperty ms_details;
-    private static OTDatatypeProperty ms_errorCode;
-    private static OTDatatypeProperty ms_httpStatus;
-    private static OTDatatypeProperty ms_message;
-    private static OTDatatypeProperty ms_index;
-    private static OTDatatypeProperty ms_duration;
-    private static Map<String, Method> ms_methodCache;
+    private static OTDatatypeProperty msHasStatus;
+    private static OTDatatypeProperty msAcceptValue;
+    private static OTDatatypeProperty msParamScope;
+    private static OTDatatypeProperty msParamValue;
+    private static OTDatatypeProperty msResultURI;
+    private static OTDatatypeProperty msValue;
+    private static OTDatatypeProperty msUnits;
+    private static OTDatatypeProperty msClassificationStatistics;
+    private static OTDatatypeProperty msPercentageCompleted;
+    private static OTDatatypeProperty msErrorReportProperty;
+    private static OTDatatypeProperty msActor;
+    private static OTDatatypeProperty msDetails;
+    private static OTDatatypeProperty msErrorCode;
+    private static OTDatatypeProperty msHttpStatus;
+    private static OTDatatypeProperty msMessage;
+    private static OTDatatypeProperty msIndex;
+    private static OTDatatypeProperty msDuration;
+    private static Map<String, Method> msMethodCache;
 
     private synchronized static void initMethodCache() {
-        if (ms_methodCache == null) {
-            ms_methodCache = new HashMap<String, Method>();
+        if (msMethodCache == null) {
+            msMethodCache = new HashMap<String, Method>();
             for (Method method : OTDatatypeProperties.class.getDeclaredMethods()) {
                 if (OTDatatypeProperty.class.equals(method.getReturnType()) && method.getParameterTypes().length == 0) {
-                    ms_methodCache.put(method.getName(), method);
+                    msMethodCache.put(method.getName(), method);
                 }
             }
         }
@@ -97,7 +97,7 @@ public final class OTDatatypeProperties {
     public static OTDatatypeProperty forName(String name) throws ToxOtisException {
         initMethodCache();
         try {
-            Method method = ms_methodCache.get(name);
+            Method method = msMethodCache.get(name);
             if (method == null) {
                 throw new ToxOtisException("OTDatatypePropertyNotFound: The property '"
                         + name + "' was not found in the cache.");
@@ -121,14 +121,14 @@ public final class OTDatatypeProperties {
      *      The property ot:hasStatus
      */
     public static OTDatatypeProperty hasStatus() {
-        if (ms_hasStatus == null) {
+        if (msHasStatus == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasStatus");
-            property.getDomain().add(OTClasses.Task());
+            property.getDomain().add(OTClasses.task());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getMetaInfo().addTitle("has status");
-            ms_hasStatus = property;
+            msHasStatus = property;
         }
-        return ms_hasStatus;
+        return msHasStatus;
     }
 
     /**
@@ -140,95 +140,113 @@ public final class OTDatatypeProperties {
      *      The datatype property ot:acceptValue
      */
     public static OTDatatypeProperty acceptValue() {
-        if (ms_acceptValue == null) {
+        if (msAcceptValue == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("acceptValue");
-            property.getDomain().add(OTClasses.Nominal());
+            property.getDomain().add(OTClasses.nominal());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getMetaInfo().addTitle("accepts value");
-            ms_acceptValue = property;
+            msAcceptValue = property;
         }
-        return ms_acceptValue;
+        return msAcceptValue;
     }
 
     public static OTDatatypeProperty paramScope() {
-        if (ms_paramScope == null) {
+        if (msParamScope == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramScope");
-            property.getDomain().add(OTClasses.Parameter());
+            property.getDomain().add(OTClasses.parameter());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getMetaInfo().addTitle("parameter scope");
             property.getMetaInfo().addDescription("specifies if a parameter is "
                     + "optional or mandatory");
-            ms_paramScope = property;
+            msParamScope = property;
         }
-        return ms_paramScope;
+        return msParamScope;
     }
 
+    /**
+     * A parameter value.
+     */
     public static OTDatatypeProperty paramValue() {
-        if (ms_paramValue == null) {
+        if (msParamValue == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramValue");
-            property.getDomain().add(OTClasses.Parameter());
-            property.getDomain().add(OTClasses.VariableValue());
+            property.getDomain().add(OTClasses.parameter());
+            property.getDomain().add(OTClasses.variableValue());
             property.getMetaInfo().addTitle("parameter value");
             property.getMetaInfo().addDescription("The value of a Parameter or the value " +
                     "of a variable in a set of variables");
-            ms_paramValue = property;
+            msParamValue = property;
         }
-        return ms_paramValue;
+        return msParamValue;
     }
 
+    /**
+     * The result URI of a task.
+     */
     public static OTDatatypeProperty resultURI() {
-        if (ms_resultURI == null) {
+        if (msResultURI == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("resultURI");
-            property.getDomain().add(OTClasses.Task());
+            property.getDomain().add(OTClasses.task());
             property.getRange().add(XSDDatatype.XSDanyURI);
             property.getMetaInfo().addDescription("URI of the new resource, "
                     + "created by the Task is stored here");
-            ms_resultURI = property;
+            msResultURI = property;
         }
-        return ms_resultURI;
+        return msResultURI;
     }
 
+    /**
+     * An actual value.
+     */
     public static OTDatatypeProperty value() {
-        if (ms_value == null) {
+        if (msValue == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("value");
-            property.getDomain().add(OTClasses.FeatureValue());
-            property.getDomain().add(OTClasses.VariableValue());
+            property.getDomain().add(OTClasses.featureValue());
+            property.getDomain().add(OTClasses.variableValue());
             property.getMetaInfo().addDescription("Value of a feature value pair (class FeatureValuePair), also used to assign values to ot:VariableValue resources");
-            ms_value = property;
+            msValue = property;
         }
-        return ms_value;
+        return msValue;
     }
 
+    /**
+     * Units of measure.
+     */
     public static OTDatatypeProperty units() {
-        if (ms_units == null) {
+        if (msUnits == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("units");
             property.getRange().add(XSDDatatype.XSDstring);
             property.getMetaInfo().addTitle("Units");
             property.getMetaInfo().addDescription("Units of a feature value");
-            ms_units = property;
+            msUnits = property;
         }
-        return ms_units;
+        return msUnits;
     }
 
+    /**
+     * Classification statistics.
+     */
     public static OTDatatypeProperty classificationStatistics() {
-        if (ms_classificationStatistics == null) {
+        if (msClassificationStatistics == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("classificationStatistics");
-            ms_classificationStatistics = property;
+            msClassificationStatistics = property;
         }
-        return ms_classificationStatistics;
+        return msClassificationStatistics;
     }
 
+    /**
+     * The percentage to which a task is complete.
+     */
     public static OTDatatypeProperty percentageCompleted() {
-        if (ms_percentageCompleted == null) {
+        if (msPercentageCompleted == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("percentageCompleted");
-            property.getDomain().add(OTClasses.Task());
+            property.getDomain().add(OTClasses.task());
             property.getRange().add(XSDDatatype.XSDfloat);
             property.getSuperProperties().add(classificationStatistics());
             property.getMetaInfo().addDescription("Estimated percentage of completion of a "
                     + "running task.");
-            ms_percentageCompleted = property;
+            msPercentageCompleted = property;
         }
-        return ms_percentageCompleted;
+        return msPercentageCompleted;
     }
 
     /**
@@ -239,106 +257,129 @@ public final class OTDatatypeProperties {
      *      The error report super-property.
      */
     public static OTDatatypeProperty errorReportProperty() {
-        if (ms_errorReportProperty == null) {
+        if (msErrorReportProperty == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("errorReportProperty");
-            property.getDomain().add(OTClasses.ErrorReport());
+            property.getDomain().add(OTClasses.errorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getMetaInfo().addDescription("Datatype property applied on an error report.");
             property.getMetaInfo().addComment("This is a generic property. Subproperties usually used are: actor, "
                     + "message, details, status and errorCode.");
-            ms_errorReportProperty = property;
+            msErrorReportProperty = property;
         }
-        return ms_errorReportProperty;
+        return msErrorReportProperty;
     }
 
+    /**
+     * The actor of an exceptional event.
+     */
     public static OTDatatypeProperty actor() {
-        if (ms_actor == null) {
+        if (msActor == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("actor");
-            property.getDomain().add(OTClasses.ErrorReport());
+            property.getDomain().add(OTClasses.errorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getSuperProperties().add(errorReportProperty());
             property.getMetaInfo().addDescription("URI of the peer "
                     + "that produces the exception.");
             property.getMetaInfo().addTitle("error actor");
-            ms_actor = property;
+            msActor = property;
         }
-        return ms_actor;
+        return msActor;
     }
 
+    /**
+     * A message returned by an exceptional event providing
+     * very essential information about it.
+     */
     public static OTDatatypeProperty message() {
-        if (ms_message == null) {
+        if (msMessage == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("message");
-            property.getDomain().add(OTClasses.ErrorReport());
+            property.getDomain().add(OTClasses.errorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getSuperProperties().add(errorReportProperty());
             property.getMetaInfo().addDescription("A simple message providing some "
                     + "simple description of the exceptional event.");
             property.getMetaInfo().addComment("For example: 'Prediction feature not provided'");
             property.getMetaInfo().addTitle("error message");
-            ms_message = property;
+            msMessage = property;
         }
-        return ms_message;
+        return msMessage;
     }
 
+    /**
+     * A detailed message with debugging information returned to the
+     * client when an exceptional even occurs.
+     */
     public static OTDatatypeProperty details() {
-        if (ms_details == null) {
+        if (msDetails == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("details");
-            property.getDomain().add(OTClasses.ErrorReport());
+            property.getDomain().add(OTClasses.errorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getSuperProperties().add(errorReportProperty());
             property.getMetaInfo().addDescription("Detailed message including "
                     + "technical information about the exceptional event. "
                     + "Can be used to help both peers in the debugging.");
             property.getMetaInfo().addTitle("error details");
-            ms_details = property;
+            msDetails = property;
         }
-        return ms_details;
+        return msDetails;
     }
 
+    /**
+     * The HTTP status.
+     */
     public static OTDatatypeProperty httpStatus() {
-        if (ms_httpStatus == null) {
+        if (msHttpStatus == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("httpStatus");
-            property.getDomain().add(OTClasses.ErrorReport());
+            property.getDomain().add(OTClasses.errorReport());
             property.getRange().add(XSDDatatype.XSDint);
             property.getSuperProperties().add(errorReportProperty());
             property.getMetaInfo().addTitle("HTTP status");
-            ms_httpStatus = property;
+            msHttpStatus = property;
         }
-        return ms_httpStatus;
+        return msHttpStatus;
     }
 
+    /**
+     * An error code.
+     */
     public static OTDatatypeProperty errorCode() {
-        if (ms_errorCode == null) {
+        if (msErrorCode == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("errorCode");
-            property.getDomain().add(OTClasses.ErrorReport());
+            property.getDomain().add(OTClasses.errorReport());
             property.getRange().add(XSDDatatype.XSDstring);
             property.getSuperProperties().add(errorReportProperty());
             property.getMetaInfo().addDescription("Error codes of error reports "
                     + "are specified by the service providers that produce the"
                     + " error report. These are characteristic for every class of exceptional events.");
             property.getMetaInfo().addTitle("error code");
-            ms_errorCode = property;
+            msErrorCode = property;
         }
-        return ms_errorCode;
+        return msErrorCode;
     }
 
+    /**
+     * An index for a parameter value.
+     */
     public static OTDatatypeProperty index(){
-        if(ms_index == null){
+        if(msIndex == null){
            OTDatatypeProperty property = new OTDatatypePropertyImpl("index");
-            property.getDomain().add(OTClasses.ParameterValue());
+            property.getDomain().add(OTClasses.parameterValue());
             property.getRange().add(XSDDatatype.XSDinteger);
-            ms_index = property;
+            msIndex = property;
         }
-        return ms_index;
+        return msIndex;
     }
 
+    /**
+     * The duration of a task.
+     */
     public static OTDatatypeProperty duration(){
-        if(ms_duration == null){
+        if(msDuration == null){
            OTDatatypeProperty property = new OTDatatypePropertyImpl("duration");
-            property.getDomain().add(OTClasses.Task());
+            property.getDomain().add(OTClasses.task());
             property.getRange().add(XSDDatatype.XSDlong);
-            ms_duration = property;
+            msDuration = property;
         }
-        return ms_duration;
+        return msDuration;
     }
 }

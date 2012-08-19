@@ -82,7 +82,7 @@ public class FeatureFactoryTest {
         String newFeatureTitle = "New feature - Just for testing";
         String units = "mA";
         Feature f = FeatureFactory.createAndPublishFeature(newFeatureTitle, units,
-                new ResourceValue(Services.ntua().augment("model", "x"), OTClasses.Model()), Services.ideaconsult().augment("feature"), null);
+                new ResourceValue(Services.ntua().augment("model", "x"), OTClasses.model()), Services.ideaconsult().augment("feature"), null);
         f.loadFromRemote();
         assertEquals(newFeatureTitle, f.getMeta().getTitles().iterator().next().getValueAsString());
         assertEquals(units, f.getUnits());
@@ -95,7 +95,7 @@ public class FeatureFactoryTest {
         String units = "mA";
         try {
             Feature f = FeatureFactory.createAndPublishFeature(newFeatureTitle, units,
-                    new ResourceValue(Services.ntua().augment("model", "x"), OTClasses.Model()), 
+                    new ResourceValue(Services.ntua().augment("model", "x"), OTClasses.model()), 
                     new VRI("http://alphaville:4000/algorithm/mlr"), null);
         } catch (ServiceInvocationException ex) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

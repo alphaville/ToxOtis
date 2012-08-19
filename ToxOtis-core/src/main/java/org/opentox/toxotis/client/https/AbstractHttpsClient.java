@@ -32,11 +32,8 @@
  */
 package org.opentox.toxotis.client.https;
 
-import java.net.HttpURLConnection;
-import javax.net.ssl.HttpsURLConnection;
 import org.opentox.toxotis.client.AbstractClient;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.util.aa.SSLConfiguration;
 
 /**

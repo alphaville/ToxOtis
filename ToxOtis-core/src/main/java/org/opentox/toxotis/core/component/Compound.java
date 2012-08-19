@@ -249,7 +249,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         client.setMediaType(Media.APPLICATION_RDF_XML);
         OntModel model = client.getResponseOntModel();
         RDF.type.inModel(model);
-        StmtIterator dsIt = model.listStatements(null, RDF.type, (RDFNode) OTClasses.Dataset().inModel(model));
+        StmtIterator dsIt = model.listStatements(null, RDF.type, (RDFNode) OTClasses.dataset().inModel(model));
         Resource baseResource = null;
         if (dsIt.hasNext()) {
             baseResource = dsIt.nextStatement().getSubject();
@@ -299,7 +299,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
         client.setUri(dsUri);
         client.setMediaType(Media.APPLICATION_RDF_XML);
         OntModel model = client.getResponseOntModel();
-        StmtIterator dsIt = model.listStatements(null, RDF.type, (RDFNode) OTClasses.Dataset().inModel(model));
+        StmtIterator dsIt = model.listStatements(null, RDF.type, (RDFNode) OTClasses.dataset().inModel(model));
         Resource baseResource = null;
         if (dsIt.hasNext()) {
             baseResource = dsIt.nextStatement().getSubject();
@@ -312,7 +312,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
     @Override
     public Individual asIndividual(OntModel model) {
         String compoundUri = getUri() != null ? getUri().getStringNoQuery() : null;
-        Individual indiv = model.createIndividual(compoundUri, OTClasses.Compound().inModel(model));
+        Individual indiv = model.createIndividual(compoundUri, OTClasses.compound().inModel(model));
         //getMeta().attachTo(indiv, model);
         return indiv;
     }

@@ -87,7 +87,7 @@ public class DatasetTest {
         List<Feature> features = new LinkedList<Feature>();
         for (int i = 0; i < nFeatures; i++) {
             Feature currentFeature = new Feature(Services.anonymous().augment("feature", RNG.nextLong()));
-            currentFeature.getOntologicalClasses().add(OTClasses.NumericFeature());
+            currentFeature.getOntologicalClasses().add(OTClasses.numericFeature());
             features.add(currentFeature);
         }
         for (int i = 0; i < nCompounds; i++) {

@@ -57,12 +57,12 @@ public class DummyComponent extends OTComponent<DummyComponent>{
      */
     public DummyComponent() {
         super();
-        addOntologicalClasses(OTClasses.OpenToxResource());
+        addOntologicalClasses(OTClasses.openToxResource());
     }
 
     public DummyComponent(VRI uri) {
         super(uri);
-        addOntologicalClasses(OTClasses.OpenToxResource());
+        addOntologicalClasses(OTClasses.openToxResource());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class DummyComponent extends OTComponent<DummyComponent>{
             ontologicalClass = getOntologicalClasses().iterator().next();
         }
         if (ontologicalClass == null){
-            ontologicalClass = OTClasses.OpenToxResource();
+            ontologicalClass = OTClasses.openToxResource();
         }
         String componentUri = getUri()!=null?getUri().toString():null;
         Individual indiv = om.createIndividual(componentUri, ontologicalClass.inModel(om));

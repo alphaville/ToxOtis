@@ -121,7 +121,7 @@ public class TrainerTest {
         task = task.loadFromRemote(at);
         assertNotNull(task);
         assertNotNull(task.getUri());
-        assertEquals(OTClasses.Task(), task.getUri().getOntologicalClass());
+        assertEquals(OTClasses.task(), task.getUri().getOntologicalClass());
         assertEquals(202, task.getHttpStatus(), 1E-6);
         while (!Task.Status.COMPLETED.equals(task.getStatus())) {
             if (Task.Status.ERROR.equals(task.getStatus())) {
@@ -130,7 +130,7 @@ public class TrainerTest {
             task.loadFromRemote(at);
         }
         assertEquals(200f, task.getHttpStatus(), 1E-6);
-        assertEquals(OTClasses.Model(), task.getResultUri().getOntologicalClass());
+        assertEquals(OTClasses.model(), task.getResultUri().getOntologicalClass());
     }
 
     @Test(timeout = 20000)
@@ -150,13 +150,13 @@ public class TrainerTest {
         task = task.loadFromRemote(at);
         assertNotNull(task);
         assertNotNull(task.getUri());
-        assertEquals(OTClasses.Task(), task.getUri().getOntologicalClass());
+        assertEquals(OTClasses.task(), task.getUri().getOntologicalClass());
         assertEquals(202, task.getHttpStatus(), 1E-6);
         TaskRunner runner = new TaskRunner(task);
         runner.setDelay(1000);
         task = runner.call();
         assertEquals(200f, task.getHttpStatus(), 1E-6);
-        assertEquals(OTClasses.Model(), task.getResultUri().getOntologicalClass());
+        assertEquals(OTClasses.model(), task.getResultUri().getOntologicalClass());
 
         ModelSpider modelSpider = new ModelSpider(task.getResultUri(), at);
         Model model = modelSpider.parse();

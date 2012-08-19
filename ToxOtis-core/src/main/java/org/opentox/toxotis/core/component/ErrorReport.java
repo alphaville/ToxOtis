@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.IHTMLSupport;
@@ -84,22 +85,31 @@ public class ErrorReport extends OTComponent<ErrorReport>
     private ErrorReport errorCause;
     private UUID uuid = UUID.randomUUID();
     private static final String DISCRIMINATOR = "error";
-    private static Map<Integer, String> errorCodeReference;
+    private static final Map<Integer, String> ERROR_CODE_REFERENCE;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorReport.class);
 
     static {
-        errorCodeReference = new HashMap<Integer, String>();
-        errorCodeReference.put(400, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1");// Bad request
-        errorCodeReference.put(401, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2");// Unauthorized
-        errorCodeReference.put(403, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4");// Forbidden
-        errorCodeReference.put(404, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5");// Not found
-        errorCodeReference.put(405, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.6");// Method not allowed
-        errorCodeReference.put(406, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.7");// Not acceptable
-
-        errorCodeReference.put(500, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1");// Internal server error
-        errorCodeReference.put(501, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2");// Not implemented
-        errorCodeReference.put(502, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.3");// Bad Gateway
-        errorCodeReference.put(503, "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4");// Service Unavailable
+        ERROR_CODE_REFERENCE = new HashMap<Integer, String>();
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.BadRequest.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1");// Bad request
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.Unauthorized.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2");// Unauthorized
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.Forbidden.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4");// Forbidden
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotFound.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5");// Not found
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.MethodNotAllowed.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.6");// Method not allowed
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotAcceptable.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.7");// Not acceptable
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.InternalServerError.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1");// Internal server error
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotImplemented.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2");// Not implemented
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.BadGateway.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.3");// Bad Gateway
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.ServiceUnavailable.getStatus(), 
+                "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4");// Service Unavailable
 
     }
 
@@ -191,7 +201,7 @@ public class ErrorReport extends OTComponent<ErrorReport>
             }
         }
         Individual indiv = model.createIndividual(getUri() != null ? getUri().getStringNoQuery()
-                : null, OTClasses.ErrorReport().inModel(model));
+                : null, OTClasses.errorReport().inModel(model));
         if (getMeta() == null) {
             setMeta(new MetaInfoImpl());
         }
@@ -279,7 +289,7 @@ public class ErrorReport extends OTComponent<ErrorReport>
                 setTextAtCursor("Error Code").setTextAtCursor(getErrorCode()).
                 setTextAtCursor("Message").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getMessage())).setAlignment(Alignment.justify)).
                 setTextAtCursor("HTTP Code").setAtCursor(
-                new HTMLParagraphImpl("<a href= \"" + errorCodeReference.get(getHttpStatus()) + "\" >" + Integer.toString(getHttpStatus()) + "</a>").setAlignment(Alignment.justify)).
+                new HTMLParagraphImpl("<a href= \"" + ERROR_CODE_REFERENCE.get(getHttpStatus()) + "\" >" + Integer.toString(getHttpStatus()) + "</a>").setAlignment(Alignment.justify)).
                 setTextAtCursor("Who is to Blame").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getActor())).setAlignment(Alignment.justify));
         if (errorCause != null) {
             table.setTextAtCursor("Trace").setTextAtCursor(HTMLUtils.linkUrlsInText(getErrorCause().getUri().toString()));

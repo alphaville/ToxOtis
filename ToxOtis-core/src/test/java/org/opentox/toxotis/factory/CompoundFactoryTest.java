@@ -79,14 +79,14 @@ public class CompoundFactoryTest {
         t = t.loadFromRemote(at);
         assertNotNull(t);
         assertNotNull(t.getUri());
-        assertEquals(OTClasses.Task(), t.getUri().getOntologicalClass());
+        assertEquals(OTClasses.task(), t.getUri().getOntologicalClass());
         while (!Task.Status.COMPLETED.equals(t.getStatus())) {
             t = t.loadFromRemote(at);
             System.out.println(t.getUri());
         }
         VRI resultUri = t.getResultUri();
         assertNotNull(resultUri);
-        assertEquals(OTClasses.Conformer(), resultUri.getOntologicalClass());
+        assertEquals(OTClasses.conformer(), resultUri.getOntologicalClass());
         at.invalidate();
     }
 
@@ -111,7 +111,7 @@ public class CompoundFactoryTest {
             }
             VRI resultUri = t.getResultUri();
             assertNotNull(resultUri);
-            assertEquals(OTClasses.Conformer(), resultUri.getOntologicalClass());
+            assertEquals(OTClasses.conformer(), resultUri.getOntologicalClass());
         } finally {
             at.invalidate();
             is.close();

@@ -140,15 +140,15 @@ public class Dataset extends OTPublishable<Dataset> {
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws XMLStreamException {
         initRdfWriter(writer);
 
-        writeClass(writer, OTClasses.OpenToxResource());
-        writeClass(writer, OTClasses.Dataset());
-        writeClass(writer, OTClasses.DataEntry());
-        writeClass(writer, OTClasses.Compound());
-        writeClass(writer, OTClasses.Feature());
-        writeClass(writer, OTClasses.FeatureValue());
-        writeClass(writer, OTClasses.NominalFeature());
-        writeClass(writer, OTClasses.NumericFeature());
-        writeClass(writer, OTClasses.StringFeature());
+        writeClass(writer, OTClasses.openToxResource());
+        writeClass(writer, OTClasses.dataset());
+        writeClass(writer, OTClasses.dataEntry());
+        writeClass(writer, OTClasses.compound());
+        writeClass(writer, OTClasses.feature());
+        writeClass(writer, OTClasses.featureValue());
+        writeClass(writer, OTClasses.nominalFeature());
+        writeClass(writer, OTClasses.numericFeature());
+        writeClass(writer, OTClasses.stringFeature());
         
         
         writeSuperClassRelationships(writer);
@@ -242,10 +242,10 @@ public class Dataset extends OTPublishable<Dataset> {
             featureOntologies = f.getOntologicalClasses();
             boolean explicitTypeDeclaration = false;
             if (featureOntologies != null && !featureOntologies.isEmpty()) {
-                if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
+                if (featureOntologies.contains(OTClasses.nominalFeature()) || featureOntologies.contains(OTClasses.nominal())) {
                     writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
-                    writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                    writer.writeAttribute("rdf:resource", OTClasses.nominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                     for (LiteralValue admissibleVal : f.getAdmissibleValues()) {
                         writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                         // TODO: Include also the XSD datatype of the value...
@@ -253,22 +253,22 @@ public class Dataset extends OTPublishable<Dataset> {
                         writer.writeEndElement();// #__NODE_ACCEPT_VALUE
                     }
                 }
-                if (featureOntologies.contains(OTClasses.NumericFeature()) || 
-                        featureOntologies.contains(OTClasses.Numeric())) {
+                if (featureOntologies.contains(OTClasses.numericFeature()) || 
+                        featureOntologies.contains(OTClasses.numeric())) {
                     writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
-                    writer.writeAttribute("rdf:resource", OTClasses.NumericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                    writer.writeAttribute("rdf:resource", OTClasses.numericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 }
-                if (featureOntologies.contains(OTClasses.StringFeature()) || 
-                        featureOntologies.contains(OTClasses.String())) {
+                if (featureOntologies.contains(OTClasses.stringFeature()) || 
+                        featureOntologies.contains(OTClasses.string())) {
                     writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
-                    writer.writeAttribute("rdf:resource", OTClasses.StringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                    writer.writeAttribute("rdf:resource", OTClasses.stringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 }
             }
             if (!explicitTypeDeclaration) { // Declare as Feature
                 writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
-                writer.writeAttribute("rdf:resource", OTClasses.Feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                writer.writeAttribute("rdf:resource", OTClasses.feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
             }
             /* Units of the feature*/
             if (f.getUnits() != null) {
@@ -357,11 +357,11 @@ public class Dataset extends OTPublishable<Dataset> {
         general;
 
         static WekaDataTypes getFromFeature(Feature feature) {
-            if (feature.getOntologicalClasses().contains(OTClasses.NominalFeature())) {
+            if (feature.getOntologicalClasses().contains(OTClasses.nominalFeature())) {
                 return nominal;
-            } else if (feature.getOntologicalClasses().contains(OTClasses.StringFeature())) {
+            } else if (feature.getOntologicalClasses().contains(OTClasses.stringFeature())) {
                 return string;
-            } else if (feature.getOntologicalClasses().contains(OTClasses.NumericFeature())) {
+            } else if (feature.getOntologicalClasses().contains(OTClasses.numericFeature())) {
                 return numeric;
             } else {
                 return string;
@@ -380,7 +380,7 @@ public class Dataset extends OTPublishable<Dataset> {
     @Override
     public Individual asIndividual(OntModel model) {
         String datasetUri = getUri() != null ? getUri().getStringNoQuery() : null;
-        Individual indiv = model.createIndividual(datasetUri, OTClasses.Dataset().inModel(model));
+        Individual indiv = model.createIndividual(datasetUri, OTClasses.dataset().inModel(model));
         /* Attach the metadata to the dataset node... */
         if (meta != null) {
             meta.attachTo(indiv, model);

@@ -105,18 +105,18 @@ public class VRI implements Serializable { // Well tested!
      */
     private enum OpenToxRegEx {
 
-        COMPOUND(OTClasses.Compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_OR_NOTHING),
-        CONFORMER(OTClasses.Conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_OR_NOTHING),
-        FEATURE(OTClasses.Feature(), Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_OR_NOTHING),
-        DATASET(OTClasses.Dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_OR_NOTHING,
+        COMPOUND(OTClasses.compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_OR_NOTHING),
+        CONFORMER(OTClasses.conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_OR_NOTHING),
+        FEATURE(OTClasses.feature(), Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_OR_NOTHING),
+        DATASET(OTClasses.dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_OR_NOTHING,
         ".+/(?i)query/(?i)compound/.+/" + END_SLASH_OR_NOTHING),
-        ALGORITHM(OTClasses.Algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_OR_NOTHING),
-        BIBTEX(KnoufBibTex.Entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_OR_NOTHING),
-        MODEL(OTClasses.Model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_OR_NOTHING),
-        TASK(OTClasses.Task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_OR_NOTHING),
-        ERROR(OTClasses.ErrorReport(), ErrorReport.class, ".+/(?i)error(s||)/" + END_SLASH_OR_NOTHING),
-        PARAMETER(OTClasses.Parameter(), Parameter.class, ".+/(?i)parameter(s||)/" + END_SLASH_OR_NOTHING),
-        QPRFREPORT(OTClasses.QPRFReport(), QprfReport.class, ".+/(?i)reach_report(s||)/(?i)qprf/" + END_SLASH_OR_NOTHING);
+        ALGORITHM(OTClasses.algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_OR_NOTHING),
+        BIBTEX(KnoufBibTex.entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_OR_NOTHING),
+        MODEL(OTClasses.model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_OR_NOTHING),
+        TASK(OTClasses.task(), Task.class, ".+/(?i)task(s||)/" + END_SLASH_OR_NOTHING),
+        ERROR(OTClasses.errorReport(), ErrorReport.class, ".+/(?i)error(s||)/" + END_SLASH_OR_NOTHING),
+        PARAMETER(OTClasses.parameter(), Parameter.class, ".+/(?i)parameter(s||)/" + END_SLASH_OR_NOTHING),
+        QPRFREPORT(OTClasses.qprfReport(), QprfReport.class, ".+/(?i)reach_report(s||)/(?i)qprf/" + END_SLASH_OR_NOTHING);
         /**
          * ParameterValue of regular expressions that identify a
          * certain resource.
@@ -200,12 +200,13 @@ public class VRI implements Serializable { // Well tested!
 
     private void doProcessUri(String uri) throws URISyntaxException {
         URI uRItest = new URI(uri);
-        if (!uri.contains("://")) {
-            uri = "http://" + uri;
+        String modifiedUri = uri;
+        if (!modifiedUri.contains("://")) {
+            modifiedUri = "http://" + modifiedUri;
         }
-        this.uri = uri;
-        if (uri.contains(QUESTION_MARK)) {
-            String[] splitted = uri.split(Pattern.quote(QUESTION_MARK));
+        this.uri = modifiedUri;
+        if (modifiedUri.contains(QUESTION_MARK)) {
+            String[] splitted = modifiedUri.split(Pattern.quote(QUESTION_MARK));
             this.uri = splitted[0];
             if (splitted.length >= 2) {// Could be http://something.abc/service? where there is no query...
                 String query = splitted[1];

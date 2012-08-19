@@ -214,12 +214,12 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
 
     public Task() {
         super();
-        addOntologicalClasses(OTClasses.Task());
+        addOntologicalClasses(OTClasses.task());
     }
 
     public Task(VRI uri) {
         super(uri);
-        addOntologicalClasses(OTClasses.Task());
+        addOntologicalClasses(OTClasses.task());
     }
 
     /**
@@ -337,7 +337,7 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
 
     @Override
     public Individual asIndividual(OntModel model) {
-        Individual indiv = model.createIndividual(getUri() != null ? getUri().getStringNoQuery() : null, OTClasses.Task().inModel(model));
+        Individual indiv = model.createIndividual(getUri() != null ? getUri().getStringNoQuery() : null, OTClasses.task().inModel(model));
         getMeta().attachTo(indiv, model);
         if (hasStatus != null) {
             indiv.addLiteral(OTDatatypeProperties.hasStatus().asDatatypeProperty(model),

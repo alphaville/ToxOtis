@@ -30,6 +30,7 @@
  * tel. +30 210 7723236
  *
  */
+
 package org.opentox.toxotis.util.aa;
 
 import java.io.BufferedReader;
@@ -111,7 +112,10 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  */
 public final class PasswordFileManager extends Observable {
 
-    private int cryptoIterations = 23;
+    private static final int DEFAULT_CRYPTO_ITERATIONS = 23;
+    private static final int MIN_CHAR_INDEX = 33, MAX_CHAR_INDEX=126, LINE_SIZE=50;
+    private static final int PWD_STRENGTH1 = 50, PWD_STRENGTH2=100, PWD_STRENGTH3=500;
+    private int cryptoIterations = DEFAULT_CRYPTO_ITERATIONS;
     private javax.crypto.Cipher eCipher;
     private javax.crypto.Cipher dCipher;
     private static final String PATH_SEP = System.getProperty("file.separator");
@@ -178,11 +182,11 @@ public final class PasswordFileManager extends Observable {
             System.out.println("----- ToxOtis Pasword Generator -----");
         }
         String passStrength;
-        if (size < 50) {
+        if (size < PWD_STRENGTH1) {
             passStrength = "POOR";
-        } else if (size > 50 && size < 100) {
+        } else if (size >= PWD_STRENGTH1 && size < PWD_STRENGTH2) {
             passStrength = "ACCEPTABLE";
-        } else if (size > 100 && size < 500) {
+        } else if (size >= PWD_STRENGTH2 && size < PWD_STRENGTH3) {
             passStrength = "GOOD";
         } else {
             passStrength = "EXCELECT";
@@ -207,7 +211,7 @@ public final class PasswordFileManager extends Observable {
             StringBuilder passBuilder = new StringBuilder();
             int charCounter = 0;
             while ((readInt = br.read()) != -1 && charCounter < size) {
-                if (readInt < 126 && readInt > 33) {
+                if (readInt < MAX_CHAR_INDEX && readInt > MIN_CHAR_INDEX) {
                     super.setChanged();
                     characters = Character.toChars(readInt);
                     passBuilder.append(characters);
@@ -224,7 +228,7 @@ public final class PasswordFileManager extends Observable {
             for (int k = 0; k < mPass.length(); k++) {
                 bufferedWriter.write(mPass.charAt(k));
                 lineCharsCounter++;
-                if (lineCharsCounter == 50) {
+                if (lineCharsCounter == LINE_SIZE) {
                     bufferedWriter.newLine();
                     lineCharsCounter = 0;
                 }
@@ -251,7 +255,7 @@ public final class PasswordFileManager extends Observable {
                 for (int k = 0; k < mPass.length(); k++) {
                     bufferedWriter.write(mPass.charAt(k));
                     lineCharsCounter++;
-                    if (lineCharsCounter == 50) {
+                    if (lineCharsCounter == LINE_SIZE) {
                         bufferedWriter.newLine();
                         lineCharsCounter = 0;
                     }

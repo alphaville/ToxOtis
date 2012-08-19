@@ -259,12 +259,14 @@ public enum HttpStatusCodes {
      */
     MethodNotAllowed(405, "The method specified in the Request-Line is not allowed "
     + "for the resource identified by the Request-URI."),
+    NotAcceptable(406),
     /**
      * The server encountered an unexpected condition which prevented it 
      * from fulfilling the request.
      */
     InternalServerError(500, "The server encountered an unexpected condition which "
     + "prevented it from fulfilling the request."),
+    NotImplemented(501),
     /**
      * The server, while acting as a gateway or proxy, received an invalid 
      * response from the upstream server it accessed in attempting to fulfill the request.

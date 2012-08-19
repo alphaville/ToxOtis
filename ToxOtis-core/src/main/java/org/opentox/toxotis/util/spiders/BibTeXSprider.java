@@ -41,8 +41,6 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
@@ -59,7 +57,6 @@ import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.ontology.OTDatatypeProperty;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.KnoufDatatypeProperties;
-import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
@@ -95,30 +92,30 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
                         + resource.getURI() + " found in the RDF graph of the resource at " + uri, ex);
             }
         } else {
-            StmtIterator it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Entry().getUri())));
+            StmtIterator it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.entry().getUri())));
             if (it.hasNext()) {
                 resource = it.nextStatement().getSubject();
             }
             if (resource == null) {
-                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Article().getUri())));
+                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.article().getUri())));
                 if (it.hasNext()) {
                     resource = it.nextStatement().getSubject();
                 }
             }
             if (resource == null) {
-                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Book().getUri())));
+                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.book().getUri())));
                 if (it.hasNext()) {
                     resource = it.nextStatement().getSubject();
                 }
             }
             if (resource == null) {
-                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Conference().getUri())));
+                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.conference().getUri())));
                 if (it.hasNext()) {
                     resource = it.nextStatement().getSubject();
                 }
             }
             if (resource == null) {
-                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.Phdthesis().getUri())));
+                it = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) model.getResource(KnoufBibTex.phdThesis().getUri())));
                 if (it.hasNext()) {
                     resource = it.nextStatement().getSubject();
                 }
@@ -209,11 +206,11 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
         String year = forProperty(model, resource, KnoufDatatypeProperties.hasYear());
 
         StmtIterator typeIterator = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) null));
-        BibTeX.BIB_TYPE bibtype = null;
+        BibTeX.BibTYPE bibtype = null;
         if (typeIterator.hasNext()) {
             try {
                 String bbType = typeIterator.nextStatement().getObject().as(Resource.class).getURI().replaceAll(KnoufBibTex.NS, "");
-                bibtype = BibTeX.BIB_TYPE.valueOf(bbType);
+                bibtype = BibTeX.BibTYPE.valueOf(bbType);
             } catch (final NullPointerException npe) {
             } catch (final IllegalArgumentException iae) {
             }
@@ -226,7 +223,7 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
             logger.warn("Invalid bibtex URI!!!", ex);
             throw new BadRequestException("The URI " + uri + " is not a valid bibtex URI!", ex);
         }
-        bibtex.setBibType(bibtype != null ? bibtype : BibTeX.BIB_TYPE.Entry);
+        bibtex.setBibType(bibtype != null ? bibtype : BibTeX.BibTYPE.Entry);
         bibtex.setAbstract(hasAbstract);
         bibtex.setAuthor(author);
         bibtex.setBookTitle(bookTitle);
@@ -272,35 +269,35 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
     private Resource getresource(OntModel model) {
         Resource clazz = null;
 
-        if ((clazz = model.getResource(KnoufBibTex.Article().getUri())) != null) {
+        if ((clazz = model.getResource(KnoufBibTex.article().getUri())) != null) {
             StmtIterator it = model.listStatements(new SimpleSelector(null, RDF.type, clazz));
             if (it.hasNext()) {
                 return it.nextStatement().getSubject();
             }
         }
 
-        if ((clazz = model.getResource(KnoufBibTex.Book().getUri())) != null) {
+        if ((clazz = model.getResource(KnoufBibTex.book().getUri())) != null) {
             StmtIterator it = model.listStatements(new SimpleSelector(null, RDF.type, clazz));
             if (it.hasNext()) {
                 return it.nextStatement().getSubject();
             }
         }
 
-        if ((clazz = model.getResource(KnoufBibTex.Conference().getUri())) != null) {
+        if ((clazz = model.getResource(KnoufBibTex.conference().getUri())) != null) {
             StmtIterator it = model.listStatements(new SimpleSelector(null, RDF.type, clazz));
             if (it.hasNext()) {
                 return it.nextStatement().getSubject();
             }
         }
 
-        if ((clazz = model.getResource(KnoufBibTex.Phdthesis().getUri())) != null) {
+        if ((clazz = model.getResource(KnoufBibTex.phdThesis().getUri())) != null) {
             StmtIterator it = model.listStatements(new SimpleSelector(null, RDF.type, clazz));
             if (it.hasNext()) {
                 return it.nextStatement().getSubject();
             }
         }
 
-        if ((clazz = model.getResource(KnoufBibTex.Entry().getUri())) != null) {
+        if ((clazz = model.getResource(KnoufBibTex.entry().getUri())) != null) {
             StmtIterator it = model.listStatements(new SimpleSelector(null, RDF.type, clazz));
             if (it.hasNext()) {
                 return it.nextStatement().getSubject();

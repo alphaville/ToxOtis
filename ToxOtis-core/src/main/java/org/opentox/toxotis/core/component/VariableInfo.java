@@ -66,7 +66,7 @@ public class VariableInfo extends OTComponent<VariableInfo> {
         if (getUri() == null) {
             setUri(Services.opentox().augment(getMeta().getTitles().iterator().next().getValue().toString()));
         }
-        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.VariableInfo().inModel(model));
+        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.variableInfo().inModel(model));
         MetaInfo metaInfo = getMeta();
         if (metaInfo != null) {
             metaInfo.attachTo(indiv, model);

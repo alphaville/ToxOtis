@@ -126,7 +126,7 @@ public class DataEntry extends OTComponent<DataEntry> {
     @Override
     public Individual asIndividual(OntModel model) {
         String dataEntryUri = getUri() != null ? getUri().getStringNoQuery() : null;
-        Individual indiv = model.createIndividual(dataEntryUri, OTClasses.DataEntry().inModel(model));
+        Individual indiv = model.createIndividual(dataEntryUri, OTClasses.dataEntry().inModel(model));
         if (meta != null) {
             meta.attachTo(indiv, model);
         }

@@ -303,7 +303,7 @@ public class CompoundSpider extends Tarantula<Compound> {
         Resource valueRS = null;
 
         if (downloadDetails && keyword != null && lookupService != null) {
-            datasetIt = model.listStatements(new SimpleSelector(null, RDF.type, OTClasses.Dataset().inModel(model)));
+            datasetIt = model.listStatements(new SimpleSelector(null, RDF.type, OTClasses.dataset().inModel(model)));
             if (datasetIt != null && datasetIt.hasNext()) { // dataset found
                 datasetRS = datasetIt.nextStatement().getSubject();
                 dataEntryIt = model.listStatements(

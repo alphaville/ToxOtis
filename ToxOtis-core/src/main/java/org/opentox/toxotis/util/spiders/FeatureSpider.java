@@ -119,7 +119,7 @@ public class FeatureSpider extends Tarantula<Feature> {
             feature.setUnits(unitsStatement.getString());
         }
 
-        if (feature.getOntologicalClasses() != null && feature.getOntologicalClasses().contains(OTClasses.NominalFeature())) {
+        if (feature.getOntologicalClasses() != null && feature.getOntologicalClasses().contains(OTClasses.nominalFeature())) {
             // Gather 'accept' values from the RDF and add them to the feature
             Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
             StmtIterator acceptIt = resource.listProperties(OTDatatypeProperties.acceptValue().asDatatypeProperty(model));

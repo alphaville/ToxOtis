@@ -81,12 +81,12 @@ public class Feature extends OTPublishable<Feature> {
 
     public Feature() {
         super();
-        addOntologicalClasses(OTClasses.Feature());
+        addOntologicalClasses(OTClasses.feature());
     }
 
     public Feature(VRI uri) {
         super(uri);
-        addOntologicalClasses(OTClasses.Feature());
+        addOntologicalClasses(OTClasses.feature());
     }
 
     public Set<LiteralValue> getAdmissibleValues() {
@@ -110,12 +110,12 @@ public class Feature extends OTPublishable<Feature> {
     public Set<OntologicalClass> getLowLevelOntologies() {
         Set<OntologicalClass> lowLevel = new HashSet<OntologicalClass>();
         for (OntologicalClass oc : getOntologicalClasses()) {
-            if (oc.equals(OTClasses.NominalFeature()) || oc.equals(OTClasses.NumericFeature()) || oc.equals(OTClasses.StringFeature())) {
+            if (oc.equals(OTClasses.nominalFeature()) || oc.equals(OTClasses.numericFeature()) || oc.equals(OTClasses.stringFeature())) {
                 lowLevel.add(oc);
             }
         }
         if (lowLevel.isEmpty()) {
-            lowLevel.add(OTClasses.StringFeature());
+            lowLevel.add(OTClasses.stringFeature());
         }
         return lowLevel;
     }
@@ -162,23 +162,23 @@ public class Feature extends OTPublishable<Feature> {
         Resource mainType = null;
         /* Check if the feature is either Numeric or String */
         if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
-            if (getOntologicalClasses().contains(OTClasses.StringFeature())) {
-                mainType = (OTClasses.StringFeature().inModel(model));
-            } else if (getOntologicalClasses().contains(OTClasses.NumericFeature())) {// << Assuming cannot be StringFeature and NumericFeature at the same time
-                mainType = (OTClasses.NumericFeature().inModel(model));
+            if (getOntologicalClasses().contains(OTClasses.stringFeature())) {
+                mainType = (OTClasses.stringFeature().inModel(model));
+            } else if (getOntologicalClasses().contains(OTClasses.numericFeature())) {// << Assuming cannot be StringFeature and NumericFeature at the same time
+                mainType = (OTClasses.numericFeature().inModel(model));
             }
         }
         /* If the feature is not Numeric nor String, might be Nominal... */
         if (mainType == null && (getOntologicalClasses() != null
                 && !getOntologicalClasses().isEmpty())
-                && getOntologicalClasses().contains(OTClasses.NominalFeature())) {
-            mainType = (OTClasses.NominalFeature().inModel(model));
+                && getOntologicalClasses().contains(OTClasses.nominalFeature())) {
+            mainType = (OTClasses.nominalFeature().inModel(model));
         }
-        Individual indiv = model.createIndividual(featureUri, mainType != null ? mainType : OTClasses.Feature().inModel(model));
+        Individual indiv = model.createIndividual(featureUri, mainType != null ? mainType : OTClasses.feature().inModel(model));
         /* Check again if the feature is additionaly nominal */
         if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()
-                && getOntologicalClasses().contains(OTClasses.NominalFeature())) {
-            indiv.addRDFType(OTClasses.NominalFeature().inModel(model));
+                && getOntologicalClasses().contains(OTClasses.nominalFeature())) {
+            indiv.addRDFType(OTClasses.nominalFeature().inModel(model));
         }
 
         /* Add admissible values in the RDF graph */
@@ -313,10 +313,10 @@ public class Feature extends OTPublishable<Feature> {
     public void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
         initRdfWriter(writer);
 
-        writeClass(writer, OTClasses.Feature());
-        writeClass(writer, OTClasses.NominalFeature());
-        writeClass(writer, OTClasses.NumericFeature());
-        writeClass(writer, OTClasses.StringFeature());
+        writeClass(writer, OTClasses.feature());
+        writeClass(writer, OTClasses.nominalFeature());
+        writeClass(writer, OTClasses.numericFeature());
+        writeClass(writer, OTClasses.stringFeature());
         /*
          * Append Object Properties
          */
@@ -348,9 +348,9 @@ public class Feature extends OTPublishable<Feature> {
         featureOntologies = getOntologicalClasses();
         boolean explicitTypeDeclaration = false;
         if (featureOntologies != null && !featureOntologies.isEmpty()) {
-            if (featureOntologies.contains(OTClasses.NominalFeature()) || featureOntologies.contains(OTClasses.Nominal())) {
+            if (featureOntologies.contains(OTClasses.nominalFeature()) || featureOntologies.contains(OTClasses.nominal())) {
                 explicitTypeDeclaration = true;
-                writer.writeAttribute("rdf:resource", OTClasses.NominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                writer.writeAttribute("rdf:resource", OTClasses.nominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 for (LiteralValue admissibleVal : getAdmissibleValues()) {
                     writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                     // TODO: Include also the XSD datatype of the value...
@@ -358,17 +358,17 @@ public class Feature extends OTPublishable<Feature> {
                     writer.writeEndElement();// #__NODE_ACCEPT_VALUE
                 }
             }
-            if (featureOntologies.contains(OTClasses.NumericFeature()) || featureOntologies.contains(OTClasses.Numeric())) {
+            if (featureOntologies.contains(OTClasses.numericFeature()) || featureOntologies.contains(OTClasses.numeric())) {
                 explicitTypeDeclaration = true;
-                writer.writeAttribute("rdf:resource", OTClasses.NumericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                writer.writeAttribute("rdf:resource", OTClasses.numericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
             }
-            if (featureOntologies.contains(OTClasses.StringFeature()) || featureOntologies.contains(OTClasses.String())) {
+            if (featureOntologies.contains(OTClasses.stringFeature()) || featureOntologies.contains(OTClasses.string())) {
                 explicitTypeDeclaration = true;
-                writer.writeAttribute("rdf:resource", OTClasses.StringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                writer.writeAttribute("rdf:resource", OTClasses.stringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
             }
         }
         if (!explicitTypeDeclaration) { // Declare as Feature
-            writer.writeAttribute("rdf:resource", OTClasses.Feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+            writer.writeAttribute("rdf:resource", OTClasses.feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
         }
         /* Units of the feature*/
         if (getUnits() != null) {

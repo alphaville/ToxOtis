@@ -32,7 +32,6 @@
  */
 package org.opentox.toxotis.ontology.collection;
 
-import com.hp.hpl.jena.vocabulary.OWL;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -40,6 +39,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
@@ -60,22 +61,22 @@ public final class OTAlgorithmTypes {
      * Namespace of all algorithm ontological classes.
      */
     public static final String NS = "http://www.opentox.org/algorithmTypes.owl/#";
-    private static OntologicalClass AlgorithmType;
-    private static OntologicalClass ApplicabilityDomain;
-    private static OntologicalClass MSDMTox;
-    private static OntologicalClass Learning;
-    private static OntologicalClass SingleTarget;
-    private static OntologicalClass MultipleTargets;
-    private static OntologicalClass EagerLearning;
-    private static OntologicalClass LazyLearning;
-    private static OntologicalClass Regression;
-    private static OntologicalClass Classification;
-    private static OntologicalClass Preprocessing;
-    private static OntologicalClass DataCleanup;
-    private static OntologicalClass FeatureSelection;
-    private static OntologicalClass Normalization;
-    private static OntologicalClass Supervised;
-    private static OntologicalClass Unsupervised;
+    private static OntologicalClass msAlgorithmType;
+    private static OntologicalClass msApplicabilityDomain;
+    private static OntologicalClass msMSDMTox;
+    private static OntologicalClass msLearning;
+    private static OntologicalClass msSingleTarget;
+    private static OntologicalClass msMultipleTargets;
+    private static OntologicalClass msEagerLearning;
+    private static OntologicalClass msLazyLearning;
+    private static OntologicalClass msRegression;
+    private static OntologicalClass msClassification;
+    private static OntologicalClass msPreprocessing;
+    private static OntologicalClass msDataCleanup;
+    private static OntologicalClass msFeatureSelection;
+    private static OntologicalClass msNormalization;
+    private static OntologicalClass msSupervised;
+    private static OntologicalClass msUnsupervised;
     private static Map<String, Method> methodCache;
 
     private synchronized static void initMethodCache() {
@@ -83,7 +84,14 @@ public final class OTAlgorithmTypes {
             methodCache = new HashMap<String, Method>();
             for (Method method : OTAlgorithmTypes.class.getDeclaredMethods()) {
                 if (OntologicalClass.class.equals(method.getReturnType()) && method.getParameterTypes().length == 0) {
-                    methodCache.put(method.getName(), method);
+                    try {
+                        OntologicalClass oc = (OntologicalClass) method.invoke(null);
+                        methodCache.put(oc.getName(), method);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(OTAlgorithmTypes.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvocationTargetException ex) {
+                        Logger.getLogger(OTAlgorithmTypes.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
@@ -106,8 +114,8 @@ public final class OTAlgorithmTypes {
 
     public static OntologicalClass forName(String name) {
         initMethodCache();
-        if ("Thing".equals(name)){
-            return OTClasses.Thing();
+        if ("Thing".equals(name)) {
+            return OTClasses.thing();
         }
         try {
             Method method = methodCache.get(name);
@@ -124,172 +132,191 @@ public final class OTAlgorithmTypes {
 
     }
 
-
-
-    public static OntologicalClass AlgorithmType() {
-        if (AlgorithmType == null) {
+    public static OntologicalClass algorithmType() {
+        if (msAlgorithmType == null) {
             OntologicalClass clazz = new OntologicalClassImpl("AlgorithmType");
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("Generic class for all algorithm types in OpenTox");
             clazz.getMetaInfo().addTitle("Algorithm Types");
-            clazz.getSuperClasses().add(OTClasses.Thing());
-            AlgorithmType = clazz;
+            clazz.getSuperClasses().add(OTClasses.thing());
+            msAlgorithmType = clazz;
         }
-        return AlgorithmType;
+        return msAlgorithmType;
     }
 
-    public static OntologicalClass ApplicabilityDomain() {
-        if (ApplicabilityDomain == null) {
+    public static OntologicalClass applicabilityDomain() {
+        if (msApplicabilityDomain == null) {
             OntologicalClass clazz = new OntologicalClassImpl("ApplicabilityDomain");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(AlgorithmType());
+            clazz.getSuperClasses().add(algorithmType());
             clazz.getMetaInfo().addTitle("Appplicability Domain Algorithm");
-            ApplicabilityDomain = clazz;
+            msApplicabilityDomain = clazz;
         }
-        return ApplicabilityDomain;
+        return msApplicabilityDomain;
     }
 
-    public static OntologicalClass MSDMTox() {
-        if (MSDMTox == null) {
+    public static OntologicalClass msdmTox() {
+        if (msMSDMTox == null) {
             OntologicalClass clazz = new OntologicalClassImpl("MSDMTox");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(AlgorithmType());
-            MSDMTox = clazz;
+            clazz.getSuperClasses().add(algorithmType());
+            msMSDMTox = clazz;
         }
-        return MSDMTox;
+        return msMSDMTox;
     }
 
-    public static OntologicalClass Learning() {
-        if (Learning == null) {
+    /**
+     * Generic learning algorithm
+     */
+    public static OntologicalClass learning() {
+        if (msLearning == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Learning");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(MSDMTox());
-            Learning = clazz;
+            clazz.getSuperClasses().add(msdmTox());
+            msLearning = clazz;
         }
-        return Learning;
+        return msLearning;
     }
 
-    public static OntologicalClass Classification() {
-        if (Classification == null) {
+    /**
+     * Classification algorithm.
+     */
+    public static OntologicalClass classification() {
+        if (msClassification == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Classification");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(Learning());
-            Classification = clazz;
+            clazz.getSuperClasses().add(learning());
+            msClassification = clazz;
         }
-        return Classification;
+        return msClassification;
     }
 
-    public static OntologicalClass DataCleanup() {
-        if (DataCleanup == null) {
+    /**
+     * Data-cleanup preprocessing algorithm.
+     */
+    public static OntologicalClass dataCleanup() {
+        if (msDataCleanup == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DataCleanup");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(AlgorithmType());
-            DataCleanup = clazz;
+            clazz.getSuperClasses().add(algorithmType());
+            msDataCleanup = clazz;
         }
-        return DataCleanup;
+        return msDataCleanup;
     }
 
-    public static OntologicalClass EagerLearning() {
-        if (EagerLearning == null) {
+    /**
+     * Eager Learning algorithm.
+     */
+    public static OntologicalClass eagerLearning() {
+        if (msEagerLearning == null) {
             OntologicalClass clazz = new OntologicalClassImpl("EagerLearning");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(Learning());
-            clazz.getDisjointWith().add(LazyLearning());
-            EagerLearning = clazz;
+            clazz.getSuperClasses().add(learning());
+            clazz.getDisjointWith().add(lazyLearning());
+            msEagerLearning = clazz;
         }
-        LazyLearning.getDisjointWith().add(EagerLearning);
-        return EagerLearning;
+        msLazyLearning.getDisjointWith().add(msEagerLearning);
+        return msEagerLearning;
     }
 
-    public static OntologicalClass FeatureSelection() {
-        if (FeatureSelection == null) {
+    /**
+     * Feature selection algorithm.
+     */
+    public static OntologicalClass featureSelection() {
+        if (msFeatureSelection == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureSelection");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(Preprocessing());
-            FeatureSelection = clazz;
+            clazz.getSuperClasses().add(preprocessing());
+            msFeatureSelection = clazz;
         }
-        return FeatureSelection;
+        return msFeatureSelection;
     }
 
-    public static OntologicalClass LazyLearning() {
-        if (LazyLearning == null) {
+    /**
+     * Lazy learning algorithm.
+     */
+    public static OntologicalClass lazyLearning() {
+        if (msLazyLearning == null) {
             OntologicalClass clazz = new OntologicalClassImpl("LazyLearning");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(Learning());
-            LazyLearning = clazz;
+            clazz.getSuperClasses().add(learning());
+            msLazyLearning = clazz;
         }
-        return LazyLearning;
+        return msLazyLearning;
     }
 
-    public static OntologicalClass MultipleTargets() {
-        if (MultipleTargets == null) {
+    /**
+     * Multiple Targets Trainer.
+     */
+    public static OntologicalClass multipleTargets() {
+        if (msMultipleTargets == null) {
             OntologicalClass clazz = new OntologicalClassImpl("MultipleTargets");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(MSDMTox());
-            MultipleTargets = clazz;
+            clazz.getSuperClasses().add(msdmTox());
+            msMultipleTargets = clazz;
         }
-        return MultipleTargets;
+        return msMultipleTargets;
     }
 
-    public static OntologicalClass Normalization() {
-        if (Normalization == null) {
+    public static OntologicalClass normalization() {
+        if (msNormalization == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Normalization");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(Preprocessing());
-            Normalization = clazz;
+            clazz.getSuperClasses().add(preprocessing());
+            msNormalization = clazz;
         }
-        return Normalization;
+        return msNormalization;
     }
 
-    public static OntologicalClass Preprocessing() {
-        if (Preprocessing == null) {
+    public static OntologicalClass preprocessing() {
+        if (msPreprocessing == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Preprocessing");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(AlgorithmType());
-            Preprocessing = clazz;
+            clazz.getSuperClasses().add(algorithmType());
+            msPreprocessing = clazz;
         }
-        return Preprocessing;
+        return msPreprocessing;
     }
 
-    public static OntologicalClass Regression() {
-        if (Regression == null) {
+    public static OntologicalClass regression() {
+        if (msRegression == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Regression");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(Learning());
-            Regression = clazz;
+            clazz.getSuperClasses().add(learning());
+            msRegression = clazz;
         }
-        return Regression;
+        return msRegression;
     }
 
-    public static OntologicalClass SingleTarget() {
-        if (SingleTarget == null) {
+    public static OntologicalClass singleTarget() {
+        if (msSingleTarget == null) {
             OntologicalClass clazz = new OntologicalClassImpl("SingleTarget");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(MSDMTox());
-            clazz.getDisjointWith().add(MultipleTargets());
-            SingleTarget = clazz;
+            clazz.getSuperClasses().add(msdmTox());
+            clazz.getDisjointWith().add(multipleTargets());
+            msSingleTarget = clazz;
         }
-        return SingleTarget;
+        return msSingleTarget;
     }
 
-    public static OntologicalClass Supervised() {
-        if (Supervised == null) {
+    public static OntologicalClass supervised() {
+        if (msSupervised == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Supervised");
             clazz.setNameSpace(NS);
-            clazz.getDisjointWith().add(Unsupervised());
-            Supervised = clazz;
+            clazz.getDisjointWith().add(unsupervised());
+            msSupervised = clazz;
         }
-        Unsupervised.getDisjointWith().add(Supervised);
-        return Supervised;
+        msUnsupervised.getDisjointWith().add(msSupervised);
+        return msSupervised;
     }
 
-    public static OntologicalClass Unsupervised() {
-        if (Unsupervised == null) {
+    public static OntologicalClass unsupervised() {
+        if (msUnsupervised == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Unsupervised");
             clazz.setNameSpace(NS);
-            clazz.getSuperClasses().add(AlgorithmType());
-            Unsupervised = clazz;
+            clazz.getSuperClasses().add(algorithmType());
+            msUnsupervised = clazz;
         }
-        return Unsupervised;
+        return msUnsupervised;
     }
 }

@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.ontology.collection;
 
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -41,6 +40,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 
@@ -54,39 +55,42 @@ public final class OTClasses {
 
     private OTClasses() {
     }
+    /**
+     * The OpenTox ontology NameSpace.
+     */
     public static final String NS = "http://www.opentox.org/api/1.1#";
-    private static OntologicalClass OpenToxResource;
-    private static OntologicalClass Algorithm;
-    private static OntologicalClass Compound;
-    private static OntologicalClass Conformer;
-    private static OntologicalClass DataEntry;
-    private static OntologicalClass DataType;
-    private static OntologicalClass Nominal;
-    private static OntologicalClass Numeric;
-    private static OntologicalClass String;
-    private static OntologicalClass NominalFeature;
-    private static OntologicalClass NumericFeature;
-    private static OntologicalClass StringFeature;
-    private static OntologicalClass Dataset;
-    private static OntologicalClass Feature;
-    private static OntologicalClass FeatureValue;
-    private static OntologicalClass FeatureValueNumeric;
-    private static OntologicalClass FeatureValueString;
-    private static OntologicalClass FeatureValueNominal;
-    private static OntologicalClass FeatureValuePair;
-    private static OntologicalClass Model;
-    private static OntologicalClass Parameter;
-    private static OntologicalClass QPRFReport;
-    private static OntologicalClass Report;
-    private static OntologicalClass MultiParameter;
-    private static OntologicalClass VectorParameter;
-    private static OntologicalClass VariableInfo;
-    private static OntologicalClass ParameterValue;
-    private static OntologicalClass SetValuedParameter;
-    private static OntologicalClass VariableValue;
-    private static OntologicalClass Task;
-    private static OntologicalClass ErrorReport;
-    private static OntologicalClass Thing;
+    private static OntologicalClass openToxResource;
+    private static OntologicalClass algorithm;
+    private static OntologicalClass compound;
+    private static OntologicalClass conformer;
+    private static OntologicalClass dataEntry;
+    private static OntologicalClass dataType;
+    private static OntologicalClass nominal;
+    private static OntologicalClass numeric;
+    private static OntologicalClass string;
+    private static OntologicalClass nominalFeature;
+    private static OntologicalClass numericFeature;
+    private static OntologicalClass stringFeature;
+    private static OntologicalClass dataset;
+    private static OntologicalClass feature;
+    private static OntologicalClass featureValue;
+    private static OntologicalClass featureValueNumeric;
+    private static OntologicalClass featureValueString;
+    private static OntologicalClass featureValueNominal;
+    private static OntologicalClass featureValuePair;
+    private static OntologicalClass model;
+    private static OntologicalClass parameter;
+    private static OntologicalClass qprfReport;
+    private static OntologicalClass report;
+    private static OntologicalClass multiParameter;
+    private static OntologicalClass vectorParameter;
+    private static OntologicalClass variableInfo;
+    private static OntologicalClass parameterValue;
+    private static OntologicalClass setValuedParameter;
+    private static OntologicalClass variableValue;
+    private static OntologicalClass task;
+    private static OntologicalClass errorReport;
+    private static OntologicalClass thing;
     private static Map<String, Method> methodCache;
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTClasses.class);
 
@@ -94,9 +98,19 @@ public final class OTClasses {
         if (methodCache == null) {
             methodCache = new HashMap<String, Method>();
             for (Method method : OTClasses.class.getDeclaredMethods()) {
-                if (OntologicalClass.class.equals(method.getReturnType()) 
+                if (OntologicalClass.class.equals(method.getReturnType())
                         && method.getParameterTypes().length == 0) {
-                    methodCache.put(method.getName(), method);
+                    try {
+                        OntologicalClass oc = (OntologicalClass) method.invoke(null);
+                        methodCache.put(oc.getName(), method);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(OTClasses.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(OTClasses.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvocationTargetException ex) {
+                        Logger.getLogger(OTClasses.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
                 }
             }
         }
@@ -149,13 +163,13 @@ public final class OTClasses {
      * @return
      *      Universal class <code>owl:Thing</code>.
      */
-    public static OntologicalClass Thing() {
-        if (Thing == null) {
+    public static OntologicalClass thing() {
+        if (thing == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Thing");
             clazz.setNameSpace(OWL.NS);
-            Thing = clazz;
+            thing = clazz;
         }
-        return Thing;
+        return thing;
     }
 
     /**
@@ -164,95 +178,112 @@ public final class OTClasses {
      * @return
      *      OpenTox superclass.
      */
-    public static OntologicalClass OpenToxResource() {
-        if (OpenToxResource == null) {
+    public static OntologicalClass openToxResource() {
+        if (openToxResource == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OpenToxResource");
             clazz.getMetaInfo().addComment("Generic OpenTox Resource");
-            clazz.getSuperClasses().add(Thing());
-            OpenToxResource = clazz;
+            clazz.getSuperClasses().add(thing());
+            openToxResource = clazz;
         }
-        return OpenToxResource;
+        return openToxResource;
     }
 
     /**
      * Ontological class that provides access to all OpenTox algorithms
      * @see OTAlgorithmTypes OpenTox Algorithm Ontology
      */
-    public static OntologicalClass Algorithm() {
-        if (Algorithm == null) {
+    public static OntologicalClass algorithm() {
+        if (algorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Algorithm");
             clazz.getMetaInfo().addComment("Provides access to OpenTox algorithms");
-            clazz.getSuperClasses().add(OpenToxResource());
-            Algorithm = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            algorithm = clazz;
         }
-        return Algorithm;
+        return algorithm;
     }
 
-    public static OntologicalClass Report() {
-        if (Report == null) {
+    /**
+     * Any kind of report (QPRF, QMRP or other).
+     * @return 
+     *      Ontological class for reports.
+     */
+    public static OntologicalClass report() {
+        if (report == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Report");
             clazz.getMetaInfo().addComment("An OpenTox-relevant report");
-            clazz.getSuperClasses().add(OpenToxResource());
-            Report = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            report = clazz;
         }
-        return Report;
+        return report;
     }
 
-    public static OntologicalClass QPRFReport() {
-        if (QPRFReport == null) {
+    /**
+     * A QPRF report.
+     */
+    public static OntologicalClass qprfReport() {
+        if (qprfReport == null) {
             OntologicalClass clazz = new OntologicalClassImpl("QPRFReport");
             clazz.getMetaInfo().addComment("A QPRF report");
-            clazz.getSuperClasses().add(Report());
-            QPRFReport = clazz;
+            clazz.getSuperClasses().add(report());
+            qprfReport = clazz;
         }
-        return QPRFReport;
+        return qprfReport;
     }
 
-    public static OntologicalClass Compound() {
-        if (Compound == null) {
+    /**
+     * A compound.
+     */
+    public static OntologicalClass compound() {
+        if (compound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Compound");
             clazz.getMetaInfo().addComment("API for OpenTox compound webservices");
-            clazz.getSuperClasses().add(OpenToxResource());
-            Compound = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            compound = clazz;
         }
-        return Compound;
+        return compound;
     }
 
-    public static OntologicalClass Conformer() {
-        if (Conformer == null) {
+    /**
+     * A conformer.
+     */
+    public static OntologicalClass conformer() {
+        if (conformer == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Conformer");
             clazz.getMetaInfo().addComment("API for OpenTox conformer webservices");
-            clazz.getSuperClasses().add(Compound());
-            Conformer = clazz;
+            clazz.getSuperClasses().add(compound());
+            conformer = clazz;
         }
-        return Conformer;
+        return conformer;
     }
 
-    public static OntologicalClass Model() {
-        if (Model == null) {
+    /**
+     * A model.
+     */
+    public static OntologicalClass model() {
+        if (model == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Model");
-            clazz.getSuperClasses().add(OpenToxResource());
-            Model = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            model = clazz;
         }
-        return Model;
+        return model;
     }
 
-    public static OntologicalClass DataEntry() {
-        if (DataEntry == null) {
+    public static OntologicalClass dataEntry() {
+        if (dataEntry == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DataEntry");
-            clazz.getSuperClasses().add(OpenToxResource());
-            DataEntry = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            dataEntry = clazz;
         }
-        return DataEntry;
+        return dataEntry;
     }
 
-    public static OntologicalClass DataType() {
-        if (DataType == null) {
+    public static OntologicalClass dataType() {
+        if (dataType == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DataType");
-            clazz.getSuperClasses().add(OpenToxResource());
-            DataType = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            dataType = clazz;
         }
-        return DataType;
+        return dataType;
     }
 
     /**
@@ -262,201 +293,201 @@ public final class OTClasses {
      * @return
      *      Ontological class for Datasets
      */
-    public static OntologicalClass Dataset() {
-        if (Dataset == null) {
+    public static OntologicalClass dataset() {
+        if (dataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Dataset");
             clazz.getMetaInfo().addComment("Provides access to chemical compounds "
                     + "and their features (e.g. structural, physical-chemical, "
                     + "biological, toxicological properties)");
-            clazz.getSuperClasses().add(OpenToxResource());
-            Dataset = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            dataset = clazz;
         }
-        return Dataset;
+        return dataset;
     }
 
-    public static OntologicalClass Feature() {
-        if (Feature == null) {
+    public static OntologicalClass feature() {
+        if (feature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Feature");
-            clazz.getSuperClasses().add(OpenToxResource());
-            Feature = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            feature = clazz;
         }
-        return Feature;
+        return feature;
     }
 
-    public static OntologicalClass FeatureValuePair() {
-        if (FeatureValuePair == null) {
+    public static OntologicalClass featureValuePair() {
+        if (featureValuePair == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValuePair");
-            clazz.getSuperClasses().add(OpenToxResource());
-            FeatureValuePair = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            featureValuePair = clazz;
         }
-        return FeatureValuePair;
+        return featureValuePair;
     }
 
-    public static OntologicalClass FeatureValue() {
-        if (FeatureValue == null) {
+    public static OntologicalClass featureValue() {
+        if (featureValue == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValue");
-            clazz.getSuperClasses().add(FeatureValuePair());
-            FeatureValue = clazz;
+            clazz.getSuperClasses().add(featureValuePair());
+            featureValue = clazz;
         }
-        return FeatureValue;
+        return featureValue;
     }
 
-    public static OntologicalClass FeatureValueNumeric() {
-        if (FeatureValueNumeric == null) {
+    public static OntologicalClass featureValueNumeric() {
+        if (featureValueNumeric == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValueNumeric");
-            clazz.getSuperClasses().add(FeatureValue());
-            FeatureValueNumeric = clazz;
+            clazz.getSuperClasses().add(featureValue());
+            featureValueNumeric = clazz;
         }
-        return FeatureValueNumeric;
+        return featureValueNumeric;
     }
 
-    public static OntologicalClass FeatureValueString() {
-        if (FeatureValueString == null) {
+    public static OntologicalClass featureValueString() {
+        if (featureValueString == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValue");
-            clazz.getSuperClasses().add(FeatureValue());
-            FeatureValueString = clazz;
+            clazz.getSuperClasses().add(featureValue());
+            featureValueString = clazz;
         }
-        return FeatureValueString;
+        return featureValueString;
     }
 
-    public static OntologicalClass FeatureValueNominal() {
-        if (FeatureValueNominal == null) {
+    public static OntologicalClass featureValueNominal() {
+        if (featureValueNominal == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValueNominal");
-            clazz.getSuperClasses().add(FeatureValueString());
-            FeatureValueNominal = clazz;
+            clazz.getSuperClasses().add(featureValueString());
+            featureValueNominal = clazz;
         }
-        return FeatureValueNominal;
+        return featureValueNominal;
     }
 
-    public static OntologicalClass Nominal() {
-        if (Nominal == null) {
+    public static OntologicalClass nominal() {
+        if (nominal == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Nominal");
-            clazz.getSuperClasses().add(DataType());
-            Nominal = clazz;
+            clazz.getSuperClasses().add(dataType());
+            nominal = clazz;
         }
-        return Nominal;
+        return nominal;
     }
 
-    public static OntologicalClass NominalFeature() {
-        if (NominalFeature == null) {
+    public static OntologicalClass nominalFeature() {
+        if (nominalFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("NominalFeature");
-            clazz.getSuperClasses().add(Feature());
-            clazz.getSuperClasses().add(Nominal());
-            NominalFeature = clazz;
+            clazz.getSuperClasses().add(feature());
+            clazz.getSuperClasses().add(nominal());
+            nominalFeature = clazz;
         }
-        return NominalFeature;
+        return nominalFeature;
     }
 
-    public static OntologicalClass Numeric() {
-        if (Numeric == null) {
+    public static OntologicalClass numeric() {
+        if (numeric == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Numeric");
-            clazz.getSuperClasses().add(DataType());
-            Numeric = clazz;
+            clazz.getSuperClasses().add(dataType());
+            numeric = clazz;
         }
-        return Numeric;
+        return numeric;
     }
 
-    public static OntologicalClass NumericFeature() {
-        if (NumericFeature == null) {
+    public static OntologicalClass numericFeature() {
+        if (numericFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("NumericFeature");
-            clazz.getSuperClasses().add(Feature());
-            clazz.getSuperClasses().add(Numeric());
-            NumericFeature = clazz;
+            clazz.getSuperClasses().add(feature());
+            clazz.getSuperClasses().add(numeric());
+            numericFeature = clazz;
         }
-        return NumericFeature;
+        return numericFeature;
     }
 
-    public static OntologicalClass String() {
-        if (String == null) {
+    public static OntologicalClass string() {
+        if (string == null) {
             OntologicalClass clazz = new OntologicalClassImpl("String");
-            clazz.getSuperClasses().add(DataType());
-            String = clazz;
+            clazz.getSuperClasses().add(dataType());
+            string = clazz;
         }
-        return String;
+        return string;
     }
 
-    public static OntologicalClass StringFeature() {
-        if (StringFeature == null) {
+    public static OntologicalClass stringFeature() {
+        if (stringFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("StringFeature");
-            clazz.getSuperClasses().add(Feature());
-            clazz.getSuperClasses().add(String());
-            StringFeature = clazz;
+            clazz.getSuperClasses().add(feature());
+            clazz.getSuperClasses().add(string());
+            stringFeature = clazz;
         }
-        return StringFeature;
+        return stringFeature;
     }
 
-    public static OntologicalClass Parameter() {
-        if (Parameter == null) {
+    public static OntologicalClass parameter() {
+        if (parameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Parameter");
-            clazz.getSuperClasses().add(OpenToxResource());
-            Parameter = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            parameter = clazz;
         }
-        return Parameter;
+        return parameter;
     }
 
-    public static OntologicalClass VectorParameter() {
-        if (VectorParameter == null) {
+    public static OntologicalClass vectorParameter() {
+        if (vectorParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("VectorParameter");
-            clazz.getSuperClasses().add(MultiParameter());
-            VectorParameter = clazz;
+            clazz.getSuperClasses().add(multiParameter());
+            vectorParameter = clazz;
         }
-        return VectorParameter;
+        return vectorParameter;
     }
 
-    public static OntologicalClass VariableInfo() {
-        if (VariableInfo == null) {
+    public static OntologicalClass variableInfo() {
+        if (variableInfo == null) {
             OntologicalClass clazz = new OntologicalClassImpl("VariableInfo");
-            clazz.getSuperClasses().add(OpenToxResource());
-            VariableInfo = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            variableInfo = clazz;
         }
-        return VariableInfo;
+        return variableInfo;
     }
 
-    public static OntologicalClass ParameterValue() {
-        if (ParameterValue == null) {
+    public static OntologicalClass parameterValue() {
+        if (parameterValue == null) {
             OntologicalClass clazz = new OntologicalClassImpl("ParameterValue");
-            clazz.getSuperClasses().add(OpenToxResource());
-            ParameterValue = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            parameterValue = clazz;
         }
-        return ParameterValue;
+        return parameterValue;
     }
 
-    public static OntologicalClass MultiParameter() {
-        if (MultiParameter == null) {
+    public static OntologicalClass multiParameter() {
+        if (multiParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("MultiParameter");
-            clazz.getSuperClasses().add(OpenToxResource());
-            clazz.getDisjointWith().add(Parameter());// << Different from Parameter
-            MultiParameter = clazz;
+            clazz.getSuperClasses().add(openToxResource());
+            clazz.getDisjointWith().add(parameter());// << Different from Parameter
+            multiParameter = clazz;
         }
-        return MultiParameter;
+        return multiParameter;
     }
 
-    public static OntologicalClass SetValuedParameter() {
-        if (SetValuedParameter == null) {
+    public static OntologicalClass setValuedParameter() {
+        if (setValuedParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("SetValuedParameter");
-            clazz.getSuperClasses().add(MultiParameter());
-            SetValuedParameter = clazz;
+            clazz.getSuperClasses().add(multiParameter());
+            setValuedParameter = clazz;
         }
-        return SetValuedParameter;
+        return setValuedParameter;
     }
 
-    public static OntologicalClass VariableValue() {
-        if (VariableValue == null) {
+    public static OntologicalClass variableValue() {
+        if (variableValue == null) {
             OntologicalClass clazz = new OntologicalClassImpl("VariableValue");
-            clazz.getSuperClasses().add(MultiParameter());
-            VariableValue = clazz;
+            clazz.getSuperClasses().add(multiParameter());
+            variableValue = clazz;
         }
-        return VariableValue;
+        return variableValue;
     }
 
-    public static OntologicalClass Task() {
-        if (Task == null) {
+    public static OntologicalClass task() {
+        if (task == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Task");
-            clazz.getSuperClasses().add(Feature());
-            clazz.getSuperClasses().add(String());
-            Task = clazz;
+            clazz.getSuperClasses().add(feature());
+            clazz.getSuperClasses().add(string());
+            task = clazz;
         }
-        return Task;
+        return task;
     }
 
     /**
@@ -471,10 +502,10 @@ public final class OTClasses {
      * @return
      *      Ontological class for Error Reports in OpenTox ontology.
      */
-    public static OntologicalClass ErrorReport() {
-        if (ErrorReport == null) {
+    public static OntologicalClass errorReport() {
+        if (errorReport == null) {
             OntologicalClass clazz = new OntologicalClassImpl("ErrorReport");
-            clazz.getSuperClasses().add(OpenToxResource());
+            clazz.getSuperClasses().add(openToxResource());
             clazz.getMetaInfo().addDescription("Instances of the class ErrorReport "
                     + "appear in ontological models to report some exceptional event "
                     + "that happened during the transaction of data from one server "
@@ -482,8 +513,8 @@ public final class OTClasses {
                     + "report is characterized by its actor, the corresponding status code, "
                     + "some unique identifier for the exceptional event and possibly "
                     + "another error report that triggered its creation.");
-            ErrorReport = clazz;
+            errorReport = clazz;
         }
-        return ErrorReport;
+        return errorReport;
     }
 }

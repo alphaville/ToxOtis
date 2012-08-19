@@ -70,12 +70,12 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      */
     public RestOperation() {
         super();
-        addOntologicalClasses(OTRestClasses.RESTOperation());
+        addOntologicalClasses(OTRestClasses.restOperation());
     }
 
     public RestOperation(VRI uri) {
         super(uri);
-        addOntologicalClasses(OTRestClasses.RESTOperation());
+        addOntologicalClasses(OTRestClasses.restOperation());
     }
     private Set<OntologicalClass> restClasses;
     private HttpMethod method;
@@ -229,7 +229,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
     public Individual asIndividual(OntModel model) {
         String restOperationUri = getUri() != null ? getUri().toString() : null;
         /* Initialization of an otrs:RESTOperation individual */
-        Individual indiv = model.createIndividual(restOperationUri, OTRestClasses.RESTOperation().inModel(model));
+        Individual indiv = model.createIndividual(restOperationUri, OTRestClasses.restOperation().inModel(model));
         /* Ontological Classes that define the type of the REST operation */
         if (getRestClasses() != null) {
             for (OntologicalClass oc : getRestClasses()) {
@@ -290,9 +290,9 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
             setOntologicalClasses(new HashSet<OntologicalClass>());
         }
         if (protectedResource) {
-            getOntologicalClasses().add(OTRestClasses.AA());
+            getOntologicalClasses().add(OTRestClasses.aa());
         } else {
-            getOntologicalClasses().remove(OTRestClasses.AA());
+            getOntologicalClasses().remove(OTRestClasses.aa());
         }
         return this;
     }
@@ -341,7 +341,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
             setHttpParameters(new HashSet<HttpParameter>());
         }
         HttpParameter httpParam = new HttpParameter().setOntologicalClasses(new HashSet<OntologicalClass>()).
-                addOntologicalClasses(OTRestClasses.InputParameterSimple(), OTRestClasses.URLParameter());
+                addOntologicalClasses(OTRestClasses.inputParameterSimple(), OTRestClasses.urlParameter());
         httpParam.setParamName(urlParameterName);
         httpParam.setOpentoxParameter(false);
         httpParam.setParamOptional(optional);
@@ -356,7 +356,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
             setHttpParameters(new HashSet<HttpParameter>());
         }
         HttpParameter httpParam = new HttpParameter().setOntologicalClasses(new HashSet<OntologicalClass>()).
-                addOntologicalClasses(OTRestClasses.InputParameterSimple(), OTRestClasses.Header());
+                addOntologicalClasses(OTRestClasses.inputParameterSimple(), OTRestClasses.header());
         httpParam.setParamName(headerName);
         httpParam.setOpentoxParameter(false);
         httpParam.setParamOptional(optional);

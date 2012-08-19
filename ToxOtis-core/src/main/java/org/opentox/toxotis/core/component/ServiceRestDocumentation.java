@@ -124,7 +124,7 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
     @Override
     public Set<OntologicalClass> getOntologicalClasses() {
         Set<OntologicalClass> classes = component.getOntologicalClasses();
-        classes.add(OTRestClasses.RESTOperation());
+        classes.add(OTRestClasses.restOperation());
         return classes;
     }
 

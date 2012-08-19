@@ -94,7 +94,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * Enumeration for bibliographic types supported by the
      * Knouf ontology.
      */
-    public enum BIB_TYPE {
+    public enum BibTYPE {
 
         /**
          * An article from a journal or magazine. Required fields: author, title,
@@ -176,30 +176,30 @@ public class BibTeX extends OTPublishable<BibTeX>
      * BECAUSE SOME METHODS IN BIBTEX USE REFLECTIVE LOOKUPS AND COMPARISONS
      * BASED ON THE NAME OF THE FIELD.
      */
-    private String m_abstract;
-    private String m_author;
-    private String m_title;
-    private String m_bookTitle;
-    private String m_chapter;
-    private String m_copyright;
-    private String m_edition;
-    private String m_editor;
-    private String m_crossref;
-    private String m_address;
-    private String m_year;
-    private String m_pages;
-    private String m_volume;
-    private String m_number;
-    private String m_journal;
-    private String m_isbn;
-    private String m_issn;
-    private String m_keywords;
-    private String m_key;
-    private String m_annotation;
-    private String m_series;
-    private String m_url;
-    private BIB_TYPE m_bib_type;
-    private User m_createdBy;
+    private String mAbstract;
+    private String mAuthor;
+    private String mTitle;
+    private String mBookTitle;
+    private String mChapter;
+    private String mCopyright;
+    private String mEdition;
+    private String mEditor;
+    private String mCrossref;
+    private String mAddress;
+    private String mYear;
+    private String mPages;
+    private String mVolume;
+    private String mNumber;
+    private String mJournal;
+    private String mIsbn;
+    private String mIssn;
+    private String mKeywords;
+    private String mKey;
+    private String mAnnotation;
+    private String mSeries;
+    private String mUrl;
+    private BibTYPE mBibType;
+    private User mCreatedBy;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BibTeX.class);
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
@@ -209,7 +209,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      Instance of {@link User}
      */
     public User getCreatedBy() {
-        return m_createdBy;
+        return mCreatedBy;
     }
 
     /**
@@ -218,7 +218,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      Instance of {@link User}
      */
     public void setCreatedBy(User createdBy) {
-        this.m_createdBy = createdBy;
+        this.mCreatedBy = createdBy;
     }
 
     /**
@@ -226,19 +226,19 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @return 
      */
     public String getAbstract() {
-        return m_abstract;
+        return mAbstract;
     }
 
     /**
      * Setter method for the abstract.
      * 
-     * @param m_abstract
+     * @param theAbstract
      *      The abstract as a String.
      * @return 
      *      The current modifiable instance of BibTeX with the updated abstract. 
      */
-    public BibTeX setAbstract(String m_abstract) {
-        this.m_abstract = m_abstract;
+    public BibTeX setAbstract(String theAbstract) {
+        this.mAbstract = theAbstract;
         return this;
     }
 
@@ -248,20 +248,20 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      Name(s) of authors as String.
      */
     public String getAuthor() {
-        return m_author;
+        return mAuthor;
     }
 
     /**
      * Setter method for the author(s).
      * 
-     * @param m_author 
+     * @param author 
      *      The list of authors or the single author as a String.
      * @return 
      *      The current modifiable instance of BibTeX with the updated author. 
      * @see #getAuthor() #getAuthor
      */
-    public BibTeX setAuthor(String m_author) {
-        this.m_author = m_author;
+    public BibTeX setAuthor(String author) {
+        this.mAuthor = author;
         return this;
     }
 
@@ -271,8 +271,8 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The bibliographic type of the current BibTeX object 
      *      as an instance of {@link BIB_TYPE }.
      */
-    public BIB_TYPE getBibType() {
-        return m_bib_type;
+    public BibTYPE getBibType() {
+        return mBibType;
     }
 
     /**
@@ -284,8 +284,8 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      value of bibtype. 
      * @see #getBibType() getBibType() 
      */
-    public BibTeX setBibType(BIB_TYPE bibType) {
-        this.m_bib_type = bibType;
+    public BibTeX setBibType(BibTYPE bibType) {
+        this.mBibType = bibType;
         return this;
     }
 
@@ -297,19 +297,19 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The <code>booktitle</code> as String.
      */
     public String getBookTitle() {
-        return m_bookTitle;
+        return mBookTitle;
     }
 
     /**
      * Setter method for the bookTitle.
      * 
-     * @param m_bookTitle 
+     * @param bookTitle 
      *      The bookTitle as a String.
      * @return 
      *      The current modifiable instance of BibTeX with the updated bookTitle. 
      */
-    public BibTeX setBookTitle(String m_bookTitle) {
-        this.m_bookTitle = m_bookTitle;
+    public BibTeX setBookTitle(String bookTitle) {
+        this.mBookTitle = bookTitle;
         return this;
     }
 
@@ -320,38 +320,38 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The chapter title/number as a String.
      */
     public String getChapter() {
-        return m_chapter;
+        return mChapter;
     }
 
     /**
      * Setter method for the chapter of the BibTeX resource.
      * 
-     * @param m_chapter  
+     * @param chapter  
      *      The chapter as a String.
      * @return 
      *      The current modifiable instance of BibTeX with the updated chapter
      *      parameter. 
      */
-    public BibTeX setChapter(String m_chapter) {
-        this.m_chapter = m_chapter;
+    public BibTeX setChapter(String chapter) {
+        this.mChapter = chapter;
         return this;
     }
 
     public String getCopyright() {
-        return m_copyright;
+        return mCopyright;
     }
 
     /**
      * Setter method for the copyright notice of the BibTeX resource.
      * 
-     * @param m_copyright 
+     * @param copyright 
      *      The copyright notice as a String.
      * @return 
      *      The current modifiable instance of BibTeX with the updated copyright
      *      parameter. 
      */
-    public BibTeX setCopyright(String m_copyright) {
-        this.m_copyright = m_copyright;
+    public BibTeX setCopyright(String copyright) {
+        this.mCopyright = copyright;
         return this;
     }
 
@@ -363,20 +363,20 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      Cross-reference to some other BibTeX resource or piece of work.
      */
     public String getCrossref() {
-        return m_crossref;
+        return mCrossref;
     }
 
     /**
      * Setter method for the cross-ref of this BibTeX resource. A URI of some
      * other BibTeX entity should be ideally provided.
      * 
-     * @param m_crossref 
+     * @param crossref 
      *      The chapter as a String.
      * @return 
      *      The current modifiable instance of BibTeX with the updated cross-ref. 
      */
-    public BibTeX setCrossref(String m_crossref) {
-        this.m_crossref = m_crossref;
+    public BibTeX setCrossref(String crossref) {
+        this.mCrossref = crossref;
         return this;
     }
 
@@ -389,7 +389,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The edition of the BibTeX object.
      */
     public String getEdition() {
-        return m_edition;
+        return mEdition;
     }
 
     /**
@@ -400,7 +400,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @see #getEdition() 
      */
     public BibTeX setEdition(String edition) {
-        this.m_edition = edition;
+        this.mEdition = edition;
         return this;
     }
 
@@ -413,7 +413,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      Editor(s) as String.
      */
     public String getEditor() {
-        return m_editor;
+        return mEditor;
     }
 
     /**
@@ -423,8 +423,8 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The current modifiable BibTeX object updated with the value of editor(s).
      * @see #getEditor() 
      */
-    public BibTeX setEditor(String m_editor) {
-        this.m_editor = m_editor;
+    public BibTeX setEditor(String editor) {
+        this.mEditor = editor;
         return this;
     }
 
@@ -441,7 +441,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The ISBN of the current BibTeX object as a String.
      */
     public String getIsbn() {
-        return m_isbn;
+        return mIsbn;
     }
 
     /**
@@ -454,7 +454,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @see #getIsbn() #getIsbn()
      */
     public BibTeX setIsbn(String isbn) {
-        this.m_isbn = isbn;
+        this.mIsbn = isbn;
         return this;
     }
 
@@ -471,7 +471,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The ISSN of the current BibTeX object as a String.
      */
     public String getIssn() {
-        return m_issn;
+        return mIssn;
     }
 
     /**
@@ -484,7 +484,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @see #getIssn() #getIssn()
      */
     public BibTeX setIssn(String issn) {
-        this.m_issn = issn;
+        this.mIssn = issn;
         return this;
     }
 
@@ -496,7 +496,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The journal name as a String.
      */
     public String getJournal() {
-        return m_journal;
+        return mJournal;
     }
 
     /**
@@ -509,7 +509,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @see #getJournal() getJournal()
      */
     public BibTeX setJournal(String journal) {
-        this.m_journal = journal;
+        this.mJournal = journal;
         return this;
     }
 
@@ -522,7 +522,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @return 
      */
     public String getKey() {
-        return m_key;
+        return mKey;
     }
 
     /**
@@ -535,7 +535,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @see #getKey() getKey()
      */
     public BibTeX setKey(String key) {
-        this.m_key = key;
+        this.mKey = key;
         return this;
     }
 
@@ -545,7 +545,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      List of keywords as a single string.
      */
     public String getKeywords() {
-        return m_keywords;
+        return mKeywords;
     }
 
     /**
@@ -557,7 +557,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The current object with updated value of keywords.
      */
     public BibTeX setKeywords(String keywords) {
-        this.m_keywords = keywords;
+        this.mKeywords = keywords;
         return this;
     }
 
@@ -571,10 +571,10 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The number of the current BibTeX object.
      */
     public Integer getNumber() {
-        if (m_number == null) {
+        if (mNumber == null) {
             return null;
         }
-        return Integer.parseInt(m_number);
+        return Integer.parseInt(mNumber);
     }
 
     /**
@@ -588,9 +588,9 @@ public class BibTeX extends OTPublishable<BibTeX>
      */
     public BibTeX setNumber(Integer number) {
         if (number == null || (number != null && number < 0)) {
-            this.m_number = null;
+            this.mNumber = null;
         } else {
-            this.m_number = Integer.toString(number);
+            this.mNumber = Integer.toString(number);
         }
         return this;
     }
@@ -607,7 +607,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      Pages as String.
      */
     public String getPages() {
-        return m_pages;
+        return mPages;
     }
 
     /**
@@ -619,7 +619,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @see #getPages() getPages()
      */
     public BibTeX setPages(String pages) {
-        this.m_pages = pages;
+        this.mPages = pages;
         return this;
     }
 
@@ -630,10 +630,10 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The volume as Integer.
      */
     public Integer getVolume() {
-        if (m_volume == null) {
+        if (mVolume == null) {
             return null;
         }
-        return Integer.parseInt(m_volume);
+        return Integer.parseInt(mVolume);
     }
 
     /**
@@ -645,9 +645,9 @@ public class BibTeX extends OTPublishable<BibTeX>
      */
     public BibTeX setVolume(Integer volume) {
         if (volume == null || (volume != null && volume < 0)) {
-            this.m_volume = null;
+            this.mVolume = null;
         } else {
-            this.m_volume = Integer.toString(volume);
+            this.mVolume = Integer.toString(volume);
         }
         return this;
     }
@@ -661,10 +661,10 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The year of publication/inception as Integer.
      */
     public Integer getYear() {
-        if (m_year == null) {
+        if (mYear == null) {
             return null;
         }
-        return Integer.parseInt(m_year);
+        return Integer.parseInt(mYear);
     }
 
     /**
@@ -678,9 +678,9 @@ public class BibTeX extends OTPublishable<BibTeX>
      */
     public BibTeX setYear(Integer year) {
         if (year == null || (year != null && year < 0)) {
-            this.m_year = null;
+            this.mYear = null;
         } else {
-            this.m_year = Integer.toString(year);
+            this.mYear = Integer.toString(year);
         }
         return this;
     }
@@ -695,7 +695,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The address as String.
      */
     public String getAddress() {
-        return m_address;
+        return mAddress;
     }
 
     /**
@@ -710,7 +710,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The current modifiable BibTeX object updated address.
      */
     public BibTeX setAddress(String address) {
-        this.m_address = address;
+        this.mAddress = address;
         return this;
     }
 
@@ -722,7 +722,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      Annotation as String.
      */
     public String getAnnotation() {
-        return m_annotation;
+        return mAnnotation;
     }
 
     /**
@@ -734,7 +734,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      * @see #getAnnotation() getAnnotation()
      */
     public BibTeX setAnnotation(String annotation) {
-        this.m_annotation = annotation;
+        this.mAnnotation = annotation;
         return this;
     }
 
@@ -747,7 +747,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The <code>series</code> as String.
      */
     public String getSeries() {
-        return m_series;
+        return mSeries;
     }
 
     /**
@@ -758,7 +758,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The current modifiable BibTeX object updated series.
      */
     public BibTeX setSeries(String series) {
-        this.m_series = series;
+        this.mSeries = series;
         return this;
     }
 
@@ -768,7 +768,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The title as String.
      */
     public String getTitle() {
-        return m_title;
+        return mTitle;
     }
 
     /**
@@ -779,7 +779,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The current modifiable BibTeX object updated title.
      */
     public BibTeX setTitle(String title) {
-        this.m_title = title;
+        this.mTitle = title;
         return this;
     }
 
@@ -792,7 +792,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      URL as String.
      */
     public String getUrl() {
-        return m_url;
+        return mUrl;
     }
 
     /**
@@ -803,7 +803,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The current modifiable BibTeX object updated annotation.
      */
     public BibTeX setUrl(String Url) {
-        this.m_url = Url;
+        this.mUrl = Url;
         return this;
     }// </editor-fold>
 
@@ -813,7 +813,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      */
     public BibTeX() {
         super();
-        addOntologicalClasses(KnoufBibTex.Entry());
+        addOntologicalClasses(KnoufBibTex.entry());
     }
 
     /**
@@ -825,7 +825,7 @@ public class BibTeX extends OTPublishable<BibTeX>
      */
     public BibTeX(VRI uri) throws ToxOtisException {
         super(uri);
-        addOntologicalClasses(KnoufBibTex.Entry());
+        addOntologicalClasses(KnoufBibTex.entry());
         if (uri != null) {
             if (!BibTeX.class.equals(uri.getOpenToxType())) {
                 throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
@@ -982,72 +982,72 @@ public class BibTeX extends OTPublishable<BibTeX>
                 setTableBorder(1).
                 setCellPadding(10).
                 setCellSpacing(1);
-        if (m_abstract != null) {
-            table.setTextAtCursor("Abstract").setTextAtCursor(m_abstract);
+        if (mAbstract != null) {
+            table.setTextAtCursor("Abstract").setTextAtCursor(mAbstract);
         }
-        if (m_edition != null) {
-            table.setTextAtCursor("Edition").setTextAtCursor(m_edition);
+        if (mEdition != null) {
+            table.setTextAtCursor("Edition").setTextAtCursor(mEdition);
         }
-        if (m_editor != null) {
-            table.setTextAtCursor("Editor").setTextAtCursor(m_editor);
+        if (mEditor != null) {
+            table.setTextAtCursor("Editor").setTextAtCursor(mEditor);
         }
-        if (m_pages != null) {
-            table.setTextAtCursor("Pages").setTextAtCursor(m_pages);
+        if (mPages != null) {
+            table.setTextAtCursor("Pages").setTextAtCursor(mPages);
         }
-        if (m_address != null) {
-            table.setTextAtCursor("Address").setTextAtCursor(m_address);
+        if (mAddress != null) {
+            table.setTextAtCursor("Address").setTextAtCursor(mAddress);
         }
-        if (m_annotation != null) {
-            table.setTextAtCursor("Annotation").setTextAtCursor(m_annotation);
+        if (mAnnotation != null) {
+            table.setTextAtCursor("Annotation").setTextAtCursor(mAnnotation);
         }
-        if (m_bookTitle != null) {
-            table.setTextAtCursor("Book Title").setTextAtCursor(m_bookTitle);
+        if (mBookTitle != null) {
+            table.setTextAtCursor("Book Title").setTextAtCursor(mBookTitle);
         }
-        if (m_title != null) {
-            table.setTextAtCursor("Title").setTextAtCursor(m_title);
+        if (mTitle != null) {
+            table.setTextAtCursor("Title").setTextAtCursor(mTitle);
         }
-        if (m_chapter != null) {
-            table.setTextAtCursor("Chapter").setTextAtCursor(m_chapter);
+        if (mChapter != null) {
+            table.setTextAtCursor("Chapter").setTextAtCursor(mChapter);
         }
-        if (m_copyright != null) {
-            table.setTextAtCursor("Copyright Note").setTextAtCursor(m_copyright);
+        if (mCopyright != null) {
+            table.setTextAtCursor("Copyright Note").setTextAtCursor(mCopyright);
         }
-        if (m_crossref != null) {
-            String cr = m_crossref;
-            if (m_crossref.contains("bibtex/") && m_crossref.contains("http://")) {
-                cr = "<a href=\"" + m_crossref + "\">" + m_crossref + "</a>";
+        if (mCrossref != null) {
+            String cr = mCrossref;
+            if (mCrossref.contains("bibtex/") && mCrossref.contains("http://")) {
+                cr = "<a href=\"" + mCrossref + "\">" + mCrossref + "</a>";
             }
             table.setTextAtCursor("Cross-reference").setTextAtCursor(cr);
         }
-        if (m_isbn != null) {
-            table.setTextAtCursor("ISBN").setTextAtCursor(m_isbn);
+        if (mIsbn != null) {
+            table.setTextAtCursor("ISBN").setTextAtCursor(mIsbn);
         }
-        if (m_issn != null) {
-            table.setTextAtCursor("ISSN").setTextAtCursor(m_issn);
+        if (mIssn != null) {
+            table.setTextAtCursor("ISSN").setTextAtCursor(mIssn);
         }
-        if (m_journal != null) {
-            table.setTextAtCursor("Journal").setTextAtCursor(m_journal);
+        if (mJournal != null) {
+            table.setTextAtCursor("Journal").setTextAtCursor(mJournal);
         }
-        if (m_key != null) {
-            table.setTextAtCursor("Key").setTextAtCursor(m_key);
+        if (mKey != null) {
+            table.setTextAtCursor("Key").setTextAtCursor(mKey);
         }
-        if (m_keywords != null) {
-            table.setTextAtCursor("Keywords").setTextAtCursor(m_keywords);
+        if (mKeywords != null) {
+            table.setTextAtCursor("Keywords").setTextAtCursor(mKeywords);
         }
-        if (m_volume != null) {
-            table.setTextAtCursor("Volume").setTextAtCursor(m_volume);
+        if (mVolume != null) {
+            table.setTextAtCursor("Volume").setTextAtCursor(mVolume);
         }
-        if (m_number != null) {
-            table.setTextAtCursor("Number").setTextAtCursor(m_number);
+        if (mNumber != null) {
+            table.setTextAtCursor("Number").setTextAtCursor(mNumber);
         }
-        if (m_series != null) {
-            table.setTextAtCursor("Series").setTextAtCursor(m_series);
+        if (mSeries != null) {
+            table.setTextAtCursor("Series").setTextAtCursor(mSeries);
         }
-        if (m_url != null) {
-            table.setTextAtCursor("URL").setTextAtCursor("<a href=\"" + m_url + "\">" + m_url + "</a>");
+        if (mUrl != null) {
+            table.setTextAtCursor("URL").setTextAtCursor("<a href=\"" + mUrl + "\">" + mUrl + "</a>");
         }
-        if (m_year != null) {
-            table.setTextAtCursor("Year").setTextAtCursor(m_year);
+        if (mYear != null) {
+            table.setTextAtCursor("Year").setTextAtCursor(mYear);
         }
 
         builder.getDiv().breakLine();
@@ -1083,10 +1083,10 @@ public class BibTeX extends OTPublishable<BibTeX>
         String bibtexUri = uri != null ? uri.toString() : null;
         Individual indiv = null;
 
-        OntologicalClass bibTypeClass = KnoufBibTex.Entry();
-        if (m_bib_type != null) {
+        OntologicalClass bibTypeClass = KnoufBibTex.entry();
+        if (mBibType != null) {
             try {
-                bibTypeClass = KnoufBibTex.forName(m_bib_type.toString());
+                bibTypeClass = KnoufBibTex.forName(mBibType.toString());
             } catch (ToxOtisException ex) {
                 throw new RuntimeException("Serialization to Individual is not possible - Severe BUG!", ex);
             }
@@ -1100,93 +1100,93 @@ public class BibTeX extends OTPublishable<BibTeX>
                     model.createTypedLiteral(bibtexUri, XSDDatatype.XSDstring));
         }
 
-        if (m_author != null) {
+        if (mAuthor != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasAuthor().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_author, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mAuthor, XSDDatatype.XSDstring));
         }
-        if (m_abstract != null) {
+        if (mAbstract != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasAbstract().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_abstract, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mAbstract, XSDDatatype.XSDstring));
         }
-        if (m_bookTitle != null) {
+        if (mBookTitle != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasBookTitle().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_bookTitle, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mBookTitle, XSDDatatype.XSDstring));
         }
-        if (m_chapter != null) {
+        if (mChapter != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasChapter().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_chapter, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mChapter, XSDDatatype.XSDstring));
         }
-        if (m_copyright != null) {
+        if (mCopyright != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasCopyright().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_copyright, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mCopyright, XSDDatatype.XSDstring));
         }
-        if (m_crossref != null) {
+        if (mCrossref != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasCrossRef().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_crossref, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mCrossref, XSDDatatype.XSDstring));
         }
-        if (m_edition != null) {
+        if (mEdition != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasEdition().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_edition, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mEdition, XSDDatatype.XSDstring));
         }
-        if (m_editor != null) {
+        if (mEditor != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasEditor().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_editor, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mEditor, XSDDatatype.XSDstring));
         }
-        if (m_address != null) {
+        if (mAddress != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasAddress().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_address, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mAddress, XSDDatatype.XSDstring));
         }
-        if (m_annotation != null) {
+        if (mAnnotation != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasAnnotation().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_annotation, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mAnnotation, XSDDatatype.XSDstring));
         }
-        if (m_year != null) {
+        if (mYear != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasYear().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_year, XSDDatatype.XSDint));
+                    model.createTypedLiteral(mYear, XSDDatatype.XSDint));
         }
-        if (m_volume != null) {
+        if (mVolume != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasVolume().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_volume, XSDDatatype.XSDint));
+                    model.createTypedLiteral(mVolume, XSDDatatype.XSDint));
         }
-        if (m_number != null) {
+        if (mNumber != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasNumber().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_number, XSDDatatype.XSDint));
+                    model.createTypedLiteral(mNumber, XSDDatatype.XSDint));
         }
-        if (m_isbn != null) {
+        if (mIsbn != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasISBN().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_isbn, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mIsbn, XSDDatatype.XSDstring));
         }
-        if (m_issn != null) {
+        if (mIssn != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasISSN().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_issn, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mIssn, XSDDatatype.XSDstring));
         }
-        if (m_key != null) {
+        if (mKey != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasKey().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_key, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mKey, XSDDatatype.XSDstring));
         }
-        if (m_keywords != null) {
+        if (mKeywords != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasKeywords().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_keywords, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mKeywords, XSDDatatype.XSDstring));
         }
-        if (m_journal != null) {
+        if (mJournal != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasJournal().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_journal, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mJournal, XSDDatatype.XSDstring));
         }
-        if (m_pages != null) {
+        if (mPages != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasPages().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_pages, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mPages, XSDDatatype.XSDstring));
         }
-        if (m_series != null) {
+        if (mSeries != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasSeries().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_series, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mSeries, XSDDatatype.XSDstring));
         }
-        if (m_title != null) {
+        if (mTitle != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasTitle().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_title, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mTitle, XSDDatatype.XSDstring));
         }
-        if (m_url != null) {
+        if (mUrl != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasURL().asDatatypeProperty(model),
-                    model.createTypedLiteral(m_url, XSDDatatype.XSDanyURI));
+                    model.createTypedLiteral(mUrl, XSDDatatype.XSDanyURI));
         }
         return indiv;
     }
@@ -1195,12 +1195,12 @@ public class BibTeX extends OTPublishable<BibTeX>
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("@");
-        result.append(m_bib_type.toString());
+        result.append(mBibType.toString());
         result.append("{");
         result.append(getUri());
         result.append(",\n");
         result.append("author = \"");
-        result.append(m_author);
+        result.append(mAuthor);
         result.append("\"");
 
         for (Field f : this.getClass().getDeclaredFields()) {
@@ -1304,7 +1304,7 @@ public class BibTeX extends OTPublishable<BibTeX>
                     String[] firstLineFragments = line.split(Pattern.quote("{"));
                     if (firstLineFragments.length == 2) {
                         String type = firstLineFragments[0].trim().replaceAll("@", "");
-                        setBibType(BIB_TYPE.valueOf(type));
+                        setBibType(BibTYPE.valueOf(type));
                         String identifier = firstLineFragments[1].trim().replaceAll(",", "");
                         try {
                             setUri(new VRI(identifier));

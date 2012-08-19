@@ -34,7 +34,7 @@ public class MetaInfoTest {
         MetaInfo m1 = new MetaInfoImpl();
         MetaInfo m2 = new MetaInfoImpl();
         assertTrue(m1.hashCode() == m2.hashCode());
-        ResourceValue rv = new ResourceValue(Services.ntua().augment("model", 1), OTClasses.Model());
+        ResourceValue rv = new ResourceValue(Services.ntua().augment("model", 1), OTClasses.model());
         m1.addHasSource(rv);
         m2.addHasSource(rv);
         assertTrue(m1.hashCode() == m2.hashCode());

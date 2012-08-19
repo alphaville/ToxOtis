@@ -96,7 +96,7 @@ public class FeatureValue extends OTComponent<FeatureValue> {
     @Override
     public Individual asIndividual(OntModel model) {
         String featureValueUri = getUri() != null ? getUri().getStringNoQuery() : null;
-        Individual indiv = model.createIndividual(featureValueUri, OTClasses.FeatureValue().inModel(model));
+        Individual indiv = model.createIndividual(featureValueUri, OTClasses.featureValue().inModel(model));
         indiv.addProperty(OTObjectProperties.feature().asObjectProperty(model), feature.asIndividual(model));
         if (value != null) {
             indiv.addLiteral(OTDatatypeProperties.value().asDatatypeProperty(model), model.createTypedLiteral(value.getValue(), value.getType()));

@@ -95,7 +95,7 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
         }
         if (resource == null) {
             StmtIterator allErrorReportsIter = model.listStatements(
-                    new SimpleSelector(null, RDF.type, OTClasses.ErrorReport().inModel(model)));
+                    new SimpleSelector(null, RDF.type, OTClasses.errorReport().inModel(model)));
             if (allErrorReportsIter.hasNext()) {
                 resource = allErrorReportsIter.next().getSubject().as(Resource.class);
             }

@@ -67,8 +67,8 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty hasHTTPMethod() {
         if (ms_hasHTTPMethod == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("hasHTTPMethod", NS);
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getRange().add(OTRestClasses.HTTPMethod());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getRange().add(OTRestClasses.httpMethod());
             ms_hasHTTPMethod = clazz;
         }
         return ms_hasHTTPMethod;
@@ -77,8 +77,8 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty hasHTTPStatus() {
         if (ms_hasHTTPStatus == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("hasHTTPStatus", NS);
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getRange().add(OTRestClasses.HTTPStatus());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getRange().add(OTRestClasses.httpStatus());
             ms_hasHTTPStatus = clazz;
         }
         return ms_hasHTTPStatus;
@@ -87,8 +87,8 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty hasMedia() {
         if (ms_hasMedia == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("hasMedia", NS);
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getRange().add(OTRestClasses.MediaType());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getRange().add(OTRestClasses.mediaType());
             ms_hasMedia = clazz;
         }
         return ms_hasMedia;
@@ -97,8 +97,8 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty aa() {
         if (ms_aa == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("aa", NS);
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getRange().add(OTRestClasses.AA());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getRange().add(OTRestClasses.aa());
             ms_aa = clazz;
         }
         return ms_aa;
@@ -107,9 +107,9 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty inputParam() {
         if (ms_inputParam == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("inputParam", NS);
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getDomain().add(OTRestClasses.AA());
-            clazz.getRange().add(OTRestClasses.InputParameter());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getDomain().add(OTRestClasses.aa());
+            clazz.getRange().add(OTRestClasses.inputParameter());
             ms_inputParam = clazz;
         }
         return ms_inputParam;
@@ -118,8 +118,8 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty result() {
         if (ms_result == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("result", NS);
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getRange().add(OTClasses.OpenToxResource());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getRange().add(OTClasses.openToxResource());
             ms_result = clazz;
         }
         return ms_result;
@@ -128,7 +128,7 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty paramContent() {
         if (ms_paramContent == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("paramContent", NS);
-            clazz.getDomain().add(OTRestClasses.InputParameter());
+            clazz.getDomain().add(OTRestClasses.inputParameter());
             ms_paramContent = clazz;
         }
         return ms_paramContent;
@@ -137,8 +137,8 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty paramContentOpenTox() {
         if (ms_paramContentOpenTox == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("paramContentOpenTox", NS);
-            clazz.getDomain().add(OTRestClasses.InputParameter());
-            clazz.getDomain().add(OTClasses.OpenToxResource());
+            clazz.getDomain().add(OTRestClasses.inputParameter());
+            clazz.getDomain().add(OTClasses.openToxResource());
             ms_paramContentOpenTox = clazz;
         }
         return ms_paramContentOpenTox;
@@ -147,7 +147,7 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty paramContentSimple() {
         if (ms_paramContentSimple == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("paramContentSimple", NS);
-            clazz.getDomain().add(OTRestClasses.InputParameter());
+            clazz.getDomain().add(OTRestClasses.inputParameter());
             clazz.getRange().add(new OntologicalClassImpl("string", XSDDatatype.XSD));
             clazz.getRange().add(new OntologicalClassImpl("boolean", XSDDatatype.XSD));
             clazz.getRange().add(new OntologicalClassImpl("int", XSDDatatype.XSD));
@@ -178,8 +178,8 @@ public final class OTRestObjectProperties {
                     return op;
                 }
             };
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getRange().add(OTClasses.OpenToxResource());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getRange().add(OTClasses.openToxResource());
             ms_resource = clazz;
         }
         return ms_resource;
@@ -200,8 +200,8 @@ public final class OTRestObjectProperties {
                     return op;
                 }
             };
-            clazz.getDomain().add(OTClasses.OpenToxResource());
-            clazz.getRange().add(OTRestClasses.RESTOperation());
+            clazz.getDomain().add(OTClasses.openToxResource());
+            clazz.getRange().add(OTRestClasses.restOperation());
             ms_hasRESTOperation = clazz;
         }
         return ms_hasRESTOperation;
@@ -210,8 +210,8 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty status() {
         if (ms_status == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("status", NS);
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getRange().add(OTRestClasses.HTTPStatus());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getRange().add(OTRestClasses.httpStatus());
             ms_status = clazz;
         }
         return ms_status;
@@ -220,8 +220,8 @@ public final class OTRestObjectProperties {
     public static OTObjectProperty uri() {
         if (ms_uri == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("uri", NS);
-            clazz.getDomain().add(OTRestClasses.RESTOperation());
-            clazz.getRange().add(OTRestClasses.RESTTemplate());
+            clazz.getDomain().add(OTRestClasses.restOperation());
+            clazz.getRange().add(OTRestClasses.restTemplate());
             ms_uri = clazz;
         }
         return ms_uri;

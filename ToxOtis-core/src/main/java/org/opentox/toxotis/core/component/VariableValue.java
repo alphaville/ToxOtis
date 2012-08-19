@@ -90,7 +90,7 @@ public class VariableValue<T> extends OTComponent<VariableValue<T>> {
 
     @Override
     public Individual asIndividual(OntModel model) {
-        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.VariableValue().inModel(model));
+        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.variableValue().inModel(model));
         if (getMeta() != null) {
             getMeta().attachTo(indiv, model);
         }

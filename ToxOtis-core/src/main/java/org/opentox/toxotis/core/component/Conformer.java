@@ -73,7 +73,7 @@ public class Conformer extends Compound {
     @Override
     public Individual asIndividual(OntModel model) {
         String conformerUri = getUri() != null ? getUri().getStringNoQuery() : null;
-        Individual indiv = model.createIndividual(conformerUri, OTClasses.Conformer().inModel(model));
+        Individual indiv = model.createIndividual(conformerUri, OTClasses.conformer().inModel(model));
         return indiv;
     }
 

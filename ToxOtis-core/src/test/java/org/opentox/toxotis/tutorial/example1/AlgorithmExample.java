@@ -67,7 +67,7 @@ public class AlgorithmExample {
         /*
          * Provide some ontological class specifications for this algorithm entity
          */
-        algorithm.addOntologicalClasses(EagerLearning(), Regression());
+        algorithm.addOntologicalClasses(eagerLearning(), regression());
 
         /*
          * Some meta-information regarding the algorithm

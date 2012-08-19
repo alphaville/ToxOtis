@@ -30,8 +30,7 @@
  * tel. +30 210 7723236
  *
  */
-
-package org.opentox.toxotis.ontology.collection;
+package org.opentox.toxotis.util.aa;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,40 +41,27 @@ import static org.junit.Assert.*;
  *
  * @author chung
  */
-public class OTClassesTest {
+public class Base64Test {
     
-    public OTClassesTest() {
+    public Base64Test() {
     }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
-
+    
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-
+    
     @Test
-    public void testOtClasses() {
-        assertNotNull(OTClasses.forName("Algorithm"));
-        assertNotNull(OTClasses.compound());
-        assertNotNull(OTClasses.conformer());
-        assertNotNull(OTClasses.dataEntry());
-        assertNotNull(OTClasses.dataset());
-        assertNotNull(OTClasses.errorReport());
-        assertNotNull(OTClasses.featureValueNumeric());
-        assertNotNull(OTClasses.feature());
-        assertNotNull(OTClasses.featureValue());
-        assertNotNull(OTClasses.featureValueNominal());
-        assertNotNull(OTClasses.featureValuePair());
-        assertEquals(OTClasses.forName("Parameter"), OTClasses.parameter());
-        assertEquals(OTClasses.forName("VariableInfo"), OTClasses.variableInfo());
-        assertTrue(OTClasses.getAll().contains(OTClasses.forName("FeatureValueNumeric")));
-        assertTrue(OTClasses.getAll().contains(OTClasses.feature()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.multiParameter()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.model()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.openToxResource()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.qprfReport()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.report()));
+    public void testEncodeDecode() {
+        for (int i = 0; i < 126; i++) {
+            String initial = new String(new byte[]{(byte) i});
+            String encoded = Base64.encodeString(initial);
+            String decoded = Base64.decodeString(encoded);
+            assertEquals(decoded, initial);
+        }
+        
     }
 }

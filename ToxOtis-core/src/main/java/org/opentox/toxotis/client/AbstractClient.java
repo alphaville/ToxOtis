@@ -87,7 +87,6 @@ public abstract class AbstractClient implements IClient {
     public void setConnection(HttpURLConnection con) {
         this.con = con;
     }
-    
 
     @Override
     public WriteLock getConnectionLock() {

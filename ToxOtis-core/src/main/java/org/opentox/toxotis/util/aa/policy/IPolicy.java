@@ -32,9 +32,6 @@
  */
 package org.opentox.toxotis.util.aa.policy;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 /**
  *
  * @author Pantelis Sopasakis
@@ -42,21 +39,65 @@ import org.w3c.dom.Element;
  */
 public interface IPolicy extends IPolicyWrapper {
 
+    /**
+     * Add a rule to the current policy.
+     * @param rule 
+     *      A new policy rule to be added.
+     * @see IPolicyRule
+     * @see IPolicyWrapper
+     */
     void addRule(IPolicyRule rule);
 
+    /**
+     * Add a new Policy Subject.
+     * @param subject 
+     *      The new policy subject to be added
+     * @see PolicySubject
+     * @see SingleSubject
+     * @see GroupSubject
+     */
     void addSubject(PolicySubject subject);
 
+    /**
+     * The name of the policy.
+     * @return 
+     *      Policy name as a String.
+     */
     String getPolicyName();
 
+    /**
+     * The name of the collection of subjects.
+     * @return 
+     *      Subjects' collection name.
+     */
     String getSubjectsCollectionName();
 
+    /**
+     * Description of the subject.
+     * @return 
+     *      Description of the subject as a String.
+     */
     String getSubjectsDescription();
 
+    /**
+     * Specify the policy name,
+     * @param policyName 
+     *      A name/title for your policy.
+     */
     void setPolicyName(String policyName);
 
+    /**
+     * Specify the name of the collection of subjects in the policy.
+     * @param subjectsCollectionName 
+     *      Name of subjects' collection.
+     */
     void setSubjectsCollectionName(String subjectsCollectionName);
 
+    /**
+     * Provide some description for the subjects.
+     * @param subjectsDescription 
+     *      Description of subjects.
+     */
     void setSubjectsDescription(String subjectsDescription);
 
-    //Element xmlElement(Document doc, Element policies);
 }

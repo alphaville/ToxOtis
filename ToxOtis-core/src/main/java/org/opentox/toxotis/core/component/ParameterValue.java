@@ -89,7 +89,7 @@ public class ParameterValue extends OTComponent<ParameterValue> {  // ot:Paramet
 
     @Override
     public Individual asIndividual(OntModel model) {
-        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.ParameterValue().inModel(model));
+        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.parameterValue().inModel(model));
         if (getMeta() != null) {
             getMeta().attachTo(indiv, model);
         }

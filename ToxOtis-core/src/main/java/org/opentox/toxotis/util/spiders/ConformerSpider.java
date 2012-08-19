@@ -102,7 +102,7 @@ public class ConformerSpider extends Tarantula<Conformer> {
         StmtIterator itCompound = model.listStatements(
                 new SimpleSelector(null,
                 RDF.type,
-                OTClasses.Conformer().inModel(model)));
+                OTClasses.conformer().inModel(model)));
 
         if (itCompound.hasNext()) {
             Statement stmt = itCompound.nextStatement();

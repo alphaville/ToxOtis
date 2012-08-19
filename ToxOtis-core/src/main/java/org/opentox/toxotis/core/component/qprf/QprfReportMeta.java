@@ -58,36 +58,36 @@ public class QprfReportMeta implements Serializable {
     /**
      * Comment on the predicted value
      */
-    private String sec_3_2_e;
+    private String section32e;
     /**
      * Comment on the uncertainty of the prediction
      */
-    private String sec_3_4;
+    private String section34;
     /**
      * The chemical and biological mechanisms according to the model
      * underpinning the predicted result (OECD principle 5)
      */
-    private String sec_3_5;
+    private String section35;
     /**
      * Considerations on structural analogues
      */
-    private String sec_3_3_c;
+    private String section33c;
     /**
      * Regulatory purpose
      */
-    private String sec_4_1;
+    private String section41;
     /**
      * Regulatory interpretation
      */
-    private String sec_4_2;
+    private String section42;
     /**
      * Outcome
      */
-    private String sec_4_3;
+    private String section43;
     /**
      * Conclusion
      */
-    private String sec_4_4;
+    private String section44;
     private String metabolicDomain;
     private String structuralDomain;
     private String descriptorDomain;
@@ -117,80 +117,80 @@ public class QprfReportMeta implements Serializable {
         return QMRFReportDiscussion;
     }
 
-    public QprfReportMeta setQMRFReportDiscussion(String QMRFReportDiscussion) {
-        this.QMRFReportDiscussion = QMRFReportDiscussion;
+    public QprfReportMeta setQMRFReportDiscussion(String qmrfReportDiscussion) {
+        this.QMRFReportDiscussion = qmrfReportDiscussion;
         return this;
     }
 
-    public String getSec_3_2_e() {
-        return sec_3_2_e;
+    public String getSec32e() {
+        return section32e;
     }
 
-    public QprfReportMeta setSec_3_2_e(String sec_3_2_e) {
-        this.sec_3_2_e = sec_3_2_e;
+    public QprfReportMeta setSec32e(String sec32e) {
+        this.section32e = sec32e;
         return this;
     }
 
-    public String getSec_3_3_c() {
-        return sec_3_3_c;
+    public String getSec33c() {
+        return section33c;
     }
 
-    public QprfReportMeta setSec_3_3_c(String sec_3_3_c) {
-        this.sec_3_3_c = sec_3_3_c;
+    public QprfReportMeta setSec33c(String sec33c) {
+        this.section33c = sec33c;
         return this;
     }
 
-    public String getSec_3_4() {
-        return sec_3_4;
+    public String getSec34() {
+        return section34;
     }
 
-    public QprfReportMeta setSec_3_4(String sec_3_4) {
-        this.sec_3_4 = sec_3_4;
+    public QprfReportMeta setSec34(String sec34) {
+        this.section34 = sec34;
         return this;
     }
 
-    public String getSec_3_5() {
-        return sec_3_5;
+    public String getSec35() {
+        return section35;
     }
 
-    public QprfReportMeta setSec_3_5(String sec_3_5) {
-        this.sec_3_5 = sec_3_5;
+    public QprfReportMeta setSec35(String sec35) {
+        this.section35 = sec35;
         return this;
     }
 
-    public String getSec_4_1() {
-        return sec_4_1;
+    public String getSec41() {
+        return section41;
     }
 
-    public QprfReportMeta setSec_4_1(String sec_4_1) {
-        this.sec_4_1 = sec_4_1;
+    public QprfReportMeta setSec41(String sec41) {
+        this.section41 = sec41;
         return this;
     }
 
-    public String getSec_4_2() {
-        return sec_4_2;
+    public String getSec42() {
+        return section42;
     }
 
-    public QprfReportMeta setSec_4_2(String sec_4_2) {
-        this.sec_4_2 = sec_4_2;
+    public QprfReportMeta setSec42(String sec42) {
+        this.section42 = sec42;
         return this;
     }
 
-    public String getSec_4_3() {
-        return sec_4_3;
+    public String getSec43() {
+        return section43;
     }
 
-    public QprfReportMeta setSec_4_3(String sec_4_3) {
-        this.sec_4_3 = sec_4_3;
+    public QprfReportMeta setSec43(String sec43) {
+        this.section43 = sec43;
         return this;
     }
 
-    public String getSec_4_4() {
-        return sec_4_4;
+    public String getSec44() {
+        return section44;
     }
 
-    public QprfReportMeta setSec_4_4(String sec_4_4) {
-        this.sec_4_4 = sec_4_4;
+    public QprfReportMeta setSec44(String sec44) {
+        this.section44 = sec44;
         return this;
     }
 

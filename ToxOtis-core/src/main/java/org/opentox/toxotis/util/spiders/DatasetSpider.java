@@ -128,10 +128,10 @@ public class DatasetSpider extends Tarantula<Dataset> {
          * to have explicit declarations of ot:Feature, ot:NominalFeautre, ot:NumericFeature 
          * and ot:StringFeature
          */
-        OTClasses.Feature().inModel(model);
-        OTClasses.NominalFeature().inModel(model);
-        OTClasses.NumericFeature().inModel(model);
-        OTClasses.StringFeature().inModel(model);
+        OTClasses.feature().inModel(model);
+        OTClasses.nominalFeature().inModel(model);
+        OTClasses.numericFeature().inModel(model);
+        OTClasses.stringFeature().inModel(model);
         /** END **
          */
         dataset.setMeta(new MetaInfoSpider(resource, model).parse());

@@ -56,17 +56,17 @@ public final class OTRestClasses {
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
     private static OntologicalClass msHTTPMethod;
     private static OntologicalClass msHTTPStatus;
-    private static OntologicalClass msSTATUS_200;
-    private static OntologicalClass msSTATUS_201;
-    private static OntologicalClass msSTATUS_202;
-    private static OntologicalClass msSTATUS_303;
-    private static OntologicalClass msSTATUS_400;
-    private static OntologicalClass msSTATUS_401;
-    private static OntologicalClass msSTATUS_403;
-    private static OntologicalClass msSTATUS_404;
-    private static OntologicalClass msSTATUS_500;
-    private static OntologicalClass msSTATUS_502;
-    private static OntologicalClass msSTATUS_503;
+    private static OntologicalClass msSTATUS200;
+    private static OntologicalClass msSTATUS201;
+    private static OntologicalClass msSTATUS202;
+    private static OntologicalClass msSTATUS303;
+    private static OntologicalClass msSTATUS400;
+    private static OntologicalClass msSTATUS401;
+    private static OntologicalClass msSTATUS403;
+    private static OntologicalClass msSTATUS404;
+    private static OntologicalClass msSTATUS500;
+    private static OntologicalClass msSTATUS502;
+    private static OntologicalClass msSTATUS503;
     private static OntologicalClass msInputParameter;
     private static OntologicalClass msInputParameterOpenTox;
     private static OntologicalClass msInputParameterSimple;
@@ -79,47 +79,47 @@ public final class OTRestClasses {
     private static OntologicalClass msHeader;
     private static OntologicalClass msAA;
     private static OntologicalClass msMediaType;
-    private static OntologicalClass msmime_chemical_inchi;
-    private static OntologicalClass msmime_chemical_mol;
-    private static OntologicalClass msmime_chemical_sdf;
-    private static OntologicalClass msmime_chemical_smiles;
-    private static OntologicalClass msmime_json;
-    private static OntologicalClass msmime_rdf_json;
-    private static OntologicalClass msmime_rdf_n3;
-    private static OntologicalClass msmime_rdf_turtle;
-    private static OntologicalClass msmime_rdf_xml;
-    private static OntologicalClass msmime_text_csv;
-    private static OntologicalClass msmime_text_html;
-    private static OntologicalClass msmime_text_plain;
-    private static OntologicalClass msmime_text_uri_list;
-    private static OntologicalClass msmime_weka_arff;
+    private static OntologicalClass msMimeChemicalInchi;
+    private static OntologicalClass msMimeChemicalMol;
+    private static OntologicalClass msMimeChemicalSdf;
+    private static OntologicalClass msMimeChemicalSmiles;
+    private static OntologicalClass msMimeJson;
+    private static OntologicalClass msMimeRdfJson;
+    private static OntologicalClass msMimeRdfN3;
+    private static OntologicalClass msMimeRdfTurtle;
+    private static OntologicalClass msMimeRdfXml;
+    private static OntologicalClass msMimeTextCsv;
+    private static OntologicalClass msmimeTextHtml;
+    private static OntologicalClass msMimeTextPlain;
+    private static OntologicalClass msmimeTextUriList;
+    private static OntologicalClass msmimeWekaArff;
     private static OntologicalClass msRESTOperation;
     private static OntologicalClass msURLParameter;
-    private static OntologicalClass msDELETE_Operation;
-    private static OntologicalClass msDELETE_Feature;
-    private static OntologicalClass msDELETE_Model;
-    private static OntologicalClass msDELETE_Task;
-    private static OntologicalClass msGET_Operation;
-    private static OntologicalClass msGET_Algorithm;
-    private static OntologicalClass msGET_Algorithms;
-    private static OntologicalClass msGET_Feature;
-    private static OntologicalClass msGET_Features;
-    private static OntologicalClass msGET_Model;
-    private static OntologicalClass msGET_Models;
-    private static OntologicalClass msGET_Task;
-    private static OntologicalClass msGET_Tasks;
+    private static OntologicalClass msDELETEOperation;
+    private static OntologicalClass msDELETEFeature;
+    private static OntologicalClass msDELETEModel;
+    private static OntologicalClass msDELETETask;
+    private static OntologicalClass msGETOperation;
+    private static OntologicalClass msGETAlgorithm;
+    private static OntologicalClass msGETAlgorithms;
+    private static OntologicalClass msGETFeature;
+    private static OntologicalClass msGETFeatures;
+    private static OntologicalClass msGETModel;
+    private static OntologicalClass msGETModels;
+    private static OntologicalClass msGETTask;
+    private static OntologicalClass msGETTasks;
     private static OntologicalClass msOperationAlgorithm;
-    private static OntologicalClass msPOST_AlgorithmCreateModel;
-    private static OntologicalClass msPOST_AlgorithmProcessCompound;
-    private static OntologicalClass msPOST_AlgorithmProcessDataset;
+    private static OntologicalClass msPOSTAlgorithmCreateModel;
+    private static OntologicalClass msPOSTAlgorithmProcessCompound;
+    private static OntologicalClass msPOSTAlgorithmProcessDataset;
     private static OntologicalClass msOperationFeature;
-    private static OntologicalClass msPOST_Feature;
-    private static OntologicalClass msPUT_Feature;
+    private static OntologicalClass msPOSTFeature;
+    private static OntologicalClass msPUTFeature;
     private static OntologicalClass msOperationInputCompound;
     private static OntologicalClass msOperationInputDataset;
     private static OntologicalClass msOperationInputFeature;
     private static OntologicalClass msOperationModel;
-    private static OntologicalClass msPOST_Model;
+    private static OntologicalClass msPOSTModel;
     private static OntologicalClass msOperationNoResult;
     private static OntologicalClass msOperationResultAlgorithm;
     private static OntologicalClass msOperationResultDataset;
@@ -127,8 +127,8 @@ public final class OTRestClasses {
     private static OntologicalClass msOperationResultTask;
     private static OntologicalClass msOperationResultFeature;
     private static OntologicalClass msOperationTask;
-    private static OntologicalClass msPOST_Operation;
-    private static OntologicalClass msPUT_Operation;
+    private static OntologicalClass msPOSTOperation;
+    private static OntologicalClass msPUTOperation;
     private static OntologicalClass msSingleResourceOp;
     private static OntologicalClass msRESTTemplate;
     private static OntologicalClass msAlgorithmTemplate;
@@ -143,7 +143,7 @@ public final class OTRestClasses {
      * @return
      *      Universal class <code>owl:Thing</code>.
      */
-    public static OntologicalClass Thing() {
+    public static OntologicalClass thing() {
         if (msThing == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Thing");
             clazz.setNameSpace(OWL.NS);
@@ -155,10 +155,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for an HTTP Method.
      */
-    public static OntologicalClass HTTPMethod() {
+    public static OntologicalClass httpMethod() {
         if (msHTTPMethod == null) {
             OntologicalClass clazz = new OntologicalClassImpl("HTTPMethod", NS);
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(thing());
             msHTTPMethod = clazz;
         }
         return msHTTPMethod;
@@ -167,10 +167,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for an HTTP Status.
      */
-    public static OntologicalClass HTTPStatus() {
+    public static OntologicalClass httpStatus() {
         if (msHTTPStatus == null) {
             OntologicalClass clazz = new OntologicalClassImpl("HTTPStatus", NS);
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(thing());
             msHTTPStatus = clazz;
         }
         return msHTTPStatus;
@@ -179,142 +179,142 @@ public final class OTRestClasses {
     /**
      * Ontological class for the HTTP Status 200.
      */
-    public static OntologicalClass STATUS_200() {
-        if (msSTATUS_200 == null) {
+    public static OntologicalClass status200() {
+        if (msSTATUS200 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_200", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_200 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS200 = clazz;
         }
-        return msSTATUS_200;
+        return msSTATUS200;
     }
 
     /**
      * Ontological class for the HTTP Status 201.
      */
-    public static OntologicalClass STATUS_201() {
-        if (msSTATUS_201 == null) {
+    public static OntologicalClass status201() {
+        if (msSTATUS201 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_201", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_201 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS201 = clazz;
         }
-        return msSTATUS_201;
+        return msSTATUS201;
     }
 
     /**
      * Ontological class for the HTTP Status 202.
      */
-    public static OntologicalClass STATUS_202() {
-        if (msSTATUS_202 == null) {
+    public static OntologicalClass status202() {
+        if (msSTATUS202 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_202", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_202 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS202 = clazz;
         }
-        return msSTATUS_202;
+        return msSTATUS202;
     }
 
     /**
      * Ontological class for the HTTP Status 303.
      */
-    public static OntologicalClass STATUS_303() {
-        if (msSTATUS_303 == null) {
+    public static OntologicalClass status303() {
+        if (msSTATUS303 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_303", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_303 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS303 = clazz;
         }
-        return msSTATUS_303;
+        return msSTATUS303;
     }
 
     /**
      * Ontological class for the HTTP Status 400.
      */
-    public static OntologicalClass STATUS_400() {
-        if (msSTATUS_400 == null) {
+    public static OntologicalClass status400() {
+        if (msSTATUS400 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_400", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_400 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS400 = clazz;
         }
-        return msSTATUS_400;
+        return msSTATUS400;
     }
 
     /**
      * Ontological class for the HTTP Status 401.
      */
-    public static OntologicalClass STATUS_401() {
-        if (msSTATUS_401 == null) {
+    public static OntologicalClass status401() {
+        if (msSTATUS401 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_401", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_401 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS401 = clazz;
         }
-        return msSTATUS_401;
+        return msSTATUS401;
     }
 
     /**
      * Ontological class for the HTTP Status 403.
      */
-    public static OntologicalClass STATUS_403() {
-        if (msSTATUS_403 == null) {
+    public static OntologicalClass status403() {
+        if (msSTATUS403 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_403", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_403 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS403 = clazz;
         }
-        return msSTATUS_403;
+        return msSTATUS403;
     }
 
     /**
      * Ontological class for the HTTP Status 404.
      */
-    public static OntologicalClass STATUS_404() {
-        if (msSTATUS_404 == null) {
+    public static OntologicalClass status404() {
+        if (msSTATUS404 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_404", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_404 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS404 = clazz;
         }
-        return msSTATUS_404;
+        return msSTATUS404;
     }
 
     /**
      * Ontological class for the HTTP Status 500.
      */
-    public static OntologicalClass STATUS_500() {
-        if (msSTATUS_500 == null) {
+    public static OntologicalClass status500() {
+        if (msSTATUS500 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_500", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_500 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS500 = clazz;
         }
-        return msSTATUS_500;
+        return msSTATUS500;
     }
 
     /**
      * Ontological class for the HTTP Status 502.
      */
-    public static OntologicalClass STATUS_502() {
-        if (msSTATUS_502 == null) {
+    public static OntologicalClass status502() {
+        if (msSTATUS502 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_502", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_502 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS502 = clazz;
         }
-        return msSTATUS_502;
+        return msSTATUS502;
     }
 
     /**
      * Ontological class for the HTTP Status 503.
      */
-    public static OntologicalClass STATUS_503() {
-        if (msSTATUS_503 == null) {
+    public static OntologicalClass status503() {
+        if (msSTATUS503 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_503", NS);
-            clazz.getSuperClasses().add(HTTPStatus());
-            msSTATUS_503 = clazz;
+            clazz.getSuperClasses().add(httpStatus());
+            msSTATUS503 = clazz;
         }
-        return msSTATUS_503;
+        return msSTATUS503;
     }
 
     /**
      * Ontological class for Input Parameters.
      */
-    public static OntologicalClass InputParameter() {
+    public static OntologicalClass inputParameter() {
         if (msInputParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameter", NS);
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(thing());
             msInputParameter = clazz;
         }
         return msInputParameter;
@@ -323,10 +323,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for OpenTox-style Input Parameters.
      */
-    public static OntologicalClass InputParameterOpenTox() {
+    public static OntologicalClass inputParameterOpenTox() {
         if (msInputParameterOpenTox == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterOpenTox", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(inputParameter());
             msInputParameterOpenTox = clazz;
         }
         return msInputParameterOpenTox;
@@ -335,10 +335,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for single-valued simple Input Parameters.
      */
-    public static OntologicalClass InputParameterSimple() {
+    public static OntologicalClass inputParameterSimple() {
         if (msInputParameterSimple == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterSimple", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(inputParameter());
             msInputParameterSimple = clazz;
         }
         return msInputParameterSimple;
@@ -347,10 +347,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for HTTP Headers.
      */
-    public static OntologicalClass Header() {
+    public static OntologicalClass header() {
         if (msHeader == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Header", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(inputParameter());
             msHeader = clazz;
         }
         return msHeader;
@@ -359,10 +359,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for URL parameters.
      */
-    public static OntologicalClass URLParameter() {
+    public static OntologicalClass urlParameter() {
         if (msURLParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("URLParameter", NS);
-            clazz.getSuperClasses().add(InputParameter());
+            clazz.getSuperClasses().add(inputParameter());
             msURLParameter = clazz;
         }
         return msURLParameter;
@@ -371,7 +371,7 @@ public final class OTRestClasses {
     /**
      * Ontological class for Authentication and Authorization.
      */
-    public static OntologicalClass AA() {
+    public static OntologicalClass aa() {
         if (msAA == null) {
             OntologicalClass clazz = new OntologicalClassImpl("AA", NS) {
 
@@ -379,11 +379,11 @@ public final class OTRestClasses {
                 public OntClass inModel(OntModel model) {
                     OntClass c = super.inModel(model);
                     HasValueRestriction hvr = model.createHasValueRestriction(null, OTRestObjectProperties.inputParam().asObjectProperty(model), c);
-                    hvr.setHasValue(OTRestClasses.Header().inModel(model));
+                    hvr.setHasValue(OTRestClasses.header().inModel(model));
                     return c;
                 }
             };
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(thing());
             msAA = clazz;
         }
         return msAA;
@@ -392,10 +392,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for Input Parameters that admit compound URIs as values.
      */
-    public static OntologicalClass InputParameterCompound() {
+    public static OntologicalClass inputParameterCompound() {
         if (msInputParameterCompound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterCompound", NS);
-            clazz.getSuperClasses().add(InputParameterOpenTox());
+            clazz.getSuperClasses().add(inputParameterOpenTox());
             msInputParameterCompound = clazz;
         }
         return msInputParameterCompound;
@@ -404,10 +404,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for Input Parameters that admit Dataset URIs as values.
      */
-    public static OntologicalClass InputParameterDataset() {
+    public static OntologicalClass inputParameterDataset() {
         if (msInputParameterDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterDataset", NS);
-            clazz.getSuperClasses().add(InputParameterOpenTox());
+            clazz.getSuperClasses().add(inputParameterOpenTox());
             msInputParameterDataset = clazz;
         }
         return msInputParameterDataset;
@@ -417,10 +417,10 @@ public final class OTRestClasses {
      * Ontological class for Input Parameters that admit dataset base URIs as values and
      * serve as dataset service URIs.
      */
-    public static OntologicalClass InputParameterDatasetService() {
+    public static OntologicalClass inputParameterDatasetService() {
         if (msInputParameterDatasetService == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterDatasetService", NS);
-            clazz.getSuperClasses().add(InputParameterOpenTox());
+            clazz.getSuperClasses().add(inputParameterOpenTox());
             msInputParameterDatasetService = clazz;
         }
         return msInputParameterDatasetService;
@@ -429,10 +429,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for Input Parameters that admit feature URIs as values.
      */
-    public static OntologicalClass InputParameterFeature() {
+    public static OntologicalClass inputParameterFeature() {
         if (msInputParameterFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterFeature", NS);
-            clazz.getSuperClasses().add(InputParameterOpenTox());
+            clazz.getSuperClasses().add(inputParameterOpenTox());
             msInputParameterFeature = clazz;
         }
         return msInputParameterFeature;
@@ -441,10 +441,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for Input Parameters that admit (resulting) dataset URIs as values.
      */
-    public static OntologicalClass InputParameterResultDataset() {
+    public static OntologicalClass inputParameterResultDataset() {
         if (msInputParameterResultDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterResultDataset", NS);
-            clazz.getSuperClasses().add(InputParameterOpenTox());
+            clazz.getSuperClasses().add(inputParameterOpenTox());
             msInputParameterResultDataset = clazz;
         }
         return msInputParameterResultDataset;
@@ -453,10 +453,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for Input Parameters that admit target URIs as values.
      */
-    public static OntologicalClass InputParameterTarget() {
+    public static OntologicalClass inputParameterTarget() {
         if (msInputParameterTarget == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterTarget", NS);
-            clazz.getSuperClasses().add(InputParameterOpenTox());
+            clazz.getSuperClasses().add(inputParameterOpenTox());
             msInputParameterTarget = clazz;
         }
         return msInputParameterTarget;
@@ -465,10 +465,10 @@ public final class OTRestClasses {
     /**
      * Ontological class for MIME types.
      */
-    public static OntologicalClass MediaType() {
+    public static OntologicalClass mediaType() {
         if (msMediaType == null) {
             OntologicalClass clazz = new OntologicalClassImpl("MediaType", NS);
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(thing());
             msMediaType = clazz;
         }
         return msMediaType;
@@ -477,178 +477,178 @@ public final class OTRestClasses {
     /**
      * Ontological class for the InChI MIME type.
      */
-    public static OntologicalClass mime_chemical_inchi() {
-        if (msmime_chemical_inchi == null) {
+    public static OntologicalClass mimeChemicalInchi() {
+        if (msMimeChemicalInchi == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_chemical_inchi", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_chemical_inchi = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeChemicalInchi = clazz;
         }
-        return msmime_chemical_inchi;
+        return msMimeChemicalInchi;
     }
 
     /**
      * Ontological class for the chemical/MOL MIME type.
      */
-    public static OntologicalClass mime_chemical_mol() {
-        if (msmime_chemical_mol == null) {
+    public static OntologicalClass mimeChemicalMol() {
+        if (msMimeChemicalMol == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_chemical_mol", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_chemical_mol = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeChemicalMol = clazz;
         }
-        return msmime_chemical_mol;
+        return msMimeChemicalMol;
     }
 
     /**
      * Ontological class for the chemical/SDF MIME type.
      */
-    public static OntologicalClass mime_chemical_sdf() {
-        if (msmime_chemical_sdf == null) {
+    public static OntologicalClass mimeChemicalSdf() {
+        if (msMimeChemicalSdf == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_chemical_sdf", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_chemical_sdf = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeChemicalSdf = clazz;
         }
-        return msmime_chemical_sdf;
+        return msMimeChemicalSdf;
     }
 
     /**
      * Ontological class for the chemical/SMILES MIME type.
      */
-    public static OntologicalClass mime_chemical_smiles() {
-        if (msmime_chemical_smiles == null) {
+    public static OntologicalClass mimeChemicalSmiles() {
+        if (msMimeChemicalSmiles == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_chemical_smiles", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_chemical_smiles = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeChemicalSmiles = clazz;
         }
-        return msmime_chemical_smiles;
+        return msMimeChemicalSmiles;
     }
 
     /**
      * Ontological class for the JSON MIME type.
      */
-    public static OntologicalClass mime_json() {
-        if (msmime_json == null) {
+    public static OntologicalClass mimeJson() {
+        if (msMimeJson == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_json", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_json = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeJson = clazz;
         }
-        return msmime_json;
+        return msMimeJson;
     }
 
     /**
      * Ontological class for the RDF/JSON MIME type.
      */
-    public static OntologicalClass mime_rdf_json() {
-        if (msmime_rdf_json == null) {
+    public static OntologicalClass mimeRdfJson() {
+        if (msMimeRdfJson == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_rdf_json", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_rdf_json = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeRdfJson = clazz;
         }
-        return msmime_rdf_json;
+        return msMimeRdfJson;
     }
 
     /**
      * Ontological class for the RDF/N3 MIME type.
      */
-    public static OntologicalClass mime_rdf_n3() {
-        if (msmime_rdf_n3 == null) {
+    public static OntologicalClass mimeRdfN3() {
+        if (msMimeRdfN3 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_rdf_n3", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_rdf_n3 = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeRdfN3 = clazz;
         }
-        return msmime_rdf_n3;
+        return msMimeRdfN3;
     }
 
     /**
      * Ontological class for the RDF/Turtle MIME type.
      */
-    public static OntologicalClass mime_rdf_turtle() {
-        if (msmime_rdf_turtle == null) {
+    public static OntologicalClass mimeRdfTurtle() {
+        if (msMimeRdfTurtle == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_rdf_turtle", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_rdf_turtle = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeRdfTurtle = clazz;
         }
-        return msmime_rdf_turtle;
+        return msMimeRdfTurtle;
     }
 
     /**
      * Ontological class for the RDF/XML MIME type.
      */
-    public static OntologicalClass mime_rdf_xml() {
-        if (msmime_rdf_xml == null) {
+    public static OntologicalClass mimeRdfXml() {
+        if (msMimeRdfXml == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_rdf_xml", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_rdf_xml = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeRdfXml = clazz;
         }
-        return msmime_rdf_xml;
+        return msMimeRdfXml;
     }
 
     /**
      * Ontological class for the text/CSV MIME type.
      */
-    public static OntologicalClass mime_text_csv() {
-        if (msmime_text_csv == null) {
+    public static OntologicalClass mimeTextCsv() {
+        if (msMimeTextCsv == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_text_csv", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_text_csv = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeTextCsv = clazz;
         }
-        return msmime_text_csv;
+        return msMimeTextCsv;
     }
 
     /**
      * Ontological class for the text/HTML MIME type.
      */
-    public static OntologicalClass mime_text_html() {
-        if (msmime_text_html == null) {
+    public static OntologicalClass mimeTextHtml() {
+        if (msmimeTextHtml == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_text_html", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_text_html = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msmimeTextHtml = clazz;
         }
-        return msmime_text_html;
+        return msmimeTextHtml;
     }
 
     /**
      * Ontological class for the plain-text MIME type.
      */
-    public static OntologicalClass mime_text_plain() {
-        if (msmime_text_plain == null) {
+    public static OntologicalClass mimeTextPlain() {
+        if (msMimeTextPlain == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_text_plain", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_text_plain = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msMimeTextPlain = clazz;
         }
-        return msmime_text_plain;
+        return msMimeTextPlain;
     }
 
     /**
      * Ontological class for the text/URI-list MIME type.
      */
-    public static OntologicalClass mime_text_uri_list() {
-        if (msmime_text_uri_list == null) {
+    public static OntologicalClass mimeTextUriList() {
+        if (msmimeTextUriList == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_text_uri_list", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_text_uri_list = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msmimeTextUriList = clazz;
         }
-        return msmime_text_uri_list;
+        return msmimeTextUriList;
     }
 
     /**
      * Ontological class for the Weka ARFF MIME type.
      */
-    public static OntologicalClass mime_weka_arff() {
-        if (msmime_weka_arff == null) {
+    public static OntologicalClass mimeWekaArff() {
+        if (msmimeWekaArff == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_weka_arff", NS);
-            clazz.getSuperClasses().add(MediaType());
-            msmime_weka_arff = clazz;
+            clazz.getSuperClasses().add(mediaType());
+            msmimeWekaArff = clazz;
         }
-        return msmime_weka_arff;
+        return msmimeWekaArff;
     }
 
     /**
      * Ontological class for REST operations (using HTTP methods).
      */
-    public static OntologicalClass RESTOperation() {
+    public static OntologicalClass restOperation() {
         if (msRESTOperation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("RESTOperation", NS);
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(thing());
             msRESTOperation = clazz;
         }
         return msRESTOperation;
@@ -657,34 +657,34 @@ public final class OTRestClasses {
     /**
      * Ontological class for the DELETE REST operation.
      */
-    public static OntologicalClass DELETE_Operation() {
-        if (msDELETE_Operation == null) {
+    public static OntologicalClass deleteOperation() {
+        if (msDELETEOperation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DELETE_Operation", NS);
-            clazz.getSuperClasses().add(RESTOperation());
-            msDELETE_Operation = clazz;
+            clazz.getSuperClasses().add(restOperation());
+            msDELETEOperation = clazz;
         }
-        return msDELETE_Operation;
+        return msDELETEOperation;
     }
 
     /**
      * Ontological class for the GET REST operation.
      */
-    public static OntologicalClass GET_Operation() {
-        if (msGET_Operation == null) {
+    public static OntologicalClass getOperation() {
+        if (msGETOperation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Operation", NS);
-            clazz.getSuperClasses().add(RESTOperation());
-            msGET_Operation = clazz;
+            clazz.getSuperClasses().add(restOperation());
+            msGETOperation = clazz;
         }
-        return msGET_Operation;
+        return msGETOperation;
     }
 
     /**
      * An operation on an algorithm.
      */
-    public static OntologicalClass OperationAlgorithm() {
+    public static OntologicalClass operationAlgorithm() {
         if (msOperationAlgorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationAlgorithm", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationAlgorithm = clazz;
         }
         return msOperationAlgorithm;
@@ -693,10 +693,10 @@ public final class OTRestClasses {
     /**
      * An operation on a feature.
      */
-    public static OntologicalClass OperationFeature() {
+    public static OntologicalClass operationFeature() {
         if (msOperationFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationFeature", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationFeature = clazz;
         }
         return msOperationFeature;
@@ -705,10 +705,10 @@ public final class OTRestClasses {
     /**
      * An operation that requires compounds as input.
      */
-    public static OntologicalClass OperationInputCompound() {
+    public static OntologicalClass operationInputCompound() {
         if (msOperationInputCompound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationInputCompound", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationInputCompound = clazz;
         }
         return msOperationInputCompound;
@@ -717,10 +717,10 @@ public final class OTRestClasses {
     /**
      * An operation that requires datasets as input.
      */
-    public static OntologicalClass OperationInputDataset() {
+    public static OntologicalClass operationInputDataset() {
         if (msOperationInputDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationInputDataset", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationInputDataset = clazz;
         }
         return msOperationInputDataset;
@@ -730,10 +730,10 @@ public final class OTRestClasses {
      * An operation that processes features or in any other way uses 
      * features as input.
      */
-    public static OntologicalClass OperationInputFeature() {
+    public static OntologicalClass operationInputFeature() {
         if (msOperationInputFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationInputFeature", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationInputFeature = clazz;
         }
         return msOperationAlgorithm;
@@ -742,10 +742,10 @@ public final class OTRestClasses {
     /**
      * Any operation on a Model.
      */
-    public static OntologicalClass OperationModel() {
+    public static OntologicalClass operationModel() {
         if (msOperationModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationModel", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationModel = clazz;
         }
         return msOperationModel;
@@ -755,10 +755,10 @@ public final class OTRestClasses {
      * An operation that does not necessarily return some response such
      * as a DELETE operation.
      */
-    public static OntologicalClass OperationNoResult() {
+    public static OntologicalClass operationNoResult() {
         if (msOperationNoResult == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationNoResult", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationNoResult = clazz;
         }
         return msOperationNoResult;
@@ -767,10 +767,10 @@ public final class OTRestClasses {
     /**
      * An operation that results in an algorithm that is returned to the client.
      */
-    public static OntologicalClass OperationResultAlgorithm() {
+    public static OntologicalClass operationResultAlgorithm() {
         if (msOperationResultAlgorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultAlgorithm", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationResultAlgorithm = clazz;
         }
         return msOperationResultAlgorithm;
@@ -779,10 +779,10 @@ public final class OTRestClasses {
     /**
      * An operation that results in a dataset being created.
      */
-    public static OntologicalClass OperationResultDataset() {
+    public static OntologicalClass operationResultDataset() {
         if (msOperationResultDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultDataset", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationResultDataset = clazz;
         }
         return msOperationResultDataset;
@@ -791,10 +791,10 @@ public final class OTRestClasses {
     /**
      * An operation that results in a model being created.
      */
-    public static OntologicalClass OperationResultModel() {
+    public static OntologicalClass operationResultModel() {
         if (msOperationResultModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultModel", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationResultModel = clazz;
         }
         return msOperationResultModel;
@@ -803,10 +803,10 @@ public final class OTRestClasses {
     /**
      * An operation that results in a task being created.
      */
-    public static OntologicalClass OperationResultTask() {
+    public static OntologicalClass operationResultTask() {
         if (msOperationResultTask == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultTask", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationResultTask = clazz;
         }
         return msOperationResultTask;
@@ -815,10 +815,10 @@ public final class OTRestClasses {
     /**
      * An operation that results in a feature being created.
      */
-    public static OntologicalClass OperationResultFeature() {
+    public static OntologicalClass operationResultFeature() {
         if (msOperationResultFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultFeature", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationResultFeature = clazz;
         }
         return msOperationResultFeature;
@@ -828,10 +828,10 @@ public final class OTRestClasses {
      * An operation on a Task resource.
      * @return 
      */
-    public static OntologicalClass OperationTask() {
+    public static OntologicalClass operationTask() {
         if (msOperationTask == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationTask", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msOperationTask = clazz;
         }
         return msOperationTask;
@@ -840,34 +840,34 @@ public final class OTRestClasses {
     /**
      * Ontological class for the POST REST operation.
      */
-    public static OntologicalClass POST_Operation() {
-        if (msPOST_Operation == null) {
+    public static OntologicalClass postOperation() {
+        if (msPOSTOperation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_Operation", NS);
-            clazz.getSuperClasses().add(RESTOperation());
-            msPOST_Operation = clazz;
+            clazz.getSuperClasses().add(restOperation());
+            msPOSTOperation = clazz;
         }
-        return msPOST_Operation;
+        return msPOSTOperation;
     }
 
     /**
      * Ontological class for the PUT REST operation.
      */
-    public static OntologicalClass PUT_Operation() {
-        if (msPUT_Operation == null) {
+    public static OntologicalClass putOperation() {
+        if (msPUTOperation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("PUT_Operation", NS);
-            clazz.getSuperClasses().add(RESTOperation());
-            msPUT_Operation = clazz;
+            clazz.getSuperClasses().add(restOperation());
+            msPUTOperation = clazz;
         }
-        return msPUT_Operation;
+        return msPUTOperation;
     }
 
     /**
      * A simple single-resource operation.
      */
-    public static OntologicalClass SingleResourceOp() {
+    public static OntologicalClass singleResourceOperation() {
         if (msSingleResourceOp == null) {
             OntologicalClass clazz = new OntologicalClassImpl("SingleResourceOp", NS);
-            clazz.getSuperClasses().add(RESTOperation());
+            clazz.getSuperClasses().add(restOperation());
             msSingleResourceOp = clazz;
         }
         return msSingleResourceOp;
@@ -876,259 +876,259 @@ public final class OTRestClasses {
     /**
      * Ontological class for and operation that deletes a feature.
      */
-    public static OntologicalClass DELETE_Feature() {
-        if (msDELETE_Feature == null) {
+    public static OntologicalClass deleteFeature() {
+        if (msDELETEFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DELETE_Feature", NS);
-            clazz.getSuperClasses().add(OperationFeature());
-            clazz.getSuperClasses().add(DELETE_Operation());
-            msDELETE_Feature = clazz;
+            clazz.getSuperClasses().add(operationFeature());
+            clazz.getSuperClasses().add(deleteOperation());
+            msDELETEFeature = clazz;
         }
-        return msDELETE_Feature;
+        return msDELETEFeature;
     }
 
     /**
      * Ontological class for and operation that deletes a model.
      */
-    public static OntologicalClass DELETE_Model() {
-        if (msDELETE_Model == null) {
+    public static OntologicalClass deleteModel() {
+        if (msDELETEModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DELETE_Model", NS);
-            clazz.getSuperClasses().add(OperationModel());
-            clazz.getSuperClasses().add(DELETE_Operation());
-            msDELETE_Model = clazz;
+            clazz.getSuperClasses().add(operationModel());
+            clazz.getSuperClasses().add(deleteOperation());
+            msDELETEModel = clazz;
         }
-        return msDELETE_Model;
+        return msDELETEModel;
     }
 
     /**
      * Ontological class for and operation that deletes/cancels a task.
      */
-    public static OntologicalClass DELETE_Task() {
-        if (msDELETE_Task == null) {
+    public static OntologicalClass deleteTask() {
+        if (msDELETETask == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DELETE_Task", NS);
-            clazz.getSuperClasses().add(OperationTask());
-            clazz.getSuperClasses().add(DELETE_Operation());
-            msDELETE_Task = clazz;
+            clazz.getSuperClasses().add(operationTask());
+            clazz.getSuperClasses().add(deleteOperation());
+            msDELETETask = clazz;
         }
-        return msDELETE_Task;
+        return msDELETETask;
     }
 
     /**
      * Ontological class for and operation that retrieves meta-data about an algorithm.
      */
-    public static OntologicalClass GET_Algorithm() {
-        if (msGET_Algorithm == null) {
+    public static OntologicalClass getAlgorithm() {
+        if (msGETAlgorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Algorithm", NS);
-            clazz.getSuperClasses().add(OperationAlgorithm());
-            clazz.getSuperClasses().add(GET_Operation());
-            clazz.getSuperClasses().add(OperationResultAlgorithm());
-            clazz.getSuperClasses().add(SingleResourceOp());
-            msGET_Algorithm = clazz;
+            clazz.getSuperClasses().add(operationAlgorithm());
+            clazz.getSuperClasses().add(getOperation());
+            clazz.getSuperClasses().add(operationResultAlgorithm());
+            clazz.getSuperClasses().add(singleResourceOperation());
+            msGETAlgorithm = clazz;
         }
-        return msGET_Algorithm;
+        return msGETAlgorithm;
     }
 
     /**
      * Ontological class for and operation that retrieves a list
      * of algorithms.
      */
-    public static OntologicalClass GET_Algorithms() {
-        if (msGET_Algorithms == null) {
+    public static OntologicalClass getAlgorithms() {
+        if (msGETAlgorithms == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Algorithm", NS);
-            clazz.getSuperClasses().add(OperationAlgorithm());
-            clazz.getSuperClasses().add(GET_Operation());
-            clazz.getSuperClasses().add(OperationResultAlgorithm());
-            msGET_Algorithms = clazz;
+            clazz.getSuperClasses().add(operationAlgorithm());
+            clazz.getSuperClasses().add(getOperation());
+            clazz.getSuperClasses().add(operationResultAlgorithm());
+            msGETAlgorithms = clazz;
         }
-        return msGET_Algorithms;
+        return msGETAlgorithms;
     }
 
     /**
      * Ontological class for any operation that retrieves meta-data about a feature.
      */
-    public static OntologicalClass GET_Feature() {
-        if (msGET_Feature == null) {
+    public static OntologicalClass getFeature() {
+        if (msGETFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Feature", NS);
-            clazz.getSuperClasses().add(OperationFeature());
-            clazz.getSuperClasses().add(GET_Operation());
-            clazz.getSuperClasses().add(OperationResultFeature());
-            clazz.getSuperClasses().add(SingleResourceOp());
-            msGET_Feature = clazz;
+            clazz.getSuperClasses().add(operationFeature());
+            clazz.getSuperClasses().add(getOperation());
+            clazz.getSuperClasses().add(operationResultFeature());
+            clazz.getSuperClasses().add(singleResourceOperation());
+            msGETFeature = clazz;
         }
-        return msGET_Feature;
+        return msGETFeature;
     }
 
     /**
      * Ontological class for any operation that retrieves a list
      * of features.
      */
-    public static OntologicalClass GET_Features() {
-        if (msGET_Features == null) {
+    public static OntologicalClass getFeatures() {
+        if (msGETFeatures == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Features", NS);
-            clazz.getSuperClasses().add(OperationFeature());
-            clazz.getSuperClasses().add(GET_Operation());
-            clazz.getSuperClasses().add(OperationResultFeature());
-            msGET_Features = clazz;
+            clazz.getSuperClasses().add(operationFeature());
+            clazz.getSuperClasses().add(getOperation());
+            clazz.getSuperClasses().add(operationResultFeature());
+            msGETFeatures = clazz;
         }
-        return msGET_Features;
+        return msGETFeatures;
     }
 
     /**
      * Ontological class for any operation that retrieves meta-data for
      * an asynchronous task.
      */
-    public static OntologicalClass GET_Task() {
-        if (msGET_Task == null) {
+    public static OntologicalClass getTask() {
+        if (msGETTask == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Task", NS);
-            clazz.getSuperClasses().add(OperationFeature());
-            clazz.getSuperClasses().add(GET_Operation());
-            clazz.getSuperClasses().add(OperationResultTask());
-            clazz.getSuperClasses().add(SingleResourceOp());
-            msGET_Task = clazz;
+            clazz.getSuperClasses().add(operationFeature());
+            clazz.getSuperClasses().add(getOperation());
+            clazz.getSuperClasses().add(operationResultTask());
+            clazz.getSuperClasses().add(singleResourceOperation());
+            msGETTask = clazz;
         }
-        return msGET_Task;
+        return msGETTask;
     }
 
     /**
      * Ontological class for any operation that retrieves a list
      * of tasks.
      */
-    public static OntologicalClass GET_Tasks() {
-        if (msGET_Tasks == null) {
+    public static OntologicalClass getTasks() {
+        if (msGETTasks == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Tasks", NS);
-            clazz.getSuperClasses().add(OperationFeature());
-            clazz.getSuperClasses().add(GET_Operation());
-            clazz.getSuperClasses().add(OperationResultFeature());
-            msGET_Tasks = clazz;
+            clazz.getSuperClasses().add(operationFeature());
+            clazz.getSuperClasses().add(getOperation());
+            clazz.getSuperClasses().add(operationResultFeature());
+            msGETTasks = clazz;
         }
-        return msGET_Tasks;
+        return msGETTasks;
     }
 
     /**
      * Ontological class for a POST operation on an algorithm that
      * creates a model.
      */
-    public static OntologicalClass POST_AlgorithmCreateModel() {
-        if (msPOST_AlgorithmCreateModel == null) {
+    public static OntologicalClass postAlgorithmCreateModel() {
+        if (msPOSTAlgorithmCreateModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmCreateModel", NS);
-            clazz.getSuperClasses().add(OperationResultTask());
-            clazz.getSuperClasses().add(OperationResultModel());
-            clazz.getSuperClasses().add(OperationInputDataset());
-            clazz.getSuperClasses().add(POST_Operation());
-            clazz.getSuperClasses().add(OperationAlgorithm());
-            clazz.getSuperClasses().add(SingleResourceOp());
-            msPOST_AlgorithmCreateModel = clazz;
+            clazz.getSuperClasses().add(operationResultTask());
+            clazz.getSuperClasses().add(operationResultModel());
+            clazz.getSuperClasses().add(operationInputDataset());
+            clazz.getSuperClasses().add(postOperation());
+            clazz.getSuperClasses().add(operationAlgorithm());
+            clazz.getSuperClasses().add(singleResourceOperation());
+            msPOSTAlgorithmCreateModel = clazz;
         }
-        return msPOST_AlgorithmCreateModel;
+        return msPOSTAlgorithmCreateModel;
     }
 
     /**
      * Ontological class for a POST operation on an algorithm that
      * processes a compound.
      */
-    public static OntologicalClass POST_AlgorithmProcessCompound() {
-        if (msPOST_AlgorithmProcessCompound == null) {
+    public static OntologicalClass postAlgorithmProcessCompound() {
+        if (msPOSTAlgorithmProcessCompound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmProcessCompound", NS);
-            clazz.getSuperClasses().add(OperationResultTask());
-            clazz.getSuperClasses().add(OperationResultDataset());
-            clazz.getSuperClasses().add(OperationInputCompound());
-            clazz.getSuperClasses().add(POST_Operation());
-            clazz.getSuperClasses().add(OperationAlgorithm());
-            clazz.getSuperClasses().add(SingleResourceOp());
-            msPOST_AlgorithmProcessCompound = clazz;
+            clazz.getSuperClasses().add(operationResultTask());
+            clazz.getSuperClasses().add(operationResultDataset());
+            clazz.getSuperClasses().add(operationInputCompound());
+            clazz.getSuperClasses().add(postOperation());
+            clazz.getSuperClasses().add(operationAlgorithm());
+            clazz.getSuperClasses().add(singleResourceOperation());
+            msPOSTAlgorithmProcessCompound = clazz;
         }
-        return msPOST_AlgorithmProcessCompound;
+        return msPOSTAlgorithmProcessCompound;
     }
 
     /**
      * Ontological class for a POST operation on an algorithm that
      * (pre)processes a dataset.
      */
-    public static OntologicalClass POST_AlgorithmProcessDataset() {
-        if (msPOST_AlgorithmProcessDataset == null) {
+    public static OntologicalClass postAlgorithmProcessDataset() {
+        if (msPOSTAlgorithmProcessDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmProcessDataset", NS);
-            clazz.getSuperClasses().add(OperationResultTask());
-            clazz.getSuperClasses().add(OperationResultDataset());
-            clazz.getSuperClasses().add(OperationInputCompound());
-            clazz.getSuperClasses().add(POST_Operation());
-            clazz.getSuperClasses().add(OperationAlgorithm());
-            clazz.getSuperClasses().add(SingleResourceOp());
-            msPOST_AlgorithmProcessDataset = clazz;
+            clazz.getSuperClasses().add(operationResultTask());
+            clazz.getSuperClasses().add(operationResultDataset());
+            clazz.getSuperClasses().add(operationInputCompound());
+            clazz.getSuperClasses().add(postOperation());
+            clazz.getSuperClasses().add(operationAlgorithm());
+            clazz.getSuperClasses().add(singleResourceOperation());
+            msPOSTAlgorithmProcessDataset = clazz;
         }
-        return msPOST_AlgorithmProcessDataset;
+        return msPOSTAlgorithmProcessDataset;
     }
 
     /**
      * Ontological class for an POST operation on a feature.
      */
-    public static OntologicalClass POST_Feature() {
-        if (msPOST_Feature == null) {
+    public static OntologicalClass postFeature() {
+        if (msPOSTFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_Feature", NS);
-            clazz.getSuperClasses().add(POST_Operation());
-            clazz.getSuperClasses().add(OperationFeature());
-            msPOST_Feature = clazz;
+            clazz.getSuperClasses().add(postOperation());
+            clazz.getSuperClasses().add(operationFeature());
+            msPOSTFeature = clazz;
         }
-        return msPOST_Feature;
+        return msPOSTFeature;
     }
 
     /**
      * A PUT operation on a feature.
      */
-    public static OntologicalClass PUT_Feature() {
-        if (msPUT_Feature == null) {
+    public static OntologicalClass putFeature() {
+        if (msPUTFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("PUT_Feature", NS);
-            clazz.getSuperClasses().add(PUT_Operation());
-            clazz.getSuperClasses().add(OperationFeature());
-            msPUT_Feature = clazz;
+            clazz.getSuperClasses().add(putOperation());
+            clazz.getSuperClasses().add(operationFeature());
+            msPUTFeature = clazz;
         }
-        return msPUT_Feature;
+        return msPUTFeature;
     }
 
     /**
      * Any GET operation on a model.
      */
-    public static OntologicalClass GET_Model() {
-        if (msGET_Model == null) {
+    public static OntologicalClass getModel() {
+        if (msGETModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Model", NS);
-            clazz.getSuperClasses().add(GET_Operation());
-            clazz.getSuperClasses().add(OperationModel());
-            clazz.getSuperClasses().add(OperationResultModel());
-            clazz.getSuperClasses().add(SingleResourceOp());
-            msGET_Model = clazz;
+            clazz.getSuperClasses().add(getOperation());
+            clazz.getSuperClasses().add(operationModel());
+            clazz.getSuperClasses().add(operationResultModel());
+            clazz.getSuperClasses().add(singleResourceOperation());
+            msGETModel = clazz;
         }
-        return msGET_Model;
+        return msGETModel;
     }
 
     /**
      * Ontological class for any operation that retrieves a list
      * of models.
      */
-    public static OntologicalClass GET_Models() {
-        if (msGET_Models == null) {
+    public static OntologicalClass getModels() {
+        if (msGETModels == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Models", NS) {
 
                 @Override
                 public OntClass inModel(OntModel model) {
                     OntClass c = super.inModel(model);
                     HasValueRestriction hvr = model.createHasValueRestriction(null, OTRestObjectProperties.result().asObjectProperty(model), c);
-                    hvr.setHasValue(OTClasses.Model().inModel(model));
+                    hvr.setHasValue(OTClasses.model().inModel(model));
                     return c;
                 }
             };
-            clazz.getSuperClasses().add(GET_Operation());
-            clazz.getSuperClasses().add(OperationModel());
-            clazz.getSuperClasses().add(OperationResultModel());
-            msGET_Models = clazz;
+            clazz.getSuperClasses().add(getOperation());
+            clazz.getSuperClasses().add(operationModel());
+            clazz.getSuperClasses().add(operationResultModel());
+            msGETModels = clazz;
         }
-        return msGET_Models;
+        return msGETModels;
     }
 
     /**
      * An OpenTox APIv1.2-compliant URI-template.
      */
-    public static OntologicalClass RESTTemplate() {
+    public static OntologicalClass restTemplate() {
         if (msRESTTemplate == null) {
             OntologicalClass clazz = new OntologicalClassImpl("RESTTemplate", NS);
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(thing());
             msRESTTemplate = clazz;
         }
         return msRESTTemplate;
@@ -1137,19 +1137,19 @@ public final class OTRestClasses {
     /**
      * An OpenTox APIv1.2-compliant URI-template for algorithms.
      */
-    public static OntologicalClass AlgorithmTemplate() {
+    public static OntologicalClass algorithmTemplate() {
         if (msAlgorithmTemplate == null) {
             OntologicalClass clazz = new OntologicalClassImpl("AlgorithmTemplate", NS);
-            clazz.getSuperClasses().add(RESTTemplate());
+            clazz.getSuperClasses().add(restTemplate());
             msAlgorithmTemplate = clazz;
         }
         return msAlgorithmTemplate;
     }
 
-    public static OntologicalClass RESTTemplateAttribute() {
+    public static OntologicalClass restTemplateAttribute() {
         if (msRESTTemplateAttribute == null) {
             OntologicalClass clazz = new OntologicalClassImpl("RESTTemplateAttribute", NS);
-            clazz.getSuperClasses().add(RESTTemplate());
+            clazz.getSuperClasses().add(restTemplate());
             msRESTTemplateAttribute = clazz;
         }
         return msRESTTemplateAttribute;
@@ -1158,10 +1158,10 @@ public final class OTRestClasses {
     /**
      * An OpenTox APIv1.2-compliant URI-template for Multi-Tasks.
      */
-    public static OntologicalClass MultiTaskTemplate() {
+    public static OntologicalClass multiTaskTemplate() {
         if (msMultiTaskTemplate == null) {
             OntologicalClass clazz = new OntologicalClassImpl("MultiTaskTemplate", NS);
-            clazz.getSuperClasses().add(RESTTemplateAttribute());
+            clazz.getSuperClasses().add(restTemplateAttribute());
             msMultiTaskTemplate = clazz;
         }
         return msMultiTaskTemplate;
@@ -1170,10 +1170,10 @@ public final class OTRestClasses {
     /**
      * An OpenTox APIv1.2-compliant URI-template for tasks.
      */
-    public static OntologicalClass TaskTemplate() {
+    public static OntologicalClass taskTemplate() {
         if (msTaskTemplate == null) {
             OntologicalClass clazz = new OntologicalClassImpl("TaskTemplate", NS);
-            clazz.getSuperClasses().add(RESTTemplate());
+            clazz.getSuperClasses().add(restTemplate());
             msTaskTemplate = clazz;
         }
         return msTaskTemplate;
@@ -1182,12 +1182,12 @@ public final class OTRestClasses {
     /**
      * Ontological class for an POST operation on a model.
      */
-    public static OntologicalClass POST_Model() {
-        if (msPOST_Model == null) {
+    public static OntologicalClass postModel() {
+        if (msPOSTModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_Model", NS);
-            clazz.getSuperClasses().add(POST_Operation());
-            msPOST_Model = clazz;
+            clazz.getSuperClasses().add(postOperation());
+            msPOSTModel = clazz;
         }
-        return msPOST_Model;
+        return msPOSTModel;
     }
 }

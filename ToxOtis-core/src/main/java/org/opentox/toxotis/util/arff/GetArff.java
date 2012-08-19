@@ -56,7 +56,7 @@ public class GetArff {
         /**
          * Add all numeric features
          */
-        Resource numericFeatureResource = model.getResource(OTClasses.NumericFeature().getUri());
+        Resource numericFeatureResource = model.getResource(OTClasses.numericFeature().getUri());
         if (numericFeatureResource != null) {
             StmtIterator numericFeaturesIterator = model.listStatements(null, RDF.type, (RDFNode) numericFeatureResource);
             String featureUri = null;

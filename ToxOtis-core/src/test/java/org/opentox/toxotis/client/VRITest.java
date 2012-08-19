@@ -33,6 +33,7 @@
 package org.opentox.toxotis.client;
 
 import java.net.URISyntaxException;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -76,7 +77,7 @@ public class VRITest {
         VRI report2 = Services.anonymous().augment("xxx", "reach_report", "qprf", "1");
         assertEquals(Services.anonymous().augment("xxx"), report2.getServiceBaseUri());
         assertEquals("1", report2.getId());
-        assertEquals(OTClasses.QPRFReport(), report2.getOntologicalClass());
+        assertEquals(OTClasses.qprfReport(), report2.getOntologicalClass());
         assertEquals(QprfReport.class, report2.getOpenToxType());
     }
 
@@ -87,7 +88,7 @@ public class VRITest {
         assertEquals(Services.anonymous().getHost(), model.getHost());
         assertEquals(Model.class, model.getOpenToxType());
         assertEquals("x", model.getId());
-        assertEquals(OTClasses.Model(), model.getOntologicalClass());
+        assertEquals(OTClasses.model(), model.getOntologicalClass());
     }
 
     @Test
@@ -97,7 +98,7 @@ public class VRITest {
         assertEquals(Services.anonymous().getHost(), model2.getHost());
         assertEquals(Model.class, model2.getOpenToxType());
         assertEquals("x", model2.getId());
-        assertEquals(OTClasses.Model(), model2.getOntologicalClass());
+        assertEquals(OTClasses.model(), model2.getOntologicalClass());
         assertEquals("http", model2.getProtocol());
     }
 
@@ -109,7 +110,7 @@ public class VRITest {
         assertEquals(Services.anonymous().getHost(), report.getHost());
         assertEquals("1", report.getId());
         assertEquals(QprfReport.class, report.getOpenToxType());
-        assertEquals(OTClasses.QPRFReport(), report.getOntologicalClass());
+        assertEquals(OTClasses.qprfReport(), report.getOntologicalClass());
     }
 
     @Test
@@ -125,7 +126,7 @@ public class VRITest {
     public void testVriOnceAgain() {
         VRI algo = Services.ideaconsult().augment("x", "y", "x", "x", "algorithm", "mlr");
         assertEquals("mlr", algo.getId());
-        assertEquals(OTClasses.Algorithm(), algo.getOntologicalClass());
+        assertEquals(OTClasses.algorithm(), algo.getOntologicalClass());
         assertEquals(Algorithm.class, algo.getOpenToxType());
         assertEquals("", algo.getQueryAsString());
         assertEquals("http", algo.getProtocol());
@@ -138,6 +139,31 @@ public class VRITest {
         assertEquals("http://apps.ideaconsult.net:8080/ambit2/dataset/54", myuri.toString());
         myuri.addUrlParameter("max", 123);
         assertEquals("http://apps.ideaconsult.net:8080/ambit2/dataset/54?max=123", myuri.toString());
+    }
+
+    @Test
+    public void testParseVri() throws URISyntaxException {
+        VRI myuri = new VRI("https://myserver.com/a/?b=5");
+        assertEquals("b=5", myuri.getQueryAsString());
+        myuri = new VRI("myserver.com/a/?b=5");
+        assertEquals("b=5", myuri.getQueryAsString());
+    }
+
+    @Test
+    public void testParseVri2() throws URISyntaxException {
+        VRI myuri = new VRI("https://myserver.com/a/?a&b=5");
+        assertEquals("a=&b=5", myuri.getQueryAsString());
+        assertEquals(2, myuri.getUrlParams().size());
+        List<Pair<String, String>> mylist = myuri.getUrlParams();
+        assertEquals("a", mylist.get(0).getKey());
+        assertTrue(mylist.get(0).getValue().isEmpty());
+        assertEquals("b", mylist.get(1).getKey());
+        assertEquals(IClient.httpSecureProtocol.toLowerCase(), myuri.getProtocol());
+        myuri = new VRI("myserver.com/a/?a&b=5");
+        assertEquals("a=&b=5", myuri.getQueryAsString());
+        assertEquals(2, myuri.getUrlParams().size());
+        mylist = myuri.getUrlParams();
+        assertEquals("a", mylist.get(0).getKey());
     }
 
     @Test
@@ -162,4 +188,6 @@ public class VRITest {
         assertEquals("http://apps.ideaconsult.net:8080/ambit2/services/dataset/54", myuri.getStringNoQuery());
         assertEquals(Services.ideaconsult().augment("services", "dataset", 54).toString(), myuri.getStringNoQuery());
     }
+    
+    //TODO: Test cases where new VRI("myserver.com/blah");.. i.e. http:// is missing!
 }

@@ -214,7 +214,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
     @Override
     public Individual asIndividual(OntModel model) {
 
-        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.Parameter().inModel(model));
+        Individual indiv = model.createIndividual(getUri() != null ? getUri().toString() : null, OTClasses.parameter().inModel(model));
         MetaInfo metaInfo = getMeta();
         if (metaInfo != null) {
             metaInfo.attachTo(indiv, model);

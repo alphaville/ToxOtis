@@ -51,7 +51,7 @@ public final class OTRestDatatypeProperties {
     public static OTDatatypeProperty hasAttribute() {
         if (hasAttribute == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAttribute");
-            property.getDomain().add(OTRestClasses.RESTTemplateAttribute());
+            property.getDomain().add(OTRestClasses.restTemplateAttribute());
             property.getRange().add(XSDDatatype.XSDstring);
             hasAttribute = property;
         }
@@ -61,7 +61,7 @@ public final class OTRestDatatypeProperties {
     public static OTDatatypeProperty hasURI() {
         if (hasURI == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasURI");
-            property.getDomain().add(OTRestClasses.RESTTemplate());
+            property.getDomain().add(OTRestClasses.restTemplate());
             property.getRange().add(XSDDatatype.XSDstring);
             hasURI = property;
         }
@@ -71,7 +71,7 @@ public final class OTRestDatatypeProperties {
     public static OTDatatypeProperty paramName() {
         if (paramName == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramName");
-            property.getDomain().add(OTRestClasses.InputParameter());
+            property.getDomain().add(OTRestClasses.inputParameter());
             property.getRange().add(XSDDatatype.XSDstring);
             paramName = property;
         }
@@ -81,7 +81,7 @@ public final class OTRestDatatypeProperties {
     public static OTDatatypeProperty paramOptional() {
         if (paramOptional == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("paramOptional");
-            property.getDomain().add(OTRestClasses.InputParameter());
+            property.getDomain().add(OTRestClasses.inputParameter());
             property.getRange().add(XSDDatatype.XSDboolean);
             paramOptional = property;
         }

@@ -30,6 +30,7 @@
  * tel. +30 210 7723236
  *
  */
+
 package org.opentox.toxotis.ontology.collection;
 
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -37,6 +38,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
@@ -51,39 +54,56 @@ public final class KnoufBibTex {
     private KnoufBibTex() {
     }
     public static final String NS = "http://purl.oclc.org/NET/nknouf/ns/bibtex#";
-    private static OntologicalClass ms_Thing;
-    private static OntologicalClass ms_Entry;
-    private static OntologicalClass ms_Article;
-    private static OntologicalClass ms_Book;
-    private static OntologicalClass ms_Conference;
-    private static OntologicalClass ms_Phdthesis;
-    private static OntologicalClass ms_Booklet;
-    private static OntologicalClass ms_Inbook;
-    private static OntologicalClass ms_Incollection;
-    private static OntologicalClass ms_Inproceedings;
-    private static OntologicalClass ms_Manual;
-    private static OntologicalClass ms_Mastersthesis;
-    private static OntologicalClass ms_Misc;
-    private static OntologicalClass ms_Proceedings;
-    private static OntologicalClass ms_TechReport;
-    private static OntologicalClass ms_Unpublished;
-    private static Map<String, Method> ms_methodCache;
+    private static OntologicalClass msThing;
+    private static OntologicalClass msEntry;
+    private static OntologicalClass msArticle;
+    private static OntologicalClass msBook;
+    private static OntologicalClass msConference;
+    private static OntologicalClass msPhdthesis;
+    private static OntologicalClass msBooklet;
+    private static OntologicalClass msInbook;
+    private static OntologicalClass msIncollection;
+    private static OntologicalClass msInproceedings;
+    private static OntologicalClass msManual;
+    private static OntologicalClass msMastersthesis;
+    private static OntologicalClass msMisc;
+    private static OntologicalClass msProceedings;
+    private static OntologicalClass msTechReport;
+    private static OntologicalClass msUnpublished;
+    private static Map<String, Method> msmethodCache;
 
     private synchronized static void initMethodCache() {
-        if (ms_methodCache == null) {
-            ms_methodCache = new HashMap<String, Method>();
+        if (msmethodCache == null) {
+            msmethodCache = new HashMap<String, Method>();
             for (Method method : KnoufBibTex.class.getDeclaredMethods()) {
                 if (OntologicalClass.class.equals(method.getReturnType()) && method.getParameterTypes().length == 0) {
-                    ms_methodCache.put(method.getName(), method);
+                    try {
+                        Object o = method.invoke(null);
+                        OntologicalClass oc = (OntologicalClass) o;
+                        msmethodCache.put(oc.getName().toLowerCase(), method);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(KnoufBibTex.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvocationTargetException ex) {
+                        Logger.getLogger(KnoufBibTex.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Case-insensitive search for a Knouf ontological class.
+     * @param name
+     *      Name of the ontological class.
+     * @return
+     *      Ontological class with the specified name.
+     * @throws ToxOtisException 
+     *      In case such an ontological class does not exist.
+     */
     public static OntologicalClass forName(String name) throws ToxOtisException {
         initMethodCache();
         try {
-            Method method = ms_methodCache.get(name);
+            Method method = msmethodCache.get(name.toLowerCase());
             if (method == null) {
                 throw new ToxOtisException("KnoufBibTexClassNotFound: BibTeX class : '" + name
                         + "' not found in the cache");
@@ -96,169 +116,202 @@ public final class KnoufBibTex {
             throw new RuntimeException(ex);
         }
     }
+    
 
-    private static OntologicalClass Thing() {
-        if (ms_Thing == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("Thing");
-            clazz.setNameSpace(OWL.NS);
-            clazz.getMetaInfo().addComment("All classes subclass of owl:Thing");
-            ms_Thing = clazz;
-        }
-        return ms_Thing;
-    }
-
-    public static OntologicalClass Entry() {
-        if (ms_Entry == null) {
+    /**
+     * Any BibTeX entry.
+     */
+    public static OntologicalClass entry() {
+        if (msEntry == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Entry");
-            clazz.getSuperClasses().add(Thing());
+            clazz.getSuperClasses().add(OTClasses.thing());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("Generic bibtex entry");
             clazz.getMetaInfo().addComment("Take a look at http://zeitkunst.org/bibtex/0.1/");
-            ms_Entry = clazz;
+            msEntry = clazz;
         }
-        return ms_Entry;
+        return msEntry;
     }
 
-    public static OntologicalClass Article() {
-        if (ms_Article == null) {
+    /**
+     * An article in a journal.
+     */
+    public static OntologicalClass article() {
+        if (msArticle == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Article");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("An article from a journal or magazine.");
-            ms_Article = clazz;
+            msArticle = clazz;
         }
-        return ms_Article;
+        return msArticle;
     }
 
-    public static OntologicalClass Booklet() {
-        if (ms_Booklet == null) {
+    /**
+     * A booklet.
+     */
+    public static OntologicalClass booklet() {
+        if (msBooklet == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Booklet");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("A work that is printed and bound, but without a named publisher or sponsoring institution.");
-            ms_Booklet = clazz;
+            msBooklet = clazz;
         }
-        return ms_Booklet;
+        return msBooklet;
     }
 
-    public static OntologicalClass Inbook() {
-        if (ms_Inbook == null) {
+    /**
+     * A chapter or section in a book.
+     */
+    public static OntologicalClass inbook() {
+        if (msInbook == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Inbook");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("A part of a book, which may be a chapter (or section or whatever) and/or a range of pages.");
-            ms_Inbook = clazz;
+            msInbook = clazz;
         }
-        return ms_Inbook;
+        return msInbook;
     }
 
-    public static OntologicalClass Incollection() {
-        if (ms_Incollection == null) {
+    /**
+     * Part of a collection.
+     */
+    public static OntologicalClass incollection() {
+        if (msIncollection == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Incollection");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("A part of a book having its own title.");
-            ms_Incollection = clazz;
+            msIncollection = clazz;
         }
-        return ms_Incollection;
+        return msIncollection;
     }
 
-    public static OntologicalClass Inproceedings() {
-        if (ms_Inproceedings == null) {
+    /**
+     * An article published in conference proceedings.
+     */
+    public static OntologicalClass inproceedings() {
+        if (msInproceedings == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Inproceedings");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("An article in a conference proceedings.");
-            ms_Inproceedings = clazz;
+            msInproceedings = clazz;
         }
-        return ms_Inproceedings;
+        return msInproceedings;
     }
 
-    public static OntologicalClass Manual() {
-        if (ms_Manual == null) {
+    /**
+     * A user's manual
+     */
+    public static OntologicalClass manual() {
+        if (msManual == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Manual");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("A Technical Manual");
-            ms_Manual = clazz;
+            msManual = clazz;
         }
-        return ms_Manual;
+        return msManual;
     }
 
-    public static OntologicalClass Mastersthesis() {
-        if (ms_Mastersthesis == null) {
+    /**
+     * A master's thesis.
+     */
+    public static OntologicalClass mastersThesis() {
+        if (msMastersthesis == null) {
             OntologicalClass clazz = new OntologicalClassImpl("A Master's thesis.");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("A Technical Manual");
-            ms_Mastersthesis = clazz;
+            msMastersthesis = clazz;
         }
-        return ms_Mastersthesis;
+        return msMastersthesis;
     }
 
-    public static OntologicalClass Misc() {
-        if (ms_Misc == null) {
+    /**
+     * Miscellaneous.
+     */
+    public static OntologicalClass miscellaneous() {
+        if (msMisc == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Misc");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("Misc., Use this type when nothing else fits.");
-            ms_Misc = clazz;
+            msMisc = clazz;
         }
-        return ms_Misc;
+        return msMisc;
     }
 
-    public static OntologicalClass TechReport() {
-        if (ms_TechReport == null) {
+    /**
+     * A technical report.
+     */
+    public static OntologicalClass techReport() {
+        if (msTechReport == null) {
             OntologicalClass clazz = new OntologicalClassImpl("TechReport");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("TechReport, A report published by a school or other institution, usually numbered within a series.");
-            ms_TechReport = clazz;
+            msTechReport = clazz;
         }
-        return ms_TechReport;
+        return msTechReport;
     }
 
-    public static OntologicalClass Unpublished() {
-        if (ms_Unpublished == null) {
+    /**
+     * Unpublished material.
+     */
+    public static OntologicalClass unpublished() {
+        if (msUnpublished == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Unpublished");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("Unpublished, A document having an author and title, but not formally published.");
-            ms_Unpublished = clazz;
+            msUnpublished = clazz;
         }
-        return ms_Unpublished;
+        return msUnpublished;
     }
 
-    public static OntologicalClass Book() {
-        if (ms_Book == null) {
+    /*
+     * A book.
+     */
+    public static OntologicalClass book() {
+        if (msBook == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Book");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("A book with an explicit publisher.");
-            ms_Book = clazz;
+            msBook = clazz;
         }
-        return ms_Book;
+        return msBook;
     }
 
-    public static OntologicalClass Conference() {
-        if (ms_Conference == null) {
+    /**
+     * A conference.
+     */
+    public static OntologicalClass conference() {
+        if (msConference == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Conference");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("The same as INPROCEEDINGS, included for Scribe compatibility.");
-            ms_Conference = clazz;
+            msConference = clazz;
         }
-        return ms_Conference;
+        return msConference;
     }
 
-    public static OntologicalClass Phdthesis() {
-        if (ms_Phdthesis == null) {
+    /**
+     * A PhD thesis.
+     */
+    public static OntologicalClass phdThesis() {
+        if (msPhdthesis == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Phdthesis");
-            clazz.getSuperClasses().add(Entry());
+            clazz.getSuperClasses().add(entry());
             clazz.setNameSpace(NS);
             clazz.getMetaInfo().addComment("A PhD Thesis.");
-            ms_Phdthesis = clazz;
+            msPhdthesis = clazz;
         }
-        return ms_Phdthesis;
+        return msPhdthesis;
     }
 }

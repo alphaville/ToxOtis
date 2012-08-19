@@ -76,9 +76,9 @@ public class MetaInfoBlobberTest {
     public void testBlobbinbDeblobbing() {
         MetaInfo mi = new MetaInfoImpl();
         mi.addTitle("any title").addTitle("other title").addDescription("abc").
-                addHasSource(new ResourceValue(Services.anonymous(), OTClasses.Model())).
+                addHasSource(new ResourceValue(Services.anonymous(), OTClasses.model())).
                 addContributor("me").addContributor("you").
-                addAudience("some audience").addSeeAlso(new ResourceValue(Services.ideaconsult().augment("feature","100"), OTClasses.Feature()));
+                addAudience("some audience").addSeeAlso(new ResourceValue(Services.ideaconsult().augment("feature","100"), OTClasses.feature()));
         MetaInfoBlobber mib = new MetaInfoBlobber(mi);
         
         try {

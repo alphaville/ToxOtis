@@ -74,7 +74,7 @@ public class HttpStatus extends OTComponent<HttpStatus> {
     @Override
     public Individual asIndividual(OntModel model) {
         String httpStatusUri = getUri() != null ? getUri().toString() : null;
-        Individual indiv = model.createIndividual(httpStatusUri, OTRestClasses.HTTPStatus().inModel(model));
+        Individual indiv = model.createIndividual(httpStatusUri, OTRestClasses.httpStatus().inModel(model));
         if (getHttpStatusClass()!=null){
             indiv.addProperty(RDF.type, getHttpStatusClass().inModel(model));
         }

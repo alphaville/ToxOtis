@@ -46,6 +46,6 @@ public class DatasetFactoryTest {
         assertEquals("Unexpected HTTP status:" + t.getHttpStatus(), 200f, t.getHttpStatus(), 1E-6);
         assertNotNull(t.getResultUri());
         VRI resultVri = t.getResultUri();
-        assertEquals(OTClasses.Dataset(), resultVri.getOntologicalClass());
+        assertEquals(OTClasses.dataset(), resultVri.getOntologicalClass());
     }
 }

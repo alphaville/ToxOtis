@@ -121,8 +121,8 @@ public abstract class Tarantula<Result> implements Closeable {
      *      The parsed object.
      * @throws ServiceInvocationException
      */
-    public abstract Result parse() throws ServiceInvocationException;
-
+    public abstract Result parse() throws ServiceInvocationException;    
+    
     protected Set<LiteralValue> retrievePropertyLiterals(Property prop) {
         Set<LiteralValue> results = new HashSet<LiteralValue>();
         StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
@@ -146,14 +146,14 @@ public abstract class Tarantula<Result> implements Closeable {
                                 results.add(new LiteralValue<Date>(new Date(longDate), datatype));
                             }
                         } catch (NumberFormatException nfe) {
-                            System.err.println("[WARNING] Date format not supported.");
+                            logger.warn("Date format not supported.");
                         }
                     } else {
                         results.add(new LiteralValue(stringVal, datatype));
                     }
                 } else if (node.isResource()) {
-                    System.err.println("Non-literal value found for property : " + prop.getURI());
-                    System.err.println("URI of that value is : " + node.as(Resource.class).getURI());
+                    logger.info("Non-literal value found for property : " + prop.getURI());
+                    logger.info("URI of that value is : " + node.as(Resource.class).getURI());
                 }
             }
         } finally {
@@ -180,9 +180,9 @@ public abstract class Tarantula<Result> implements Closeable {
                     }
                 } else if (node.isLiteral()) {
                     if (verbose) {
-                        System.err.println("[WARN ] Parsing warning (no exception is thrown). Timestamp : " + new Date(System.currentTimeMillis()) + ".");
-                        System.err.println("Details: Found literal value while expecting a resource for the property :" + prop.getURI());
-                        System.err.println("Property value : " + node.as(Literal.class).getString());
+                        logger.warn("Parsing warning (no exception is thrown). Timestamp : " + new Date(System.currentTimeMillis()) + ".");
+                        logger.warn("Details: Found literal value while expecting a resource for the property :" + prop.getURI());
+                        logger.warn("Property value : " + node.as(Literal.class).getString());
                     }
                 }
             } finally {

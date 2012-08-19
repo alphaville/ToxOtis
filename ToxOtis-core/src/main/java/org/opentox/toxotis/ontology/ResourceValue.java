@@ -78,7 +78,7 @@ public class ResourceValue implements Serializable {
 
     public Resource inModel(OntModel model) {
         return model.createResource(getUri() != null ? getUri().toString() : null,
-                getOntologicalClass() != null ? getOntologicalClass().inModel(model) : OTClasses.Thing().inModel(model));
+                getOntologicalClass() != null ? getOntologicalClass().inModel(model) : OTClasses.thing().inModel(model));
     }
 
     @Override

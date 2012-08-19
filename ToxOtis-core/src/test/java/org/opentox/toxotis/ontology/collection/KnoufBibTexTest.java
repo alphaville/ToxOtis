@@ -30,21 +30,22 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.ontology.collection;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.ontology.OntologicalClass;
 
 /**
  *
  * @author chung
  */
-public class OTClassesTest {
-    
-    public OTClassesTest() {
+public class KnoufBibTexTest {
+
+    public KnoufBibTexTest() {
     }
 
     @BeforeClass
@@ -56,26 +57,12 @@ public class OTClassesTest {
     }
 
     @Test
-    public void testOtClasses() {
-        assertNotNull(OTClasses.forName("Algorithm"));
-        assertNotNull(OTClasses.compound());
-        assertNotNull(OTClasses.conformer());
-        assertNotNull(OTClasses.dataEntry());
-        assertNotNull(OTClasses.dataset());
-        assertNotNull(OTClasses.errorReport());
-        assertNotNull(OTClasses.featureValueNumeric());
-        assertNotNull(OTClasses.feature());
-        assertNotNull(OTClasses.featureValue());
-        assertNotNull(OTClasses.featureValueNominal());
-        assertNotNull(OTClasses.featureValuePair());
-        assertEquals(OTClasses.forName("Parameter"), OTClasses.parameter());
-        assertEquals(OTClasses.forName("VariableInfo"), OTClasses.variableInfo());
-        assertTrue(OTClasses.getAll().contains(OTClasses.forName("FeatureValueNumeric")));
-        assertTrue(OTClasses.getAll().contains(OTClasses.feature()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.multiParameter()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.model()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.openToxResource()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.qprfReport()));
-        assertTrue(OTClasses.getAll().contains(OTClasses.report()));
+    public void testForName() throws ToxOtisException {
+        OntologicalClass unpublished = KnoufBibTex.forName("unpublished");
+        assertNotNull(unpublished);
+        assertEquals("Unpublished", unpublished.getName());
+        OntologicalClass misc = KnoufBibTex.forName("misc");
+        assertNotNull(misc);
+        assertEquals(KnoufBibTex.miscellaneous(),misc);
     }
 }

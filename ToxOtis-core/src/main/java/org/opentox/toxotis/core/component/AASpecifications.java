@@ -77,7 +77,7 @@ public class AASpecifications extends OTComponent<AASpecifications> {
             setAuthParameters(new HashSet<HttpParameter>());
         }
         HttpParameter httpParam = new HttpParameter().setOntologicalClasses(new HashSet<OntologicalClass>()).
-                addOntologicalClasses(OTRestClasses.InputParameterSimple(), OTRestClasses.Header());
+                addOntologicalClasses(OTRestClasses.inputParameterSimple(), OTRestClasses.header());
         httpParam.setOpentoxParameter(false);
         httpParam.setParamOptional(optional);
         getAuthParameters().add(httpParam);
@@ -102,7 +102,7 @@ public class AASpecifications extends OTComponent<AASpecifications> {
     @Override
     public Individual asIndividual(OntModel model) {
         String aaSpecUri = getUri() != null ? getUri().toString() : null;
-        Individual indiv = model.createIndividual(aaSpecUri, OTRestClasses.AA().inModel(model));
+        Individual indiv = model.createIndividual(aaSpecUri, OTRestClasses.aa().inModel(model));
         if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
             for (OntologicalClass oc : getOntologicalClasses()) {
                 indiv.addRDFType(oc.inModel(model));

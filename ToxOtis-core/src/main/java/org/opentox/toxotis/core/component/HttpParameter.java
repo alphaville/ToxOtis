@@ -143,7 +143,7 @@ public class HttpParameter extends OTComponent<HttpParameter> {
     public Individual asIndividual(OntModel model) {
         String httpParameterUri = getUri() != null ? getUri().toString() : null;
 
-        Individual indiv = model.createIndividual(httpParameterUri, OTRestClasses.InputParameter().inModel(model));
+        Individual indiv = model.createIndividual(httpParameterUri, OTRestClasses.inputParameter().inModel(model));
         /* Define Input Parameter Types */
         if (getInputParamClass() != null) {
             for (OntologicalClass oc : getInputParamClass()) {
