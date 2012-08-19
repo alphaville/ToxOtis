@@ -83,6 +83,9 @@ public final class OTEchaEndpoints {
     private static OntologicalClass msToxicoKinetics;
     private static OntologicalClass msDNA_Binding;
 
+    /**
+     * Toxicological ECHA Endpoints.
+     */
     public static OntologicalClass Endpoints() {
         if (msEndpoints == null) {
             msEndpoints = new OntologicalClassImpl("Endpoints", NS);
@@ -90,7 +93,10 @@ public final class OTEchaEndpoints {
         }
         return msEndpoints;
     }
-
+    
+    /**
+     * Physicochemical Effects
+     */
     public static OntologicalClass PhysicoChemicalEffects() {
         if (msPhysicoChemicalEffects == null) {
             msPhysicoChemicalEffects = new OntologicalClassImpl("PhysicoChemicalEffects", NS);
@@ -116,6 +122,9 @@ public final class OTEchaEndpoints {
         return msPhysicoChemicalEffects;
     }
 
+    /**
+     * Boiling Point at atmospheric pressure.
+     */
     public static OntologicalClass BoilingPoint() {
         if (msBoilingPoint == null) {
             msBoilingPoint = new OntologicalClassImpl("Boiling_point", NS);
@@ -126,6 +135,9 @@ public final class OTEchaEndpoints {
         return msBoilingPoint;
     }
 
+    /**
+     * Dissociation Constant pKa.
+     */
     public static OntologicalClass DissociationConstantPKa() {
         if (msDissociationConstantPKa == null) {
             msDissociationConstantPKa = new OntologicalClassImpl("Dissociation_constant_pKa", NS);
@@ -136,6 +148,9 @@ public final class OTEchaEndpoints {
         return msDissociationConstantPKa;
     }
 
+    /**
+     * Melting Point at atmospheric pressure.
+     */
     public static OntologicalClass MeltingPoint() {
         if (msMeltingPoint == null) {
             msMeltingPoint = new OntologicalClassImpl("Melting_point", NS);
@@ -147,8 +162,9 @@ public final class OTEchaEndpoints {
     }
 
 
-    
-
+    /**
+     * Generally environmental parameters.
+     */
     public static OntologicalClass EnvironmentalFateParameters() {
         if (msEnvironmentalFateParameters == null) {
             msEnvironmentalFateParameters = new OntologicalClassImpl("EnvironmentalFateParameters", NS);
@@ -159,6 +175,9 @@ public final class OTEchaEndpoints {
         return msEnvironmentalFateParameters;
     }
 
+    /**
+     * Eco-toxicological effects.
+     */
     public static OntologicalClass EcotoxicEffects() {
         if (msEcotoxicEffects == null) {
             msEcotoxicEffects = new OntologicalClassImpl("EcotoxicEffects", NS);
@@ -169,6 +188,9 @@ public final class OTEchaEndpoints {
         return msEcotoxicEffects;
     }
 
+    /**
+     * Effects to Human Health.
+     */
     public static OntologicalClass HumanHealthEffects() {
         if (msHumanHealthEffects == null) {
             msHumanHealthEffects = new OntologicalClassImpl("HumanHealthEffects", NS);
@@ -179,6 +201,9 @@ public final class OTEchaEndpoints {
         return msHumanHealthEffects;
     }
 
+    /**
+     * Acute Dermal Toxicity.
+     */
     public static OntologicalClass AcuteDermalToxicity() {
         if (msAcuteDermalToxicity == null) {
             msAcuteDermalToxicity = new OntologicalClassImpl("AcuteDermalToxicity", NS);
@@ -189,6 +214,9 @@ public final class OTEchaEndpoints {
         return msAcuteDermalToxicity;
     }
 
+    /**
+     * Acute Inhalation Toxicity.
+     */
     public static OntologicalClass AcuteInhalationToxicity() {
         if (msAcuteInhalationToxicity == null) {
             msAcuteInhalationToxicity = new OntologicalClassImpl("AcuteInhalationToxicity", NS);
@@ -199,6 +227,9 @@ public final class OTEchaEndpoints {
         return msAcuteInhalationToxicity;
     }
 
+    /**
+     * Acute toxicity when the substance is administered per os.
+     */
     public static OntologicalClass AcuteOralToxicity() {
         if (msAcuteOralToxicity == null) {
             msAcuteOralToxicity = new OntologicalClassImpl("AcuteOralToxicity", NS);
@@ -209,6 +240,10 @@ public final class OTEchaEndpoints {
         return msAcuteOralToxicity;
     }
 
+    /**
+     * 
+     * Acute photo-irritation.
+     */
     public static OntologicalClass AcutePhotoirritation() {
         if (msAcutePhotoirritation == null) {
             msAcutePhotoirritation = new OntologicalClassImpl("AcutePhotoirritation", NS);
@@ -219,6 +254,12 @@ public final class OTEchaEndpoints {
         return msAcutePhotoirritation;
     }
 
+    /**
+     * Carcinogenicity.
+     * 
+     * @return 
+     *      Ontological class for Carcinogenicity.
+     */
     public static OntologicalClass Carcinogenicity() {
         if (msCarcinogenicity == null) {
             msCarcinogenicity = new OntologicalClassImpl("Carcinogenicity", NS);
@@ -229,6 +270,12 @@ public final class OTEchaEndpoints {
         return msCarcinogenicity;
     }
 
+    /**
+     * Endocrine Activity.
+     * 
+     * @return 
+     *      Ontological class for Endocrine Activity.
+     */
     public static OntologicalClass EndocrineActivity() {
         if (msEndocrineActivity == null) {
             msEndocrineActivity = new OntologicalClassImpl("EndocrineActivity", NS);
@@ -256,6 +303,12 @@ public final class OTEchaEndpoints {
         return msOther;
     }
 
+    /**
+     * Receptor Binding.
+     * 
+     * @return 
+     *      Ontological class for Receptor Binding.
+     */
     public static OntologicalClass ReceptorBinding(){
         if (msReceptorBinding == null) {
             msReceptorBinding = new OntologicalClassImpl("ReceptorBinding", NS);
@@ -266,6 +319,9 @@ public final class OTEchaEndpoints {
         return msReceptorBinding;
     }
 
+    /**
+     * Receptor Binding and Gene Expression.
+     */
     public static OntologicalClass ReceptorBindingAndGeneExpression(){
         if (msReceptorBindingAndGeneExpression == null) {
             msReceptorBindingAndGeneExpression = new OntologicalClassImpl("ReceptorBindingAndGeneExpression", NS);
@@ -276,6 +332,9 @@ public final class OTEchaEndpoints {
         return msReceptorBindingAndGeneExpression;
     }
 
+    /**
+     * Ocular irritation and/or corrosion.
+     */
     public static OntologicalClass EyeIrritationCorrosion(){
         if (msEyeIrritationCorrosion == null) {
             msEyeIrritationCorrosion = new OntologicalClassImpl("EyeIrritationCorrosion", NS);
@@ -286,6 +345,9 @@ public final class OTEchaEndpoints {
         return msEyeIrritationCorrosion;
     }
 
+    /**
+     * In-Vitro Reproductive Toxicity.
+     */
     public static OntologicalClass InVitroReproductiveToxicity(){
         if (msInVitroReproductiveToxicity == null) {
             msInVitroReproductiveToxicity = new OntologicalClassImpl("InVitroReproductiveToxicity", NS);
@@ -297,6 +359,9 @@ public final class OTEchaEndpoints {
         return msInVitroReproductiveToxicity;
     }
 
+    /**
+     * In-Vivo Pre/Peri/Post-Natal Development.
+     */
     public static OntologicalClass InVivoPrePeriPostNatalDevelopment(){
         if (msInVivoPrePeriPostNatalDevelopment == null) {
             msInVivoPrePeriPostNatalDevelopment = new OntologicalClassImpl("InVivoPrePeriPostNatalDevelopmentAndOrFertility", NS);
@@ -323,6 +388,9 @@ public final class OTEchaEndpoints {
         return msInVivoPreNatalDevelopmentToxicity;
     }
 
+    /**
+     * Mutagenicity.
+     */
     public static OntologicalClass Mutagenicity() {
         if (msMutagenicity == null) {
             msMutagenicity = new OntologicalClassImpl("Mutagenicity", NS);
@@ -333,6 +401,9 @@ public final class OTEchaEndpoints {
         return msMutagenicity;
     }
 
+    /**
+     * Photo-carcinogenicity.
+     */
     public static OntologicalClass PhotoCarcinogenicity() {
         if (msPhotoCarcinogenicity == null) {
             msPhotoCarcinogenicity = new OntologicalClassImpl("PhotoCarcinogenicity", NS);
@@ -343,6 +414,9 @@ public final class OTEchaEndpoints {
         return msPhotoCarcinogenicity;
     }
 
+    /**
+     * Photo-mutagenicity.
+     */
     public static OntologicalClass PhotoMutagenicity() {
         if (msPhotoMutagenicity == null) {
             msPhotoMutagenicity = new OntologicalClassImpl("PhotoMutagenicity", NS);
@@ -353,6 +427,9 @@ public final class OTEchaEndpoints {
         return msPhotoMutagenicity;
     }
 
+    /**
+     * Photo-sensitisation.
+     */
     public static OntologicalClass PhotoSensitisation() {
         if (msPhotoSensitisation == null) {
             msPhotoSensitisation = new OntologicalClassImpl("PhotoSensitisation", NS);
@@ -363,6 +440,9 @@ public final class OTEchaEndpoints {
         return msPhotoSensitisation;
     }
 
+    /**
+     * Repeated-dose toxicity.
+     */
     public static OntologicalClass RepeatedDoseToxicity() {
         if (msRepeatedDoseToxicity == null) {
             msRepeatedDoseToxicity = new OntologicalClassImpl("RepeatedDoseToxicity", NS);
@@ -373,6 +453,10 @@ public final class OTEchaEndpoints {
         return msRepeatedDoseToxicity;
     }
 
+    /**
+     * Respiratory sensitisation.
+     * @see OTEchaEndpoints#AcuteInhalationToxicity() #AcuteInhalationToxicity()
+     */
     public static OntologicalClass RespiratorySensitisation() {
         if (msRespiratorySensitisation == null) {
             msRespiratorySensitisation = new OntologicalClassImpl("RespiratorySensitisation", NS);
@@ -383,6 +467,9 @@ public final class OTEchaEndpoints {
         return msRespiratorySensitisation;
     }
 
+    /**
+     * Skin Irritation/Corrosion.
+     */
     public static OntologicalClass SkinIrritationCorrosion() {
         if (msSkinIrritationCorrosion == null) {
             msSkinIrritationCorrosion = new OntologicalClassImpl("SkinIrritationCorrosion", NS);
@@ -393,6 +480,9 @@ public final class OTEchaEndpoints {
         return msSkinIrritationCorrosion;
     }
 
+    /**
+     * Skin Sensitisation.
+     */
     public static OntologicalClass SkinSensitisation() {
         if (msSkinSensitisation == null) {
             msSkinSensitisation = new OntologicalClassImpl("SkinSensitisation", NS);
@@ -405,6 +495,9 @@ public final class OTEchaEndpoints {
 
 
 
+    /**
+     * Toxico-Kinetics.
+     */
     public static OntologicalClass ToxicoKinetics() {
         if (msToxicoKinetics == null) {
             msToxicoKinetics = new OntologicalClassImpl("ToxicoKinetics", NS);

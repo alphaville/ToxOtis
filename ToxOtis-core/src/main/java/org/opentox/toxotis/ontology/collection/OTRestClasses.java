@@ -42,6 +42,7 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 /**
  * Collection of ontological classes needed to define the REST interface operations
  * over a URI that provides access to web services.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -49,7 +50,6 @@ public final class OTRestClasses {
 
     private OTRestClasses() {
     }
-    
     /**
      * NameSpace of the OpenTox ontology.
      */
@@ -152,6 +152,9 @@ public final class OTRestClasses {
         return msThing;
     }
 
+    /**
+     * Ontological class for an HTTP Method.
+     */
     public static OntologicalClass HTTPMethod() {
         if (msHTTPMethod == null) {
             OntologicalClass clazz = new OntologicalClassImpl("HTTPMethod", NS);
@@ -161,6 +164,9 @@ public final class OTRestClasses {
         return msHTTPMethod;
     }
 
+    /**
+     * Ontological class for an HTTP Status.
+     */
     public static OntologicalClass HTTPStatus() {
         if (msHTTPStatus == null) {
             OntologicalClass clazz = new OntologicalClassImpl("HTTPStatus", NS);
@@ -170,6 +176,9 @@ public final class OTRestClasses {
         return msHTTPStatus;
     }
 
+    /**
+     * Ontological class for the HTTP Status 200.
+     */
     public static OntologicalClass STATUS_200() {
         if (msSTATUS_200 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_200", NS);
@@ -179,6 +188,9 @@ public final class OTRestClasses {
         return msSTATUS_200;
     }
 
+    /**
+     * Ontological class for the HTTP Status 201.
+     */
     public static OntologicalClass STATUS_201() {
         if (msSTATUS_201 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_201", NS);
@@ -188,6 +200,9 @@ public final class OTRestClasses {
         return msSTATUS_201;
     }
 
+    /**
+     * Ontological class for the HTTP Status 202.
+     */
     public static OntologicalClass STATUS_202() {
         if (msSTATUS_202 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_202", NS);
@@ -197,6 +212,9 @@ public final class OTRestClasses {
         return msSTATUS_202;
     }
 
+    /**
+     * Ontological class for the HTTP Status 303.
+     */
     public static OntologicalClass STATUS_303() {
         if (msSTATUS_303 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_303", NS);
@@ -206,6 +224,9 @@ public final class OTRestClasses {
         return msSTATUS_303;
     }
 
+    /**
+     * Ontological class for the HTTP Status 400.
+     */
     public static OntologicalClass STATUS_400() {
         if (msSTATUS_400 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_400", NS);
@@ -215,6 +236,9 @@ public final class OTRestClasses {
         return msSTATUS_400;
     }
 
+    /**
+     * Ontological class for the HTTP Status 401.
+     */
     public static OntologicalClass STATUS_401() {
         if (msSTATUS_401 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_401", NS);
@@ -224,6 +248,9 @@ public final class OTRestClasses {
         return msSTATUS_401;
     }
 
+    /**
+     * Ontological class for the HTTP Status 403.
+     */
     public static OntologicalClass STATUS_403() {
         if (msSTATUS_403 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_403", NS);
@@ -233,6 +260,9 @@ public final class OTRestClasses {
         return msSTATUS_403;
     }
 
+    /**
+     * Ontological class for the HTTP Status 404.
+     */
     public static OntologicalClass STATUS_404() {
         if (msSTATUS_404 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_404", NS);
@@ -242,6 +272,9 @@ public final class OTRestClasses {
         return msSTATUS_404;
     }
 
+    /**
+     * Ontological class for the HTTP Status 500.
+     */
     public static OntologicalClass STATUS_500() {
         if (msSTATUS_500 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_500", NS);
@@ -251,6 +284,9 @@ public final class OTRestClasses {
         return msSTATUS_500;
     }
 
+    /**
+     * Ontological class for the HTTP Status 502.
+     */
     public static OntologicalClass STATUS_502() {
         if (msSTATUS_502 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_502", NS);
@@ -260,6 +296,9 @@ public final class OTRestClasses {
         return msSTATUS_502;
     }
 
+    /**
+     * Ontological class for the HTTP Status 503.
+     */
     public static OntologicalClass STATUS_503() {
         if (msSTATUS_503 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("STATUS_503", NS);
@@ -269,6 +308,9 @@ public final class OTRestClasses {
         return msSTATUS_503;
     }
 
+    /**
+     * Ontological class for Input Parameters.
+     */
     public static OntologicalClass InputParameter() {
         if (msInputParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameter", NS);
@@ -278,6 +320,9 @@ public final class OTRestClasses {
         return msInputParameter;
     }
 
+    /**
+     * Ontological class for OpenTox-style Input Parameters.
+     */
     public static OntologicalClass InputParameterOpenTox() {
         if (msInputParameterOpenTox == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterOpenTox", NS);
@@ -287,6 +332,9 @@ public final class OTRestClasses {
         return msInputParameterOpenTox;
     }
 
+    /**
+     * Ontological class for single-valued simple Input Parameters.
+     */
     public static OntologicalClass InputParameterSimple() {
         if (msInputParameterSimple == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterSimple", NS);
@@ -296,6 +344,9 @@ public final class OTRestClasses {
         return msInputParameterSimple;
     }
 
+    /**
+     * Ontological class for HTTP Headers.
+     */
     public static OntologicalClass Header() {
         if (msHeader == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Header", NS);
@@ -305,6 +356,9 @@ public final class OTRestClasses {
         return msHeader;
     }
 
+    /**
+     * Ontological class for URL parameters.
+     */
     public static OntologicalClass URLParameter() {
         if (msURLParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("URLParameter", NS);
@@ -314,9 +368,12 @@ public final class OTRestClasses {
         return msURLParameter;
     }
 
+    /**
+     * Ontological class for Authentication and Authorization.
+     */
     public static OntologicalClass AA() {
         if (msAA == null) {
-            OntologicalClass clazz = new OntologicalClassImpl("AA", NS){
+            OntologicalClass clazz = new OntologicalClassImpl("AA", NS) {
 
                 @Override
                 public OntClass inModel(OntModel model) {
@@ -332,6 +389,9 @@ public final class OTRestClasses {
         return msAA;
     }
 
+    /**
+     * Ontological class for Input Parameters that admit compound URIs as values.
+     */
     public static OntologicalClass InputParameterCompound() {
         if (msInputParameterCompound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterCompound", NS);
@@ -341,6 +401,9 @@ public final class OTRestClasses {
         return msInputParameterCompound;
     }
 
+    /**
+     * Ontological class for Input Parameters that admit Dataset URIs as values.
+     */
     public static OntologicalClass InputParameterDataset() {
         if (msInputParameterDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterDataset", NS);
@@ -350,6 +413,10 @@ public final class OTRestClasses {
         return msInputParameterDataset;
     }
 
+    /**
+     * Ontological class for Input Parameters that admit dataset base URIs as values and
+     * serve as dataset service URIs.
+     */
     public static OntologicalClass InputParameterDatasetService() {
         if (msInputParameterDatasetService == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterDatasetService", NS);
@@ -359,6 +426,9 @@ public final class OTRestClasses {
         return msInputParameterDatasetService;
     }
 
+    /**
+     * Ontological class for Input Parameters that admit feature URIs as values.
+     */
     public static OntologicalClass InputParameterFeature() {
         if (msInputParameterFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterFeature", NS);
@@ -368,6 +438,9 @@ public final class OTRestClasses {
         return msInputParameterFeature;
     }
 
+    /**
+     * Ontological class for Input Parameters that admit (resulting) dataset URIs as values.
+     */
     public static OntologicalClass InputParameterResultDataset() {
         if (msInputParameterResultDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterResultDataset", NS);
@@ -377,6 +450,9 @@ public final class OTRestClasses {
         return msInputParameterResultDataset;
     }
 
+    /**
+     * Ontological class for Input Parameters that admit target URIs as values.
+     */
     public static OntologicalClass InputParameterTarget() {
         if (msInputParameterTarget == null) {
             OntologicalClass clazz = new OntologicalClassImpl("InputParameterTarget", NS);
@@ -386,6 +462,9 @@ public final class OTRestClasses {
         return msInputParameterTarget;
     }
 
+    /**
+     * Ontological class for MIME types.
+     */
     public static OntologicalClass MediaType() {
         if (msMediaType == null) {
             OntologicalClass clazz = new OntologicalClassImpl("MediaType", NS);
@@ -395,6 +474,9 @@ public final class OTRestClasses {
         return msMediaType;
     }
 
+    /**
+     * Ontological class for the InChI MIME type.
+     */
     public static OntologicalClass mime_chemical_inchi() {
         if (msmime_chemical_inchi == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_chemical_inchi", NS);
@@ -404,6 +486,9 @@ public final class OTRestClasses {
         return msmime_chemical_inchi;
     }
 
+    /**
+     * Ontological class for the chemical/MOL MIME type.
+     */
     public static OntologicalClass mime_chemical_mol() {
         if (msmime_chemical_mol == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_chemical_mol", NS);
@@ -413,6 +498,9 @@ public final class OTRestClasses {
         return msmime_chemical_mol;
     }
 
+    /**
+     * Ontological class for the chemical/SDF MIME type.
+     */
     public static OntologicalClass mime_chemical_sdf() {
         if (msmime_chemical_sdf == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_chemical_sdf", NS);
@@ -422,6 +510,9 @@ public final class OTRestClasses {
         return msmime_chemical_sdf;
     }
 
+    /**
+     * Ontological class for the chemical/SMILES MIME type.
+     */
     public static OntologicalClass mime_chemical_smiles() {
         if (msmime_chemical_smiles == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_chemical_smiles", NS);
@@ -431,6 +522,9 @@ public final class OTRestClasses {
         return msmime_chemical_smiles;
     }
 
+    /**
+     * Ontological class for the JSON MIME type.
+     */
     public static OntologicalClass mime_json() {
         if (msmime_json == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_json", NS);
@@ -440,6 +534,9 @@ public final class OTRestClasses {
         return msmime_json;
     }
 
+    /**
+     * Ontological class for the RDF/JSON MIME type.
+     */
     public static OntologicalClass mime_rdf_json() {
         if (msmime_rdf_json == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_rdf_json", NS);
@@ -449,6 +546,9 @@ public final class OTRestClasses {
         return msmime_rdf_json;
     }
 
+    /**
+     * Ontological class for the RDF/N3 MIME type.
+     */
     public static OntologicalClass mime_rdf_n3() {
         if (msmime_rdf_n3 == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_rdf_n3", NS);
@@ -458,6 +558,9 @@ public final class OTRestClasses {
         return msmime_rdf_n3;
     }
 
+    /**
+     * Ontological class for the RDF/Turtle MIME type.
+     */
     public static OntologicalClass mime_rdf_turtle() {
         if (msmime_rdf_turtle == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_rdf_turtle", NS);
@@ -467,6 +570,9 @@ public final class OTRestClasses {
         return msmime_rdf_turtle;
     }
 
+    /**
+     * Ontological class for the RDF/XML MIME type.
+     */
     public static OntologicalClass mime_rdf_xml() {
         if (msmime_rdf_xml == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_rdf_xml", NS);
@@ -476,6 +582,9 @@ public final class OTRestClasses {
         return msmime_rdf_xml;
     }
 
+    /**
+     * Ontological class for the text/CSV MIME type.
+     */
     public static OntologicalClass mime_text_csv() {
         if (msmime_text_csv == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_text_csv", NS);
@@ -485,6 +594,9 @@ public final class OTRestClasses {
         return msmime_text_csv;
     }
 
+    /**
+     * Ontological class for the text/HTML MIME type.
+     */
     public static OntologicalClass mime_text_html() {
         if (msmime_text_html == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_text_html", NS);
@@ -494,6 +606,9 @@ public final class OTRestClasses {
         return msmime_text_html;
     }
 
+    /**
+     * Ontological class for the plain-text MIME type.
+     */
     public static OntologicalClass mime_text_plain() {
         if (msmime_text_plain == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_text_plain", NS);
@@ -503,6 +618,9 @@ public final class OTRestClasses {
         return msmime_text_plain;
     }
 
+    /**
+     * Ontological class for the text/URI-list MIME type.
+     */
     public static OntologicalClass mime_text_uri_list() {
         if (msmime_text_uri_list == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_text_uri_list", NS);
@@ -512,6 +630,9 @@ public final class OTRestClasses {
         return msmime_text_uri_list;
     }
 
+    /**
+     * Ontological class for the Weka ARFF MIME type.
+     */
     public static OntologicalClass mime_weka_arff() {
         if (msmime_weka_arff == null) {
             OntologicalClass clazz = new OntologicalClassImpl("mime_weka_arff", NS);
@@ -521,6 +642,9 @@ public final class OTRestClasses {
         return msmime_weka_arff;
     }
 
+    /**
+     * Ontological class for REST operations (using HTTP methods).
+     */
     public static OntologicalClass RESTOperation() {
         if (msRESTOperation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("RESTOperation", NS);
@@ -530,6 +654,9 @@ public final class OTRestClasses {
         return msRESTOperation;
     }
 
+    /**
+     * Ontological class for the DELETE REST operation.
+     */
     public static OntologicalClass DELETE_Operation() {
         if (msDELETE_Operation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DELETE_Operation", NS);
@@ -539,6 +666,9 @@ public final class OTRestClasses {
         return msDELETE_Operation;
     }
 
+    /**
+     * Ontological class for the GET REST operation.
+     */
     public static OntologicalClass GET_Operation() {
         if (msGET_Operation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Operation", NS);
@@ -548,6 +678,9 @@ public final class OTRestClasses {
         return msGET_Operation;
     }
 
+    /**
+     * An operation on an algorithm.
+     */
     public static OntologicalClass OperationAlgorithm() {
         if (msOperationAlgorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationAlgorithm", NS);
@@ -557,6 +690,9 @@ public final class OTRestClasses {
         return msOperationAlgorithm;
     }
 
+    /**
+     * An operation on a feature.
+     */
     public static OntologicalClass OperationFeature() {
         if (msOperationFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationFeature", NS);
@@ -566,6 +702,9 @@ public final class OTRestClasses {
         return msOperationFeature;
     }
 
+    /**
+     * An operation that requires compounds as input.
+     */
     public static OntologicalClass OperationInputCompound() {
         if (msOperationInputCompound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationInputCompound", NS);
@@ -575,6 +714,9 @@ public final class OTRestClasses {
         return msOperationInputCompound;
     }
 
+    /**
+     * An operation that requires datasets as input.
+     */
     public static OntologicalClass OperationInputDataset() {
         if (msOperationInputDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationInputDataset", NS);
@@ -584,6 +726,10 @@ public final class OTRestClasses {
         return msOperationInputDataset;
     }
 
+    /**
+     * An operation that processes features or in any other way uses 
+     * features as input.
+     */
     public static OntologicalClass OperationInputFeature() {
         if (msOperationInputFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationInputFeature", NS);
@@ -593,6 +739,9 @@ public final class OTRestClasses {
         return msOperationAlgorithm;
     }
 
+    /**
+     * Any operation on a Model.
+     */
     public static OntologicalClass OperationModel() {
         if (msOperationModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationModel", NS);
@@ -602,6 +751,10 @@ public final class OTRestClasses {
         return msOperationModel;
     }
 
+    /**
+     * An operation that does not necessarily return some response such
+     * as a DELETE operation.
+     */
     public static OntologicalClass OperationNoResult() {
         if (msOperationNoResult == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationNoResult", NS);
@@ -611,6 +764,9 @@ public final class OTRestClasses {
         return msOperationNoResult;
     }
 
+    /**
+     * An operation that results in an algorithm that is returned to the client.
+     */
     public static OntologicalClass OperationResultAlgorithm() {
         if (msOperationResultAlgorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultAlgorithm", NS);
@@ -620,6 +776,9 @@ public final class OTRestClasses {
         return msOperationResultAlgorithm;
     }
 
+    /**
+     * An operation that results in a dataset being created.
+     */
     public static OntologicalClass OperationResultDataset() {
         if (msOperationResultDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultDataset", NS);
@@ -629,6 +788,9 @@ public final class OTRestClasses {
         return msOperationResultDataset;
     }
 
+    /**
+     * An operation that results in a model being created.
+     */
     public static OntologicalClass OperationResultModel() {
         if (msOperationResultModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultModel", NS);
@@ -638,6 +800,9 @@ public final class OTRestClasses {
         return msOperationResultModel;
     }
 
+    /**
+     * An operation that results in a task being created.
+     */
     public static OntologicalClass OperationResultTask() {
         if (msOperationResultTask == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultTask", NS);
@@ -647,6 +812,9 @@ public final class OTRestClasses {
         return msOperationResultTask;
     }
 
+    /**
+     * An operation that results in a feature being created.
+     */
     public static OntologicalClass OperationResultFeature() {
         if (msOperationResultFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationResultFeature", NS);
@@ -656,6 +824,10 @@ public final class OTRestClasses {
         return msOperationResultFeature;
     }
 
+    /**
+     * An operation on a Task resource.
+     * @return 
+     */
     public static OntologicalClass OperationTask() {
         if (msOperationTask == null) {
             OntologicalClass clazz = new OntologicalClassImpl("OperationTask", NS);
@@ -665,6 +837,9 @@ public final class OTRestClasses {
         return msOperationTask;
     }
 
+    /**
+     * Ontological class for the POST REST operation.
+     */
     public static OntologicalClass POST_Operation() {
         if (msPOST_Operation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_Operation", NS);
@@ -674,6 +849,9 @@ public final class OTRestClasses {
         return msPOST_Operation;
     }
 
+    /**
+     * Ontological class for the PUT REST operation.
+     */
     public static OntologicalClass PUT_Operation() {
         if (msPUT_Operation == null) {
             OntologicalClass clazz = new OntologicalClassImpl("PUT_Operation", NS);
@@ -683,6 +861,9 @@ public final class OTRestClasses {
         return msPUT_Operation;
     }
 
+    /**
+     * A simple single-resource operation.
+     */
     public static OntologicalClass SingleResourceOp() {
         if (msSingleResourceOp == null) {
             OntologicalClass clazz = new OntologicalClassImpl("SingleResourceOp", NS);
@@ -692,6 +873,9 @@ public final class OTRestClasses {
         return msSingleResourceOp;
     }
 
+    /**
+     * Ontological class for and operation that deletes a feature.
+     */
     public static OntologicalClass DELETE_Feature() {
         if (msDELETE_Feature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DELETE_Feature", NS);
@@ -702,6 +886,9 @@ public final class OTRestClasses {
         return msDELETE_Feature;
     }
 
+    /**
+     * Ontological class for and operation that deletes a model.
+     */
     public static OntologicalClass DELETE_Model() {
         if (msDELETE_Model == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DELETE_Model", NS);
@@ -712,6 +899,9 @@ public final class OTRestClasses {
         return msDELETE_Model;
     }
 
+    /**
+     * Ontological class for and operation that deletes/cancels a task.
+     */
     public static OntologicalClass DELETE_Task() {
         if (msDELETE_Task == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DELETE_Task", NS);
@@ -722,6 +912,9 @@ public final class OTRestClasses {
         return msDELETE_Task;
     }
 
+    /**
+     * Ontological class for and operation that retrieves meta-data about an algorithm.
+     */
     public static OntologicalClass GET_Algorithm() {
         if (msGET_Algorithm == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Algorithm", NS);
@@ -734,6 +927,10 @@ public final class OTRestClasses {
         return msGET_Algorithm;
     }
 
+    /**
+     * Ontological class for and operation that retrieves a list
+     * of algorithms.
+     */
     public static OntologicalClass GET_Algorithms() {
         if (msGET_Algorithms == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Algorithm", NS);
@@ -745,6 +942,9 @@ public final class OTRestClasses {
         return msGET_Algorithms;
     }
 
+    /**
+     * Ontological class for any operation that retrieves meta-data about a feature.
+     */
     public static OntologicalClass GET_Feature() {
         if (msGET_Feature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Feature", NS);
@@ -757,6 +957,10 @@ public final class OTRestClasses {
         return msGET_Feature;
     }
 
+    /**
+     * Ontological class for any operation that retrieves a list
+     * of features.
+     */
     public static OntologicalClass GET_Features() {
         if (msGET_Features == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Features", NS);
@@ -768,6 +972,10 @@ public final class OTRestClasses {
         return msGET_Features;
     }
 
+    /**
+     * Ontological class for any operation that retrieves meta-data for
+     * an asynchronous task.
+     */
     public static OntologicalClass GET_Task() {
         if (msGET_Task == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Task", NS);
@@ -780,6 +988,10 @@ public final class OTRestClasses {
         return msGET_Task;
     }
 
+    /**
+     * Ontological class for any operation that retrieves a list
+     * of tasks.
+     */
     public static OntologicalClass GET_Tasks() {
         if (msGET_Tasks == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Tasks", NS);
@@ -791,6 +1003,10 @@ public final class OTRestClasses {
         return msGET_Tasks;
     }
 
+    /**
+     * Ontological class for a POST operation on an algorithm that
+     * creates a model.
+     */
     public static OntologicalClass POST_AlgorithmCreateModel() {
         if (msPOST_AlgorithmCreateModel == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmCreateModel", NS);
@@ -805,6 +1021,10 @@ public final class OTRestClasses {
         return msPOST_AlgorithmCreateModel;
     }
 
+    /**
+     * Ontological class for a POST operation on an algorithm that
+     * processes a compound.
+     */
     public static OntologicalClass POST_AlgorithmProcessCompound() {
         if (msPOST_AlgorithmProcessCompound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmProcessCompound", NS);
@@ -819,6 +1039,10 @@ public final class OTRestClasses {
         return msPOST_AlgorithmProcessCompound;
     }
 
+    /**
+     * Ontological class for a POST operation on an algorithm that
+     * (pre)processes a dataset.
+     */
     public static OntologicalClass POST_AlgorithmProcessDataset() {
         if (msPOST_AlgorithmProcessDataset == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_AlgorithmProcessDataset", NS);
@@ -833,6 +1057,9 @@ public final class OTRestClasses {
         return msPOST_AlgorithmProcessDataset;
     }
 
+    /**
+     * Ontological class for an POST operation on a feature.
+     */
     public static OntologicalClass POST_Feature() {
         if (msPOST_Feature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_Feature", NS);
@@ -843,6 +1070,9 @@ public final class OTRestClasses {
         return msPOST_Feature;
     }
 
+    /**
+     * A PUT operation on a feature.
+     */
     public static OntologicalClass PUT_Feature() {
         if (msPUT_Feature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("PUT_Feature", NS);
@@ -853,6 +1083,9 @@ public final class OTRestClasses {
         return msPUT_Feature;
     }
 
+    /**
+     * Any GET operation on a model.
+     */
     public static OntologicalClass GET_Model() {
         if (msGET_Model == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Model", NS);
@@ -865,6 +1098,10 @@ public final class OTRestClasses {
         return msGET_Model;
     }
 
+    /**
+     * Ontological class for any operation that retrieves a list
+     * of models.
+     */
     public static OntologicalClass GET_Models() {
         if (msGET_Models == null) {
             OntologicalClass clazz = new OntologicalClassImpl("GET_Models", NS) {
@@ -885,6 +1122,9 @@ public final class OTRestClasses {
         return msGET_Models;
     }
 
+    /**
+     * An OpenTox APIv1.2-compliant URI-template.
+     */
     public static OntologicalClass RESTTemplate() {
         if (msRESTTemplate == null) {
             OntologicalClass clazz = new OntologicalClassImpl("RESTTemplate", NS);
@@ -894,6 +1134,9 @@ public final class OTRestClasses {
         return msRESTTemplate;
     }
 
+    /**
+     * An OpenTox APIv1.2-compliant URI-template for algorithms.
+     */
     public static OntologicalClass AlgorithmTemplate() {
         if (msAlgorithmTemplate == null) {
             OntologicalClass clazz = new OntologicalClassImpl("AlgorithmTemplate", NS);
@@ -912,6 +1155,9 @@ public final class OTRestClasses {
         return msRESTTemplateAttribute;
     }
 
+    /**
+     * An OpenTox APIv1.2-compliant URI-template for Multi-Tasks.
+     */
     public static OntologicalClass MultiTaskTemplate() {
         if (msMultiTaskTemplate == null) {
             OntologicalClass clazz = new OntologicalClassImpl("MultiTaskTemplate", NS);
@@ -921,6 +1167,9 @@ public final class OTRestClasses {
         return msMultiTaskTemplate;
     }
 
+    /**
+     * An OpenTox APIv1.2-compliant URI-template for tasks.
+     */
     public static OntologicalClass TaskTemplate() {
         if (msTaskTemplate == null) {
             OntologicalClass clazz = new OntologicalClassImpl("TaskTemplate", NS);
@@ -930,6 +1179,9 @@ public final class OTRestClasses {
         return msTaskTemplate;
     }
 
+    /**
+     * Ontological class for an POST operation on a model.
+     */
     public static OntologicalClass POST_Model() {
         if (msPOST_Model == null) {
             OntologicalClass clazz = new OntologicalClassImpl("POST_Model", NS);
@@ -939,5 +1191,3 @@ public final class OTRestClasses {
         return msPOST_Model;
     }
 }
-
-

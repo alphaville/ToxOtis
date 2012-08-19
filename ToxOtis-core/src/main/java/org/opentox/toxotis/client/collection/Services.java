@@ -37,6 +37,7 @@ import org.opentox.toxotis.client.VRI;
 
 /**
  * A collection of URIs of services that participate in the OpenTox net.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -54,6 +55,12 @@ public class Services {
     private static final String _OPENTOX_ORG = "http://opentox.org/%s";
     private static final String _ANONYMOUS_ONG = "http://anonymous.org/%s";
 
+    /**
+     * Anonymous URI for general use. Use this base URI when you need
+     * just to specify an arbitrary identified.
+     * @return 
+     *      Anonymous URI.
+     */
     public static VRI anonymous() {
         try {
             return new VRI(String.format(_ANONYMOUS_ONG, ""));
@@ -62,6 +69,11 @@ public class Services {
         }
     }
 
+    /**
+     * The OpenTox main URI.
+     * @return 
+     *      OpenTox URI.
+     */
     public static VRI opentox() {
         try {
             return new VRI(String.format(_OPENTOX_ORG, ""));
@@ -70,6 +82,11 @@ public class Services {
         }
     }
 
+    /**
+     * URI of the NTUA (National Technical University of Athens) resources.
+     * @return 
+     *      NTUA URI.
+     */
     public static VRI ntua() {
         try {
             return new VRI(String.format(_NTUA_SERVICES, ""));
@@ -78,6 +95,11 @@ public class Services {
         }
     }
 
+    /**
+     * URI of services by IDEAconsult ltd.
+     * @return 
+     *      IDEAconsult URI.
+     */
     public static VRI ideaconsult() {
         try {
             return new VRI(String.format(_IDEACONSULT, ""));
@@ -86,6 +108,11 @@ public class Services {
         }
     }
 
+    /**
+     * Secure URI of resources with AMBIT at the University Plovdiv.
+     * @return 
+     *      AMBIT-plovdiv URI.
+     */
     public static VRI ambitUniPlovdiv() {
         try {
             return new VRI(String.format(_AMBIT_PLOVDIV, ""));
@@ -94,6 +121,11 @@ public class Services {
         }
     }
 
+    /**
+     * Development version of TUM resources.
+     * @return 
+     *      TUM URI.
+     */
     public static VRI tumDev() {
         try {
             return new VRI(String.format(_TUM_DEV, ""));
@@ -102,6 +134,11 @@ public class Services {
         }
     }
 
+    /**
+     * URI of the central SSO server.
+     * @return 
+     *      SSO server URI.
+     */
     public static VRI sso() {
         try {
             return new VRI(_SSO_SERVER);
@@ -117,18 +154,40 @@ public class Services {
 
         private static final VRI NTUA_ALGORITHM = ntua().augment("algorithm");
 
+        /**
+         * Multiple Linear Regression.
+         * 
+         * @return
+         *      MLR algorithm URI.
+         */
         public static VRI mlr() {
             return NTUA_ALGORITHM.augment("mlr");
         }
 
+        /**
+         * Support Vector Machine.
+         * @return 
+         *      SVN algorithm URI.
+         */
         public static VRI svm() {
             return NTUA_ALGORITHM.augment("svm");
         }
 
-        public static VRI leverages() {
+        /**
+         * Leverage DoA.
+         * 
+         * @return
+         *      Leverage DoA algorithm URI.
+         */
+        public static VRI leverage() {
             return NTUA_ALGORITHM.augment("leverages");
         }
 
+        /**
+         * Generic Dataset Filter.
+         * @return
+         *      Filter algorithm URI.
+         */
         public static VRI filter() {
             return NTUA_ALGORITHM.augment("filter");
         }
@@ -139,6 +198,9 @@ public class Services {
      */
     public static class Depiction {
 
+        /**
+         * AMBIT CKD-based depiction.
+         */
         public static VRI ambitCdkImage() {
             try {
                 return new VRI(_AMBIT_PLOVDIV).augment("depict", "cdk");
@@ -147,6 +209,10 @@ public class Services {
             }
         }
 
+        /**
+         * 
+         * AMBIT Daylight depiction service.
+         */
         public static VRI ambitDaylightImage() {
             try {
                 return new VRI(_AMBIT_PLOVDIV).augment("depict", "daylight");
@@ -155,6 +221,10 @@ public class Services {
             }
         }
 
+        /**
+         * 
+         * AMBIT CACTVS-based depiction service.
+         */
         public static VRI ambitCactvsImage() {
             try {
                 return new VRI(_AMBIT_PLOVDIV).augment("depict", "cactvs");
@@ -163,14 +233,26 @@ public class Services {
             }
         }
 
+        /**
+         * 
+         * IDEAconsult CDK-based depiction service.
+         */
         public static VRI ideaCdkImage() {
             return ideaconsult().augment("depict", "cdk");
         }
 
+        /**
+         * 
+         * IDEAconsult DAYLIGHT-based depiction service.
+         */
         public static VRI ideaDaylightImage() {
             return ideaconsult().augment("depict", "daylight");
         }
 
+        /**
+         * 
+         * IDEAconsult CACTVS-based depiction service.
+         */
         public static VRI ideaCactvsImage() {
             return ideaconsult().augment("depict", "cactvs");
         }
@@ -181,6 +263,9 @@ public class Services {
      */
     public static class SingleSignOn {
 
+        /**
+         * SSO Identity service.
+         */
         public static VRI ssoIdentity() {
             try {
                 return new VRI(String.format(_SSO_IDENTITY, ""));
@@ -189,6 +274,9 @@ public class Services {
             }
         }
 
+        /**
+         * SSO Authentication service
+         */
         public static VRI ssoAuthenticate() {
             try {
                 return new VRI(String.format(_SSO_IDENTITY, "authenticate?uri=service=openldap"));
@@ -197,6 +285,9 @@ public class Services {
             }
         }
 
+        /**
+         * SSO policy service.
+         */
         public static VRI ssoPolicy() {
             try {
                 return new VRI(String.format(_SSO_POLICY, ""));
@@ -205,6 +296,10 @@ public class Services {
             }
         }
 
+        /**
+         * SSO Old Policy service.
+         * @deprecated 
+         */
         @Deprecated
         public static VRI ssoPolicyOld() {
             try {
@@ -214,6 +309,9 @@ public class Services {
             }
         }
 
+        /**
+         * SSO Attributes service.
+         */
         public static VRI ssoAttributes() {
             try {
                 return new VRI(String.format(_SSO_IDENTITY, "attributes"));
@@ -222,6 +320,9 @@ public class Services {
             }
         }
 
+        /**
+         * SSO identity validation service.
+         */
         public static VRI ssoValidate() {
             try {
                 return new VRI(String.format(_SSO_IDENTITY, "isTokenValid"));
@@ -230,6 +331,9 @@ public class Services {
             }
         }
 
+        /**
+         * SSO logout/token-invalidation service.
+         */
         public static VRI ssoInvalidate() {
             try {
                 return new VRI(String.format(_SSO_IDENTITY, "logout"));
@@ -238,6 +342,9 @@ public class Services {
             }
         }
 
+        /**
+         * SSO authorization service.
+         */
         public static VRI ssoAuthorize() {
             try {
                 return new VRI(String.format(_SSO_IDENTITY, "authorize"));
@@ -252,10 +359,16 @@ public class Services {
      */
     public static class DescriptorCalculation {
 
+        /**
+         * JOElib service.
+         */
         public static VRI joelib() {
             return Services.tumDev().augment("algorithm", "JOELIB2");
         }
 
+        /**
+         * CDK physicochemical calculation service.
+         */
         public static VRI cdkPhysChem() {
             return Services.tumDev().augment("algorithm", "CDKPhysChem");
         }
