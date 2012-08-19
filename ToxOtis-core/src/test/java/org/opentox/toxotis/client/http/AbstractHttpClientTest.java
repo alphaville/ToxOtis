@@ -30,14 +30,17 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.client.http;
 
+import java.io.IOException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
+import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
@@ -72,18 +75,27 @@ public class AbstractHttpClientTest {
     public void tearDown() {
     }
 
-    //@Test
-    public void testSomeMethod() throws ServiceInvocationException {
+    @Test
+    public void testSomeMethod() throws ServiceInvocationException, IOException {
         PostHttpClient poster = new PostHttpClient(Services.ntua().augment("bibtex"));
         poster.setMediaType(Media.APPLICATION_RDF_XML);
-        poster.post();        
+        poster.post();
         ErrorReport er = new ErrorReportSpider(poster.getResponseOntModel()).parse();
-        System.out.println(er.getMessage());
+        assertEquals(HttpStatusCodes.Forbidden.getStatus(), poster.getResponseCode());
+        assertNotNull(er);
+        assertNotNull(er.getMessage());
+        assertNotNull(er.getActor());
+        assertTrue(er.getActor().contains("(Client)"));
+        assertNotNull(er.getDetails());
+        assertEquals(HttpStatusCodes.Forbidden.getStatus(), er.getHttpStatus());
+        poster.close();
     }
 
     @Test
     public void testPOst() throws Exception {
-        if (true) return ;
+        if (true) {
+            return;
+        }
         PostHttpClient client = new PostHttpClient(new VRI("http://alphaville:4000/algorithm/mlr"));
         client.setContentType(Media.APPLICATION_RDF_XML);
         client.setPostable(new Feature().asOntModel());
@@ -94,5 +106,13 @@ public class AbstractHttpClientTest {
         System.out.println(er.getHttpStatus());
         assertEquals(client.getResponseCode(), er.getHttpStatus());
     }
-
+    
+    @Test
+    public void testSimpleGetRequest() throws Exception {
+        IGetClient get = ClientFactory.createGetClient(new VRI("http://www.ntua.gr"));
+        get.setMediaType("text/html");
+        assertNotNull(get.getResponseText());
+        assertNotNull(get.getResponseContentType());
+        get.close();
+    }
 }
