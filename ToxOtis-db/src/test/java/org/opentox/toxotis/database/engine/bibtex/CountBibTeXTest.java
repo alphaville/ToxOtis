@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.global.DbConfiguration;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
@@ -23,7 +24,7 @@ public class CountBibTeXTest {
 
      @BeforeClass
     public static void setUpClass() throws Exception {
-        assertTrue(DataSourceFactory.getInstance().ping(10));
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass

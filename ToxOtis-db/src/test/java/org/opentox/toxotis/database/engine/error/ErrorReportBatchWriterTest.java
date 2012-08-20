@@ -34,6 +34,7 @@
 
 package org.opentox.toxotis.database.engine.error;
 
+import org.opentox.toxotis.database.pool.DataSourceFactory;
 import java.sql.SQLException;
 import java.util.UUID;
 import org.junit.After;
@@ -56,10 +57,12 @@ public class ErrorReportBatchWriterTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        DataSourceFactory.getInstance().close();
     }
 
     @Before

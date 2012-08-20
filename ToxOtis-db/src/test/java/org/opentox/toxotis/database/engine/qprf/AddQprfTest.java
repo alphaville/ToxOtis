@@ -55,6 +55,7 @@ public class AddQprfTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass
@@ -71,27 +72,27 @@ public class AddQprfTest {
 
     @Test
     public void testAddReport() throws DbException {
-//        ROG rog = new ROG();
-//        for (int i = 1; i < 10; i++) {
-//            System.out.println(rog.nextString(10));
-//        }
-//
-//        if (true) {
-//            return;
-//        }
-//        QprfReport report = rog.nextReport(4);
-//        AddQprf qprfAdder = new AddQprf(report);
-//        System.out.println(qprfAdder.write());
-//        qprfAdder.close();
-//
-//        ListQprf lister = new ListQprf();
-//        lister.setWhere(String.format("id='%s'", report.getUri().getId()));
-//        IDbIterator<String> iterator = lister.list();
-//
-//        if (!iterator.hasNext()) {
-//            fail("Report not added!");
-//        }
-//        lister.close();
+        ROG rog = new ROG();
+        for (int i = 1; i < 10; i++) {
+            System.out.println(rog.nextString(10));
+        }
+
+        if (true) {
+            return;
+        }
+        QprfReport report = rog.nextReport(4);
+        AddQprf qprfAdder = new AddQprf(report);
+        //System.out.println(qprfAdder.write());
+        qprfAdder.close();
+
+        ListQprf lister = new ListQprf();
+        lister.setWhere(String.format("id='%s'", report.getUri().getId()));
+        IDbIterator<String> iterator = lister.list();
+
+        if (!iterator.hasNext()) {
+            fail("Report not added!");
+        }
+        lister.close();
 
     }
 }

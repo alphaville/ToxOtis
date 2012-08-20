@@ -53,7 +53,7 @@ class DataSourceC3P0 implements IDataSourceC3P0 {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (final ClassNotFoundException ex) {
             final String msg = "Driver com.mysql.jdbc.Driver not found";
-            logger.error(msg,ex);
+            logger.error(msg, ex);
             throw new DbException(msg, ex);
         }
         datasource = new ComboPooledDataSource();  // create a new datasource object

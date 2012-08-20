@@ -62,6 +62,7 @@ public class UpdateTaskTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        org.opentox.toxotis.database.TestUtils.setUpDB();
         AddTask adder = new AddTask(__ROG.nextTask(1));
         adder.write();
         adder.close();

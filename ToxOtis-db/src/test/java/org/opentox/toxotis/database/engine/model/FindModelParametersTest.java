@@ -59,7 +59,7 @@ public class FindModelParametersTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        assertTrue(DataSourceFactory.getInstance().ping(10));
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass

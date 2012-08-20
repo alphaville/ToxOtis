@@ -32,7 +32,6 @@
  */
 package org.opentox.toxotis.database.engine.bibtex;
 
-import java.io.IOException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,6 +40,7 @@ import org.junit.Test;
 import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.global.DbConfiguration;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
@@ -54,7 +54,7 @@ public class ListBibTeXTest {
 
      @BeforeClass
     public static void setUpClass() throws Exception {
-        assertTrue(DataSourceFactory.getInstance().ping(10));
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass

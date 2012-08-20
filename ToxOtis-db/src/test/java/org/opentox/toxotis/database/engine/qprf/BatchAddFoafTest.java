@@ -70,8 +70,7 @@ public class BatchAddFoafTest {
     @Test
     public void testAddFoaf() throws DbException {
 //        ROG rog = new ROG();
-//        QprfReport report = rog.nextReport(5);
-//        BatchAddFoaf foafAdder = new BatchAddFoaf(report.getAuthors());
+//        BatchAddFoaf foafAdder = new BatchAddFoaf(rog.nextVri());
 //        assertEquals(5, foafAdder.write());
 //        foafAdder.close();
     }

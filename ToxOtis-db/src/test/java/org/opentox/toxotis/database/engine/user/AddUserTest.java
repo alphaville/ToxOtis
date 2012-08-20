@@ -32,10 +32,6 @@
  */
 package org.opentox.toxotis.database.engine.user;
 
-import java.util.Random;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,7 +40,6 @@ import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.ROG;
-import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 import static org.junit.Assert.*;
@@ -60,7 +55,7 @@ public class AddUserTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        assertTrue(DataSourceFactory.getInstance().ping(10));
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass

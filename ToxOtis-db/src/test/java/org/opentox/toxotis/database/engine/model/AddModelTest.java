@@ -71,7 +71,7 @@ public class AddModelTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        DataSourceFactory.getInstance().ping(10);
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass

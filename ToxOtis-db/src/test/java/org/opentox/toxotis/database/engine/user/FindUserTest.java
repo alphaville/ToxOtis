@@ -38,7 +38,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.DbIterator;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.ROG;
 import static org.junit.Assert.*;
@@ -56,7 +55,7 @@ public class FindUserTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        assertTrue(DataSourceFactory.getInstance().ping(10));
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass

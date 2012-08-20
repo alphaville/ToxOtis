@@ -56,6 +56,7 @@ public class ListModelTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass

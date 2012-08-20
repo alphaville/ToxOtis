@@ -56,8 +56,8 @@ public class FindModelFeaturesTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        org.opentox.toxotis.database.TestUtils.setUpDB();
         new AddModelTest().testWriteBruteForce();
-        assertTrue(DataSourceFactory.getInstance().ping(10));
     }
 
     @AfterClass

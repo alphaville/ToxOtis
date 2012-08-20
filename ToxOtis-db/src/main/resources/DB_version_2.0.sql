@@ -1,9 +1,9 @@
 -- 
 -- DATABASE VERSION : 2.1.0
 --
-DROP DATABASE IF EXISTS `toxotisdb2`;
-CREATE DATABASE `toxotisdb2` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `toxotisdb2`;
+DROP DATABASE IF EXISTS `toxotisdb2Test`;
+CREATE DATABASE `toxotisdb2Test` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `toxotisdb2Test`;
 --
 -- Version
 --

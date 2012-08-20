@@ -38,9 +38,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.database.engine.error.FindErrorTest;
-import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
-import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.database.global.DbConfiguration;
 import static org.junit.Assert.*;
 
 /**
@@ -54,7 +52,7 @@ public class DataSourceFactoryTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        assertTrue(DataSourceFactory.getInstance().ping(10));
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass
@@ -78,6 +76,7 @@ public class DataSourceFactoryTest {
             Connection connection = factory.getDataSource().getConnection();
             assertNotNull(connection);
             assertTrue(factory.ping(50));
+            assertEquals("TEST00001==/", DbConfiguration.getInstance().getProperpties().getProperty("key"));
         } catch (Exception ex) {
             fail("Database is inaccessible! " + ex);
         }

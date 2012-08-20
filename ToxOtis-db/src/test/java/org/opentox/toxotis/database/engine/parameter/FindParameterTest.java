@@ -66,7 +66,7 @@ public class FindParameterTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        DataSourceFactory.getInstance().ping(100);
+        org.opentox.toxotis.database.TestUtils.setUpDB();
         new AddModelTest().testAddAndFindModel();
     }
 

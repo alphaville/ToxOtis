@@ -49,6 +49,7 @@ import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.ROG;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.database.global.DbConfiguration;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import static org.junit.Assert.*;
@@ -67,7 +68,7 @@ public class AddBibTeXTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        assertTrue(DataSourceFactory.getInstance().ping(10));
+        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass
