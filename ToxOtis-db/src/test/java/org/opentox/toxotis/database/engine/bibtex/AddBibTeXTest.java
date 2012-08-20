@@ -68,6 +68,7 @@ public class AddBibTeXTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        DbConfiguration.setC3p0PropertiedFile(DbConfiguration.TEST_C3P0_FILE);
         org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 

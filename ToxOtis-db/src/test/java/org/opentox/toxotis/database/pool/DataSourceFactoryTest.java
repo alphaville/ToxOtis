@@ -32,6 +32,7 @@
  */
 package org.opentox.toxotis.database.pool;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.sql.Connection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -72,11 +73,26 @@ public class DataSourceFactoryTest {
     public void testInvokeDataSource() {
         try {
             DataSourceFactory factory = DataSourceFactory.getInstance();
-            
+
             Connection connection = factory.getDataSource().getConnection();
             assertNotNull(connection);
             assertTrue(factory.ping(50));
-            assertEquals("TEST00001==/", DbConfiguration.getInstance().getProperpties().getProperty("key"));
+//            assertEquals("TEST00001==/", DbConfiguration.getInstasnce().getProperpties().getProperty("key"));
+            assertEquals("jdbc:mysql://localhost:3306/toxotisdb2Test?useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8",
+                    DataSourceFactory.getInstance().getConnection().getMetaData().getURL());
+            ComboPooledDataSource ds = (ComboPooledDataSource) DataSourceFactory.getInstance().getDataSource();
+            assertEquals(1025, ds.getMaxPoolSize());
+            assertEquals(51, ds.getMinPoolSize());
+            assertEquals(99, ds.getInitialPoolSize());
+            assertEquals(3, ds.getAcquireIncrement());
+            assertEquals(48, ds.getAcquireRetryAttempts());
+            assertEquals(1077, ds.getAcquireRetryDelay());
+            assertEquals(111, ds.getNumHelperThreads());
+            assertEquals(0, ds.getCheckoutTimeout());
+            assertTrue(ds.isTestConnectionOnCheckin());
+            assertTrue(ds.isTestConnectionOnCheckout());
+            assertNotNull(ds.getUser());
+            assertNotNull(ds.getPassword());            
         } catch (Exception ex) {
             fail("Database is inaccessible! " + ex);
         }

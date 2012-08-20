@@ -69,6 +69,14 @@ CREATE TABLE `User` (
   KEY `index_user_maxParallelTasks` (`maxParallelTasks`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 --
+-- Table `User` is initialized with some data
+--
+LOCK TABLE `User` WRITE;
+INSERT INTO `User` (`uid`,`name`,`mail`,`password`,`maxParallelTasks`,`maxModels`,`maxBibTeX`) 
+VALUES ('guest@opensso.in-silico.ch','Guest','anonymous@anonymous.org',
+             '{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H',5,2000,2000);
+UNLOCK TABLE ;
+--
 -- BibTeX references
 -- 
 DROP TABLE IF EXISTS `BibTeX`;
@@ -110,8 +118,7 @@ CREATE TABLE `BibTeX` (
     REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 --
--- Foreign Features (most probably on different servers)
--- Note: OUR Features are found in JFeature
+-- Foreign Features (possibly on different servers)
 -- 
 DROP TABLE IF EXISTS `Feature`;
 CREATE TABLE `Feature` (
@@ -247,7 +254,7 @@ CREATE TABLE `ErrorReport` (
     REFERENCES `ErrorReport` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 --
--- Asunchronous Tasks
+-- Asynchronous Tasks
 --
 DROP TABLE IF EXISTS `Task`;
 CREATE TABLE `Task` (
@@ -289,43 +296,45 @@ CREATE TABLE `ModelBibTeX` (
 DROP TABLE IF EXISTS `Conformer`;
 CREATE TABLE `Conformer` (
   `id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `molecularStructure` TEXT COLLATE utf8_bin,
+  `representation` varchar(255) COLLATE utf8_bin,
+  `reliability` int(11) unsigned DEFAULT 0, 
   PRIMARY KEY (`id`),
   CONSTRAINT `id_in_conformer_references_OTComponent` FOREIGN KEY (`id`) 
     REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 --
--- Molecular Representation
+-- Register some conformers in the database:
 --
-DROP TABLE IF EXISTS `Representation`;
-CREATE TABLE `Representation` (
-  `id` varchar(255) COLLATE utf8_bin NOT NULL,
-  `molecularStructure` TEXT COLLATE utf8_bin,
-  `representation` varchar(255) COLLATE utf8_bin,
-  `reliability` int(11) unsigned DEFAULT 0, 
-  PRIMARY KEY (`id`),
-  CONSTRAINT `id_represent_references_OTComponent` FOREIGN KEY (`id`) 
-    REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+LOCK TABLE `OTComponent` WRITE;
+INSERT IGNORE INTO `OTComponent` (`id`) VALUES ('benzene'); 
+UNLOCK TABLE;
+LOCK TABLE `Conformer` WRITE;
+INSERT IGNORE INTO `Conformer` (`id`,`molecularStructure`,`representation`,`reliability`) 
+  VALUES ('benzene','c1cccc1c','smiles',5); 
+UNLOCK TABLE;
 --
 -- Local features
--- OUR Features: When a client creates a feature on our server, it is stored 
--- in this table. The table Feature holds links to features in foreign/remote
--- servers.
 --
 DROP TABLE IF EXISTS `JFeature`;
 CREATE TABLE `JFeature` (
   `id` varchar(255) COLLATE utf8_bin NOT NULL,
   `units` text  COLLATE utf8_bin NOT NULL,
-  `type` SET('num','nom','str','dat') NOT NULL,  
-  `createdBy` varchar(255) COLLATE utf8_bin DEFAULT 'guest@opensso.in-silico.ch',
+  `type` varchar(255) COLLATE utf8_bin NOT NULL,  
   PRIMARY KEY (`id`),
   CONSTRAINT `id_in_jfeature_references_OTComponent` FOREIGN KEY (`id`) 
-    REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `jfeature_user_reference` FOREIGN KEY (`createdBy`) 
-    REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-
+INSERT INTO JFeature (id,units,type) VALUES 
+('smiles','','String'),
+('inchi','','String'),
+('inchiKey','','String'),
+('synonyms','','String'),
+('casrn','','String'),
+('regDate','','String'),
+('mw','g/mol','Numeric'),
+('iupacName','','String');
 --
 -- Features Values
 --
@@ -401,13 +410,9 @@ CREATE TABLE `DatasetFeatures` (
   CONSTRAINT `datasetId_REF2` FOREIGN KEY (`datasetId`) REFERENCES `Dataset` (`id`),
   CONSTRAINT `featureId_REF2` FOREIGN KEY (`featureId`) REFERENCES `JFeature` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-
--- *****************************************************************************
--- *****************************************************************************
---                  Some Triggers...
--- *****************************************************************************
--- *****************************************************************************
+--
+-- Some Triggers...
+--
 DELIMITER $$
 CREATE TRIGGER `bibtex_trigger_create` BEFORE INSERT ON BibTeX
 FOR EACH ROW BEGIN
@@ -428,3 +433,29 @@ FOR EACH ROW BEGIN
     DELETE FROM `OTComponent` WHERE OTComponent.`id`=OLD.id;
 END $$
 DELIMITER ;
+--
+-- Initialization of BibTeX...
+--
+LOCK TABLE `BibTeX` WRITE;
+INSERT INTO `BibTeX` 
+(`id`,`abstract`,`address`,`annotation`,`author`,`bibType`,
+ `bookTitle`,`chapter`,`copyright`, `crossref`,`edition`,`editor`,
+ `isbn` ,`issn` ,`journal`,`bibkey` ,`keywords`,`number` ,`pages` ,
+ `series`,`title` ,  `url` ,`volume` ,`year` ,`createdBy`) VALUES 
+( 'caco2', 
+  'The correlations between Caco-2 permeability (logPapp) and molecular properties have been investigated. A training set of 77 structurally diverse organic molecules was used to construct significant QSAR models for Caco-2 cell permeation. Cellular permeation was found to depend primarily upon experimental distribution coefficient (logD) at pH = 7.4, high charged polar surface area (HCPSA), and radius of gyration (rgyr). Among these three descriptors, logD may have the largest impact on diffusion through Caco-2 cell because logD shows obvious linear correlation with logPapp (r=0.703) when logD is smaller than 2.0. High polar surface area will be unfavorable to achieve good Caco-2 permeability because higher polar surface area will introduce stronger H-bonding interactions between Caco-2 cells and drugs. The comparison among HCPSA, PSA (polar surface area), and TPSA (topological polar surface area) implies that high-charged atoms may be more important to the interactions between Caco-2 cell and drugs. Besides logD and HCPSA, rgyr is also closely connected with Caco-2 permeabilities. The molecules with larger rgyr are more difficult to cross Caco-2 monolayers than those with smaller rgyr. The descriptors included in the prediction models permit the interpretation in structural terms of the passive permeability process, evidencing the main role of lipholiphicity, H-bonding, and bulk properties. Besides these three molecular descriptors, the influence of other molecular descriptors was also investigated. From the calculated results, it can be found that introducing descriptors concerned with molecular flexibility can improve the linear correlation. The resulting model with four descriptors bears good statistical significance, n = 77, r = 0.82, q = 0.79, s = 0.45, F = 35.7. The actual predictive abilities of the QSAR model were validated through an external validation test set of 23 diverse compounds. The predictions for the tested compounds are as the same accuracy as the compounds of the training set and significantly better than those predicted by using the model reported. The good predictive ability suggests that the proposed model may be a good tool for fast screening of logPapp for compound libraries or large sets of new chemical entities via combinatorial chemistry synthesis.',
+  'College of Chemistry and Molecular Engineering, Peking University, Beijing 100871, China', 
+  NULL, 'T. J. Hou, W. Zhang, K. Xia, X. B. Qiao, and X. J. Xu' , 
+  'Article',NULL,NULL,'Copyright &copy; 2004 American Chemical Society',
+  NULL,NULL,NULL,NULL,NULL,'J. Chem. Inf. Comput. Sci.',NULL,NULL,
+  5 , '1585-1600' , 'ADME Evaluation in Drug Discovery' , 
+  'Correlation of Caco-2 Permeation with Simple Molecular Properties', 
+  'http://pubs.acs.org/doi/abs/10.1021/ci049884m' ,44,2004,'guest@opensso.in-silico.ch'),
+( 'FastRbfNn-Sarimveis-Alexandridis-Bafas', 
+  'A new algorithm for training radial basis function neural networks is presented in this paper. The algorithm, which is based on the subtractive clustering technique, has a number of advantages compared to the traditional learning algorithms, including faster training times and more accurate predictions. Due to these advantages the method proves suitable for developing models for complex nonlinear systems.',
+  'National Technical University of Athens, School of Chemical Engineering, 9 Heroon Polytechniou str., Zografou Campus, Athens 15780, Greece',
+   NULL,'Sarimveis H., Alexandridis A., Bafas G.','Article',NULL,NULL,'Copyright &copy; 2003 Elsevier Science B.V. All rights reserved.',
+   NULL,NULL,NULL,NULL,NULL,'Neurocomputing',NULL,'Radial basis function networks, Training algorithms, Model selection',NULL,'501-505',NULL,
+   'A fast training algorithm for RBF networks based on subtractive clustering',
+   'http://dx.doi.org/10.1016/S0925-2312(03)00342-4' ,51,2003,'guest@opensso.in-silico.ch');
+UNLOCK TABLE ;

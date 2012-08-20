@@ -34,6 +34,7 @@ package org.opentox.toxotis.database.pool;
 
 import javax.sql.DataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import java.util.Properties;
 import java.util.UUID;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.global.DbConfiguration;
@@ -57,7 +58,25 @@ class DataSourceC3P0 implements IDataSourceC3P0 {
             throw new DbException(msg, ex);
         }
         datasource = new ComboPooledDataSource();  // create a new datasource object
-        datasource.setProperties(DbConfiguration.getInstance().getProperpties());
+        /*
+         * Setup the JDBC URL manually to make sure that things 
+         * work as expected.
+         */
+        Properties stdProperties = DbConfiguration.getInstance().getProperpties();
+        Properties prescribedProps = stdProperties != null ? stdProperties : new Properties();
+        datasource.setJdbcUrl(prescribedProps.getProperty("c3p0.jdbcUrl"));
+        datasource.setMaxPoolSize(Integer.valueOf(prescribedProps.getProperty("c3p0.maxPoolSize", "1000")));
+        datasource.setMinPoolSize(Integer.valueOf(prescribedProps.getProperty("c3p0.minPoolSize", "50")));
+        datasource.setInitialPoolSize(Integer.valueOf(prescribedProps.getProperty("c3p0.initialPoolSize", "100")));
+        datasource.setAcquireIncrement(Integer.valueOf(prescribedProps.getProperty("c3p0.acquireIncrement", "3")));
+        datasource.setAcquireRetryAttempts(Integer.valueOf(prescribedProps.getProperty("c3p0.acquireRetryAttempts", "50")));
+        datasource.setAcquireRetryDelay(Integer.valueOf(prescribedProps.getProperty("c3p0.acquireRetryDelay", "1000")));
+        datasource.setNumHelperThreads(Integer.valueOf(prescribedProps.getProperty("c3p0.numHelperThreads", "110")));
+        datasource.setTestConnectionOnCheckin(Boolean.valueOf(prescribedProps.getProperty("c3p0.testConnectionOnCheckin", "true")));
+        datasource.setTestConnectionOnCheckout(Boolean.valueOf(prescribedProps.getProperty("c3p0.testConnectionOnCheckout", "true")));
+        datasource.setUser(prescribedProps.getProperty("c3p0.user"));
+        datasource.setPassword(prescribedProps.getProperty("c3p0.password"));               
+        datasource.setProperties(stdProperties);
         logger.info("Acquired datasource [".concat(ticket).concat("]".concat(" with properties... ".concat(datasource.getProperties().toString()))));
 
     }
