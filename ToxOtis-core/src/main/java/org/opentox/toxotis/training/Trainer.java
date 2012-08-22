@@ -117,8 +117,8 @@ public class Trainer {
         client.post();
         String response = client.getResponseText();
         try {
-            int status = client.getResponseCode();
-            if (status == 202) {
+            int status = client.getResponseCode();            
+            if (status == 202) {                
                 return new TaskSpider(new VRI(response)).parse();
             } else {
                 Task task = new Task();

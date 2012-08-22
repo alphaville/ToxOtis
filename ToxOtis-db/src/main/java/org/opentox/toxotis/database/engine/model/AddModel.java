@@ -251,9 +251,9 @@ public class AddModel extends DbWriter {
                     writeParamComponent.setInt(2, prmHash);
                     writeParamComponent.addBatch();
                 }
-            }
             writeParamMeta.executeBatch();
             writeParamComponent.executeBatch();
+            }
 
 
             /*
