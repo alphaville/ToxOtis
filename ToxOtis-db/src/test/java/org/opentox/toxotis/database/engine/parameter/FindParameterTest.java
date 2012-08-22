@@ -85,7 +85,7 @@ public class FindParameterTest {
 
     @Test
     public void testAddParameter() throws Exception {
-
+        System.out.println("#testAddParameter");
         ListModel modelLister = new ListModel();
         IDbIterator<String> it = modelLister.list();
         String modelUri = null;
@@ -99,12 +99,16 @@ public class FindParameterTest {
         Parameter p = new Parameter(Services.ntua().augment(
                 "parameter", System.currentTimeMillis()),
                 "x", new LiteralValue(5, XSDDatatype.XSDbyte));
-        p.setScope(null);
+        p.setScope(Parameter.ParameterScope.OPTIONAL);
+        assertEquals(Parameter.ParameterScope.OPTIONAL, p.getScope());
+        
+        
         AddParameter adder = new AddParameter(p, modelVri);
         adder.write();
         adder.close();
 
         FindParameter finder = new FindParameter(Services.anonymous());
+        finder.setSearchById(p.getUri().getId());
         IDbIterator<Parameter> iterator = finder.list();
         boolean hasNext = false;
         if (iterator.hasNext()) {
@@ -118,7 +122,7 @@ public class FindParameterTest {
 
     @Test
     public void testAddParameterNullMeta() throws Exception {
-
+        System.out.println("#testAddParameterNullMeta");
         ListModel lister = new ListModel();
         lister.setPageSize(1);
         IDbIterator<String> iter = lister.list();
@@ -159,6 +163,7 @@ public class FindParameterTest {
 
     @Test
     public void testAddFindParameter() throws Exception {
+        System.out.println("#testAddFindParameter");
         ListModel modelLister = new ListModel();
         IDbIterator<String> it = modelLister.list();
         String modelUri = null;

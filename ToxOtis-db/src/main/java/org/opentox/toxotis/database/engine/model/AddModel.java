@@ -42,15 +42,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.exception.DbException;
+import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.MetaInfoBlobber;
 
 /**
@@ -62,18 +60,29 @@ public class AddModel extends DbWriter {
 
     private final Model model;
     private Statement modelStatement = null;
+    private PreparedStatement writeParamMeta = null;
+    private PreparedStatement writeParamComponent = null;
     private PreparedStatement writeMeta = null;
     private PreparedStatement writeFeature = null;
     private PreparedStatement writeComponent = null;
     private PreparedStatement writeModel = null;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddModel.class);
-    private final String insertFeatureSql = "INSERT IGNORE Feature (uri, units) VALUES (?,?)";//write all features (if not already)
-    private final String insertMeta = "INSERT IGNORE INTO MetaInfo (id, meta) VALUES (?,compress(?))";
-    private final String insertModelAsComponentTemplate = "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,?)";//write component stuff related to model
-    private final String insertModelSqlTemplate = "INSERT INTO Model (id, createdBy, algorithm, localCode, dataset, actualModel) VALUES ('%s', ?,?,?,?,compress(?))";//write model (blob is compressed)
-    private final String insertModelDependentFeatures = "INSERT INTO ModelDepFeatures (modelId,featureUri,idx) VALUES ";//write model dep. feature
-    private final String insertModelIndependentFeatures = "INSERT INTO ModelIndepFeatures (modelId,featureUri,idx) VALUES ";//write model indep. features
-    private final String insertModelPredictedFeatures = "INSERT INTO ModelPredictedFeatures (modelId,featureUri,idx) VALUES ";//write model pred. features
+    private static final String INSERT_FEATURE =
+            "INSERT IGNORE Feature (uri, units) VALUES (?,?)";//write all features (if not already)
+    private static final String INSERT_META =
+            "INSERT IGNORE INTO MetaInfo (id, meta) VALUES (?,compress(?))";
+    private static final String INSERT_COMPONENT =
+            "INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,?)";//write component stuff related to model
+    private static final String INSERT_COMPONENT_FS =
+            "INSERT IGNORE OTComponent (id,enabled,meta) VALUES (?,true,?)";//write component stuff related to param
+    private static final String INSERT_MODEL =
+            "INSERT INTO Model (id, createdBy, algorithm, localCode, dataset, actualModel) VALUES ('%s', ?,?,?,?,compress(?))";//write model (blob is compressed)
+    private static final String INSERT_MODEL_DEPF =
+            "INSERT INTO ModelDepFeatures (modelId,featureUri,idx) VALUES ";//write model dep. feature
+    private static final String INSERT_MODEL_IDEPF =
+            "INSERT INTO ModelIndepFeatures (modelId,featureUri,idx) VALUES ";//write model indep. features
+    private static final String INSERT_MODEL_PREDF =
+            "INSERT INTO ModelPredictedFeatures (modelId,featureUri,idx) VALUES ";//write model pred. features
 
     public AddModel(Model model) throws NullPointerException {
         if (model == null) {
@@ -135,8 +144,8 @@ public class AddModel extends DbWriter {
     @Override
     public int write() throws DbException {
 
-        String insertModelAsComponent = String.format(insertModelAsComponentTemplate, model.getUri().getId());
-        String insertModelSql = String.format(insertModelSqlTemplate, model.getUri().getId());
+        String insertModelAsComponent = String.format(INSERT_COMPONENT, model.getUri().getId());
+        String insertModelSql = String.format(INSERT_MODEL, model.getUri().getId());
 
         Connection connection = getConnection();
 
@@ -157,9 +166,9 @@ public class AddModel extends DbWriter {
              * Prepare statements
              */
             if (model.getMeta() != null) {
-                writeMeta = connection.prepareStatement(insertMeta);
+                writeMeta = connection.prepareStatement(INSERT_META);
             }
-            writeFeature = connection.prepareStatement(insertFeatureSql);
+            writeFeature = connection.prepareStatement(INSERT_FEATURE);
             writeComponent = connection.prepareStatement(insertModelAsComponent);
             writeModel = connection.prepareStatement(insertModelSql);
 
@@ -195,12 +204,9 @@ public class AddModel extends DbWriter {
                 writeMeta.executeUpdate();
             }
 
-
             /*
              * Write model in the database
              */
-            // INSERT INTO OTComponent (id,enabled,meta) VALUES ('%s',?,?)
-            // INSERT INTO `Model` (createdBy, algorithm, localCode, dataset, actualModel) VALUES ('%s', ?,?,?,?)
             writeComponent.setBoolean(1, model.isEnabled());
             if (model.getMeta() != null) {
                 writeComponent.setInt(2, model.getMeta().hashCode());
@@ -220,19 +226,50 @@ public class AddModel extends DbWriter {
             writeModel.executeUpdate();
 
             /*
+             * Before proceeding write Parameters as OTComponents
+             *  1. Write their metadata (if any)
+             *  2. Add params as components
+             */
+            if (model.getParameters() != null && !model.getParameters().isEmpty()) {
+                writeParamMeta = connection.prepareStatement(INSERT_META);
+                writeParamComponent = connection.prepareStatement(INSERT_COMPONENT_FS);
+                for (Parameter p : model.getParameters()) {
+                    MetaInfo prmMeta = p.getMeta();
+                    int prmHash = prmMeta.hashCode();
+                    writeParamMeta.setInt(1, prmHash);
+                    MetaInfoBlobber blobber = new MetaInfoBlobber(prmMeta);
+                    try {
+                        Blob blob = blobber.toBlob();
+                        writeParamMeta.setBlob(2, blob);
+                    } catch (final Exception ex) {
+                        logger.error("MetaInfo cannot be serialized!", ex);
+                        throw new DbException(ex);
+                    }
+                    writeParamMeta.addBatch();
+
+                    writeParamComponent.setString(1, p.getUri().getId());
+                    writeParamComponent.setInt(2, prmHash);
+                    writeParamComponent.addBatch();
+                }
+            }
+            writeParamMeta.executeBatch();
+            writeParamComponent.executeBatch();
+
+
+            /*
              * Dependent, Independent, Predicted features
              */
             modelStatement = connection.createStatement();
             if (model.getDependentFeatures() != null) {
-                String depFeatSQL = prepareQueryForFeatureRelations(insertModelDependentFeatures, model.getDependentFeatures());
+                String depFeatSQL = prepareQueryForFeatureRelations(INSERT_MODEL_DEPF, model.getDependentFeatures());
                 modelStatement.addBatch(depFeatSQL);
             }
             if (model.getIndependentFeatures() != null) {
-                String indepFeatSQL = prepareQueryForFeatureRelations(insertModelIndependentFeatures, model.getIndependentFeatures());
+                String indepFeatSQL = prepareQueryForFeatureRelations(INSERT_MODEL_IDEPF, model.getIndependentFeatures());
                 modelStatement.addBatch(indepFeatSQL);
             }
             if (model.getPredictedFeatures() != null) {
-                String predFeatSQL = prepareQueryForFeatureRelations(insertModelPredictedFeatures, model.getPredictedFeatures());
+                String predFeatSQL = prepareQueryForFeatureRelations(INSERT_MODEL_PREDF, model.getPredictedFeatures());
                 modelStatement.addBatch(predFeatSQL);
             }
             if (model.getParameters() != null && !model.getParameters().isEmpty()) {
@@ -277,7 +314,7 @@ public class AddModel extends DbWriter {
                     writeFeature.close();
                 } catch (SQLException ex) {
                     final String msg = "SQL exception occured while closing the SQL statement for "
-                            + "adding a model in the database : ".concat(insertFeatureSql);
+                            + "adding a model in the database : ".concat(INSERT_FEATURE);
                     logger.warn(msg, ex);
                     sqlOnClose = ex;
                 }
@@ -287,7 +324,7 @@ public class AddModel extends DbWriter {
                     writeMeta.close();
                 } catch (SQLException ex) {
                     final String msg = "SQL exception occured while closing the SQL statement for "
-                            + "adding a model in the database : ".concat(insertMeta != null ? insertMeta : "N/A");
+                            + "adding a model in the database : ".concat(INSERT_META != null ? INSERT_META : "N/A");
                     logger.warn(msg, ex);
                     sqlOnClose = ex;
                 }
@@ -298,6 +335,26 @@ public class AddModel extends DbWriter {
                 } catch (SQLException ex) {
                     final String msg = "SQL exception occured while closing the SQL statement for "
                             + "adding a model in the database : ".concat(insertModelSql != null ? insertModelSql : "N/A");
+                    logger.warn(msg, ex);
+                    sqlOnClose = ex;
+                }
+            }
+            if (writeParamMeta != null) {
+                try {
+                    writeParamMeta.close();
+                } catch (SQLException ex) {
+                    final String msg = "SQL exception occured while closing the SQL statement for "
+                            + "adding a model in the database : ".concat(INSERT_META != null ? INSERT_META : "N/A");
+                    logger.warn(msg, ex);
+                    sqlOnClose = ex;
+                }
+            }
+            if (writeParamComponent != null) {
+                try {
+                    writeParamComponent.close();
+                } catch (SQLException ex) {
+                    final String msg = "SQL exception occured while closing the SQL statement for "
+                            + "adding a model in the database : ".concat(INSERT_COMPONENT_FS != null ? INSERT_COMPONENT_FS : "N/A");
                     logger.warn(msg, ex);
                     sqlOnClose = ex;
                 }

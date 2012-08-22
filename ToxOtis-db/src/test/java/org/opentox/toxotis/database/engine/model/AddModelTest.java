@@ -32,7 +32,6 @@
  */
 package org.opentox.toxotis.database.engine.model;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,16 +43,13 @@ import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.client.collection.Services;
-import org.opentox.toxotis.core.component.Feature;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.ROG;
-import org.opentox.toxotis.database.engine.error.FindErrorTest;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 import org.opentox.toxotis.ontology.ResourceValue;
-import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import static org.junit.Assert.*;
 
 /**
@@ -89,6 +85,7 @@ public class AddModelTest {
 
     @Test
     public synchronized void testWriteBruteForce() throws InterruptedException {
+        System.out.println("#testWriteBruteForce");
         int poolSize = 50;
         int folds = 5 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
@@ -101,7 +98,6 @@ public class AddModelTest {
                         new AddModelTest().testAddModel();
                     } catch (final Throwable ex) {
                         failure = ex;
-                        ex.printStackTrace();
                     }
                 }
             });
@@ -119,6 +115,7 @@ public class AddModelTest {
 
     @Test
     public synchronized void testWriteAndFindBruteForce() throws InterruptedException {
+        System.out.println("#testWriteAndFindBruteForce");
         int poolSize = 50;
         int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
@@ -131,7 +128,6 @@ public class AddModelTest {
                         new AddModelTest().testAddAndFindModel();
                     } catch (final Throwable ex) {
                         failure = ex;
-                        ex.printStackTrace();
                     }
                 }
             });
@@ -149,16 +145,28 @@ public class AddModelTest {
 
     @Test
     public synchronized void testAddModel() throws Exception {
+        System.out.println("#testAddModel");
         Model m = _ROG_.nextModel();
         m.setMeta(null);
         AddModel adder = new AddModel(m);
         adder.write();
         adder.close();
+        
+        FindModel finder = new FindModel(Services.anonymous());
+        finder.setSearchById(m.getUri().getId());
+        IDbIterator<Model> iterator = finder.list();
+        assertTrue(iterator.hasNext());
+        Model foundModel = iterator.next();
+        assertFalse(foundModel.getParameters().isEmpty());
+        assertEquals(2, foundModel.getParameters().size());
+        iterator.close();
+        finder.close();
 
     }
 
     @Test
     public synchronized void testAddAndFindModel() throws Exception {
+        System.out.println("#testAddAndFindModel");
         Model m = _ROG_.nextModel();
         AddModel adder = null;
         try {
@@ -253,6 +261,7 @@ public class AddModelTest {
 
     @Test
     public void testAddModelNoFeatures() throws Exception {
+        System.out.println("#testAddModelNoFeatures");
         Model m = _ROG_.nextModel();
         m.setDependentFeatures(null);
         m.setIndependentFeatures(null);
@@ -284,6 +293,7 @@ public class AddModelTest {
 
     @Test
     public void testModelNullMeta() throws Exception {
+        System.out.println("#testModelNullMeta");
         Model m = _ROG_.nextModel();
         m.setMeta(null);
         AddModel adder = null;
@@ -311,6 +321,7 @@ public class AddModelTest {
 
     @Test
     public void testModelNoUser() throws Exception {
+        System.out.println("#testModelNoUser");
         Model m = _ROG_.nextModel();
         m.setMeta(null);
         m.setCreatedBy(null);
@@ -335,15 +346,19 @@ public class AddModelTest {
     @Test
     public void testModelMeta() throws Exception {
         //TODO: Implementation WANTED!
+        System.out.println("#testModelMeta");
+        
     }
 
     @Test
     public void testModelCreator() throws Exception {
         //TODO: Implementation WANTED!
+        System.out.println("#testModelCreator");
     }
 
     @Test
     public void testModelFeatureUnits() throws Exception {
         //TODO: Implementation WANTED!
+        System.out.println("#testModelFeatureUnits");
     }
 }

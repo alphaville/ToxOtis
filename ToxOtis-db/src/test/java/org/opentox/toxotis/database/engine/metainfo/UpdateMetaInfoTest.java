@@ -63,10 +63,11 @@ public class UpdateMetaInfoTest {
 
     @Test
     public void testSomeMethod() throws DbException {
+        final ROG rog = new ROG();
         UpdateMetaInfo updater = new UpdateMetaInfo();
         updater.setUpdateMode(UpdateMetaInfo.UpdateMode.REPLACE);
-        updater.setComponentId("000188c6-530f-4eb8-a993-941f3809002a");
-        updater.setMeta(new MetaInfoImpl().addComment(new ROG().nextString(20)));
+        updater.setComponentId("0002a659-6b9f-40e1-83a1-4437ea71ec75");
+        updater.setMeta(new MetaInfoImpl().addComment(rog.nextString(20)));
         assertEquals(2, updater.update());
         updater.close();
     }

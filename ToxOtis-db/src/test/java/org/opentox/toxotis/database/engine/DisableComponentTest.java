@@ -66,30 +66,29 @@ public class DisableComponentTest {
     }
 
     @After
-    public void tearDown() {        
+    public void tearDown() {
     }
 
     @Test
     public void testALot() throws Exception {
-        for (int i=0;i<5;i++){
-            testSomeMethod();
+        System.out.println("#testALot");
+        for (int i = 0; i < 5; i++) {
+            testDisable();
         }
     }
 
-    
     @Test
     public void testEnableDisable() throws Exception {
-        
+        System.out.println("#testEnableDisable");
     }
-    
-    @Test
-    public void testSomeMethod() throws Exception {
 
+    @Test
+    public void testDisable() throws Exception {
+        System.out.println("#testDisable");
         ListModel list = new ListModel();
         list.setPageSize(1);
         IDbIterator<String> modelIt = list.list();
         String toBeDeleted = null;
-        System.out.println();
         while (modelIt.hasNext()) {
             toBeDeleted = modelIt.next();
             new DisableComponent(modelIt.next(), "no such thing!").disable();

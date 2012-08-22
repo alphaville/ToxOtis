@@ -30,51 +30,43 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.ontology;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.sql.Blob;
-import javax.sql.rowset.serial.SerialBlob;
+package org.opentox.toxotis.database.engine.parameter;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.ontology.LiteralValue;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class MetaInfoBlobber {
-
-    private final MetaInfo meta;
-
-    public MetaInfoBlobber(final MetaInfo meta) {
-        this.meta = meta;
+public class AddParameterTest {
+    
+    public AddParameterTest() {
     }
 
-    public MetaInfo getMeta() {
-        return meta;
+    @BeforeClass
+    public static void setUpClass() throws Exception {
     }
 
-    public Blob toBlob() throws Exception {
-        if (meta == null) {
-            return null;
-        }
-        Blob blob = new SerialBlob(getBytes());
-        return blob;
-
+    @AfterClass
+    public static void tearDownClass() throws Exception {
     }
 
-    private byte[] getBytes() throws java.io.IOException {
-        Object obj = meta;
-        if (obj == null) {
-            return null;
-        }
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(bos);
-        oos.writeObject(obj);
-        oos.flush();
-        oos.close();
-        bos.close();
-        byte[] data = bos.toByteArray();
-        return data;
+    @Test
+    public void testAddParameter() {
+        System.out.println("#testAddParameter");
+        ROG rog = new ROG();
+        Parameter p = new Parameter(Services.anonymous().augment("parameter",rog.nextLong()), 
+                "gamma", new LiteralValue<Double>(10.4d, XSDDatatype.XSDdouble));
+        p.setScope(Parameter.ParameterScope.OPTIONAL);
+        AddParameter adder = new AddParameter(p, null);
     }
 }
