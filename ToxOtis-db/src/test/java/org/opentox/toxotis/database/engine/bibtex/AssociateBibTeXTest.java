@@ -101,7 +101,7 @@ public class AssociateBibTeXTest {
             assertNotNull(bibTexList);
             assertFalse(bibTexList.isEmpty());
             for (VRI bibtexUri : bibTexList) {
-                System.out.println(bibTexList);
+                assertNotNull(bibtexUri);
             }
         }
     }

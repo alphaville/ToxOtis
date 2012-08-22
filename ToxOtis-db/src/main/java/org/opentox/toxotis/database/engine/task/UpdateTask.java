@@ -65,7 +65,7 @@ public class UpdateTask extends DbUpdater {
     private boolean updateId = false;
     private boolean updateAndRegisterErrorReport = false;
     private String newId = null;
-    private static final String __META = "INSERT IGNORE INTO MetaInfo (id,meta) VALUES (?,?)";
+    private static final String __META = "INSERT IGNORE INTO MetaInfo (id,meta) VALUES (?,compress(?))";
     private static final String __COMPONENT = "UPDATE OTComponent SET %s WHERE id=?";
     private static final String __TASK = "UPDATE Task SET %s WHERE id=?";
     private PreparedStatement metaInsertPS;
@@ -232,16 +232,20 @@ public class UpdateTask extends DbUpdater {
             if (updateMeta) {
                 metaInsertPS = connection.prepareStatement(__META);
                 MetaInfo meta = newTask.getMeta();
+                
                 metaInsertPS.setInt(1, meta.hashCode());
                 MetaInfoBlobber blobber = new MetaInfoBlobber(meta);
+                Blob blob = null;
                 try {
-                    Blob blob = blobber.toBlob();
+                    blob = blobber.toBlob();
                     metaInsertPS.setBlob(2, blob);
-                } catch (Exception ex) {
-                    Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (final Exception ex) {
+                    logger.error("Meta Blobbing Exception", ex);
+                    throw new DbException(ex);
                 }
                 metaInsertPS.executeUpdate();
             }
+
             /**
              * Update OTComponent with the new meta data and new ID
              */
@@ -249,56 +253,64 @@ public class UpdateTask extends DbUpdater {
                 otComponentUpdatePS = connection.prepareStatement(getComponentUpdateSql());
                 if (updateMeta) {
                     int metaHashCode = newTask.getMeta().hashCode();
-                    otComponentUpdatePS.setInt(1, metaHashCode);
+                    otComponentUpdatePS.setInt(componentPsMapping.get("meta"), metaHashCode);
+                    otComponentUpdatePS.setString(componentPsMapping.size() + 1, taskId);//WHERE clause
                 }
-                otComponentUpdatePS.setString(2, newId);
-                try{
+                if (updateId) {
+                    otComponentUpdatePS.setString(componentPsMapping.get("id"), newId);
+                }
                 otComponentUpdatePS.executeUpdate();
-                } catch (Exception e){
-                }
             }
 
             /*
              * Update task
              */
-            taskUpdatePS = connection.prepareStatement(getTaskUpdateSql());           
-            if (updateDuration) {
-                taskUpdatePS.setLong(taskPsMapping.get("duration"), newTask.getDuration());
+
+            if (doUpdateTask()) {
+                taskUpdatePS = connection.prepareStatement(getTaskUpdateSql());
+                if (updateDuration) {
+                    taskUpdatePS.setLong(taskPsMapping.get("duration"), newTask.getDuration());
+                }
+                if (updateErrorReport) {
+                    taskUpdatePS.setString(taskPsMapping.get("errorReport"),
+                            newTask.getErrorReport().getUri().getId());
+                }
+                if (updateHttpStatus) {
+                    taskUpdatePS.setFloat(taskPsMapping.get("httpStatus"),
+                            newTask.getHttpStatus());
+                }
+                if (updatePercentageCompleted) {
+                    taskUpdatePS.setFloat(taskPsMapping.get("percentageCompleted"),
+                            newTask.getPercentageCompleted());
+                }
+                if (updateResultUri) {
+                    taskUpdatePS.setString(taskPsMapping.get("resultUri"),
+                            newTask.getResultUri().toString());
+                }
+                if (updateTaskStatus) {
+                    taskUpdatePS.setString(taskPsMapping.get("status"),
+                            newTask.getStatus().toString());
+                }
+                taskUpdatePS.setString(taskPsMapping.get("id"), newTask.getUri().getId());
+                taskUpdatePS.executeUpdate();
             }
-            if (updateErrorReport) {
-                taskUpdatePS.setString(taskPsMapping.get("errorReport"),
-                        newTask.getErrorReport().getUri().getId());
-            }
-            if (updateHttpStatus) {
-                taskUpdatePS.setFloat(taskPsMapping.get("httpStatus"),
-                        newTask.getHttpStatus());
-            }
-            if (updatePercentageCompleted) {
-                taskUpdatePS.setFloat(taskPsMapping.get("percentageCompleted"),
-                        newTask.getPercentageCompleted());
-            }
-            if (updateResultUri) {
-                taskUpdatePS.setString(taskPsMapping.get("resultUri"),
-                        newTask.getResultUri().toString());
-            }
-            if (updateTaskStatus) {
-                taskUpdatePS.setString(taskPsMapping.get("status"),
-                        newTask.getStatus().toString());
-            }
-            taskUpdatePS.setString(taskPsMapping.get("id"), newTask.getUri().getId());
-            taskUpdatePS.executeUpdate();
 
             connection.commit();
 
-        } catch (final SQLException ex) {
+        } catch (SQLException ex) {
+            logger.warn("UpdateTask::Failure", ex);
             throw new DbException(ex);
         }
 
         return -1;
     }
 
+    private boolean doUpdateTask() {
+        return updateDuration || updateErrorReport || updateHttpStatus
+                || updatePercentageCompleted || updateResultUri || updateTaskStatus;
+    }
+
     @Override
     public void close() throws DbException {
-        super.close();
     }
 }

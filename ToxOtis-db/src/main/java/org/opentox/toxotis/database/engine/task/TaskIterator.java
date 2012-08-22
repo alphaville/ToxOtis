@@ -55,35 +55,35 @@ import org.opentox.toxotis.ontology.MetaInfoDeblobber;
  * @author Pantelis Sopasakis
  */
 public class TaskIterator extends DbIterator<Task> {
-
+    
     private final VRI baseVri;
     private boolean resolveErrorReport = false;
     private boolean resolveUser = false;
     private ICache<String, User> usersCache = new Cache<String, User>();
     private ICache<String, ErrorReport> errorReportCache = new Cache<String, ErrorReport>();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TaskIterator.class);
-
+    
     public TaskIterator(final ResultSet rs, final VRI baseUri) {
         super(rs);
         this.baseVri = baseUri;
     }
-
+    
     public boolean isResolveErrorReport() {
         return resolveErrorReport;
     }
-
+    
     public void setResolveErrorReport(boolean resolveErrorReport) {
         this.resolveErrorReport = resolveErrorReport;
     }
-
+    
     public boolean isResolveUser() {
         return resolveUser;
     }
-
+    
     public void setResolveUser(boolean resolveUser) {
         this.resolveUser = resolveUser;
     }
-
+    
     @Override
     public Task next() throws DbException {
         // "id", "resultUri", "httpStatus", "percentageCompleted", "status", "duration", "errorReport", "createdBy"
@@ -91,7 +91,7 @@ public class TaskIterator extends DbIterator<Task> {
         Task t = new Task();
         try {
             t.setUri(new VRI(baseVri).augment("task", rs.getString("Task.id")));
-
+            
             String resultUriString = rs.getString("Task.resultUri");
             if (resultUriString != null) {
                 try {
@@ -104,14 +104,14 @@ public class TaskIterator extends DbIterator<Task> {
             } else {
                 t.setResultUri(null);
             }
-
+            
             t.setHttpStatus(rs.getFloat("httpStatus"));
             t.setPercentageCompleted(rs.getFloat("percentageCompleted"));
             t.setStatus(Task.Status.valueOf(rs.getString("status")));
             t.setDuration(rs.getLong("duration"));
-
+            
             String errorReportString = rs.getString("errorReport");
-
+            
             if (errorReportString != null) {
                 ErrorReport er = errorReportCache.get(errorReportString);
                 if (er == null) {
@@ -129,9 +129,9 @@ public class TaskIterator extends DbIterator<Task> {
                 }                
                 t.setErrorReport(er);
             }
-
+            
             String taskCreator = rs.getString("createdBy");
-
+            
             if (taskCreator != null) {
                 User user = usersCache.get(taskCreator);//try to get the user from the cache.
                 if (user == null) {// if user is not found in cache, create it and put it there!
@@ -151,10 +151,9 @@ public class TaskIterator extends DbIterator<Task> {
                 }
                 t.setCreatedBy(user);
             }
-
+            
             boolean isTaskEnabled = rs.getBoolean("OTComponent.enabled");
             t.setEnabled(isTaskEnabled);
-
             Blob metablob = rs.getBlob(10);
             if (metablob != null) {
                 MetaInfoDeblobber deblodder = new MetaInfoDeblobber(metablob);
@@ -162,9 +161,9 @@ public class TaskIterator extends DbIterator<Task> {
                 t.setMeta(mi);
                 metablob.free();
             }
-
+            
         } catch (final SQLException ex) {
-            logger.debug("next task cannot be retrieved",ex);
+            logger.debug("next task cannot be retrieved", ex);
             throw new DbException(ex);
         }
         return t;

@@ -77,7 +77,7 @@ public class ErrorReportBatchWriterTest {
     public void testSomeMethod() throws SQLException {
         // TODO review the generated test code and remove the default call to fail.
         ErrorReport er = new ErrorReport(200, "fdsag", "agtdsfd", "asdfsaf", "jyfrggr");
-        System.out.println(er.getUri().getId());
+        assertNotNull(er.getUri().getId());
         
         
     }

@@ -92,7 +92,7 @@ public class DisableComponentTest {
         System.out.println();
         while (modelIt.hasNext()) {
             toBeDeleted = modelIt.next();
-            System.out.println(new DisableComponent(modelIt.next(), "no such thing!").disable());
+            new DisableComponent(modelIt.next(), "no such thing!").disable();
         }
         modelIt.close();
         list.close();

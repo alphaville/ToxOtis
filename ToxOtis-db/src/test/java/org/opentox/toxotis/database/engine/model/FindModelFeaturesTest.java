@@ -62,9 +62,7 @@ public class FindModelFeaturesTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        System.out.println("Shuting down the pool...");
         DataSourceFactory.getInstance().close();
-        System.out.println("OK");
     }
 
     @Before
@@ -88,7 +86,7 @@ public class FindModelFeaturesTest {
         FindModelFeatures finder = new FindModelFeatures(FindModelFeatures.SEARCH_MODE.DEPENDENT,modelId);
         List<Feature> list = finder.list();
         for (Feature f : list){
-            System.out.println(f.getUri());
+            assertNotNull(f.getUri());
         }
         finder.close();
     }

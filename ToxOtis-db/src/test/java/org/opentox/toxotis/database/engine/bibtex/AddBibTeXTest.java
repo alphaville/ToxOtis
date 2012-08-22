@@ -153,7 +153,7 @@ public class AddBibTeXTest {
         assertEquals(1, writer.write());
         writer.close();
 
-        System.out.println(bt.getUri().getId());
+        assertNotNull(bt.getUri().getId());
 
         FindBibTeX finder = new FindBibTeX(Services.anonymous());
         finder.setSearchById(bt.getUri().getId());

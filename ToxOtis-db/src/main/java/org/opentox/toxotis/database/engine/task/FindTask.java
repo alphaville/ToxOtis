@@ -71,7 +71,8 @@ public class FindTask extends DbReader<Task> {
     public IDbIterator<Task> list() throws DbException {
         setTable("Task");
         setTableColumns("Task.id", "Task.resultUri", "Task.httpStatus", "Task.percentageCompleted",
-                "Task.status", "Task.duration", "Task.errorReport", "Task.createdBy", "OTComponent.enabled", "uncompress(MetaInfo.meta)");
+                "Task.status", "Task.duration", "Task.errorReport", "Task.createdBy", 
+                "OTComponent.enabled", "uncompress(MetaInfo.meta)");
         setInnerJoin("OTComponent ON Task.id=OTComponent.id "
                 + "LEFT JOIN MetaInfo ON OTComponent.meta=MetaInfo.id");
         if (!includeDisabled) {
@@ -95,9 +96,6 @@ public class FindTask extends DbReader<Task> {
             logger.warn(null, ex);
             throw new DbException(ex);
         } 
-//        finally {
-            // Do Nothing:  The client is expected to close the statement and the connection
-//        }
     }
 
     @Override
