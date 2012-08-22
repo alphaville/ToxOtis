@@ -160,7 +160,7 @@ public class TrainerTest {
 
         ModelSpider modelSpider = new ModelSpider(task.getResultUri(), at);
         Model model = modelSpider.parse();
-        modelSpider.close();
+        modelSpider.close();                
 
         assertNotNull(model);
         Set<Parameter> modelParameters = model.getParameters();
@@ -179,6 +179,11 @@ public class TrainerTest {
         if (failParamGammaNotFound) {
             fail("Parameter missing from model!");
         }
+        /*
+         * Post some part of the training set to the model and get predictions...
+         * 
+         */
+        System.out.println(model.getUri());
     }
 
     @Test

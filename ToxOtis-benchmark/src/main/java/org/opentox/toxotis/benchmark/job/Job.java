@@ -25,6 +25,8 @@ public abstract class Job implements Runnable {
     protected Comparable parameter;
     private int iterations;
     private List<Gauge> gauges;
+    
+    private static final int HASH_OFFSET = 7, HASH_MOD = 89;
 
     /**
      * This method must be implemented for the Job to be functional. One can
@@ -43,6 +45,7 @@ public abstract class Job implements Runnable {
         this.gauges = new ArrayList<Gauge>();
     }
 
+    @Override
     public void run() {
         try {
             /* Constructs Two-Dimensinal List that will hold all measurements from all Gauges
@@ -209,9 +212,9 @@ public abstract class Job implements Runnable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + (this.title != null ? this.title.hashCode() : 0);
-        hash = 89 * hash + (this.parameter != null ? this.parameter.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.title != null ? this.title.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.parameter != null ? this.parameter.hashCode() : 0);
         return hash;
     }
 }

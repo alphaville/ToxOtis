@@ -16,13 +16,13 @@
         <developer>
             <name>Sopasakis Pantelis</name>
             <organization>NTUA</organization>
-            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <organizationUrl>http://opentox.ntua.gr</organizationUrl>
             <url>https://github.com/alphaville</url>
         </developer>
         <developer>
             <name>Charalampos Chomenides</name>
             <organization>NTUA</organization>
-            <organizationUrl>https://opentox.ntua.gr</organizationUrl>
+            <organizationUrl>http://opentox.ntua.gr</organizationUrl>
             <url>https://github.com/hampos</url>
         </developer>
     </developers>
@@ -82,6 +82,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-
 </project>

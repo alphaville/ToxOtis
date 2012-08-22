@@ -1,9 +1,9 @@
 -- 
 -- DATABASE VERSION : 2.1.0
 --
-DROP DATABASE IF EXISTS `toxotisdb2Test`;
-CREATE DATABASE `toxotisdb2Test` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `toxotisdb2Test`;
+DROP DATABASE IF EXISTS `toxotisdb2`;
+CREATE DATABASE `toxotisdb2` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `toxotisdb2`;
 --
 -- Version
 --
@@ -326,15 +326,6 @@ CREATE TABLE `JFeature` (
     REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO JFeature (id,units,type) VALUES 
-('smiles','','String'),
-('inchi','','String'),
-('inchiKey','','String'),
-('synonyms','','String'),
-('casrn','','String'),
-('regDate','','String'),
-('mw','g/mol','Numeric'),
-('iupacName','','String');
 --
 -- Features Values
 --
@@ -458,4 +449,16 @@ INSERT INTO `BibTeX`
    NULL,NULL,NULL,NULL,NULL,'Neurocomputing',NULL,'Radial basis function networks, Training algorithms, Model selection',NULL,'501-505',NULL,
    'A fast training algorithm for RBF networks based on subtractive clustering',
    'http://dx.doi.org/10.1016/S0925-2312(03)00342-4' ,51,2003,'guest@opensso.in-silico.ch');
+UNLOCK TABLE ;
+
+LOCK TABLE `JFeature` WRITE;
+INSERT INTO JFeature (id,units,type) VALUES 
+('smiles','','String'),
+('inchi','','String'),
+('inchiKey','','String'),
+('synonyms','','String'),
+('casrn','','String'),
+('regDate','','String'),
+('mw','g/mol','Numeric'),
+('iupacName','','String');
 UNLOCK TABLE ;

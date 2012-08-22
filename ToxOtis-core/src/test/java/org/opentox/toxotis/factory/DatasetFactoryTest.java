@@ -1,11 +1,16 @@
 package org.opentox.toxotis.factory;
 
 import java.io.File;
+import java.io.InputStream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.IClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -31,7 +36,7 @@ public class DatasetFactoryTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Test(timeout=25000)
+    //@Test(timeout=25000)
     public void testPublishDataset() throws Exception {
         File f = new File(CompoundFactory.class.getClassLoader().getResource("samples/sample.sdf").toURI());
         assertTrue(f.exists());
@@ -47,5 +52,14 @@ public class DatasetFactoryTest {
         assertNotNull(t.getResultUri());
         VRI resultVri = t.getResultUri();
         assertEquals(OTClasses.dataset(), resultVri.getOntologicalClass());
+    }
+    
+    @Test
+    public void testFromArff() throws Exception {
+        IClient cli = ClientFactory.createGetClient(Services.ideaconsult().augment("dataset","R545"));
+        cli.setMediaType(Media.WEKA_ARFF);
+        InputStream stream = cli.getRemoteStream();
+        Dataset ds = DatasetFactory.getInstance().createFromArff(stream);
+        System.out.println(ds.getInstances());
     }
 }

@@ -32,14 +32,11 @@
  */
 package org.opentox.toxotis.util;
 
-import java.net.URISyntaxException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -78,8 +75,8 @@ public class SuperPredictorTest {
     @Test
     public void testPredict() throws Exception {
         AuthenticationToken at = new AuthenticationToken("hampos", "arabela");
-        VRI modelVri = new VRI("http://opentox.ntua.gr:8080/model/059d8bf0-cccc-4ad1-ad40-d15a663894fc");
-        VRI compoundVri = new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/101");
+        VRI modelVri = new VRI("http://opentox.ntua.gr:8080/model/3094c2dc-7c86-474b-87a6-037ec5065221");
+        VRI compoundVri = new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/100");
         SuperPredictor predictor = new SuperPredictor(compoundVri, modelVri, at);
         predictor.prediction();
     }
