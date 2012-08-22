@@ -30,56 +30,38 @@
  * tel. +30 210 7723236
  *
  */
+package org.opentox.toxotis.database.engine;
 
-
-package org.opentox.toxotis.database.engine.error;
-
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.database.exception.DbException;
-import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
  * @author chung
  */
-public class ListErrorTest {
+public class ROGTest {
 
-    public ListErrorTest() {
+    public ROGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        DataSourceFactory.getInstance().close();
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void testSomeMethod() throws DbException {
-        ListError list = new ListError();
-        IDbIterator<String> it = list.list();
-        while (it.hasNext()){
-            assertNotNull(it.next());
+    @Test(timeout = 25000)// Speed and Robustness test
+    public void testNextRandom() {
+        ROG rog = new ROG();
+        for (int i = 1; i < 500; i++) {
+            rog.nextMeta();
+            rog.nextBibTeX();
+            rog.nextUser();
+            rog.nextVri();
         }
-        it.close();
-        list.close();
     }
-
 }

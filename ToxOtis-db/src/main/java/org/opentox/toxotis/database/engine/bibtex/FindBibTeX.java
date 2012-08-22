@@ -168,9 +168,10 @@ public class FindBibTeX extends DbReader<BibTeX> {
             return it;
         } catch (SQLException ex) {
             throw new DbException(ex);
-        } finally {
+        } 
+//        finally {
             // Do Nothing:  The client is expected to close the statement and the connection
-        }
+//        }
     }
 
     @Override

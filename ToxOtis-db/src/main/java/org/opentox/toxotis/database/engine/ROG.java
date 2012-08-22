@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.database.engine;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -71,9 +70,18 @@ public class ROG {
 
     private static final Random RNG = new SecureRandom();
     private static final String STRING_SEED = getSeed(255);
+    private static final int SEED_MOD = 19, SEED_OFF = 71,
+            ACTOR_LN = 255, DETAILS_LN = 2000,
+            ERROR_CODE_LENGTH = 255, HTTP_STATUS_MAX = 50000,
+            VRI_LEN = 100, MAIL_LN = 234,
+            AUDIENCE_BIG = 255, SMALL_AUDIENCE = 2,
+            BIG_COMMENT = 1000, SMALL_COMMENT = 145, SEEDING_FRAC = 62,
+            STD_LN = 255, CTRB_LEN = 1050, CREATOR_LN = 120, CREATOR_LN_BIG = 580,
+            RIGHTS_LN = 5046, ISBN_LN = 15, KEY_LN = 41, HUGE_LN = 8503,
+            PAR0=2031, PAR1=4998, PAR2=10403, PAR3=12000, HTTP_STATUS = 407;
 
     public ROG() {
-        RNG.setSeed(System.currentTimeMillis() * 19 + 71);
+        RNG.setSeed(System.currentTimeMillis() * SEED_MOD + SEED_OFF);
     }
 
     private UUID nextUuid() {
@@ -82,16 +90,16 @@ public class ROG {
     }
 
     public Task.Status nextTaskStatus() {
-        int randomChoice = RNG.nextInt(5) + 1;
+        int randomChoice = RNG.nextInt(Task.Status.values().length);
         return Task.Status.values()[randomChoice];
     }
 
     public ErrorReport nextErrorReport(int nTrace) {
         ErrorReport er = new ErrorReport(Services.anonymous().augment("error", nextUuid().toString()));
-        er.setActor(nextString(255));
-        er.setDetails(nextString(2000));
-        er.setErrorCode(nextString(255));
-        er.setHttpStatus(RNG.nextInt(50000));
+        er.setActor(nextString(ACTOR_LN));
+        er.setDetails(nextString(DETAILS_LN));
+        er.setErrorCode(nextString(ERROR_CODE_LENGTH));
+        er.setHttpStatus(RNG.nextInt(HTTP_STATUS_MAX));
         if (nTrace >= 2) {
             er.setErrorCause(nextErrorReport(nTrace - 1));
         }
@@ -131,28 +139,28 @@ public class ROG {
     }
 
     public VRI nextVri() {
-        return Services.anonymous().augment("rnd", nextString(100));
+        return Services.anonymous().augment("rnd", nextString(VRI_LEN));
     }
 
     public MetaInfo nextMeta() {
         MetaInfo mi = new MetaInfoImpl();
-        mi.addAudience(nextString(255)).addAudience(nextString(2)).
-                addComment(nextString(100)).addComment(nextString(1000)).
-                addContributor(nextString(1000)).addCreator(nextString(1000)).
-                addDescription(nextString(3000)).addDescription(nextString(1000)).
-                addIdentifier(nextString(500)).addPublisher(nextString(1000)).
-                addRights(nextString(5000)).addSubject(nextString(100)).
-                addSubject(nextString(100)).addSubject(nextString(100)).
-                addSubject(nextString(100)).addSubject(nextString(100)).
+        mi.addAudience(nextString(AUDIENCE_BIG)).addAudience(nextString(SMALL_AUDIENCE)).
+                addComment(nextString(SMALL_COMMENT)).addComment(nextString(BIG_COMMENT)).
+                addContributor(nextString(CTRB_LEN)).addCreator(nextString(CREATOR_LN)).
+                addDescription(nextString(BIG_COMMENT)).addDescription(nextString(BIG_COMMENT)).
+                addIdentifier(nextString(SMALL_COMMENT)).addPublisher(nextString(BIG_COMMENT)).
+                addRights(nextString(RIGHTS_LN)).addSubject(nextString(SMALL_COMMENT)).
+                addSubject(nextString(SMALL_COMMENT)).addSubject(nextString(SMALL_COMMENT)).
+                addSubject(nextString(SMALL_COMMENT)).addSubject(nextString(SMALL_COMMENT)).
                 addHasSource(new ResourceValue(
-                Services.anonymous().augment("x", nextString(100)),
-                OTClasses.FeatureValueNominal())).
+                Services.anonymous().augment("x", nextString(VRI_LEN)),
+                OTClasses.featureValueNominal())).
                 addSameAs(new ResourceValue(
-                Services.anonymous().augment("x", nextString(100)),
+                Services.anonymous().augment("x", nextString(VRI_LEN)),
                 null)).
                 addSeeAlso(new ResourceValue(
-                Services.anonymous().augment("x", nextString(100)),
-                OTClasses.Compound()));
+                Services.anonymous().augment("x", nextString(VRI_LEN)),
+                OTClasses.compound()));
 
         return mi;
     }
@@ -161,7 +169,7 @@ public class ROG {
         Task t = new Task(Services.ntua().augment("task", UUID.randomUUID()));
         t.setErrorReport(nextErrorReport(nTrace));
         t.setPercentageCompleted(0);
-        t.setHttpStatus(407);
+        t.setHttpStatus(HTTP_STATUS);
         t.setStatus(Task.Status.ERROR);
         t.setMeta(nextMeta());
         t.setResultUri(Services.ntua().augment("model", nextUuid().toString()));
@@ -170,14 +178,14 @@ public class ROG {
 
     public User nextUser() {
         User random = new User();
-        random.setName(nextString(255));
+        random.setName(nextString(STD_LN));
         try {
             random.setMail(RNG.nextLong() + "@mail.here.org");
         } catch (ToxOtisException ex) {
             throw new RuntimeException(ex);
         }
         random.setHashedPass(nextString(50));
-        random.setUid(nextString(234) + "@opensso.in-silico.ch");
+        random.setUid(nextString(MAIL_LN) + "@opensso.in-silico.ch");
         return random;
     }
 
@@ -237,35 +245,26 @@ public class ROG {
         random.setApplicabilityDomainResult(nextString(100));
         HashSet<VRI> authrors = new HashSet<VRI>();
         for (int i = 0; i < nAuthors; i++) {
-            authrors.add(Services.anonymous().augment("foaf", nextString(80)));
+            authrors.add(Services.anonymous().augment("foaf", nextString(VRI_LEN)));
         }
-//        random.setCreatedBy(User.GUEST);
-//        random.setAuthors(authrors);
-//        random.setCompoundUri(Services.anonymous().augment("compound", nextString(80)));
-//        random.setDatasetStructuralAnalogues(Services.anonymous().augment("dataset", Math.abs(RNG.nextInt())));
-        randomReportMeta.setDescriptorDomain(nextString(10000));
-//        random.setDoaUri(Services.anonymous().augment("model", nextUuid()));
-//        random.setExperimentalResult(new LiteralValue(RNG.nextFloat(), XSDDatatype.XSDfloat));
-//        random.setKeywords(nextString(20));
-        randomReportMeta.setMechanismDomain(nextString(2000));
-        randomReportMeta.setMetabolicDomain(nextString(2000));
-//        random.setModelUri(Services.anonymous().augment("model", nextUuid()));
-        randomReportMeta.setModelVersion(nextString(2000));
+        randomReportMeta.setDescriptorDomain(nextString(PAR2));
+        randomReportMeta.setMechanismDomain(nextString(PAR0));
+        randomReportMeta.setMetabolicDomain(nextString(PAR0));
+        randomReportMeta.setModelVersion(nextString(PAR0));
         random.setModelDate(System.currentTimeMillis() / 2);
-//        random.setPredictionResult(new LiteralValue(RNG.nextFloat(), XSDDatatype.XSDfloat));
-        randomReportMeta.setQMRFReportDiscussion(nextString(2000));
-        random.setQMRFreference(nextString(255));
+        randomReportMeta.setQMRFReportDiscussion(nextString(PAR0));
+        random.setQMRFreference(nextString(STD_LN));
         random.setReportDate(System.currentTimeMillis());
-        randomReportMeta.setSec_3_2_e(nextString(5000));
-        randomReportMeta.setSec_3_3_c(nextString(5000));
-        randomReportMeta.setSec_3_4(nextString(5000));
-        randomReportMeta.setSec_3_5(nextString(5000));
-        randomReportMeta.setSec_4_1(nextString(5000));
-        randomReportMeta.setSec_4_2(nextString(10000));
-        randomReportMeta.setSec_4_3(nextString(10000));
-        randomReportMeta.setSec_4_4(nextString(12000));
-        randomReportMeta.setStereoFeatures(nextString(2000));
-        randomReportMeta.setStructuralDomain(nextString(2000));
+        randomReportMeta.setSec32e(nextString(PAR1));
+        randomReportMeta.setSec33c(nextString(PAR1));
+        randomReportMeta.setSec34(nextString(PAR1));
+        randomReportMeta.setSec35(nextString(PAR1));
+        randomReportMeta.setSec41(nextString(PAR1));
+        randomReportMeta.setSec42(nextString(PAR2));
+        randomReportMeta.setSec43(nextString(PAR2));
+        randomReportMeta.setSec44(nextString(PAR3));
+        randomReportMeta.setStereoFeatures(nextString(PAR0));
+        randomReportMeta.setStructuralDomain(nextString(PAR0));
         random.setReportMeta(randomReportMeta);
         return random;
     }
@@ -273,45 +272,49 @@ public class ROG {
     public BibTeX nextBibTeX() {
         try {
             BibTeX random = new BibTeX(Services.anonymous().augment("bibtex", nextUuid()));
-            random.setAbstract(nextString(255));
-            random.setAddress(nextString(255));
-            random.setAnnotation(nextString(255));
-            random.setAuthor(nextString(255));
-            random.setBibType(BibTeX.BIB_TYPE.Article);
-            random.setBookTitle(nextString(255));
-            random.setChapter(null);
-            random.setCopyright(null);
+            random.setAbstract(nextString(STD_LN));
+            random.setAddress(nextString(STD_LN));
+            random.setAnnotation(nextString(STD_LN));
+            random.setAuthor(nextString(STD_LN));
+            random.setBibType(BibTeX.BibTYPE.Article);
+            random.setBookTitle(nextString(STD_LN));
+            random.setChapter(nextString(STD_LN));
+            random.setCopyright(nextString(STD_LN));
             random.setCreatedBy(User.GUEST);
-            random.setCrossref(nextString(255));
-            random.setCrossref(null);
-            random.setEdition(null);
-            random.setEditor(null);
+            random.setCrossref(nextString(STD_LN));
+            random.setCrossref(nextString(STD_LN));
+            random.setEdition(nextString(STD_LN));
+            random.setEditor(nextString(STD_LN));
             random.setEnabled(true);
-            random.setIsbn(null);
-            random.setIssn(null);
-            random.setJournal(null);
-            random.setKey(null);
-            random.setKeywords(null);
+            random.setIsbn(nextString(ISBN_LN));
+            random.setIssn(nextString(ISBN_LN));
+            random.setJournal(nextString(STD_LN));
+            random.setKey(nextString(KEY_LN));
+            random.setKeywords(nextString(STD_LN));
             random.setMeta(
-                    new MetaInfoImpl().addAudience(nextString(500)).
-                    addComment(nextString(500)).
-                    addContributor(nextString(100)).
-                    addCreator(nextString(500)).
-                    addDescription(nextString(1000)).
-                    addHasSource(new ResourceValue(Services.opentox().augment("model", RNG.nextInt()), OTClasses.Model())).
+                    new MetaInfoImpl().addAudience(nextString(AUDIENCE_BIG)).
+                    addComment(nextString(BIG_COMMENT)).
+                    addContributor(nextString(CTRB_LEN)).
+                    addCreator(nextString(CREATOR_LN_BIG)).
+                    addDescription(nextString(BIG_COMMENT)).
+                    addHasSource(new ResourceValue(Services.opentox().augment("model", RNG.nextInt()),
+                    OTClasses.model())).
                     addIdentifier(random.getUri().toString()).
-                    addPublisher(nextString(600)).
-                    addRights(nextString(2500)).
-                    addSubject(nextString(4000)).
-                    addTitle(nextString(8000)).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark", RNG.nextInt()), OTClasses.Compound())).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment(nextString(50), RNG.nextLong()), OTClasses.FeatureValueString())).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark", RNG.nextInt()), OTClasses.Algorithm())));
+                    addPublisher(nextString(BIG_COMMENT)).
+                    addRights(nextString(BIG_COMMENT)).
+                    addSubject(nextString(BIG_COMMENT)).
+                    addTitle(nextString(HUGE_LN)).
+                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark", RNG.nextInt()),
+                    OTClasses.compound())).
+                    addSeeAlso(new ResourceValue(Services.anonymous().augment(nextString(50), RNG.nextLong()),
+                    OTClasses.featureValueString())).
+                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark", RNG.nextInt()),
+                    OTClasses.algorithm())));
             random.setNumber(RNG.nextInt());
             random.setPages(RNG.nextInt() + " to " + RNG.nextInt());
-            random.setSeries(nextString(255));
-            random.setTitle(nextString(255));
-            random.setUrl(Services.opentox().augment("bibtex2", nextString(100)).toString());
+            random.setSeries(nextString(STD_LN));
+            random.setTitle(nextString(STD_LN));
+            random.setUrl(Services.opentox().augment("bibtex2", nextString(VRI_LEN)).toString());
             random.setVolume(RNG.nextInt());
             random.setYear(RNG.nextInt());
             return random;
@@ -325,7 +328,7 @@ public class ROG {
         StringBuilder sb = new StringBuilder();
         int te = 0;
         for (int i = 1; i <= len; i++) {
-            te = RNG.nextInt(62);
+            te = RNG.nextInt(SEEDING_FRAC);
             sb.append(str.charAt(te));
         }
         return sb.toString();
@@ -336,7 +339,7 @@ public class ROG {
         StringBuilder sb = new StringBuilder();
         int te = 0;
         for (int i = 1; i <= len; i++) {
-            te = RNG.nextInt(62);
+            te = RNG.nextInt(SEEDING_FRAC);
             sb.append(str.charAt(te));
         }
         return sb.toString();

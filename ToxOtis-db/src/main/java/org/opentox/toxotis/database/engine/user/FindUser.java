@@ -67,9 +67,10 @@ public class FindUser extends DbReader<User> {
             String msg = "Database error occured while executing statement : ".concat(getSql());
             logger.warn(msg, ex);
             throw new DbException(msg, ex);
-        } finally {
+        } 
+//        finally {
             // Do Nothing:  The client is expected to close the statement and the connection
-        }
+//        }
     }
 
     @Override

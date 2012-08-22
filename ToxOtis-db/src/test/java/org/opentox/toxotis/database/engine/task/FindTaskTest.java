@@ -85,12 +85,11 @@ public class FindTaskTest {
             Task nextTsk = it.next();
             assertNotNull(nextTsk.getCreatedBy());
             assertNotNull(nextTsk.getCreatedBy().getUid());
-            System.out.println(nextTsk.getUri());
-            System.out.println(nextTsk.getDuration());
-            System.out.println(nextTsk.getErrorReport().getUri());
-            System.out.println(nextTsk.getResultUri());
-            System.out.println(nextTsk.getStatus());
-            System.out.println(nextTsk.getCreatedBy().getMail());
+            assertNotNull(nextTsk.getUri());
+            assertEquals(Task.Status.ERROR, nextTsk.getStatus());
+            assertNotNull(nextTsk.getDuration());
+            assertNotNull(nextTsk.getErrorReport().getUri());
+            assertNotNull(nextTsk.getCreatedBy().getMail());
         }
         // GOOD PRACTISE : Close the iterator AND the Finder!!!
         // i.e. the result set and the connection

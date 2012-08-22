@@ -103,7 +103,7 @@ public class AddBibTeX extends DbWriter {
             ps.setString(3, bibtex.getAddress());
             ps.setString(4, bibtex.getAnnotation());
             ps.setString(5, bibtex.getAuthor());
-            BibTeX.BIB_TYPE bibType = bibtex.getBibType();
+            BibTeX.BibTYPE bibType = bibtex.getBibType();
             String bibTypeString = null;
             if (bibType != null) {
                 bibTypeString = bibType.toString();

@@ -1,7 +1,5 @@
 package org.opentox.toxotis.database.profile;
 
-import java.io.IOException;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +13,6 @@ import org.opentox.toxotis.database.engine.task.AddTask;
 import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
-import org.opentox.toxotis.util.LoggingConfiguration;
 
 /**
  *
@@ -38,7 +35,7 @@ public class Profile {
                 public void run() {
                     try {
                         new Profile().testWriteTask();
-                    } catch (final Throwable ex) {
+                    } catch (final Exception ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -62,7 +59,7 @@ public class Profile {
         Task t = new Task(Services.ntua().augment("task", UUID.randomUUID()));
         t.setMeta(new MetaInfoImpl().addTitle("ZZZZZZZZZz").
                 addContributor("ME").
-                addHasSource(new ResourceValue(new VRI("http://something.org/resource/model.234"), OTClasses.Model())));
+                addHasSource(new ResourceValue(new VRI("http://something.org/resource/model.234"), OTClasses.model())));
         t.setErrorReport(er);
         t.setPercentageCompleted(0);
         t.setHttpStatus(407);

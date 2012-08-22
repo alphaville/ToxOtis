@@ -178,7 +178,7 @@ public class FindParameterTest {
          * Add some meta-data
          */
         p1.setMeta(new MetaInfoImpl().addDescription("XXXYYY").
-                addSameAs(new ResourceValue(modelVri, OTClasses.Conformer())));
+                addSameAs(new ResourceValue(modelVri, OTClasses.conformer())));
 
         /*
          * Add parameter

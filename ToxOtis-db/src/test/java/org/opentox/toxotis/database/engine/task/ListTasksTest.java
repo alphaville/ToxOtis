@@ -70,12 +70,11 @@ public class ListTasksTest {
 
     @Test
     public void testListTasks() throws DbException {
-        // TODO review the generated test code and remove the default call to fail.
         ListTasks lt = new ListTasks();
         lt.setPageSize(10);
         IDbIterator<String> iterator = lt.list();
         while (iterator.hasNext()) {
-            System.out.println(iterator.next());
+            assertNotNull(iterator.next());
         }
         iterator.close();
         lt.close();

@@ -12,7 +12,6 @@ import java.util.Map;
 public class Cache<K, T> implements ICache<K, T> {
 
     private final Map<K, T> objects;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Cache.class);
 
     public Cache() {
         objects = Collections.synchronizedMap(new HashMap<K, T>());
@@ -20,39 +19,15 @@ public class Cache<K, T> implements ICache<K, T> {
 
     @Override
     public void put(K id, T object) throws ClassCastException, IllegalArgumentException, NullPointerException {
-        try {
-            synchronized (objects) {
-                this.objects.put(id, object);
-            }
-        } catch (ClassCastException cce) {
-            final String msg = "The key is of inappropriate type for this cache";
-            logger.error(msg, cce);
-            throw cce;
-        } catch (final NullPointerException npe) {
-            final String msg = "the specified key is null and this map does not permit null keys";
-            logger.error(msg, npe);
-            throw npe;
-        } catch (final IllegalArgumentException iae) {
-            final String msg = "some property of the specified key or value prevents it from being stored in this map";
-            logger.error(msg, iae);
-            throw iae;
+        synchronized (objects) {
+            this.objects.put(id, object);
         }
     }
 
     @Override
     public <R extends T> R get(K id) throws NullPointerException, ClassCastException {
-        try {
-            synchronized (objects) {
-                return (R) this.objects.get(id);
-            }
-        } catch (final ClassCastException cce) {
-            final String msg = "The key is of inappropriate type for this cache";
-            logger.error(msg, cce);
-            throw cce;
-        } catch (final NullPointerException npe) {
-            final String msg = "the specified key is null and this map does not permit null keys";
-            logger.error(msg, npe);
-            throw npe;
+        synchronized (objects) {
+            return (R) this.objects.get(id);
         }
     }
 

@@ -30,56 +30,41 @@
  * tel. +30 210 7723236
  *
  */
+package org.opentox.toxotis.database.engine.metainfo;
 
-
-package org.opentox.toxotis.database.engine.error;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.opentox.toxotis.database.IDbIterator;
-import static org.junit.Assert.*;
+import java.sql.PreparedStatement;
+import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.exception.DbException;
-import org.opentox.toxotis.database.pool.DataSourceFactory;
+import org.opentox.toxotis.ontology.MetaInfo;
 
 /**
  *
  * @author chung
  */
-public class ListErrorTest {
+public class AddMetaInfo extends DbWriter {
 
-    public ListErrorTest() {
+    private MetaInfo meta;
+    private PreparedStatement addMetaStmt;
+    private static final String SQL_ADD_METAINFO = "INSERT IGNORE MetaInfo (id, meta)  VALUES (?, compress(?))";
+
+    public AddMetaInfo() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        org.opentox.toxotis.database.TestUtils.setUpDB();
+    public AddMetaInfo(MetaInfo meta) {
+        this.meta = meta;
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        DataSourceFactory.getInstance().close();
+    public MetaInfo getMeta() {
+        return meta;
     }
 
-    @Before
-    public void setUp() {
+    public void setMeta(MetaInfo meta) {
+        this.meta = meta;
     }
 
-    @After
-    public void tearDown() {
+    @Override
+    public int write() throws DbException {
+        
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Test
-    public void testSomeMethod() throws DbException {
-        ListError list = new ListError();
-        IDbIterator<String> it = list.list();
-        while (it.hasNext()){
-            assertNotNull(it.next());
-        }
-        it.close();
-        list.close();
-    }
-
 }

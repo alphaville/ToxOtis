@@ -139,14 +139,10 @@ public class ScriptRunner {
                     command = new StringBuffer();
                 }
                 String trimmedLine = line.trim();
-                if (trimmedLine.startsWith("--")) {
+                if (trimmedLine.startsWith("--")||
+                        (trimmedLine.length() < 1 || trimmedLine.startsWith("//"))||
+                        (trimmedLine.length() < 1 || trimmedLine.startsWith("--"))) {
                     println(trimmedLine);
-                } else if (trimmedLine.length() < 1
-                        || trimmedLine.startsWith("//")) {
-                    // Do nothing
-                } else if (trimmedLine.length() < 1
-                        || trimmedLine.startsWith("--")) {
-                    // Do nothing
                 } else if (!fullLineDelimiter
                         && trimmedLine.endsWith(getDelimiter())
                         || fullLineDelimiter

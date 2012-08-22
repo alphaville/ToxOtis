@@ -95,7 +95,7 @@ public class FindModelParameters extends DbOperation {
 
         ResourceValue paramSource = new ResourceValue(
                 new VRI(baseUri).augment("model", rs.getString(6)),
-                OTClasses.Model());
+                OTClasses.model());
         if (p.getMeta() == null) {
             p.setMeta(new MetaInfoImpl().addHasSource(paramSource));
         } else {

@@ -89,7 +89,6 @@ public class AccountManagerTest {
     public void testCountModels() throws DbException {
         AccountManager am = new AccountManager(User.GUEST);
         int count = am.countModels();
-        System.out.println(count);
     }
 
     @Test
@@ -98,7 +97,6 @@ public class AccountManagerTest {
         u.setUid("Sopasakis@opensso.in-silico.ch");
         AccountManager am = new AccountManager(u);
         int count = am.countActiveTasks();
-        System.out.println(count);
     }
 
 }

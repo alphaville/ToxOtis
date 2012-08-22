@@ -115,9 +115,9 @@ public class BibTeXIterator extends DbIterator<BibTeX> {
             nextBibTeX.setAnnotation(annotation);
             nextBibTeX.setAuthor(author);
 
-            BibTeX.BIB_TYPE bibTYPE = BibTeX.BIB_TYPE.Entry;
+            BibTeX.BibTYPE bibTYPE = BibTeX.BibTYPE.Entry;
             if (bibType != null) {
-                bibTYPE = BibTeX.BIB_TYPE.valueOf(bibType);
+                bibTYPE = BibTeX.BibTYPE.valueOf(bibType);
             }
             nextBibTeX.setBibType(bibTYPE);
 

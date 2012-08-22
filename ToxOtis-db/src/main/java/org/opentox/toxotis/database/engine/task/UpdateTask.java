@@ -290,16 +290,15 @@ public class UpdateTask extends DbUpdater {
 
             connection.commit();
 
-        } catch (SQLException ex) {
-            Logger.getLogger(UpdateTask.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final SQLException ex) {
+            throw new DbException(ex);
         }
-
-
 
         return -1;
     }
 
     @Override
     public void close() throws DbException {
+        super.close();
     }
 }

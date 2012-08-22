@@ -37,6 +37,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.database.DbWriter;
@@ -45,6 +46,7 @@ import org.opentox.toxotis.database.engine.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
  *
@@ -75,38 +77,38 @@ public class FindErrorTest {
 
     @Test
     public void testFindError() throws DbException {
-        System.out.println("0::: Running Test: testFindError()");
         FindError fe = new FindError(Services.ntua());
         fe.setRetrieveStackTrace(false);
         fe.setPageSize(10);
         IDbIterator<ErrorReport> it = fe.list();
+        VRI currentVri = null;
         while (it.hasNext()) {
-            System.out.println(it.next().getUri());
+            currentVri = it.next().getUri();
+            assertNotNull(currentVri);
+            assertEquals(OTClasses.errorReport(), currentVri.getOntologicalClass());
+            assertEquals("opentox.ntua.gr", currentVri.getHost());
+            assertEquals("http://opentox.ntua.gr:8080", currentVri.getServiceBaseUri().toString());
         }
         it.close();
         fe.close();
-        System.out.println("1::: Completed Test: testFindError()");
     }
 
     @Test
     public void testFindError2() throws DbException {
-        System.out.println("0::: Running Test: testFindError2()");
         FindError fe = new FindError(Services.ntua());
         fe.setRetrieveStackTrace(false);
         fe.setPageSize(1);
         IDbIterator<ErrorReport> it = fe.list();
 
         while (it.hasNext()) {
-            System.out.println(it.next().getUri());
+            assertNotNull(it.next().getUri());
         }
         it.close();
         fe.close();
-        System.out.println("1::: Completed Test: testFindError2()");
     }
 
     @Test
     public void testFindHugeReport() throws DbException {
-        System.out.println("0::: Running Test: testFindHugeReport()");
         ErrorReport er = new ROG().nextErrorReport(100);
         DbWriter writer = new AddErrorReport(er);
         writer.write();
@@ -126,12 +128,10 @@ public class FindErrorTest {
         assertTrue(found);
         it.close();
         fe.close();
-        System.out.println("1::: Completed Test: testFindHugeReport()");
     }
 
     @Test
     public void testCrashDB() throws DbException {
-        System.out.println("0::: Running Test: testCrashDB()");
         int N = 10;
         for (int i = 0; i < N; i++) {
             ErrorReport er = new ROG().nextErrorReport(20);
@@ -158,6 +158,5 @@ public class FindErrorTest {
             it.close();
             fe.close();
         }
-        System.out.println("1::: Completed Test: testCrashDB()");
     }
 }

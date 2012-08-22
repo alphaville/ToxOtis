@@ -77,7 +77,7 @@ public class AddErrorReportTest {
     public void testLongError() throws DbException {
         int N = 3000;
         ErrorReport er = new ROG().nextErrorReport(N);
-        System.out.println(er.getUri());
+        assertNotNull(er.getUri());
         ErrorReport current = er;
         int n = 0;
         while (current != null) {

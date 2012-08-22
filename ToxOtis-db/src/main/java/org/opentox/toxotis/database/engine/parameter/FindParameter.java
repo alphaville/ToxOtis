@@ -62,12 +62,13 @@ public class FindParameter extends DbReader<Parameter> {
             final String msg = "Database exception while searching for error reports in the database.";
             logger.warn(msg, ex);
             throw new DbException(msg, ex);
-        } finally {
+        } 
+//        finally {
             // Do Nothing:  The client is expected to close the statement and the connection
             // The client closes the result set applying a close() on the ErrorIterator
             // and then closes the statement and the connection invoking close() on this
             // object
-        }
+//        }
     }
 
     @Override

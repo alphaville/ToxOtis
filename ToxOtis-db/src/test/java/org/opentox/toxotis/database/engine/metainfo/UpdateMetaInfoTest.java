@@ -30,27 +30,25 @@
  * tel. +30 210 7723236
  *
  */
+package org.opentox.toxotis.database.engine.metainfo;
 
-
-package org.opentox.toxotis.database.engine.error;
-
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.database.engine.task.ListTasks;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
-import org.opentox.toxotis.database.pool.DataSourceFactory;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
  *
  * @author chung
  */
-public class ListErrorTest {
+public class UpdateMetaInfoTest {
 
-    public ListErrorTest() {
+    public UpdateMetaInfoTest() {
     }
 
     @BeforeClass
@@ -60,26 +58,16 @@ public class ListErrorTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        DataSourceFactory.getInstance().close();
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+        org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
     @Test
     public void testSomeMethod() throws DbException {
-        ListError list = new ListError();
-        IDbIterator<String> it = list.list();
-        while (it.hasNext()){
-            assertNotNull(it.next());
-        }
-        it.close();
-        list.close();
+        UpdateMetaInfo updater = new UpdateMetaInfo();
+        updater.setUpdateMode(UpdateMetaInfo.UpdateMode.REPLACE);
+        updater.setComponentId("000188c6-530f-4eb8-a993-941f3809002a");
+        updater.setMeta(new MetaInfoImpl().addComment(new ROG().nextString(20)));
+        assertEquals(2, updater.update());
+        updater.close();
     }
-
 }

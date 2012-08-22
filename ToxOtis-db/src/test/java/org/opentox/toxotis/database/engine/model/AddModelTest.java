@@ -214,7 +214,7 @@ public class AddModelTest {
             assertTrue(foundParameters.size() == m.getParameters().size());
 
             for (Parameter q : foundParameters) {
-                HashSet<ResourceValue> sources = q.getMeta().getHasSources();
+                Set<ResourceValue> sources = q.getMeta().getHasSources();
                 assertNotNull(sources);
                 assertFalse(sources.isEmpty());
                 assertTrue(sources.iterator().next().getUri().equals(m.getUri()));

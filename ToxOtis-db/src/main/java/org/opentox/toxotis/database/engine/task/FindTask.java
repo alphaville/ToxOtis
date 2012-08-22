@@ -94,9 +94,10 @@ public class FindTask extends DbReader<Task> {
         } catch (final SQLException ex) {
             logger.warn(null, ex);
             throw new DbException(ex);
-        } finally {
+        } 
+//        finally {
             // Do Nothing:  The client is expected to close the statement and the connection
-        }
+//        }
     }
 
     @Override

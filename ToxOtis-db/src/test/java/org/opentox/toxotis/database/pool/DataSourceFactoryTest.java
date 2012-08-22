@@ -39,7 +39,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.database.global.DbConfiguration;
 import static org.junit.Assert.*;
 
 /**

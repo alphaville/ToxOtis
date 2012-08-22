@@ -60,7 +60,8 @@ class DataSourceC3P0 implements IDataSourceC3P0 {
         datasource = new ComboPooledDataSource();  // create a new datasource object
         /*
          * Setup the JDBC URL manually to make sure that things 
-         * work as expected.
+         * work as expected. Also some other properties are not configured 
+         * correctly when using just datasource.setProperties(stdProperties);
          */
         Properties stdProperties = DbConfiguration.getInstance().getProperpties();
         Properties prescribedProps = stdProperties != null ? stdProperties : new Properties();

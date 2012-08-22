@@ -61,7 +61,6 @@ public class ListModelTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        System.out.println("Done!!!");
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
@@ -75,7 +74,6 @@ public class ListModelTest {
 
     @Test
     public void testListModelMultithreadedly() throws InterruptedException {
-        System.out.println("Crash test: multi-threaded reading from the DB");
         /*
          * c3p0.numHelperThreads=110 and it works fine!
          * Note... Setting minPoolSize=maxPoolSize=initialPoolSize=1000 and numHelperThreads=50

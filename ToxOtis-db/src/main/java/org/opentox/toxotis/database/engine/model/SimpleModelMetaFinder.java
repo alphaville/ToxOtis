@@ -59,9 +59,10 @@ public class SimpleModelMetaFinder extends DbReader<String> {
             final String msg = "SQL-related exception while looking for features in the database";
             logger.warn(msg, ex);
             throw new DbException(msg, ex);
-        } finally {
+        } 
+//        finally {
             // Do nothing - the client is responsible for closing the result set!
-        }
+//        }
     }
 
     @Override

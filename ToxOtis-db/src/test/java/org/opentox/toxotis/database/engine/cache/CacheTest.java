@@ -30,56 +30,44 @@
  * tel. +30 210 7723236
  *
  */
+package org.opentox.toxotis.database.engine.cache;
 
-
-package org.opentox.toxotis.database.engine.error;
-
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opentox.toxotis.database.IDbIterator;
 import static org.junit.Assert.*;
-import org.opentox.toxotis.database.exception.DbException;
-import org.opentox.toxotis.database.pool.DataSourceFactory;
 
 /**
  *
  * @author chung
  */
-public class ListErrorTest {
+public class CacheTest {
 
-    public ListErrorTest() {
+    public CacheTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        org.opentox.toxotis.database.TestUtils.setUpDB();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        DataSourceFactory.getInstance().close();
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
-        ListError list = new ListError();
-        IDbIterator<String> it = list.list();
-        while (it.hasNext()){
-            assertNotNull(it.next());
-        }
-        it.close();
-        list.close();
+    public void testCaching() {
+        ICache<String, String> cache = new Cache<String, String>();
+        assertTrue(cache.isEmpty());
+        cache.put("a", "b");
+        assertFalse(cache.isEmpty());
+        assertNotNull(cache.get("a"));
+        assertEquals("b", cache.get("a"));
+        cache.put(null, "hohohohoho");
+        assertEquals("hohohohoho", cache.get(null));
+        cache.put("a", "c");
+        assertEquals("c", cache.get("a"));
+        cache.put(null, null);
+        assertNull(cache.get(null));
+        assertNull(cache.get("notFound"));
     }
-
 }

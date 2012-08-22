@@ -74,7 +74,7 @@ public class AddQprfTest {
     public void testAddReport() throws DbException {
         ROG rog = new ROG();
         for (int i = 1; i < 10; i++) {
-            System.out.println(rog.nextString(10));
+            assertNotNull(rog.nextString(10));
         }
 
         if (true) {
@@ -82,7 +82,6 @@ public class AddQprfTest {
         }
         QprfReport report = rog.nextReport(4);
         AddQprf qprfAdder = new AddQprf(report);
-        //System.out.println(qprfAdder.write());
         qprfAdder.close();
 
         ListQprf lister = new ListQprf();

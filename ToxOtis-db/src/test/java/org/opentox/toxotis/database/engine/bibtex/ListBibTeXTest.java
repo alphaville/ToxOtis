@@ -76,9 +76,12 @@ public class ListBibTeXTest {
         ListBibTeX lister = new ListBibTeX();
         lister.setPageSize(10);
         IDbIterator<String> it = lister.list();
+        boolean nothingFound = true;
         while (it.hasNext()) {
-            System.out.println(it.next());
+            assertNotNull(it.next());
+            nothingFound = false;
         }
+        assertFalse(nothingFound);
         /*
          * Close everything!!!
          */

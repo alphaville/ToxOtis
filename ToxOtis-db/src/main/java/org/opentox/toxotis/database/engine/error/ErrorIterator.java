@@ -48,7 +48,7 @@ public class ErrorIterator extends DbIterator<ErrorReport> {
             String errorCause = rs.getString("errorCause");
             if (errorCause != null) {
                 if (!retrieveStackTrace) {
-                    nextReport.setErrorCause(new ErrorReport(baseUri.augment("error", errorCause)));
+                    nextReport.setErrorCause(new ErrorReport(new VRI(baseUri).augment("error", errorCause)));
                 }else{
                     FindError stackTraceFinder = new FindError(baseUri);
                     stackTraceFinder.setSearchById(errorCause);
@@ -60,8 +60,6 @@ public class ErrorIterator extends DbIterator<ErrorReport> {
                     stackTraceFinder.close();
                 }
             }
-
-
 
             Blob metaInfoBlob = rs.getBlob(8);
             if (metaInfoBlob != null) {

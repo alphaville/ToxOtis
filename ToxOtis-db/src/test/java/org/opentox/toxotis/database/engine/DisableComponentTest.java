@@ -96,13 +96,11 @@ public class DisableComponentTest {
         }
         modelIt.close();
         list.close();
-        System.out.println(toBeDeleted);
 
         if (toBeDeleted != null) {
             list = new ListModel();
             list.setIncludeDisabled(false);
             list.setWhere(String.format("Model.id='%s'", toBeDeleted));
-            System.out.println();
             IDbIterator<String> iter = list.list();
             assertFalse(iter.hasNext());
             iter.close();

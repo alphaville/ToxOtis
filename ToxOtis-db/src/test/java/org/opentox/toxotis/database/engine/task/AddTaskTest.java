@@ -123,7 +123,7 @@ public class AddTaskTest {
         Task t = new Task(Services.ntua().augment("task", UUID.randomUUID()));
         t.setMeta(new MetaInfoImpl().addTitle("ZZZZZZZZZz").
                 addContributor("ME").
-                addHasSource(new ResourceValue(new VRI("http://something.org/resource/model.234"), OTClasses.Model())));
+                addHasSource(new ResourceValue(new VRI("http://something.org/resource/model.234"), OTClasses.model())));
         t.setErrorReport(er);
         t.setPercentageCompleted(0);
         t.setHttpStatus(407);

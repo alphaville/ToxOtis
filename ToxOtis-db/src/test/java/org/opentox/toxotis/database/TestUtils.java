@@ -32,6 +32,7 @@
  */
 package org.opentox.toxotis.database;
 
+import org.junit.Test;
 import org.opentox.toxotis.database.global.DbConfiguration;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 import static org.junit.Assert.*;
@@ -50,5 +51,10 @@ public class TestUtils {
                 + "useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8")) {
             throw new Exception("Wrong JDBC URL");
         }
+    }
+    
+    @Test
+    public void testSomething(){
+        assertTrue("Nothing to test!",1==1);
     }
 }
