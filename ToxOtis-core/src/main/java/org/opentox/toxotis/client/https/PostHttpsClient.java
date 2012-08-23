@@ -309,8 +309,8 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
         }
         try {
             postParameters.put(URLEncoder.encode(paramName, URL_ENCODING), paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : "");
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
+        } catch (final UnsupportedEncodingException ex) {
+            throw new IllegalArgumentException("Unsupported Encoding... Hmmm, strange!",ex);
         }
         return this;
     }

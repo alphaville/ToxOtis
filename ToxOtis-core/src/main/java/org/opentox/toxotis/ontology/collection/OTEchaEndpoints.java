@@ -45,7 +45,7 @@ public final class OTEchaEndpoints {
 
     private static final String ECHA_NS = "http://www.opentox.org/echaEndpoints.owl#%s";
     public static final String NS = String.format(ECHA_NS, "");
-    private static OntologicalClass msGastrointestinal_absorption;
+    private static OntologicalClass msGastrointestinalAbsorption;
     private static OntologicalClass msEndpoints;
 
     private static OntologicalClass msPhysicoChemicalEffects,
@@ -515,11 +515,11 @@ public final class OTEchaEndpoints {
      *      <code>otee:Gastrointestinal_absorption</code>
      */
     public static OntologicalClass gastrointestinalAbsorption() {
-        if (msGastrointestinal_absorption == null) {
-            msGastrointestinal_absorption = new OntologicalClassImpl("Gastrointestinal_absorption", NS);
-            msGastrointestinal_absorption.getSuperClasses().add(toxicoKinetics());
+        if (msGastrointestinalAbsorption == null) {
+            msGastrointestinalAbsorption = new OntologicalClassImpl("Gastrointestinal_absorption", NS);
+            msGastrointestinalAbsorption.getSuperClasses().add(toxicoKinetics());
         }
-        return msGastrointestinal_absorption;
+        return msGastrointestinalAbsorption;
     }
 
     /**

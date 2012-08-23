@@ -39,6 +39,7 @@ import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Task;
@@ -59,14 +60,11 @@ public class SuperPredictor {
     private Compound compound;
     private Model model;
     private AuthenticationToken token;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SuperPredictor.class);
 
     private SuperPredictor(AuthenticationToken token) {
         this.token = token;
-        try {
-            superServiceUri = new VRI("http://apps.ideaconsult.net:8080/ambit2/algorithm/superservice");
-        } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
-        }
+        superServiceUri = Services.ideaconsult().augment("algorithm", "superservice");
     }
 
     public SuperPredictor(Compound compound, Model model, AuthenticationToken token) {
@@ -116,7 +114,7 @@ public class SuperPredictor {
             if (lv == null) {
                 predict(token);
                 lv = compound.getProperty(model.getPredictedFeatures().get(0), token);
-                System.out.println("Value predicted : " + lv);
+                logger.debug("Value predicted : " + lv);
             } else {
                 System.out.println("Value found in DB : " + lv);
             }

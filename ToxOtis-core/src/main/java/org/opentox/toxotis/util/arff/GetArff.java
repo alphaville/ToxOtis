@@ -65,8 +65,8 @@ public class GetArff {
                 numFeatureStmt = numericFeaturesIterator.next();
                 try {
                     featureUri = new VRI(numFeatureStmt.getSubject().getURI()).getStringNoQuery();
-                } catch (URISyntaxException ex) {
-                    throw new RuntimeException(ex);
+                } catch (final URISyntaxException ex) {
+                    throw new IllegalArgumentException(ex);
                 }
                 attributes.addElement(new Attribute(featureUri));
             }
@@ -116,8 +116,7 @@ public class GetArff {
             valuesIterator.close();
         }
         dataEntryIterator.close();
-        model.close();
-        System.out.println(data);
+        model.close();       
 
         return data;
     }

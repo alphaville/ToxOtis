@@ -133,7 +133,7 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
             try {
                 errorReport.setUri(new VRI(resource.getURI()));
             } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException("Bad URI Syntax",ex);
             }
         }
         if (resource == null){

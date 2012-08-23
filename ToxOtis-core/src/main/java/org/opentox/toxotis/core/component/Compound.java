@@ -181,7 +181,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
                 newUri = new VRI(withoutConformer).augment("conformer");
             } catch (URISyntaxException ex) {
                 logger.error(null, ex);
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException(ex);
             }
         } else {
             newUri = new VRI(uri).augment("conformer");
@@ -313,7 +313,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
     public Individual asIndividual(OntModel model) {
         String compoundUri = getUri() != null ? getUri().getStringNoQuery() : null;
         Individual indiv = model.createIndividual(compoundUri, OTClasses.compound().inModel(model));
-        //getMeta().attachTo(indiv, model);
+        //TODO: Featch MetaInfo using : getMeta().attachTo(individual, model).
         return indiv;
     }
 
@@ -504,8 +504,6 @@ public class Compound extends DescriptorCaclulation<Compound> {
                         + similarityService);
             }
             resultSet = client.getResponseUriList();
-        } catch (ServiceInvocationException ex) {
-            throw ex;
         } finally {
             if (client != null) {
                 try {
@@ -563,14 +561,14 @@ public class Compound extends DescriptorCaclulation<Compound> {
                     smilesUrlEncoded = URLEncoder.encode(getSmiles(), "UTF-8");
                 } catch (UnsupportedEncodingException ex) {
                     logger.error(null, ex);
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
                 VRI requestDepictionVri = null;
                 try {
                     requestDepictionVri = new VRI(String.format(depictionService, smilesUrlEncoded));
                 } catch (URISyntaxException ex) {
                     logger.error(null, ex);
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
                 IGetClient depictionClient = ClientFactory.createGetClient(requestDepictionVri);
                 depictionClient.setMediaType(Media.IMAGE_PNG);
@@ -578,13 +576,13 @@ public class Compound extends DescriptorCaclulation<Compound> {
                     depiction = new ImageIcon(requestDepictionVri.toURI().toURL());
                 } catch (MalformedURLException ex) {
                     logger.error(null, ex);
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
                 try {
                     depictionClient.close();
                 } catch (IOException ex) {
                     logger.error(null, ex);
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
             }
         }
@@ -599,11 +597,11 @@ public class Compound extends DescriptorCaclulation<Compound> {
                     depiction = new ImageIcon(new VRI(uri.toString()).addUrlParameter("media", "image/png").toURI().toURL());
                 } catch (URISyntaxException ex) {
                     logger.error(null, ex);
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
             } catch (MalformedURLException ex) {
                 logger.error(null, ex);
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException(ex);
             }
         }
         return depiction;

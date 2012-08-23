@@ -50,102 +50,102 @@ public final class OTRestObjectProperties {
      * NameSpace of the OpenTox REST ontology.
      */
     public static final String NS = "http://opentox.org/opentox-rest.owl#";
-    private static OTObjectProperty ms_aa;
-    private static OTObjectProperty ms_hasHTTPMethod;
-    private static OTObjectProperty ms_hasHTTPStatus;
-    private static OTObjectProperty ms_hasMedia;
-    private static OTObjectProperty ms_inputParam;
-    private static OTObjectProperty ms_paramContent;
-    private static OTObjectProperty ms_paramContentOpenTox;
-    private static OTObjectProperty ms_paramContentSimple;
-    private static OTObjectProperty ms_resource;
-    private static OTObjectProperty ms_hasRESTOperation;
-    private static OTObjectProperty ms_result;
-    private static OTObjectProperty ms_status;
-    private static OTObjectProperty ms_uri;
+    private static OTObjectProperty msAa;
+    private static OTObjectProperty msHasHTTPMethod;
+    private static OTObjectProperty msHasHTTPStatus;
+    private static OTObjectProperty msHasMedia;
+    private static OTObjectProperty msInputParam;
+    private static OTObjectProperty msParamContent;
+    private static OTObjectProperty msParamContentOpenTox;
+    private static OTObjectProperty msParamContentSimple;
+    private static OTObjectProperty msResource;
+    private static OTObjectProperty msHasRESTOperation;
+    private static OTObjectProperty msResult;
+    private static OTObjectProperty msStatus;
+    private static OTObjectProperty msUri;
 
     public static OTObjectProperty hasHTTPMethod() {
-        if (ms_hasHTTPMethod == null) {
+        if (msHasHTTPMethod == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("hasHTTPMethod", NS);
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getRange().add(OTRestClasses.httpMethod());
-            ms_hasHTTPMethod = clazz;
+            msHasHTTPMethod = clazz;
         }
-        return ms_hasHTTPMethod;
+        return msHasHTTPMethod;
     }
 
     public static OTObjectProperty hasHTTPStatus() {
-        if (ms_hasHTTPStatus == null) {
+        if (msHasHTTPStatus == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("hasHTTPStatus", NS);
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getRange().add(OTRestClasses.httpStatus());
-            ms_hasHTTPStatus = clazz;
+            msHasHTTPStatus = clazz;
         }
-        return ms_hasHTTPStatus;
+        return msHasHTTPStatus;
     }
 
     public static OTObjectProperty hasMedia() {
-        if (ms_hasMedia == null) {
+        if (msHasMedia == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("hasMedia", NS);
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getRange().add(OTRestClasses.mediaType());
-            ms_hasMedia = clazz;
+            msHasMedia = clazz;
         }
-        return ms_hasMedia;
+        return msHasMedia;
     }
 
     public static OTObjectProperty aa() {
-        if (ms_aa == null) {
+        if (msAa == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("aa", NS);
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getRange().add(OTRestClasses.aa());
-            ms_aa = clazz;
+            msAa = clazz;
         }
-        return ms_aa;
+        return msAa;
     }
 
     public static OTObjectProperty inputParam() {
-        if (ms_inputParam == null) {
+        if (msInputParam == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("inputParam", NS);
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getDomain().add(OTRestClasses.aa());
             clazz.getRange().add(OTRestClasses.inputParameter());
-            ms_inputParam = clazz;
+            msInputParam = clazz;
         }
-        return ms_inputParam;
+        return msInputParam;
     }
 
     public static OTObjectProperty result() {
-        if (ms_result == null) {
+        if (msResult == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("result", NS);
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getRange().add(OTClasses.openToxResource());
-            ms_result = clazz;
+            msResult = clazz;
         }
-        return ms_result;
+        return msResult;
     }
 
     public static OTObjectProperty paramContent() {
-        if (ms_paramContent == null) {
+        if (msParamContent == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("paramContent", NS);
             clazz.getDomain().add(OTRestClasses.inputParameter());
-            ms_paramContent = clazz;
+            msParamContent = clazz;
         }
-        return ms_paramContent;
+        return msParamContent;
     }
 
     public static OTObjectProperty paramContentOpenTox() {
-        if (ms_paramContentOpenTox == null) {
+        if (msParamContentOpenTox == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("paramContentOpenTox", NS);
             clazz.getDomain().add(OTRestClasses.inputParameter());
             clazz.getDomain().add(OTClasses.openToxResource());
-            ms_paramContentOpenTox = clazz;
+            msParamContentOpenTox = clazz;
         }
-        return ms_paramContentOpenTox;
+        return msParamContentOpenTox;
     }
 
     public static OTObjectProperty paramContentSimple() {
-        if (ms_paramContentSimple == null) {
+        if (msParamContentSimple == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("paramContentSimple", NS);
             clazz.getDomain().add(OTRestClasses.inputParameter());
             clazz.getRange().add(new OntologicalClassImpl("string", XSDDatatype.XSD));
@@ -158,20 +158,20 @@ public final class OTRestObjectProperties {
             clazz.getRange().add(new OntologicalClassImpl("long", XSDDatatype.XSD));
             clazz.getRange().add(new OntologicalClassImpl("byte", XSDDatatype.XSD));
             clazz.getRange().add(new OntologicalClassImpl("date", XSDDatatype.XSD));
-            ms_paramContentSimple = clazz;
+            msParamContentSimple = clazz;
         }
-        return ms_paramContentSimple;
+        return msParamContentSimple;
     }
 
     public static OTObjectProperty resource() {
-        if (ms_resource == null) {
-            ms_resource = new OTObjectPropertyImpl();
+        if (msResource == null) {
+            msResource = new OTObjectPropertyImpl();
             OTObjectProperty clazz = new OTObjectPropertyImpl("resource", NS) {
 
                 @Override
                 public ObjectProperty asObjectProperty(OntModel model) {
                     ObjectProperty op = super.asObjectProperty(model);
-                    if (ms_hasRESTOperation == null) {// to avoid StackOverflow
+                    if (msHasRESTOperation == null) {// to avoid StackOverflow
                         op.setInverseOf(hasRESTOperation().asObjectProperty(model));
                         hasRESTOperation().asObjectProperty(model).setInverseOf(op);
                     }
@@ -180,20 +180,20 @@ public final class OTRestObjectProperties {
             };
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getRange().add(OTClasses.openToxResource());
-            ms_resource = clazz;
+            msResource = clazz;
         }
-        return ms_resource;
+        return msResource;
     }
 
     public static OTObjectProperty hasRESTOperation() {
-        if (ms_hasRESTOperation == null) {
-            ms_hasRESTOperation = new OTObjectPropertyImpl();
+        if (msHasRESTOperation == null) {
+            msHasRESTOperation = new OTObjectPropertyImpl();
             OTObjectProperty clazz = new OTObjectPropertyImpl("hasRESTOperation", NS) {
 
                 @Override
                 public ObjectProperty asObjectProperty(OntModel model) {
                     ObjectProperty op = super.asObjectProperty(model);
-                    if (ms_resource == null) {// to avoid StackOverflow
+                    if (msResource == null) {// to avoid StackOverflow
                         op.setInverseOf(resource().asObjectProperty(model));
                         resource().asObjectProperty(model).setInverseOf(op);
                     }
@@ -202,28 +202,28 @@ public final class OTRestObjectProperties {
             };
             clazz.getDomain().add(OTClasses.openToxResource());
             clazz.getRange().add(OTRestClasses.restOperation());
-            ms_hasRESTOperation = clazz;
+            msHasRESTOperation = clazz;
         }
-        return ms_hasRESTOperation;
+        return msHasRESTOperation;
     }
 
     public static OTObjectProperty status() {
-        if (ms_status == null) {
+        if (msStatus == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("status", NS);
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getRange().add(OTRestClasses.httpStatus());
-            ms_status = clazz;
+            msStatus = clazz;
         }
-        return ms_status;
+        return msStatus;
     }
 
     public static OTObjectProperty uri() {
-        if (ms_uri == null) {
+        if (msUri == null) {
             OTObjectProperty clazz = new OTObjectPropertyImpl("uri", NS);
             clazz.getDomain().add(OTRestClasses.restOperation());
             clazz.getRange().add(OTRestClasses.restTemplate());
-            ms_uri = clazz;
+            msUri = clazz;
         }
-        return ms_uri;
+        return msUri;
     }
 }

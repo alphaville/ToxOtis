@@ -32,10 +32,8 @@
  */
 package org.opentox.toxotis.ontology.impl;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.vocabulary.DC;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.opentox.toxotis.ontology.MetaInfo;

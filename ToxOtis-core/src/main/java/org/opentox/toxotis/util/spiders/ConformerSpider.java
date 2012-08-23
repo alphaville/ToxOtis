@@ -33,7 +33,6 @@
 package org.opentox.toxotis.util.spiders;
 
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -48,7 +47,6 @@ import org.opentox.toxotis.exceptions.impl.BadRequestException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.collection.OTClasses;
-import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 /**
  *

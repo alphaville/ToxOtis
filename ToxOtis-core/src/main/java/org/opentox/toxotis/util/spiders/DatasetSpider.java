@@ -111,7 +111,7 @@ public class DatasetSpider extends Tarantula<Dataset> {
         try {
             this.datasetUri = new VRI(uri);
         } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
         this.resource = model.getResource(uri);
     }

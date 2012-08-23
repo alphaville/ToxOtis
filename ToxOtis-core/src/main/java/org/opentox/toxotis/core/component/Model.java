@@ -109,23 +109,23 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
     private User createdBy;
     private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Model.class);
-    private static final int baosSize = 4000;
+    private static final int BAOS_SIZE = 4000;
     private static final int HASH_OFFSET = 3, HASH_MOD = 71;
-    private static final int htmlTextBoxSize = 60,
-            interfaceCellPadding = 5,
-            interfaceCellSpacing = 2,
-            interfaceTableBorder = 0,
-            validationCellPadding = 5,
-            validationCellSpacing = 2,
-            validationTableBorder = 0, 
-            featuresCellPadding = 5, 
-            featuresCellSpacing = 2, 
-            featuresTableBorder = 1;
-    private static final int[] interfaceTableDimensions = new int[]{250, 550},
-            validationTableDimensions = new int[]{250, 550},
-            featuresTableDimensions = new int[]{150, 650},
-            parametersTableDimensions = new int[]{400, 150, 240},
-            metaTableDimensions = new int[]{150, 650};
+    private static final int HTML_TEXTBOX_SIZE = 60,
+            IFACE_CELL_PADDING = 5,
+            IFACE_CELL_SPACING = 2,
+            IFACE_TABLE_BORDER = 0,
+            VALIDATION_CELL_PADDING = 5,
+            VALIDATION_CELL_SPACING = 2,
+            VALIDATION_TABLE_BORDER = 0, 
+            FEATURES_CELL_PADDING = 5, 
+            FEATURES_CELL_SPACING = 2, 
+            FEATURES_TABLE_BORDER = 1;
+    private static final int[] IFACE_DIM = new int[]{250, 550},
+            VLD_DIM = new int[]{250, 550},
+            FEAT_DIM = new int[]{150, 650},
+            PARAM_DIM = new int[]{400, 150, 240},
+            META_DIM = new int[]{150, 650};
 
     /**
      * Create a new empty Model with a given URI.
@@ -570,7 +570,7 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
 
     private byte[] toByteArrayImpl(Blob fromModelBlob,
             ByteArrayOutputStream baos) throws SQLException, IOException {
-        byte buf[] = new byte[baosSize];
+        byte buf[] = new byte[BAOS_SIZE];
         int dataSize;
         InputStream is = fromModelBlob.getBinaryStream();
         try {
@@ -604,21 +604,21 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         HTMLTable interfacetable = new HTMLAppendableTableImpl(2);
         interfacetable.setAtCursor(new HTMLTextImpl("Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_uri").setType(HTMLInput.HTMLInputType.TEXT).
-                setValue(getDataset() != null ? getDataset().toString() : "").setSize(htmlTextBoxSize)).
+                setValue(getDataset() != null ? getDataset().toString() : "").setSize(HTML_TEXTBOX_SIZE)).
                 setAtCursor(new HTMLTextImpl("Dataset Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_service").
                 setType(HTMLInput.HTMLInputType.TEXT).
                 setValue(dataset != null ? dataset.getServiceBaseUri().augment("dataset").toString() : "").
-                setSize(htmlTextBoxSize)).
+                setSize(HTML_TEXTBOX_SIZE)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).
                 setValue("Predict")).
                 setTextAtCursor("");
 
-        interfacetable.setCellPadding(interfaceCellPadding).
-                setCellSpacing(interfaceCellSpacing).
-                setTableBorder(interfaceTableBorder).
-                setColWidth(1, interfaceTableDimensions[0]).
-                setColWidth(2, interfaceTableDimensions[1]);
+        interfacetable.setCellPadding(IFACE_CELL_PADDING).
+                setCellSpacing(IFACE_CELL_SPACING).
+                setTableBorder(IFACE_TABLE_BORDER).
+                setColWidth(1, IFACE_DIM[0]).
+                setColWidth(2, IFACE_DIM[1]);
         form.addComponent(interfacetable);
 
         builder.getDiv().breakLine().breakLine();
@@ -645,11 +645,11 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
                 setAtCursor(new HTMLInputImpl().setName("validation_service").
                 setType(HTMLInput.HTMLInputType.TEXT).setValue("http://toxcreate2.in-silico.ch/validation/test_set_validation").setSize(textBoxSize2)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Validate")).setTextAtCursor("");
-        validationtable.setCellPadding(validationCellPadding).
-                setCellSpacing(validationCellSpacing).
-                setTableBorder(validationTableBorder).
-                setColWidth(1, validationTableDimensions[0]).
-                setColWidth(2, validationTableDimensions[1]);
+        validationtable.setCellPadding(VALIDATION_CELL_PADDING).
+                setCellSpacing(VALIDATION_CELL_SPACING).
+                setTableBorder(VALIDATION_TABLE_BORDER).
+                setColWidth(1, VLD_DIM[0]).
+                setColWidth(2, VLD_DIM[1]);
         form2.addComponent(validationtable);
 
         builder.getDiv().breakLine().breakLine();
@@ -687,11 +687,11 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
         }
 
 
-        featuresTable.setCellPadding(featuresCellPadding).
-                setCellSpacing(featuresCellSpacing).
-                setTableBorder(featuresTableBorder).
-                setColWidth(1, featuresTableDimensions[0]).
-                setColWidth(2, featuresTableDimensions[1]);
+        featuresTable.setCellPadding(FEATURES_CELL_PADDING).
+                setCellSpacing(FEATURES_CELL_SPACING).
+                setTableBorder(FEATURES_TABLE_BORDER).
+                setColWidth(1, FEAT_DIM[0]).
+                setColWidth(2, FEAT_DIM[1]);
 
         if (getParameters() != null && !getParameters().isEmpty()) {
             builder.addSubSubSubHeading("Model Parameters");
@@ -708,9 +708,9 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             parametersTable.setCellPadding(5).
                     setCellSpacing(2).
                     setTableBorder(1).
-                    setColWidth(1, parametersTableDimensions[0]).
-                    setColWidth(2, parametersTableDimensions[1]).
-                    setColWidth(3, parametersTableDimensions[2]);
+                    setColWidth(1, PARAM_DIM[0]).
+                    setColWidth(2, PARAM_DIM[1]).
+                    setColWidth(3, PARAM_DIM[2]);
 
         }
 
@@ -719,8 +719,8 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             builder.addSubSubSubHeading("Meta Information");
             HTMLContainer metaContainer = getMeta().inHtml();
             HTMLTable metaTable = (HTMLTable) metaContainer.getComponents().get(0);
-            metaTable.setColWidth(1, metaTableDimensions[0]).
-                    setColWidth(2, metaTableDimensions[1]);
+            metaTable.setColWidth(1, META_DIM[0]).
+                    setColWidth(2, META_DIM[1]);
             builder.addComponent(metaContainer);
         }
 

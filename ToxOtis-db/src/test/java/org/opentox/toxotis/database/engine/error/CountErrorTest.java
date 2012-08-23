@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.opentox.toxotis.core.component.ErrorReport;
 import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.database.engine.DisableComponent;
-import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.util.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;

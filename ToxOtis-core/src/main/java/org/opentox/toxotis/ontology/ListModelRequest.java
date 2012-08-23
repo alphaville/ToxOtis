@@ -49,7 +49,7 @@ public class ListModelRequest {
         try {
             ontServer = new VRI(ontologyServer);
         } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
         IPostClient client = new PostHttpClient(ontServer);
         client.addPostParameter("query", prefixes + sparql);

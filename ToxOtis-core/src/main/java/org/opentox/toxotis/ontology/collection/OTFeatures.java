@@ -45,14 +45,14 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 public final class OTFeatures {
 
     public static final String NS = "http://www.opentox.org/api/1.1#";
-    private static OntologicalClass IUPACName;
-    private static OntologicalClass ChemicalName;
-    private static OntologicalClass CASRN;
-    private static OntologicalClass EINECS;
-    private static OntologicalClass SMILES;
-    private static OntologicalClass REACHRegistrationDate;
-    private static OntologicalClass InChI_std;
-    private static OntologicalClass InChIKey_std;
+    private static OntologicalClass iupacName;
+    private static OntologicalClass chemicalName;
+    private static OntologicalClass casRN;
+    private static OntologicalClass einecs;
+    private static OntologicalClass smiles;
+    private static OntologicalClass reachRegistrationDate;
+    private static OntologicalClass inChIStd;
+    private static OntologicalClass inChIKeyStd;
     private static java.util.Map<String, Method> methodCache;
 
     private synchronized static void initMethodCache() {
@@ -67,58 +67,58 @@ public final class OTFeatures {
     }
 
     public static OntologicalClass IUPACName() {
-        if (IUPACName == null) {
-            IUPACName = new OntologicalClassImpl("IUPACName");
+        if (iupacName == null) {
+            iupacName = new OntologicalClassImpl("IUPACName");
         }
-        return IUPACName;
+        return iupacName;
     }
 
     public static OntologicalClass CASRN() {
-        if (CASRN == null) {
-            CASRN = new OntologicalClassImpl("CASRN");
+        if (casRN == null) {
+            casRN = new OntologicalClassImpl("CASRN");
         }
-        return CASRN;
+        return casRN;
     }
 
     public static OntologicalClass ChemicalName() {
-        if (ChemicalName == null) {
-            ChemicalName = new OntologicalClassImpl("ChemicalName");
+        if (chemicalName == null) {
+            chemicalName = new OntologicalClassImpl("ChemicalName");
         }
-        return ChemicalName;
+        return chemicalName;
     }
 
     public static OntologicalClass EINECS() {
-        if (EINECS == null) {
-            EINECS = new OntologicalClassImpl("EINECS");
+        if (einecs == null) {
+            einecs = new OntologicalClassImpl("EINECS");
         }
-        return EINECS;
+        return einecs;
     }
 
     public static OntologicalClass SMILES() {
-        if (SMILES == null) {
-            SMILES = new OntologicalClassImpl("SMILES");
+        if (smiles == null) {
+            smiles = new OntologicalClassImpl("SMILES");
         }
-        return SMILES;
+        return smiles;
     }
 
     public static OntologicalClass InChI_std() {
-        if (InChI_std == null) {
-            InChI_std = new OntologicalClassImpl("InChI_std");
+        if (inChIStd == null) {
+            inChIStd = new OntologicalClassImpl("InChI_std");
         }
-        return InChI_std;
+        return inChIStd;
     }
 
     public static OntologicalClass InChIKey_std() {
-        if (InChIKey_std == null) {
-            InChIKey_std = new OntologicalClassImpl("InChIKey_std");
+        if (inChIKeyStd == null) {
+            inChIKeyStd = new OntologicalClassImpl("InChIKey_std");
         }
-        return InChIKey_std;
+        return inChIKeyStd;
     }
 
     public static OntologicalClass REACHRegistrationDate() {
-        if (REACHRegistrationDate == null) {
-            REACHRegistrationDate = new OntologicalClassImpl("REACHRegistrationDate");
+        if (reachRegistrationDate == null) {
+            reachRegistrationDate = new OntologicalClassImpl("REACHRegistrationDate");
         }
-        return REACHRegistrationDate;
+        return reachRegistrationDate;
     }
 }

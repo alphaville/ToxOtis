@@ -47,7 +47,7 @@ import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.ontology.MetaInfo;

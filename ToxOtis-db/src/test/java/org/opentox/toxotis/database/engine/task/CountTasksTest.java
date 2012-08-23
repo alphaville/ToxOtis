@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.core.component.User;
-import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.database.engine.model.AddModelTest;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 import static org.junit.Assert.*;

@@ -59,7 +59,11 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 public class MetaInfoImpl implements MetaInfo {
 
     private static final int HASH_OFFSET = 3, HASH_MOD = 89;
-    
+    private static final int PADDING = 5, SPACING = 2, BORDER = 1;
+    private static final int[] DIMENSIONS = new int[]{150, 600};
+    private static final String A_TAG_OPEN = "<a href=\"",
+            A_TAG_CLOSE = "</a>";
+
     public MetaInfoImpl() {
     }
     private static final transient String DUBLIN_CORE_DOC = "http://dublincore.org/documents/usageguide/elements.shtml#%s";
@@ -680,20 +684,20 @@ public class MetaInfoImpl implements MetaInfo {
 
     @Override
     public long getHash() {
-        int hash = 3;
-        hash = 89 * hash + (this.identifiers != null ? this.identifiers.hashCode() : 0);
-        hash = 89 * hash + (this.comments != null ? this.comments.hashCode() : 0);
-        hash = 89 * hash + (this.descriptions != null ? this.descriptions.hashCode() : 0);
-        hash = 89 * hash + (this.titles != null ? this.titles.hashCode() : 0);
-        hash = 89 * hash + (this.subjects != null ? this.subjects.hashCode() : 0);
-        hash = 89 * hash + (this.publishers != null ? this.publishers.hashCode() : 0);
-        hash = 89 * hash + (this.creators != null ? this.creators.hashCode() : 0);
-        hash = 89 * hash + (this.contributors != null ? this.contributors.hashCode() : 0);
-        hash = 89 * hash + (this.audiences != null ? this.audiences.hashCode() : 0);
-        hash = 89 * hash + (this.date != null ? this.date.hashCode() : 0);
-        hash = 89 * hash + (this.sameAs != null ? this.sameAs.hashCode() : 0);
-        hash = 89 * hash + (this.seeAlso != null ? this.seeAlso.hashCode() : 0);
-        hash = 89 * hash + (this.hasSources != null ? this.hasSources.hashCode() : 0);
+        int hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (this.identifiers != null ? this.identifiers.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.comments != null ? this.comments.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.descriptions != null ? this.descriptions.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.titles != null ? this.titles.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.subjects != null ? this.subjects.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.publishers != null ? this.publishers.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.creators != null ? this.creators.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.contributors != null ? this.contributors.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.audiences != null ? this.audiences.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.date != null ? this.date.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.sameAs != null ? this.sameAs.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.seeAlso != null ? this.seeAlso.hashCode() : 0);
+        hash = HASH_MOD * hash + (this.hasSources != null ? this.hasSources.hashCode() : 0);
         return hash;
     }
 
@@ -808,12 +812,12 @@ public class MetaInfoImpl implements MetaInfo {
         String creatorId = null;
         for (LiteralValue creator : creators) {
             creatorId = creator.getValueAsString();
-            builder.append("<a href=\"");
+            builder.append(A_TAG_OPEN);
             builder.append("/user/");
             builder.append(creatorId);
             builder.append("\">");
             builder.append(creatorId);
-            builder.append("</a>\n");
+            builder.append(A_TAG_CLOSE + "\n");
         }
         return builder.toString();
     }
@@ -823,67 +827,67 @@ public class MetaInfoImpl implements MetaInfo {
         HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
         HTMLTable table = builder.addTable(2);
         if (identifiers != null && !identifiers.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "identifier") + "\">Identifier" + (identifiers.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "identifier") + "\">Identifier" + (identifiers.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(identifiers));
         }
         if (titles != null && !titles.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "title") + "\">Title" + (titles.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "title") + "\">Title" + (titles.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(titles));
         }
         if (descriptions != null && !descriptions.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "description") + "\">Description" + (descriptions.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "description") + "\">Description" + (descriptions.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(descriptions));
         }
         if (subjects != null && !subjects.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "subject") + "\">Subject" + (subjects.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "subject") + "\">Subject" + (subjects.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(subjects));
         }
         if (creators != null && !creators.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "creator") + "\">Creator" + (creators.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "creator") + "\">Creator" + (creators.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(listOfCreators());
         }
         if (publishers != null && !publishers.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "publisher") + "\">Publisher" + (publishers.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "publisher") + "\">Publisher" + (publishers.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(publishers));
         }
         if (contributors != null && !contributors.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "contributor") + "\">Contributor" + (contributors.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "contributor") + "\">Contributor" + (contributors.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(contributors));
         }
         if (audiences != null && !audiences.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "audience") + "\">Audience" + (audiences.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "audience") + "\">Audience" + (audiences.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(audiences));
         }
 
         if (seeAlso != null && !seeAlso.isEmpty()) {
-            table.setTextAtCursor("<a href=\"http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4\">See Also</a>").
+            table.setTextAtCursor(A_TAG_OPEN + "http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4\">See Also" + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList2(seeAlso));
         }
         if (sameAs != null && !sameAs.isEmpty()) {
-            table.setTextAtCursor("<a href=\"http://www.w3.org/TR/owl-ref/#sameAs-def\">Same As</a>").
+            table.setTextAtCursor(A_TAG_OPEN + "http://www.w3.org/TR/owl-ref/#sameAs-def\">Same As" + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList2(sameAs));
         }
         if (hasSources != null && !hasSources.isEmpty()) {
-            table.setTextAtCursor("<a>Source" + (hasSources.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor("<a>Source" + (hasSources.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList2(hasSources));
         }
         if (comments != null && !comments.isEmpty()) {
-            table.setTextAtCursor("<a href=\"http://www.w3.org/TR/rdf-schema/#ch_comment\">Comment" + (comments.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + "http://www.w3.org/TR/rdf-schema/#ch_comment\">Comment" + (comments.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(comments));
         }
         if (rights != null && !rights.isEmpty()) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "rights") + "\">Copyright Note" + (rights.size() > 1 ? "s" : "") + "</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "rights") + "\">Copyright Note" + (rights.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(rights));
         }
         if (date != null) {
-            table.setTextAtCursor("<a href=\"" + String.format(DUBLIN_CORE_DOC, "date") + "\">Date</a>").
+            table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "date") + "\">Date" + A_TAG_CLOSE).
                     setTextAtCursor(date.getValueAsString());
         }
-        table.setCellPadding(5).
-                setCellSpacing(2).
-                setTableBorder(1).
-                setColWidth(1, 150).
-                setColWidth(2, 600);
+        table.setCellPadding(PADDING).
+                setCellSpacing(SPACING).
+                setTableBorder(BORDER).
+                setColWidth(1, DIMENSIONS[0]).
+                setColWidth(2, DIMENSIONS[1]);
 
         return builder.getDiv();
     }
@@ -916,11 +920,11 @@ public class MetaInfoImpl implements MetaInfo {
             builder.append("<ol>\n");
             for (ResourceValue lv : values) {
                 builder.append("<li>");
-                builder.append("<a href=\"").
+                builder.append(A_TAG_OPEN).
                         append(lv.getUri().toString()).
                         append("\">").
                         append(lv.getUri().toString()).
-                        append("</a>");
+                        append(A_TAG_CLOSE);
                 builder.append("</li>");
             }
             builder.append("</ol>");

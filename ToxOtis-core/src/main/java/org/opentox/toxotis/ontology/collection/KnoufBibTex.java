@@ -33,7 +33,6 @@
 
 package org.opentox.toxotis.ontology.collection;
 
-import com.hp.hpl.jena.vocabulary.OWL;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -54,7 +53,6 @@ public final class KnoufBibTex {
     private KnoufBibTex() {
     }
     public static final String NS = "http://purl.oclc.org/NET/nknouf/ns/bibtex#";
-    private static OntologicalClass msThing;
     private static OntologicalClass msEntry;
     private static OntologicalClass msArticle;
     private static OntologicalClass msBook;
@@ -111,9 +109,9 @@ public final class KnoufBibTex {
             OntologicalClass oc = (OntologicalClass) method.invoke(null);
             return oc;
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         } catch (InvocationTargetException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
     }
     

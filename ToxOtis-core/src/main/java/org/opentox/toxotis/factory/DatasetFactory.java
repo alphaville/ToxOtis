@@ -269,7 +269,7 @@ public final class DatasetFactory {
         } catch (final FileNotFoundException ex) {
             String msg = String.format("Cannot open a stream to the file '%s'", sourceFile.getAbsolutePath());
             logger.error(msg, ex);
-            throw new RuntimeException(msg, ex);
+            throw new IllegalArgumentException(msg, ex);
         }
         // Use the method publishFromStream
         Task task = publishFromStream(is, fileType, token, service);
@@ -281,7 +281,7 @@ public final class DatasetFactory {
                 String msg = String.format("There is a stream established towards '%s' which cannot close!!!",
                         sourceFile.getAbsolutePath());
                 logger.error(msg, ex);
-                throw new RuntimeException(msg, ex);
+                throw new IllegalArgumentException(msg, ex);
             }
         }
         return task;

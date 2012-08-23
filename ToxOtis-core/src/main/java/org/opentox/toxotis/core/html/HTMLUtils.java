@@ -49,6 +49,11 @@ import org.opentox.toxotis.ontology.ResourceValue;
  */
 public class HTMLUtils {
 
+    private static final String LIST_START = "<li>",
+            LIST_END = "</li>\n", LIST_ELEMENT = "_list",
+            OL_TAG = "ol",
+            LINK_PATTERN = "(?:https?|ftps?)://?(?://((?:(([^:@]*):?([^:@]*))?@)?([^:/?#]*)(?::(\\d*))?))?((((?:[^?#/]*/)*)([^?#]*))(?:\\?([^#]*))?(?:#(.*))?)";
+
     /**
      * Returns a list of objects in an HTML container out of a given list of objects.
      * The method creates a list invoking the method toString() defined in Object for
@@ -66,14 +71,14 @@ public class HTMLUtils {
      *      A list of the submitted objects in HTML wrapped in an {@link HTMLContainer }.
      */
     public static HTMLContainer createObjectList(Collection objects, String listTag, String divElement) {
-        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : "_list");
+        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : LIST_ELEMENT);
         StringBuilder sb = new StringBuilder();
         for (Object o : objects) {
-            sb.append("<li>");
+            sb.append(LIST_START);
             sb.append(o.toString());
-            sb.append("</li>\n");
+            sb.append(LIST_END);
         }
-        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
+        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : OL_TAG, sb.toString()));
         return builder.getDiv();
     }
 
@@ -94,14 +99,14 @@ public class HTMLUtils {
      *      A list of the submitted components in HTML wrapped in an {@link HTMLContainer }.
      */
     public static HTMLContainer createComponentList(Collection<? extends OTComponent> objects, String listTag, String divElement) {
-        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : "_list");
+        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : LIST_ELEMENT);
         StringBuilder sb = new StringBuilder();
         for (Object o : objects) {
-            sb.append("<li>");
+            sb.append(LIST_START);
             sb.append(HTMLUtils.linkUrlsInText(((OTComponent) o).getUri().toString()));
-            sb.append("</li>\n");
+            sb.append(LIST_END);
         }
-        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
+        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : OL_TAG, sb.toString()));
         return builder.getDiv();
     }
 
@@ -124,20 +129,19 @@ public class HTMLUtils {
      *      A list of the submitted literals in HTML wrapped in an {@link HTMLContainer }.
      */
     public static HTMLContainer createLiteralList(Collection<LiteralValue> objects, String listTag, String divElement, boolean displayType) {
-        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : "_list");
+        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : LIST_ELEMENT);
         StringBuilder sb = new StringBuilder();
         for (LiteralValue o : objects) {
-            sb.append("<li>");
+            sb.append(LIST_START);
             sb.append(o.getValueAsString());
             if (displayType) {
                 sb.append(" <sup>^^").append(o.getType()).append("</sup>");
             }
-            sb.append("</li>\n");
+            sb.append(LIST_END);
         }
-        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
+        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : OL_TAG, sb.toString()));
         return builder.getDiv();
     }
-
 
     /**
      * Returns a list of elements in an HTML container out of a given list of Resources.
@@ -160,10 +164,10 @@ public class HTMLUtils {
      *      A list of the submitted resources in HTML wrapped in an {@link HTMLContainer }.
      */
     public static HTMLContainer createResourceList(Collection<ResourceValue> objects, String listTag, String divElement, boolean doLink) {
-        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : "_list");
+        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : LIST_ELEMENT);
         StringBuilder sb = new StringBuilder();
         for (ResourceValue o : objects) {
-            sb.append("<li>");
+            sb.append(LIST_START);
             if (doLink) {
                 sb.append("<a href=\"").append(o.getUri().toString()).append("\">");
             }
@@ -172,7 +176,7 @@ public class HTMLUtils {
                 sb.append("</a>");
             }
             sb.append("  <sup>(").append(o.getOntologicalClass().getName()).append(")</sup>");
-            sb.append("</li>\n");
+            sb.append(LIST_END);
         }
         builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
         return builder.getDiv();
@@ -199,10 +203,10 @@ public class HTMLUtils {
      *      A list of the submitted ontological classes in HTML wrapped in an {@link HTMLContainer }.
      */
     public static HTMLContainer createOntClassList(Collection<OntologicalClass> objects, String listTag, String divElement, boolean doLink) {
-        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : "_list");
+        HTMLDivBuilder builder = new HTMLDivBuilder(divElement != null ? divElement : LIST_ELEMENT);
         StringBuilder sb = new StringBuilder();
         for (OntologicalClass o : objects) {
-            sb.append("<li>");
+            sb.append(LIST_START);
             if (doLink) {
                 sb.append("<a href=\"").append(o.getUri().toString()).append("\">");
             }
@@ -212,7 +216,7 @@ public class HTMLUtils {
             }
             sb.append(" </li>\n");
         }
-        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : "ol", sb.toString()));
+        builder.addComponent(new HTMLTagImpl(listTag != null ? listTag : OL_TAG, sb.toString()));
         return builder.getDiv();
     }
 
@@ -234,7 +238,7 @@ public class HTMLUtils {
          * Check out the snippet at http://blog.houen.net/java-get-url-from-string/
          * to potentially improve this code:
          */
-        Pattern pattern = Pattern.compile("(?:https?|ftps?)://?(?://((?:(([^:@]*):?([^:@]*))?@)?([^:/?#]*)(?::(\\d*))?))?((((?:[^?#/]*/)*)([^?#]*))(?:\\?([^#]*))?(?:#(.*))?)");
+        Pattern pattern = Pattern.compile(LINK_PATTERN);
         String[] fragments = plainText.split("\\s");// space
         StringBuilder sb = new StringBuilder();
         for (String word : fragments) {
@@ -257,10 +261,7 @@ public class HTMLUtils {
      * @return 
      *      HTML-normalized text.
      */
-    public static String normalizeTextForHtml(String plainText){
+    public static String normalizeTextForHtml(String plainText) {
         return plainText.replaceAll("\n", "<br/>").replaceAll("&", "&amp;");
     }
-
-
-
 }

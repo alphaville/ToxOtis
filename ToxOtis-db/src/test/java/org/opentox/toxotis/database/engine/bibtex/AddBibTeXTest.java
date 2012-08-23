@@ -47,7 +47,7 @@ import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.DbWriter;
 import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.global.DbConfiguration;
 import org.opentox.toxotis.database.pool.DataSourceFactory;

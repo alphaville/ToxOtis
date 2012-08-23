@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.client.collection;
 
 import java.net.URISyntaxException;
@@ -46,14 +44,12 @@ import org.opentox.toxotis.client.VRI;
  */
 public enum OpenToxAlgorithms {
 
-    NTUA_MLR(Services.ntua().augment("algorithm","mlr")),
-    NTUA_LEVERAGES(Services.ntua().augment("algorithm","leverages")),
-    NTUA_SVM(Services.ntua().augment("algorithm","svm")),
-    NTUA_FILTER(Services.ntua().augment("algorithm","filter")),
-    AMBIT_LR(Services.ambitUniPlovdiv().augment("algorithm","LR")),
-    TUM_KNN_CLASSIFICATION(Services.tumDev().augment("algorithm","kNNclassification"));
-
-
+    NTUA_MLR(Services.ntua().augment("algorithm", "mlr")),
+    NTUA_LEVERAGES(Services.ntua().augment("algorithm", "leverages")),
+    NTUA_SVM(Services.ntua().augment("algorithm", "svm")),
+    NTUA_FILTER(Services.ntua().augment("algorithm", "filter")),
+    AMBIT_LR(Services.ambitUniPlovdiv().augment("algorithm", "LR")),
+    TUM_KNN_CLASSIFICATION(Services.tumDev().augment("algorithm", "kNNclassification"));
     private static final Date LAST_UPDATE;
 
     static {
@@ -83,7 +79,7 @@ public enum OpenToxAlgorithms {
         try {
             return new VRI(serviceURI);
         } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException("Unacceptable URI", ex);
         }
     }
 }

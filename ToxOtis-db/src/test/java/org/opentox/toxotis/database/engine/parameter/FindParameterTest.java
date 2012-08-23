@@ -44,7 +44,7 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Model;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.database.engine.model.AddModel;
 import org.opentox.toxotis.database.engine.model.AddModelTest;
 import org.opentox.toxotis.database.engine.model.ListModel;

@@ -343,14 +343,14 @@ public class Feature extends OTPublishable<Feature> {
 
         Set<OntologicalClass> featureOntologies = null;
         writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
-        writer.writeAttribute("rdf:about", getUri().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
-        writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
+        writer.writeAttribute(RDF_ABOUT, getUri().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
+        writer.writeEmptyElement(RDF_TYPE); // #NODE_FEATURE_TYPE_DECL
         featureOntologies = getOntologicalClasses();
         boolean explicitTypeDeclaration = false;
         if (featureOntologies != null && !featureOntologies.isEmpty()) {
             if (featureOntologies.contains(OTClasses.nominalFeature()) || featureOntologies.contains(OTClasses.nominal())) {
                 explicitTypeDeclaration = true;
-                writer.writeAttribute("rdf:resource", OTClasses.nominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                writer.writeAttribute(RDF_RESOURCE, OTClasses.nominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 for (LiteralValue admissibleVal : getAdmissibleValues()) {
                     writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                     // TODO: Include also the XSD datatype of the value...
@@ -360,15 +360,15 @@ public class Feature extends OTPublishable<Feature> {
             }
             if (featureOntologies.contains(OTClasses.numericFeature()) || featureOntologies.contains(OTClasses.numeric())) {
                 explicitTypeDeclaration = true;
-                writer.writeAttribute("rdf:resource", OTClasses.numericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                writer.writeAttribute(RDF_RESOURCE, OTClasses.numericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
             }
             if (featureOntologies.contains(OTClasses.stringFeature()) || featureOntologies.contains(OTClasses.string())) {
                 explicitTypeDeclaration = true;
-                writer.writeAttribute("rdf:resource", OTClasses.stringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                writer.writeAttribute(RDF_RESOURCE, OTClasses.stringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
             }
         }
         if (!explicitTypeDeclaration) { // Declare as Feature
-            writer.writeAttribute("rdf:resource", OTClasses.feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+            writer.writeAttribute(RDF_RESOURCE, OTClasses.feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
         }
         /* Units of the feature*/
         if (getUnits() != null) {
@@ -397,7 +397,7 @@ public class Feature extends OTPublishable<Feature> {
         /** sameAs feautre type declaration (declared alwayes as ot:Feature) */
         if (sameAsFeatureUri != null) {
             writer.writeStartElement("ot:Feature");// #NODE_ADDITIONAL_FEATURE
-            writer.writeAttribute("rdf:about", sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE
+            writer.writeAttribute(RDF_ABOUT, sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE
             writer.writeEndElement();// #__NODE_ADDITIONAL_FEATURE
         }
         endRdfWriter(writer);

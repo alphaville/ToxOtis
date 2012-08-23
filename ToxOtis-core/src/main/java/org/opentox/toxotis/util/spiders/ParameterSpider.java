@@ -47,6 +47,8 @@ import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
  * @author Pantelis Sopasakis
  */
 public class ParameterSpider extends Tarantula<Parameter> {
+    
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ParameterSpider.class);
 
     /**
      * ParameterSpider constructor with an ontological resource and an ontological model.
@@ -71,7 +73,7 @@ public class ParameterSpider extends Tarantula<Parameter> {
                 asDatatypeProperty(model));
         if (scopes != null && !scopes.isEmpty()) {
             if (scopes.size() > 1) {
-                System.err.println("[WARN ] Multiple scopes declared for the parsed parameter! "
+                logger.warn("[WARN ] Multiple scopes declared for the parsed parameter! "
                         + "Only one will be taken into account.");
             }
             LiteralValue scope = scopes.iterator().next();
@@ -81,7 +83,7 @@ public class ParameterSpider extends Tarantula<Parameter> {
         Set<LiteralValue> paramTypedValues = retrievePropertyLiterals(OTDatatypeProperties.paramValue().asDatatypeProperty(model));
         if (paramTypedValues != null && !paramTypedValues.isEmpty()) {
             if (paramTypedValues.size() > 1) {
-                System.err.println("[WARN ] Multiple parameter values are declared for a single parameter. "
+                logger.warn("[WARN ] Multiple parameter values are declared for a single parameter. "
                         + "Only one of them will be taken into account!");
             }
             LiteralValue paramTypedValue = paramTypedValues.iterator().next();

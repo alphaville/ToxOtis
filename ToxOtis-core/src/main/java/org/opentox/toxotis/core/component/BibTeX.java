@@ -848,8 +848,8 @@ public class BibTeX extends OTPublishable<BibTeX>
         String bibtexUri = splitted[0] + "/bibtex";
         try {
             return new VRI(bibtexUri);
-        } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+        } catch (final URISyntaxException ex) {
+            throw new IllegalArgumentException("Bad URI", ex);
         }
     }
 
@@ -1088,7 +1088,7 @@ public class BibTeX extends OTPublishable<BibTeX>
             try {
                 bibTypeClass = KnoufBibTex.forName(mBibType.toString());
             } catch (ToxOtisException ex) {
-                throw new RuntimeException("Serialization to Individual is not possible - Severe BUG!", ex);
+                throw new IllegalArgumentException("Serialization to Individual is not possible - Severe BUG!", ex);
             }
         }
         indiv = model.createIndividual(bibtexUri, bibTypeClass.inModel(model));
@@ -1205,21 +1205,21 @@ public class BibTeX extends OTPublishable<BibTeX>
 
         for (Field f : this.getClass().getDeclaredFields()) {
             try {
-                if (!f.getName().equals("m_createdBy")
-                        && !f.getName().equals("m_author")
-                        && !f.getName().equals("m_bib_type")
+                if (!f.getName().equals("mCreatedBy")
+                        && !f.getName().equals("mAuthor")
+                        && !f.getName().equals("mBibType")
                         && !f.getName().equals("logger")
                         && f.get(this) != null) {
                     result.append(",\n");
-                    result.append(f.getName().substring(2));
+                    result.append(f.getName().substring(1));
                     result.append(" = \"");
                     result.append(f.get(this));
                     result.append("\"");
                 }
             } catch (IllegalArgumentException ex) {
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException(ex);
             } catch (IllegalAccessException ex) {
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException(ex);
             }
         }
         result.append("\n}\n");
@@ -1312,7 +1312,7 @@ public class BibTeX extends OTPublishable<BibTeX>
                             try {
                                 setUri(new VRI("example.org/bibtex/" + UUID.randomUUID().toString()));
                             } catch (URISyntaxException ex1) {
-                                throw new RuntimeException(ex1);
+                                throw new IllegalArgumentException(ex1);
                             }
                         }
                     } else {
@@ -1328,13 +1328,9 @@ public class BibTeX extends OTPublishable<BibTeX>
             Set<Field> setOfFields = new HashSet<Field>();
             java.util.Collections.addAll(setOfFields, fields);
             try {
-                setOfFields.remove(this.getClass().getDeclaredField("m_bib_type")); // ..__  Already parsed!
+                setOfFields.remove(this.getClass().getDeclaredField("mBibType")); // ..__  Already parsed!
             } catch (final NoSuchFieldException ex) {
-                throw new RuntimeException(ex);
-            } catch (final SecurityException ex) {
-                throw new RuntimeException(ex);
-            } catch (final IllegalArgumentException ex) {
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException(ex);
             }
 
             while ((line = br.readLine()) != null) {
@@ -1348,14 +1344,12 @@ public class BibTeX extends OTPublishable<BibTeX>
                     String paramVal = nameValueFragments[1].trim().replaceAll("\",", "").replaceAll("\"", "");
                     Field foundField = null;
                     for (Field f : setOfFields) {
-                        if (f.getName().equalsIgnoreCase("m_" + paramName)) {
+                        if (f.getName().equalsIgnoreCase("m" + paramName)) {
                             foundField = f;
                             try {
                                 f.set(this, paramVal);
-                            } catch (final IllegalArgumentException ex) {
-                                throw new RuntimeException(ex);
                             } catch (final IllegalAccessException ex) {
-                                throw new RuntimeException(ex);
+                                throw new IllegalArgumentException(ex);
                             }
                         }
                     }

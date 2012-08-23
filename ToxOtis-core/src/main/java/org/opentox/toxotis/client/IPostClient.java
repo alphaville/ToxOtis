@@ -163,5 +163,5 @@ public interface IPostClient extends IClient {
      */
     IPostClient addPostParameter(String paramName, String paramValue) throws NullPointerException;
 
-    public WriteLock getPostLock() ;
+    WriteLock getPostLock() ;
 }

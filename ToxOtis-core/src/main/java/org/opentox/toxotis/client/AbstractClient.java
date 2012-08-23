@@ -72,6 +72,8 @@ public abstract class AbstractClient implements IClient {
     private ReentrantReadWriteLock.ReadLock readLock = new ReentrantReadWriteLock().readLock();
     private ReentrantReadWriteLock.WriteLock connectionLock = new ReentrantReadWriteLock().writeLock();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractClient.class);
+    private static final String NO_TARGET_MSG = "No target specified",
+            IO_ERROR_MSG = "Input-Output error occured while connecting to the server at %s";
 
     public AbstractClient() {
     }
@@ -204,9 +206,8 @@ public abstract class AbstractClient implements IClient {
             try {
                 is = getConnection().getInputStream();
             } catch (IOException ex) {
-                ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
-                        + "the server. Cannot initialize an InputStream to " + getUri(), ex);
-                connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
+                ConnectionException connectionExc = new ConnectionException(String.format(IO_ERROR_MSG, getUri()), ex);
+                connectionExc.setActor(getUri() != null ? getUri().toString() : NO_TARGET_MSG);
                 throw connectionExc;
             }
             return is;
@@ -285,9 +286,8 @@ public abstract class AbstractClient implements IClient {
             }
             return new String(sb);
         } catch (IOException io) {
-            ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
-                    + "the server. Cannot read input stream to " + getUri(), io);
-            connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
+            ConnectionException connectionExc = new ConnectionException(String.format(IO_ERROR_MSG, getUri()), io);
+            connectionExc.setActor(getUri() != null ? getUri().toString() : NO_TARGET_MSG);
             throw connectionExc;
         } finally {
             IOException closeException = null;
@@ -360,8 +360,6 @@ public abstract class AbstractClient implements IClient {
                 is.close();
             }
             return om;
-        } catch (final ServiceInvocationException ex) {
-            throw ex;
         } catch (final NullPointerException npe) {// Exception to become something more specific
             logger.trace("Cannot parse RDF representation!", npe);
             BadRequestException badRequest = new BadRequestException("Remote service at '" + getUri() + "' did not provide a valid "
@@ -402,9 +400,8 @@ public abstract class AbstractClient implements IClient {
             }
             responseCode = getConnection().getResponseCode();
         } catch (IOException ex) {
-            ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
-                    + "the server at " + getUri(), ex);
-            connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
+            ConnectionException connectionExc = new ConnectionException(String.format(IO_ERROR_MSG, getUri()), ex);
+            connectionExc.setActor(getUri() != null ? getUri().toString() : NO_TARGET_MSG);
             throw connectionExc;
         }
         return responseCode;
@@ -507,9 +504,8 @@ public abstract class AbstractClient implements IClient {
                 }
             }
         } catch (IOException io) {
-            ConnectionException connectionExc = new ConnectionException("Input-Output error occured while connecting to "
-                    + "the server", io);
-            connectionExc.setActor(getUri() != null ? getUri().toString() : "No target specified");
+            ConnectionException connectionExc = new ConnectionException(String.format(IO_ERROR_MSG, getUri()), io);
+            connectionExc.setActor(getUri() != null ? getUri().toString() : NO_TARGET_MSG);
             throw connectionExc;
         } finally {
             ServiceInvocationException serviceInvocationException = null;

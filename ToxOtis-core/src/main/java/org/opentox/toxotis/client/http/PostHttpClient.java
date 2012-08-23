@@ -210,7 +210,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                 postParameters.put(encodedParamName, list);
             }
         } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException("Unsupported Encoding",ex);
         }
         return this;
     }

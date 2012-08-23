@@ -90,25 +90,25 @@ public class ErrorReport extends OTComponent<ErrorReport>
 
     static {
         ERROR_CODE_REFERENCE = new HashMap<Integer, String>();
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.BadRequest.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.BadRequest.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1");// Bad request
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.Unauthorized.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.Unauthorized.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2");// Unauthorized
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.Forbidden.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.Forbidden.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4");// Forbidden
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotFound.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotFound.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5");// Not found
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.MethodNotAllowed.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.MethodNotAllowed.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.6");// Method not allowed
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotAcceptable.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotAcceptable.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.7");// Not acceptable
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.InternalServerError.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.InternalServerError.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1");// Internal server error
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotImplemented.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.NotImplemented.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2");// Not implemented
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.BadGateway.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.BadGateway.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.3");// Bad Gateway
-        ERROR_CODE_REFERENCE.put(HttpStatusCodes.ServiceUnavailable.getStatus(), 
+        ERROR_CODE_REFERENCE.put(HttpStatusCodes.ServiceUnavailable.getStatus(),
                 "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4");// Service Unavailable
 
     }
@@ -197,7 +197,7 @@ public class ErrorReport extends OTComponent<ErrorReport>
                 setUri(new VRI(URI));
             } catch (URISyntaxException ex) {
                 logger.debug(null, ex);
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException("Bad URI", ex);
             }
         }
         Individual indiv = model.createIndividual(getUri() != null ? getUri().getStringNoQuery()

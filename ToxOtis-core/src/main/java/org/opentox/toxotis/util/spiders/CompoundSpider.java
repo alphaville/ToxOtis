@@ -45,8 +45,6 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.IClient;
 import org.opentox.toxotis.client.IGetClient;
@@ -112,17 +110,17 @@ public class CompoundSpider extends Tarantula<Compound> {
         if (!keywordIsVri) {
             try {
                 keyword = URLEncoder.encode(keyword, "UTF-8");
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(CompoundSpider.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException(ex);
+            } catch (final UnsupportedEncodingException ex) {
+                logger.warn("Unsupported encoding exception caught", ex);
+                throw new IllegalArgumentException(ex);
             }
         }
         ////// !!!! Now 'keyword' is UTF-8-encoded !!!!
-        
+
         String queryUri = String.format(lookUpService, keyword);
         VRI queryVri = null;
-        try {            
-            queryVri = !keywordIsVri?new VRI(queryUri):new VRI(lookUpService).addUrlParameter("search", keyword);
+        try {
+            queryVri = !keywordIsVri ? new VRI(queryUri) : new VRI(lookUpService).addUrlParameter("search", keyword);
         } catch (URISyntaxException ex) {
             String msg = "Keyword '" + keyword + "' is not valid";
             logger.debug(msg, ex);

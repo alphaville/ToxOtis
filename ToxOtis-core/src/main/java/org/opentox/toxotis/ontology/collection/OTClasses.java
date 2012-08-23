@@ -150,10 +150,10 @@ public final class OTClasses {
             }
             OntologicalClass oc = (OntologicalClass) method.invoke(null);
             return oc;
-        } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
-        } catch (InvocationTargetException ex) {
-            throw new RuntimeException(ex);
+        } catch (final IllegalAccessException ex) {
+            throw new IllegalArgumentException(ex);
+        } catch (final InvocationTargetException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 

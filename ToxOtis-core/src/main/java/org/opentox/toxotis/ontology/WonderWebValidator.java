@@ -85,7 +85,7 @@ public class WonderWebValidator {
         try {
             WONDERWEB_VLD = new VRI(m_WONDERWEB_URL);
         } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
     }
 

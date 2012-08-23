@@ -30,8 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
-
 package org.opentox.toxotis.core.component;
 
 import org.junit.After;
@@ -71,14 +69,23 @@ public class BibTeXTest {
 
     @Test
     public void testParseBibTex() throws ToxOtisException, ServiceInvocationException {
-//        BibTeX bt = new BibTeX(Services.ntua().augment("bibtex","cd1927a5-ec38-4414-909f-62b4e6cf1d3b")).loadFromRemote();
+        BibTeX bt = new BibTeX(Services.ntua().augment("bibtex", "caco2")).loadFromRemote();
+        assertNotNull(bt.getAbstract());
+        assertNotNull(bt.getAuthor());
+        assertNotNull(bt.getJournal());
+        assertNotNull(bt.getBibType());
+        assertNotNull(bt.getBibTexService());
+        String btDownloadedString = bt.toString();//downloaded and **converted** to string
+        assertNotNull("Conversion to String returns null", btDownloadedString);
+        assertFalse("Conversion to String returns empty string", btDownloadedString.isEmpty());
+        assertTrue("Bad Conversion from BibTeX to String", 
+                btDownloadedString.contains("Series = \"ADME Evaluation in Drug Discovery\""));
+        assertTrue("Bad Conversion from BibTeX to String", 
+                btDownloadedString.contains("Number = \"5\""));
+        System.out.println(bt);
     }
 
     @Test
     public void testPublishBibTeX() throws ToxOtisException, ServiceInvocationException {
-        
     }
-
-    
-
 }

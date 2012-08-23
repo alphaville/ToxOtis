@@ -58,7 +58,7 @@ public final class OTAlgorithmTypes {
         // Cannot be subclassed!
     }
     /**
-     * Namespace of all algorithm ontological classes.
+     * NameSpace of all algorithm ontological classes.
      */
     public static final String NS = "http://www.opentox.org/algorithmTypes.owl/#";
     private static OntologicalClass msAlgorithmType;
@@ -125,9 +125,9 @@ public final class OTAlgorithmTypes {
             OntologicalClass oc = (OntologicalClass) method.invoke(null);
             return oc;
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         } catch (InvocationTargetException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
 
     }

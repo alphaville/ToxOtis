@@ -106,7 +106,7 @@ public class TaskRunner implements Callable<Task> {
                 Thread.sleep(delay);
                 return updateTask(old);
             } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
+                throw new RuntimeException("Interruption!", ex);
             }
         } else {
             // This block is reached when the status code is some error code

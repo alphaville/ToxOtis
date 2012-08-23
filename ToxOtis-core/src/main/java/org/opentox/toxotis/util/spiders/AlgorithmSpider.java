@@ -161,7 +161,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                     throw fr;
                 }
                 if (status == 401) {
-                    Unauthorized unauth =  new Unauthorized("User is not authorized to access : '" + uri + "'");
+                    Unauthorized unauth = new Unauthorized("User is not authorized to access : '" + uri + "'");
                     unauth.setErrorReport(er);
                     throw unauth;
                 }
@@ -170,7 +170,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
                     notFound.setErrorReport(er);
                     throw notFound;
                 } else {
-                    RemoteServiceException unexpected = new RemoteServiceException("Unexpected error from : '" + uri + "'. Service returned status "+status);
+                    RemoteServiceException unexpected = new RemoteServiceException("Unexpected error from : '" + uri + "'. Service returned status " + status);
                     unexpected.setErrorReport(er);
                     throw unexpected;
 
@@ -197,7 +197,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
         try {
             algorithm = new Algorithm(uri.getStringNoQuery());
         } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException("Invalid URI", ex);
         }
         if (algorithm == null) {
             throw new ServiceInvocationException("Make sure that the URI you provided holds a valid representation of an OpenTox algorithm.");

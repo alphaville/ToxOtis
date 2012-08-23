@@ -46,7 +46,7 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.core.component.User;
 import org.opentox.toxotis.database.IDbIterator;
-import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
 import org.opentox.toxotis.ontology.ResourceValue;

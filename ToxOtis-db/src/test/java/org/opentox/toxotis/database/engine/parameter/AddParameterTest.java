@@ -39,7 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Parameter;
-import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.ontology.LiteralValue;
 import static org.junit.Assert.*;
 

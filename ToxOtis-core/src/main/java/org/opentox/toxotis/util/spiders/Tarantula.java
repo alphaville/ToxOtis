@@ -176,7 +176,7 @@ public abstract class Tarantula<Result> implements Closeable {
                                 OTClasses.forName(value.getLocalName())));
                     } catch (URISyntaxException ex) {
                         logger.debug(null, ex);
-                        throw new RuntimeException(ex);
+                        throw new IllegalArgumentException(ex);
                     }
                 } else if (node.isLiteral()) {
                     if (verbose) {

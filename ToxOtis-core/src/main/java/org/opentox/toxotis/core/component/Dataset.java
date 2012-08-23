@@ -84,6 +84,7 @@ public class Dataset extends OTPublishable<Dataset> {
     private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
     private static final int HASH_OFFSET = 7, HASH_MOD = 29;
+    private static final String INACTIVE_TOKEN_MSG = "The Provided token is inactive";
 
     /**
      * Constructor for a Dataset object providing its URI.
@@ -172,7 +173,7 @@ public class Dataset extends OTPublishable<Dataset> {
 
         writer.writeStartElement("ot:Dataset");// #NODE_BASE: Start Base Dataset Node
         if (getUri() != null) {
-            writer.writeAttribute("rdf:about", getUri().toString()); // REFERS TO #NODE_BASE
+            writer.writeAttribute(RDF_ABOUT, getUri().toString()); // REFERS TO #NODE_BASE
         }
         /* Meta-information about the dataset */
         if (getMeta() != null) {
@@ -187,7 +188,7 @@ public class Dataset extends OTPublishable<Dataset> {
                 writer.writeStartElement("ot:values");// #NODE_VALUES_PROP
                 writer.writeStartElement("ot:FeatureValue");// #NODE_VALUES_HAS_FV_PROP
                 writer.writeEmptyElement("ot:feature");// #ENODE_VALUES_HAS_FEAT_PROP
-                writer.writeAttribute("rdf:resource", featureValue.getFeature().getUri().toString()); // REFERS TO #ENODE_VALUES_HAS_FEAT_PROP
+                writer.writeAttribute(RDF_RESOURCE, featureValue.getFeature().getUri().toString()); // REFERS TO #ENODE_VALUES_HAS_FEAT_PROP
                 writer.writeStartElement("ot:value");// #NODE_VALUE_PROP
                 writer.writeAttribute("rdf:datatype", featureValue.getValue().getType().getURI()); // REFERS TO #NODE_VALUE_PROP
                 writer.writeCharacters(featureValue.getValue().getValue().toString());// REFERS TO #NODE_VALUE_PROP
@@ -198,7 +199,7 @@ public class Dataset extends OTPublishable<Dataset> {
             writer.writeStartElement("ot:compound");// #NODE_HAS_COMPOUND_PROP
                         /* Compound in Data Entry... */
             writer.writeStartElement("ot:Compound");// #NODE_COMPOUND
-            writer.writeAttribute("rdf:about", dataEntry.getConformer().getUri().toString()); // REFERS TO #NODE_COMPOUND
+            writer.writeAttribute(RDF_ABOUT, dataEntry.getConformer().getUri().toString()); // REFERS TO #NODE_COMPOUND
             writer.writeEndElement();// #__NODE_COMPOUND
             writer.writeEndElement();// #__NODE_HAS_COMPOUND_PROP
             writer.writeEndElement();// // #__NODE_DE
@@ -211,7 +212,7 @@ public class Dataset extends OTPublishable<Dataset> {
                 for (ResourceValue rv : getMeta().getSeeAlso()) {
                     if (rv.getOntologicalClass() != null) {
                         writer.writeEmptyElement(rv.getOntologicalClass().getNameSpace(), rv.getOntologicalClass().getName());
-                        writer.writeAttribute("rdf:about", rv.getUri().toString());
+                        writer.writeAttribute(RDF_ABOUT, rv.getUri().toString());
                     }
                 }
             }
@@ -219,7 +220,7 @@ public class Dataset extends OTPublishable<Dataset> {
                 for (ResourceValue rv : getMeta().getHasSources()) {
                     if (rv.getOntologicalClass() != null) {
                         writer.writeEmptyElement(rv.getOntologicalClass().getNameSpace(), rv.getOntologicalClass().getName());
-                        writer.writeAttribute("rdf:about", rv.getUri().toString());
+                        writer.writeAttribute(RDF_ABOUT, rv.getUri().toString());
                     }
                 }
             }
@@ -227,7 +228,7 @@ public class Dataset extends OTPublishable<Dataset> {
                 for (ResourceValue rv : getMeta().getSameAs()) {
                     if (rv.getOntologicalClass() != null) {
                         writer.writeEmptyElement(rv.getOntologicalClass().getNameSpace(), rv.getOntologicalClass().getName());
-                        writer.writeAttribute("rdf:about", rv.getUri().toString());
+                        writer.writeAttribute(RDF_ABOUT, rv.getUri().toString());
                     }
                 }
             }
@@ -238,14 +239,14 @@ public class Dataset extends OTPublishable<Dataset> {
         Set<String> sameAsFeatures = new HashSet<String>();
         for (Feature f : containedFeatures) {
             writer.writeStartElement("ot:Feature"); // #NODE_FEATURE_DECLARATION
-            writer.writeAttribute("rdf:about", f.getUri().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
+            writer.writeAttribute(RDF_ABOUT, f.getUri().toString()); // REFERS TO #NODE_FEATURE_DECLARATION: Feature URI
             featureOntologies = f.getOntologicalClasses();
             boolean explicitTypeDeclaration = false;
             if (featureOntologies != null && !featureOntologies.isEmpty()) {
                 if (featureOntologies.contains(OTClasses.nominalFeature()) || featureOntologies.contains(OTClasses.nominal())) {
-                    writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
+                    writer.writeEmptyElement(RDF_TYPE); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
-                    writer.writeAttribute("rdf:resource", OTClasses.nominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                    writer.writeAttribute(RDF_RESOURCE, OTClasses.nominalFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                     for (LiteralValue admissibleVal : f.getAdmissibleValues()) {
                         writer.writeStartElement("ot:acceptValue"); // #NODE_ACCEPT_VALUE
                         // TODO: Include also the XSD datatype of the value...
@@ -255,20 +256,20 @@ public class Dataset extends OTPublishable<Dataset> {
                 }
                 if (featureOntologies.contains(OTClasses.numericFeature()) || 
                         featureOntologies.contains(OTClasses.numeric())) {
-                    writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
+                    writer.writeEmptyElement(RDF_TYPE); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
-                    writer.writeAttribute("rdf:resource", OTClasses.numericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                    writer.writeAttribute(RDF_RESOURCE, OTClasses.numericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 }
                 if (featureOntologies.contains(OTClasses.stringFeature()) || 
                         featureOntologies.contains(OTClasses.string())) {
-                    writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
+                    writer.writeEmptyElement(RDF_TYPE); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
-                    writer.writeAttribute("rdf:resource", OTClasses.stringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                    writer.writeAttribute(RDF_RESOURCE, OTClasses.stringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 }
             }
             if (!explicitTypeDeclaration) { // Declare as Feature
-                writer.writeEmptyElement("rdf:type"); // #NODE_FEATURE_TYPE_DECL
-                writer.writeAttribute("rdf:resource", OTClasses.feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
+                writer.writeEmptyElement(RDF_TYPE); // #NODE_FEATURE_TYPE_DECL
+                writer.writeAttribute(RDF_RESOURCE, OTClasses.feature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
             }
             /* Units of the feature*/
             if (f.getUnits() != null) {
@@ -296,7 +297,7 @@ public class Dataset extends OTPublishable<Dataset> {
 
         for (String sameAsFeatureUri : sameAsFeatures) {
             writer.writeStartElement("ot:Feature"); // #NODE_ADDITIONAL_FEATURE
-            writer.writeAttribute("rdf:about", sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE
+            writer.writeAttribute(RDF_ABOUT, sameAsFeatureUri); // REFERS TO #NODE_ADDITIONAL_FEATURE
             writer.writeEndElement();// #__NODE_ADDITIONAL_FEATURE
         }
 
@@ -307,7 +308,7 @@ public class Dataset extends OTPublishable<Dataset> {
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new ForbiddenRequest("The Provided token is inactive");
+            throw new ForbiddenRequest(INACTIVE_TOKEN_MSG);
         }
         PostHttpClient client = new PostHttpClient(vri);
         client.setContentType(Media.APPLICATION_RDF_XML);
@@ -325,7 +326,7 @@ public class Dataset extends OTPublishable<Dataset> {
             try {
                 dsUpload.setUri(new VRI(remoteResult));
             } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException(ex);
             }
             dsUpload.loadFromRemote();
         } else if (status == 200) {
@@ -335,7 +336,7 @@ public class Dataset extends OTPublishable<Dataset> {
                 dsUpload.setUri(new VRI(remoteResult));
                 dsUpload.setResultUri(new VRI(remoteResult));
             } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
+                throw new IllegalArgumentException(ex);
             }
         }
         return dsUpload;
@@ -344,7 +345,7 @@ public class Dataset extends OTPublishable<Dataset> {
     @Override
     public Task publishOnline(AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new ForbiddenRequest("The Provided token is inactive");
+            throw new ForbiddenRequest(INACTIVE_TOKEN_MSG);
         }
         return publishOnline(Services.ideaconsult().augment("dataset"), token);
     }
@@ -397,7 +398,7 @@ public class Dataset extends OTPublishable<Dataset> {
     @Override
     protected Dataset loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new ForbiddenRequest("The Provided token is inactive");
+            throw new ForbiddenRequest(INACTIVE_TOKEN_MSG);
         }
         DatasetSpider spider = new DatasetSpider(uri, token);
         Dataset ds = spider.parse();
@@ -561,7 +562,7 @@ public class Dataset extends OTPublishable<Dataset> {
 
     public Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
-            throw new ForbiddenRequest("The Provided token is inactive");
+            throw new ForbiddenRequest(INACTIVE_TOKEN_MSG);
         }
         PostHttpClient client = new PostHttpClient(descriptorCalculationAlgorithm);
         client.setMediaType(Media.APPLICATION_RDF_XML);

@@ -43,15 +43,14 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
-import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.https.PostHttpsClient;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.client.collection.Services.*;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
-import org.opentox.toxotis.exceptions.impl.InternalServerError;
 import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
@@ -81,7 +80,7 @@ public class AuthenticationToken {
     private String token;
     /** Local lifetime of the token. The token (as an object) will expire after 23 hours.
     Note that the real token expires in 24 hours.*/
-    private static final long tokenLocalLifeTime = 23 * 3600 * 1000L; // 23hrs
+    private static final long TOKEN_LOCAL_LIFESPAN = 23 * 3600 * 1000L; // 23hrs
     /** Encoding used to encode tokens received from the SSO server */
     private String encoding = "UTF-8";
     /** Flag used to tell if the token is logged out */
@@ -138,25 +137,17 @@ public class AuthenticationToken {
         IPostClient poster = ClientFactory.createPostClient(Services.SingleSignOn.ssoAuthenticate());
         try {
             poster.addPostParameter("username", username);
-            poster.addPostParameter("password", password);            
-            username = null;
-            password = null;
+            poster.addPostParameter("password", password);
             poster.post();
-            int status = 0;
-            try {
-                status = poster.getResponseCode();
-            } catch (ServiceInvocationException ex) {
-                throw ex;
-            }
-
-            if (status >= 400) {
-                if (status == 401) {
+            int status = poster.getResponseCode();
+            if (status >= HttpStatusCodes.BadRequest.getStatus()) {
+                if (status == HttpStatusCodes.Unauthorized.getStatus()) {
                     throw new Unauthorized("Unauthorized User using username:"
                             + username + " and password:" + (password != null ? "YES" : "NO"));
-                } else if (status == 403) {
+                } else if (status == HttpStatusCodes.Forbidden.getStatus()) {
                     throw new ForbiddenRequest("Forbidden");
                 }
-            }            
+            }
             String response = poster.getResponseText();
             if (response.contains("token.id=")) {
                 response = response.replaceAll("token.id=", "");
@@ -171,7 +162,7 @@ public class AuthenticationToken {
                     ConnectionException conectionException = new ConnectionException("Cannot close connection to "
                             + Services.SingleSignOn.ssoAuthenticate(), ex);
                     conectionException.setActor(Services.SingleSignOn.ssoAuthenticate().toString());
-                    conectionException.setHttpStatus(500);
+                    conectionException.setHttpStatus(HttpStatusCodes.InternalServerError.getStatus());
                     throw conectionException;
                 }
             }
@@ -270,7 +261,7 @@ public class AuthenticationToken {
         }
         if (tokenCreationTimestamp == -1) {
             return TokenStatus.DEAD;
-        } else if ((System.currentTimeMillis() - tokenCreationTimestamp) < tokenLocalLifeTime) {
+        } else if ((System.currentTimeMillis() - tokenCreationTimestamp) < TOKEN_LOCAL_LIFESPAN) {
             return TokenStatus.ACTIVE;
         } else {
             return TokenStatus.INACTIVE;
@@ -297,14 +288,14 @@ public class AuthenticationToken {
         try {
             return URLEncoder.encode(token, encoding);
         } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException("Bad encoding :" + encoding, ex);
+            throw new IllegalArgumentException("Bad encoding :" + encoding, ex);
         }
     }
 
     /**
      * Retrieve the timestamp of the token creation. If the difference between
      * the current timestamp retrieved by <code>System.currentTimeMillis()</code>
-     * and the timestamp of the token creation exceeds {@link AuthenticationToken#tokenLocalLifeTime }
+     * and the timestamp of the token creation exceeds {@link AuthenticationToken#TOKEN_LOCAL_LIFESPAN }
      * then the token is considered to be {@link TokenStatus#INACTIVE Inactive}.
      * @return
      *      The timestamp of the token creation
@@ -345,9 +336,9 @@ public class AuthenticationToken {
             poster.post();
             int status = poster.getResponseCode();
             String message = (poster.getResponseText()).trim();
-            if (status != 200 && status != 401) {
+            if (status != HttpStatusCodes.Success.getStatus() && status != HttpStatusCodes.Unauthorized.getStatus()) {
                 throw new ServiceInvocationException("Status code " + status + " received from " + Services.SingleSignOn.ssoValidate());
-            } else if (status == 401) {
+            } else if (status == HttpStatusCodes.Unauthorized.getStatus()) {
                 if (!message.equals("boolean=false")) {
                     return false;
                 } else {
@@ -393,7 +384,7 @@ public class AuthenticationToken {
             poster.addPostParameter("subjectid", stringValue());
             poster.post();
             int status = poster.getResponseCode();
-            if (status != 200) {
+            if (status != HttpStatusCodes.Success.getStatus()) {
                 throw new ServiceInvocationException("Status code " + status + " received from " + Services.SingleSignOn.ssoInvalidate());
             }
         } finally {
@@ -433,11 +424,11 @@ public class AuthenticationToken {
             poster.addPostParameter("subjectid", stringValue());
             poster.post();
             int status = poster.getResponseCode();
-            if (status != 200) {
-                if (status == 401) {
+            if (status != HttpStatusCodes.Success.getStatus()) {
+                if (status == HttpStatusCodes.Unauthorized.getStatus()) {
                     throw new Unauthorized("User is not authorized to access the resource at : '" + poster.getUri() + "'. Status is " + status);
                 }
-                if (status == 403) {
+                if (status == HttpStatusCodes.Forbidden.getStatus()) {
                     throw new ForbiddenRequest("Permission is denied to : '" + poster.getUri() + "'. Status is " + status);
                 }
                 throw new RemoteServiceException("Service '" + poster.getUri() + "' returned status code " + status);
@@ -591,7 +582,7 @@ public class AuthenticationToken {
                 }
             }
         }
-        if (httpResponseStatus == 200 && textResponse.equals("boolean=true")) {
+        if (httpResponseStatus == HttpStatusCodes.Success.getStatus() && textResponse.equals("boolean=true")) {
             return true;
         }
         return false;
@@ -637,17 +628,13 @@ public class AuthenticationToken {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Token               : " + stringValue());
+        sb.append("Token               : ").append(stringValue());
         sb.append("\n");
-        sb.append("Token URL-Encoded   : " + getTokenUrlEncoded());
+        sb.append("Token URL-Encoded   : ").append(getTokenUrlEncoded());
         sb.append("\n");
-        sb.append("Creation Timestamp  : " + getTokenCreationDate());
+        sb.append("Creation Timestamp  : ").append(getTokenCreationDate());
         sb.append("\n");
-        sb.append("Status              : " + getStatus());
+        sb.append("Status              : ").append(getStatus());
         return new String(sb);
-    }
-
-    public static void main(String... args) throws ServiceInvocationException {
-        new AuthenticationToken("guest", "guest3");
     }
 }

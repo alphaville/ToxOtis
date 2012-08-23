@@ -105,9 +105,9 @@ public final class OTDatatypeProperties {
             OTDatatypeProperty oc = (OTDatatypeProperty) method.invoke(null);
             return oc;
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         } catch (InvocationTargetException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
 
     }

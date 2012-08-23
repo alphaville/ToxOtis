@@ -97,9 +97,9 @@ public final class OTObjectProperties {
             OTObjectProperty oc = (OTObjectProperty) method.invoke(null);
             return oc;
         } catch (final IllegalAccessException ex){
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }catch (final  InvocationTargetException ex){
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
 
     }

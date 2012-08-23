@@ -82,7 +82,7 @@ public class LoggingConfiguration {
      * @param loggingConfigResource
      *      Name of the configuring resource.
      *
-     * @exception RuntimeException
+     * @exception IllegalArgumentException
      *      In case the stack trace elements don't suffice to identify the invoking
      *      class (Has never happened on testing and is considered quite impossible)
      *      or if the class cannot be loaded because is not in the classpath (which
@@ -93,7 +93,7 @@ public class LoggingConfiguration {
         if (stackTrace.length < 2) {
             String message = "Configuration of SLF4J failed: cannot detect the invoking class of the method "
                     + "LoggingConfiguration#configureSLF4JLogger(String):void - Unexpected error!";
-            throw new RuntimeException(message);
+            throw new IllegalArgumentException(message);
         }
         String invokingClassName = stackTrace[2].getClassName();
         ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -103,7 +103,7 @@ public class LoggingConfiguration {
         } catch (ClassNotFoundException ex) {
             String message = "Configuration of SLF4J failed: The invoking class (" + invokingClassName + ") cannot be "
                     + "loaded by means of the System class loader.";
-            throw new RuntimeException(message, ex);
+            throw new IllegalArgumentException(message, ex);
         }
         LoggingConfiguration.configureLog4j(invokingClass.getClassLoader().getResource(loggingConfigResource));
     }

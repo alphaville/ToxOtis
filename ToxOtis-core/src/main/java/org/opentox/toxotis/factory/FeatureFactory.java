@@ -51,10 +51,8 @@ import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.ResourceValue;
-import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.aa.TokenPool;
 
 /**
  * A factory-like class that provides methods for looking up features in remote
@@ -70,7 +68,7 @@ public class FeatureFactory {
      * ECHA endpoint as these are formalized using the OpenTox ontology. This ontology
      * can be downloaded from the <a href="http://www.opentox.org/data/documents/development/
      * RDF files/Endpoints/">OpenTox repository</a> for RDF files. Within ToxOtis,
-     * you can refer to the various ECHA enpoitns using the class {@link OTEchaEndpoints }.
+     * you can refer to the various ECHA end-points using the class {@link OTEchaEndpoints }.
      *
      *
      * @param service
@@ -88,7 +86,8 @@ public class FeatureFactory {
      * @return a Set of Feature URIs that are <code>same as</code> the ECHA endpoint provided.
      */
     public static Set<VRI> lookupSameAs(
-            VRI service, OntologicalClass echaEndpoint, AuthenticationToken token) throws ServiceInvocationException {
+            VRI service, OntologicalClass echaEndpoint, AuthenticationToken token) 
+            throws ServiceInvocationException {
         IGetClient client = ClientFactory.createGetClient(service.addUrlParameter("sameas", echaEndpoint.getUri()));
         client.setMediaType(Media.TEXT_URI_LIST.getMime());
         int responseStatus;
@@ -280,7 +279,7 @@ public class FeatureFactory {
             brandNewFeature.setUri(resultUri);
             return brandNewFeature;
         } catch (InterruptedException ex) {
-            throw new RuntimeException("Interrupted", ex);
+            throw new IllegalArgumentException("Interrupted", ex);
         } catch (ExecutionException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof ServiceInvocationException) {
                 throw (ServiceInvocationException) ex.getCause();

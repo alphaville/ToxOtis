@@ -182,7 +182,7 @@ public class QprfReport extends OTPublishable<OTPublishable> implements Serializ
         return authors;
     }
 
-    public QprfReport setAuthors(HashSet<QprfAuthor> authors) {
+    public QprfReport setAuthors(Set<QprfAuthor> authors) {
         this.authors = authors;
         return this;
     }

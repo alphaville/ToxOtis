@@ -74,6 +74,8 @@ public abstract class OTComponent<T extends IOTComponent>
     private Set<OntologicalClass> ontologicalClassVault = new HashSet<OntologicalClass>();
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTComponent.class);
     private static final int HASH_OFFSET = 7, HASH_MOD = 79;
+    protected static final String RDF_ABOUT = "rdf:about", RDF_RESOURCE = "rdf:resource",
+            RDF_TYPE = "rdf:type", RDF_RDF = "rdf:RDF";
 
     /**
      * Constructor for an empty OpenTox Component
@@ -242,7 +244,7 @@ public abstract class OTComponent<T extends IOTComponent>
     }
 
     protected void initRdfWriter(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException {
-        writer.writeStartElement("rdf:RDF"); // #NODE_rdf:RDF_CORE_ELEMENT
+        writer.writeStartElement(RDF_RDF); // #NODE_rdf:RDF_CORE_ELEMENT
         writer.writeNamespace("ot", OTClasses.NS);
         writer.writeNamespace("rdfs", RDFS.getURI());
         writer.writeNamespace("rdf", RDF.getURI());
@@ -263,7 +265,7 @@ public abstract class OTComponent<T extends IOTComponent>
 
     protected void writeClass(javax.xml.stream.XMLStreamWriter writer, OntologicalClass clazz) throws javax.xml.stream.XMLStreamException {
         writer.writeEmptyElement(OWL.NS, "Class");//1
-        writer.writeAttribute("rdf:about", clazz.getUri());
+        writer.writeAttribute(RDF_ABOUT, clazz.getUri());
         ontologicalClassVault.add(clazz);
         for (OntologicalClass superClass : clazz.getSuperClasses()) {
             if (!ontologicalClassVault.contains(superClass)) {
@@ -276,10 +278,10 @@ public abstract class OTComponent<T extends IOTComponent>
             throws javax.xml.stream.XMLStreamException {
         for (OntologicalClass oc : ontologicalClassVault) {
             writer.writeStartElement("rdf:Description");
-            writer.writeAttribute("rdf:about", oc.getUri());
+            writer.writeAttribute(RDF_ABOUT, oc.getUri());
             for (OntologicalClass ocSuper : oc.getSuperClasses()) {
                 writer.writeEmptyElement("rdfs:subClassOf");
-                writer.writeAttribute("rdf:resource", ocSuper.getUri());
+                writer.writeAttribute(RDF_RESOURCE, ocSuper.getUri());
             }
             writer.writeEndElement();
         }
@@ -287,17 +289,17 @@ public abstract class OTComponent<T extends IOTComponent>
 
     protected void writeObjectProperty(javax.xml.stream.XMLStreamWriter writer, OTObjectProperty property) throws javax.xml.stream.XMLStreamException {
         writer.writeEmptyElement(OWL.NS, "ObjectProperty");//1
-        writer.writeAttribute("rdf:about", property.getUri());
+        writer.writeAttribute(RDF_ABOUT, property.getUri());
     }
 
     protected void writeDatatypeProperty(javax.xml.stream.XMLStreamWriter writer, OTDatatypeProperty property) throws javax.xml.stream.XMLStreamException {
         writer.writeEmptyElement(OWL.NS, "DatatypeProperty");//1
-        writer.writeAttribute("rdf:about", property.getUri());
+        writer.writeAttribute(RDF_ABOUT, property.getUri());
     }
 
     protected void writeAnnotationProperty(javax.xml.stream.XMLStreamWriter writer, String annotationPropertyUri) throws javax.xml.stream.XMLStreamException {
         writer.writeEmptyElement(OWL.NS, "AnnotationProperty");//1
-        writer.writeAttribute("rdf:about", annotationPropertyUri);
+        writer.writeAttribute(RDF_ABOUT, annotationPropertyUri);
     }
 
     @Override

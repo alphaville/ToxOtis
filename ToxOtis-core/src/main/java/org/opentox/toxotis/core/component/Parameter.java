@@ -107,10 +107,10 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
         }
 
         builder.addParagraph("<small>Other Formats: "
-                + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"
-                + "<a href=\"" + getUri() + "?accept=application/x-turtle" + "\">Turtle</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/n-triples" + "\">N-Triple</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/uri-list" + "\">Uri-list</a>,"
+                + "<a href=\"" + getUri() + "?media=application/rdf%2Bxml" + "\">RDF/XML</a>,"
+                + "<a href=\"" + getUri() + "?media=application/x-turtle" + "\">Turtle</a>,"
+                + "<a href=\"" + getUri() + "?media=text/n-triples" + "\">N-Triple</a>,"
+                + "<a href=\"" + getUri() + "?media=text/uri-list" + "\">Uri-list</a>,"
                 + "</small>", Alignment.left);
 
         return builder.getDiv();

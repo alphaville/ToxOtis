@@ -30,7 +30,7 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.database.engine;
+package org.opentox.toxotis.util;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

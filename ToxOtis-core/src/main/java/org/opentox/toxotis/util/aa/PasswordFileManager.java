@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.util.aa;
 
 import java.io.BufferedReader;
@@ -112,9 +111,17 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  */
 public final class PasswordFileManager extends Observable {
 
+    /**
+     * Cryptographic Salt Iterations
+     */
     private static final int DEFAULT_CRYPTO_ITERATIONS = 23;
-    private static final int MIN_CHAR_INDEX = 33, MAX_CHAR_INDEX=126, LINE_SIZE=50;
-    private static final int PWD_STRENGTH1 = 50, PWD_STRENGTH2=100, PWD_STRENGTH3=500;
+    /**
+     * Maximum number of comment lines allowed
+     * in the master file before the data comes.
+     */
+    private static final int MAX_COMMENT_LINES = 200;
+    private static final int MIN_CHAR_INDEX = 33, MAX_CHAR_INDEX = 126, LINE_SIZE = 50;
+    private static final int PWD_STRENGTH1 = 50, PWD_STRENGTH2 = 100, PWD_STRENGTH3 = 500;
     private int cryptoIterations = DEFAULT_CRYPTO_ITERATIONS;
     private javax.crypto.Cipher eCipher;
     private javax.crypto.Cipher dCipher;
@@ -290,8 +297,12 @@ public final class PasswordFileManager extends Observable {
                 br = new BufferedReader(fr);
                 String line = null;
                 StringBuilder buffer = new StringBuilder();
+                int count = 0;
                 while ((line = br.readLine()) != null && !line.equals("--- START MASTER KEY ---")) {
-                    // skip all those lines
+                    count++;
+                    if (count > MAX_COMMENT_LINES) {
+                        throw new IllegalArgumentException("Invalid Master-Key filef");
+                    }
                 }
                 while ((line = br.readLine()) != null && !line.equals("--- END MASTER KEY ---")) {
                     line = line.trim();
@@ -399,8 +410,6 @@ public final class PasswordFileManager extends Observable {
             out.write(encrypt(password));
             out.write("\n--- END PRIVATE KEY ---\n");
             out.write("#Master Key: " + masterPasswordFile);
-        } catch (IOException ex) {
-            throw ex;
         } finally {
             if (out != null) {
                 out.flush();
@@ -494,10 +503,6 @@ public final class PasswordFileManager extends Observable {
             }
             AuthenticationToken at = new AuthenticationToken(username, password);
             return at;
-        } catch (ToxOtisException ex) {
-            throw ex;
-        } catch (IOException ex) {
-            throw ex;
         } finally {
             username = null;
             password = null;

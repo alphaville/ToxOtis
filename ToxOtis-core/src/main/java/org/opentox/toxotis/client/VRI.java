@@ -69,7 +69,7 @@ public class VRI implements Serializable { // Well tested!
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
     private static final int HASH_OFFSET = 3, HASH_MOD = 37;
     private static final String END_SLASH_OR_NOTHING = "([^/]+/$|[^/]+)$";
-    private static final String SLASH = "/", QUESTION_MARK = "?", AMPBESAND = "&", EQUALS="=";
+    private static final String SLASH = "/", QUESTION_MARK = "?", AMPBESAND = "&", EQUALS = "=";
 
     /**
      * Keywords that appear in OpenTox URIs.
@@ -234,7 +234,7 @@ public class VRI implements Serializable { // Well tested!
                     }
                 } catch (UnsupportedEncodingException ex) {
                     logger.error("Unsupported encoding!", ex);
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
             }
 
@@ -281,8 +281,7 @@ public class VRI implements Serializable { // Well tested!
                     urlParams.add(new Pair(URLEncoder.encode(paramName, URL_ENCODING),
                             paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : null));
                 } catch (UnsupportedEncodingException ex) {
-                    ex.printStackTrace();
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
             }
         }
@@ -343,7 +342,7 @@ public class VRI implements Serializable { // Well tested!
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
                     URLEncoder.encode(paramValue, URL_ENCODING)));
         } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
         return this;
     }
@@ -365,7 +364,7 @@ public class VRI implements Serializable { // Well tested!
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
                     URLEncoder.encode(new Double(paramValue).toString(), URL_ENCODING)));
         } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
         return this;
     }
@@ -384,9 +383,10 @@ public class VRI implements Serializable { // Well tested!
      */
     public VRI addUrlParameter(String paramName, int paramValue) {
         try {
-            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), URLEncoder.encode(new Integer(paramValue).toString(), URL_ENCODING)));
+            urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
+                    URLEncoder.encode(Integer.valueOf(paramValue).toString(), URL_ENCODING)));
         } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
         return this;
     }
@@ -400,7 +400,7 @@ public class VRI implements Serializable { // Well tested!
         try {
             return new URI(toString());
         } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
     }
 
@@ -460,7 +460,7 @@ public class VRI implements Serializable { // Well tested!
                 try {
                     builder.append(URLEncoder.encode(frg, URL_ENCODING));
                 } catch (UnsupportedEncodingException ex) {
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
                 if (i < fragments.length - 1) {
                     builder.append(SLASH);
@@ -471,7 +471,7 @@ public class VRI implements Serializable { // Well tested!
         try {
             new URI(uri);
         } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
         return this;
     }
@@ -651,7 +651,7 @@ public class VRI implements Serializable { // Well tested!
                     }
                     return new VRI(noQuery.split(SLASH + fragment)[0]);
                 } catch (URISyntaxException ex) {
-                    throw new RuntimeException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
             }
         }
@@ -686,7 +686,7 @@ public class VRI implements Serializable { // Well tested!
         try {
             return new URI(getStringNoQuery()).equals(new URI(other.getStringNoQuery()));
         } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
     }
 

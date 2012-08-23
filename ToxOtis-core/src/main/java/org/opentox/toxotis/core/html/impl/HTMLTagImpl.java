@@ -44,7 +44,7 @@ import org.opentox.toxotis.core.html.HTMLTag;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class HTMLTagImpl extends HTMLExpandableComponentImpl implements HTMLTag {
+public final class HTMLTagImpl extends HTMLExpandableComponentImpl implements HTMLTag {
 
     private String tag;
     private Map<String, String> tagAttributes = new HashMap<String, String>();
@@ -98,18 +98,18 @@ public class HTMLTagImpl extends HTMLExpandableComponentImpl implements HTMLTag 
                 attributesBuilder.append(" ");
                 attributesBuilder.append(entry.getKey());
                 attributesBuilder.append("=");
-                attributesBuilder.append("\"" + entry.getValue() + "\"");
+                attributesBuilder.append("\"").append(entry.getValue()).append("\"");
             }
 
         }
 
         String attributesString = attributesBuilder != null
-                ? new String(attributesBuilder) : new String();
-        builder.append("<" + tag + attributesString + ">");
+                ? new String(attributesBuilder) : "";
+        builder.append("<").append(tag).append(attributesString).append(">");
         for (HTMLComponent component : componentList) {
             builder.append(component.toString());
         }
-        builder.append("</" + tag + ">");
+        builder.append("</").append(tag).append(">");
         return builder.toString();
     }
 

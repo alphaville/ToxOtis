@@ -93,7 +93,7 @@ public final class TokenPool {
     public AuthenticationToken getToken(String username) {
         if (username != null) {
             String hashName = PasswordFileManager.CRYPTO.encrypt(username);
-            AuthenticationToken token = this.pool.get(hashName);            
+            AuthenticationToken token = this.pool.get(hashName);
             return token;
         }
         return null;
@@ -114,8 +114,6 @@ public final class TokenPool {
         AuthenticationToken token = new AuthenticationToken(username, password);
         pool.put(PasswordFileManager.CRYPTO.encrypt(username), token);
         pool2.put(hashName, token.getUser());
-        username = null;
-        password = null;
         return token;
     }
 
@@ -146,7 +144,7 @@ public final class TokenPool {
             AuthenticationToken tokenInPool = pool.get(username);
             if (tokenInPool.getStatus() != null && AuthenticationToken.TokenStatus.ACTIVE.equals(tokenInPool.getStatus())) {
                 return tokenInPool;
-            }else {
+            } else {
                 if (tokenInPool.validate()) {
                     tokenInPool.invalidate();
                 }

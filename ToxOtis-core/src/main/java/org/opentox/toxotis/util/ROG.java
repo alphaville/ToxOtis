@@ -182,7 +182,7 @@ public class ROG {
         try {
             random.setMail(RNG.nextLong() + "@mail.here.org");
         } catch (ToxOtisException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
         random.setHashedPass(nextString(50));
         random.setUid(nextString(MAIL_LN) + "@opensso.in-silico.ch");
@@ -319,7 +319,7 @@ public class ROG {
             random.setYear(RNG.nextInt());
             return random;
         } catch (ToxOtisException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException(ex);
         }
     }
 
