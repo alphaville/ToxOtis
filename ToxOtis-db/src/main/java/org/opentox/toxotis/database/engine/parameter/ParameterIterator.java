@@ -33,6 +33,7 @@ public class ParameterIterator extends DbIterator<Parameter> {
         Parameter nextParam = null;
         try {
             nextParam = new Parameter(new VRI(baseUri).augment("parameter", rs.getString("id")));
+            //Note: when setting the name, also dc:title is updated!
             nextParam.setName(rs.getString("name"));
             nextParam.setTypedValue(new LiteralValue(rs.getString("value"),
                     (XSDDatatype) TypeMapper.getInstance().getTypeByName(rs.getString("valueType"))));

@@ -39,6 +39,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.Model;
+import org.opentox.toxotis.core.component.Parameter;
+import org.opentox.toxotis.database.IDbIterator;
+import org.opentox.toxotis.database.engine.ROG;
+import org.opentox.toxotis.database.engine.parameter.FindParameter;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
@@ -71,12 +77,19 @@ public class CountModelTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {
+    public void testSomeMethod() throws DbException {        
         CountModel cm = new CountModel();
         cm.setIncludeDisabled(true);
-        cm.setWhere("Model.id LIKE '%8f%'");
+        cm.setWhere("Model.id LIKE '%f%'");
         cm.count();
         cm.close();
+    }
+    
+    
+    @Test
+    public void testRNDModel() throws DbException {
+        ROG rog = new ROG();
+        rog.nextModel().asOntModel().write(System.out);
     }
 
 }

@@ -145,7 +145,6 @@ public class AddModelTest {
 
     @Test
     public synchronized void testAddModel() throws Exception {
-        System.out.println("#testAddModel");
         Model m = _ROG_.nextModel();
         m.setMeta(null);
         AddModel adder = new AddModel(m);
