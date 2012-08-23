@@ -46,6 +46,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Set;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IClient;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
@@ -133,7 +134,7 @@ public class CompoundSpider extends Tarantula<Compound> {
             IClient client = ClientFactory.createGetClient(queryVri);
             client.setMediaType(Media.TEXT_URI_LIST);
             int responseCode = client.getResponseCode();
-            if (responseCode != 200) {
+            if (responseCode != HttpStatusCodes.Success.getStatus()) {
                 throw new ServiceInvocationException("Service responded with code " + responseCode);
             }
             Set<VRI> responseUri = client.getResponseUriList();
@@ -158,22 +159,22 @@ public class CompoundSpider extends Tarantula<Compound> {
         try {
             compoundClient.setMediaType(Media.APPLICATION_RDF_XML.getMime());
             int status = compoundClient.getResponseCode();
-            if (status != 200) {
+            if (status != HttpStatusCodes.Success.getStatus()) {
                 OntModel om = compoundClient.getResponseOntModel();
                 ErrorReportSpider ersp = new ErrorReportSpider(om);
                 ErrorReport er = ersp.parse();
 
-                if (status == 403) {
+                if (status == HttpStatusCodes.Forbidden.getStatus()) {
                     ForbiddenRequest fr = new ForbiddenRequest("Access denied to : '" + uri + "'");
                     fr.setErrorReport(er);
                     throw fr;
                 }
-                if (status == 401) {
+                if (status == HttpStatusCodes.Unauthorized.getStatus()) {
                     Unauthorized unauth = new Unauthorized("User is not authorized to access : '" + uri + "'");
                     unauth.setErrorReport(er);
                     throw unauth;
                 }
-                if (status == 404) {
+                if (status == HttpStatusCodes.NotFound.getStatus()) {
                     NotFound notFound = new NotFound("The following algorithm was not found : '" + uri + "'");
                     notFound.setErrorReport(er);
                     throw notFound;
@@ -206,22 +207,22 @@ public class CompoundSpider extends Tarantula<Compound> {
             compoundClient.setMediaType(Media.APPLICATION_RDF_XML.getMime());
             compoundClient.setUri(uri);
             int status = compoundClient.getResponseCode();
-            if (status != 200) {
+            if (status != HttpStatusCodes.Success.getStatus()) {
                 OntModel om = compoundClient.getResponseOntModel();
                 ErrorReportSpider ersp = new ErrorReportSpider(om);
                 ErrorReport er = ersp.parse();
 
-                if (status == 403) {
+                if (status == HttpStatusCodes.Forbidden.getStatus()) {
                     ForbiddenRequest fr = new ForbiddenRequest("Access denied to : '" + uri + "'");
                     fr.setErrorReport(er);
                     throw fr;
                 }
-                if (status == 401) {
+                if (status == HttpStatusCodes.Unauthorized.getStatus()) {
                     Unauthorized unauth = new Unauthorized("User is not authorized to access : '" + uri + "'");
                     unauth.setErrorReport(er);
                     throw unauth;
                 }
-                if (status == 404) {
+                if (status == HttpStatusCodes.NotFound.getStatus()) {
                     NotFound notFound = new NotFound("The following algorithm was not found : '" + uri + "'");
                     notFound.setErrorReport(er);
                     throw notFound;

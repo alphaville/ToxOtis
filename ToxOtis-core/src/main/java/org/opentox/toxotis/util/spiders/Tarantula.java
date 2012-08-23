@@ -51,6 +51,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
@@ -299,16 +300,18 @@ public abstract class Tarantula<Result> implements Closeable {
     }
 
     protected void assessHttpStatus(int status, VRI actionUri) throws ServiceInvocationException {
-        if (status == 403) {
+        if (status == HttpStatusCodes.Forbidden.getStatus()) {
             throw new ForbiddenRequest("Access denied to : '" + actionUri + "' (status 403)");
         }
-        if (status == 401) {
+        if (status == HttpStatusCodes.Unauthorized.getStatus()) {
             throw new Unauthorized("User is not authorized to access : '" + actionUri + "' (status 401)");
         }
-        if (status == 404) {
+        if (status == HttpStatusCodes.NotFound.getStatus()) {
             throw new NotFound("The following task was not found : '" + actionUri + "' (status 404)");
         }
-        if (status != 200 && status != 202 && status != 201) {
+        if (status != HttpStatusCodes.Success.getStatus() && 
+                status != HttpStatusCodes.Accepted.getStatus() && 
+                status != HttpStatusCodes.Created.getStatus()) {
             throw new ConnectionException("Communication Error with : '" + actionUri + "'. status = " + status);
         }
     }

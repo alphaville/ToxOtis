@@ -8,7 +8,7 @@
  * services and for ambitious service providers that don’t want to spend half of
  * their time in RDF parsing and creation.
  *
- * Copyright (C) 2009-2010 Pantelis Sopasakis & Charalampos Chomenides
+ * Copyright (C) 2009-2010 Pantelis Sopas2akis & Charalampos Chomenides
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

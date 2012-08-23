@@ -252,7 +252,6 @@ public class AddModelTest {
                 }
             }
             if (dbex != null) {
-                dbex.printStackTrace();
                 fail(dbex.getMessage());
             }
         }

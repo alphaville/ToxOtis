@@ -49,6 +49,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -167,7 +168,7 @@ public class PolicyWrapper implements IPolicyWrapper {
         spc.post();
         try {
             int httpStatus = spc.getResponseCode();
-            if (httpStatus != 200) {
+            if (httpStatus != HttpStatusCodes.Success.getStatus()) {
                 String policyErrorMsg = "Policy server at " + policyServer
                         + " responded with a status code " + httpStatus + " with message \n" + spc.getResponseText();
                 logger.debug(policyErrorMsg);

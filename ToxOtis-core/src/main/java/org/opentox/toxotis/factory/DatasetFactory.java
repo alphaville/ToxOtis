@@ -334,7 +334,6 @@ public final class DatasetFactory {
             }
         } catch (final URISyntaxException ex) {
             String message = "Service URI is invalid";
-            ex.printStackTrace();
             logger.debug(message, ex);
             throw new RemoteServiceException(message, ex);
         }

@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
@@ -155,15 +156,15 @@ public final class PolicyManager {
 
             // RETURN RESPONSE
             int responseStatus = sgt.getResponseCode();
-            if (responseStatus == 200) {// Successful!
+            if (responseStatus == HttpStatusCodes.Success.getStatus()) {// Successful!
                 String response = sgt.getResponseText();
                 if (response.trim().equals("null")) {
                     return null;
                 }
                 return response + "@" + policyService.getServiceBaseUri().getHost();
-            } else if (responseStatus == 403) {
+            } else if (responseStatus == HttpStatusCodes.Forbidden.getStatus()) {
                 throw new ForbiddenRequest("User is not authenticated!");
-            } else if (responseStatus == 401) {
+            } else if (responseStatus == HttpStatusCodes.Unauthorized.getStatus()) {
                 throw new Unauthorized("User is not authorized to perform the request!");
             } else {
                 throw new ServiceInvocationException("Service returned status code : " + responseStatus);
@@ -222,7 +223,7 @@ public final class PolicyManager {
             InputStreamReader isr = null;
             BufferedReader reader = null;
             String line = null;
-            if (responseStatus == 200) {
+            if (responseStatus == HttpStatusCodes.Success.getStatus()) {
                 // OK => List policies!
                 remote = sgt.getRemoteStream();
                 isr = new InputStreamReader(remote);
@@ -232,7 +233,7 @@ public final class PolicyManager {
                         listOfPolicyNames.add(line);
                     }
                 }
-            } else if (responseStatus == 403) {
+            } else if (responseStatus == HttpStatusCodes.Forbidden.getStatus()) {
                 throw new ForbiddenRequest("Authentication Failed - User is not authenticated!");
             } else {
                 throw new ServiceInvocationException("Service returned status code : " + responseStatus);
@@ -272,7 +273,7 @@ public final class PolicyManager {
             int responseStatus = 0;
             responseStatus = sgt.getResponseCode();
 
-            if (responseStatus == 200) {
+            if (responseStatus == HttpStatusCodes.Success.getStatus()) {
 //                System.out.println(sgt.getResponseText());
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 try {
@@ -285,7 +286,7 @@ public final class PolicyManager {
                     Logger.getLogger(Policy.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-            } else if (responseStatus == 403) {
+            } else if (responseStatus == HttpStatusCodes.Forbidden.getStatus()) {
                 throw new ForbiddenRequest("Authentication Failed - User is not authenticated!");
             } else {
                 String responseText = sgt.getResponseText();

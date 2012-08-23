@@ -82,7 +82,8 @@ public class BibTeXTest {
                 btDownloadedString.contains("Series = \"ADME Evaluation in Drug Discovery\""));
         assertTrue("Bad Conversion from BibTeX to String", 
                 btDownloadedString.contains("Number = \"5\""));
-        System.out.println(bt);
+        assertFalse(btDownloadedString.contains("Pass"));
+        assertFalse(btDownloadedString.contains("opensso.in-silico.ch"));
     }
 
     @Test

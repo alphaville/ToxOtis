@@ -65,17 +65,16 @@ import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
-import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.AlgorithmSpider;
 
 /**
  * Provides access to different types of algorithms. An algorithm object contains
- * very general metadata about an algorithm and in fact describes its input and
+ * very general meta-data about an algorithm and in fact describes its input and
  * output requirements and gives information about its parametrization. The different
  * types of algorithms used in <a href="http://opentox.org">OpenTox</a> and the
- * connection to each other is formally established throught the 
+ * connection to each other is formally established through the 
  * <a href="http://opentox.org/dev/apis/api-1.1/Algorithms">OpenTox Algorithm Ontology</a>.
  *
  * @author Pantelis Sopasakis
@@ -90,6 +89,19 @@ public class Algorithm extends OTOnlineResource<Algorithm>
     private Set<OntologicalClass> ontologies;
     /** List of multi-parameters */
     private Set<MultiParameter> multiParameters = new LinkedHashSet<MultiParameter>();
+    /**
+     * HTML-related stuff
+     */
+    private static final int TEXTBOX_SIZE = 60,
+            IFACE_CELL_PADDING = 5,
+            IFACE_CELL_SPACING = 2,
+            IFACE_TABLE_BORDER = 0;
+    private static final int PRM_CELL_PADDING = 5,
+            PRM_CELL_SPACING = 2,
+            PRM_TABLE_BORDER = 1;
+    private static final int[] IFACE_DIM = new int[]{250, 550};
+    private static final int[] PRM_DIM = new int[]{150, 150, 150, 500};
+    private static final int[] META_DIM = new int[]{150, 830};
 
     /**
      * Dummy constructor for an Algorithm object. Creates an algorithm with <code>null</code>
@@ -290,17 +302,17 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).setName("algorithm_uri").setValue(uri.toString()));
 
 
-        int textBoxSize = 60;
+
         HTMLTable interfacetable = new HTMLAppendableTableImpl(2);
         interfacetable.setAtCursor(new HTMLTextImpl("Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_uri").setType(HTMLInput.HTMLInputType.TEXT).
-                setValue("http://apps.ideaconsult.net:8080/ambit2/dataset/R545").setSize(textBoxSize)).
+                setValue("http://apps.ideaconsult.net:8080/ambit2/dataset/R545").setSize(TEXTBOX_SIZE)).
                 setAtCursor(new HTMLTextImpl("Prediction Feature").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("prediction_feature").setType(HTMLInput.HTMLInputType.TEXT).
-                setValue("http://apps.ideaconsult.net:8080/ambit2/feature/22200").setSize(textBoxSize)).
+                setValue("http://apps.ideaconsult.net:8080/ambit2/feature/22200").setSize(TEXTBOX_SIZE)).
                 setAtCursor(new HTMLTextImpl("Feature Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("feature_service").
-                setType(HTMLInput.HTMLInputType.TEXT).setValue(Services.ideaconsult().augment("feature").toString()).setSize(textBoxSize));
+                setType(HTMLInput.HTMLInputType.TEXT).setValue(Services.ideaconsult().augment("feature").toString()).setSize(TEXTBOX_SIZE));
 
         if (getParameters() != null && !getParameters().isEmpty()) {
             StringBuilder paramsBuilder = new StringBuilder();
@@ -316,17 +328,16 @@ public class Algorithm extends OTOnlineResource<Algorithm>
             }
             interfacetable.setAtCursor(new HTMLTextImpl("Parameters").formatBold(true)).
                     setAtCursor(new HTMLInputImpl().setName("params").
-                    setType(HTMLInput.HTMLInputType.TEXT).setValue(paramsBuilder.toString()).setSize(textBoxSize));
+                    setType(HTMLInput.HTMLInputType.TEXT).setValue(paramsBuilder.toString()).setSize(TEXTBOX_SIZE));
         }
 
         interfacetable.setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Train")).setTextAtCursor("");
 
-
-        interfacetable.setCellPadding(5).
-                setCellSpacing(2).
-                setTableBorder(0).
-                setColWidth(1, 250).
-                setColWidth(2, 550);
+        interfacetable.setCellPadding(IFACE_CELL_PADDING).
+                setCellSpacing(IFACE_CELL_SPACING).
+                setTableBorder(IFACE_TABLE_BORDER).
+                setColWidth(1, IFACE_DIM[0]).
+                setColWidth(2, IFACE_DIM[1]);
         form.addComponent(interfacetable);
 
         builder.getDiv().breakLine().breakLine();
@@ -352,13 +363,13 @@ public class Algorithm extends OTOnlineResource<Algorithm>
                         setTextAtCursor(p.getTypedValue() != null ? p.getTypedValue().getValueAsString() : "-").
                         setAtCursor(((HTMLTable) p.getMeta().inHtml().getComponents().get(0)).setTableBorder(0));
             }
-            parametersTable.setCellPadding(5).
-                    setCellSpacing(2).
-                    setTableBorder(1).
-                    setColWidth(1, 150).
-                    setColWidth(2, 150).
-                    setColWidth(3, 150).
-                    setColWidth(4, 500);
+            parametersTable.setCellPadding(PRM_CELL_PADDING).
+                    setCellSpacing(PRM_CELL_SPACING).
+                    setTableBorder(PRM_TABLE_BORDER).
+                    setColWidth(1, PRM_DIM[0]).
+                    setColWidth(2, PRM_DIM[1]).
+                    setColWidth(3, PRM_DIM[2]).
+                    setColWidth(4, PRM_DIM[3]);
         }
         builder.getDiv().breakLine();
 
@@ -368,7 +379,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
             builder.addSubSubSubHeading("Meta Information");
             HTMLContainer metaContainer = getMeta().inHtml();
             HTMLTable metaTable = (HTMLTable) metaContainer.getComponents().get(0);
-            metaTable.setColWidth(1, 150).setColWidth(2, 830);
+            metaTable.setColWidth(1, META_DIM[0]).setColWidth(2, META_DIM[1]);
             builder.addComponent(metaContainer);
         }
 

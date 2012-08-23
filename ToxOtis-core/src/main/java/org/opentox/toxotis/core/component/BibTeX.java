@@ -900,7 +900,7 @@ public class BibTeX extends OTPublishable<BibTeX>
         Task task = new Task();
 
         int status = pc.getResponseCode();
-        if (status == 200) {// BibTeX returned
+        if (status == HttpStatusCodes.Success.getStatus()) {// BibTeX returned
             try {
                 // BibTeX returned
                 task.setResultUri(new VRI(pc.getResponseText()));

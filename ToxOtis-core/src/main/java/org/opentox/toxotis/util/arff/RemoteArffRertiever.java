@@ -9,6 +9,7 @@ import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -93,7 +94,7 @@ public class RemoteArffRertiever implements Closeable {
             throw new RemoteServiceException("The remote service does not support TEXT/X-ARFF");
         }
         int status = client.getResponseCode();
-        if (status != 200) {
+        if (status != HttpStatusCodes.Success.getStatus()) {
             throw new ServiceInvocationException("The remote service returned a status code " + status);
         }
         is = client.getRemoteStream();

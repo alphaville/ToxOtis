@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -57,7 +58,7 @@ public class ListModelRequest {
         client.setContentType(Media.APPLICATION_FORM_URL_ENCODED);
         client.post();
         int responseCode = client.getResponseCode();
-        if (responseCode != 200) {
+        if (responseCode != HttpStatusCodes.Success.getStatus()) {
             throw new ServiceInvocationException("Remote service at " + ontologyServer
                     + " responded with code " + responseCode);
         }

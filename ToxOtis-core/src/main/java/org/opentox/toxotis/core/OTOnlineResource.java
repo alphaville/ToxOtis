@@ -49,6 +49,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
@@ -57,7 +58,6 @@ import org.opentox.toxotis.exceptions.impl.NotFound;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
-import org.opentox.toxotis.util.spiders.ErrorReportSpider;
 
 /**
  * Any OTComponent that can be available online and has a URL.
@@ -303,7 +303,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
         try {
             int responseStatus = client.getResponseCode();
 
-            if (responseStatus == 200) {
+            if (responseStatus == HttpStatusCodes.Success.getStatus()) {
                 /* REMOTE STREAM */
                 InputStream remote = client.getRemoteStream();
                 InputStreamReader isr = new InputStreamReader(remote);
@@ -368,14 +368,14 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
                     }
                 }
 
-            } else if (responseStatus == 403) {
+            } else if (responseStatus == HttpStatusCodes.Forbidden.getStatus()) {
                 throw new ForbiddenRequest(
                         "Client failed to authenticate itself against the SSO service due to "
                         + "incorrect credentials or due to invalid token. Error thrown by " + newUri);
-            } else if (responseStatus == 401) {
+            } else if (responseStatus == HttpStatusCodes.Unauthorized.getStatus()) {
                 throw new Unauthorized(
                         "The client is authenticated but not authorized to perform this operation at " + newUri);
-            } else if (responseStatus == 400) {
+            } else if (responseStatus == HttpStatusCodes.BadRequest.getStatus()) {
                 throw new NotFound("The compound you requested was not found at the remote location : '"+newUri+"'");
             }else {
                 throw new ServiceInvocationException("The remote service at " + newUri + " returned the unexpected status : " + responseStatus);

@@ -127,6 +127,10 @@ public final class PasswordFileManager extends Observable {
     private javax.crypto.Cipher dCipher;
     private static final String PATH_SEP = System.getProperty("file.separator");
     private static final String DEFAULT_MASTER_PASSWORD_FILE = System.getProperty("user.home") + PATH_SEP + "toxotisKeys" + PATH_SEP + "master.key";
+    private static final double MAX_PERCENTAGE_COMPLETED = 100;
+    private static final byte[] SALT = {
+        (byte) 0xaf, (byte) 0x35, (byte) 0x11, (byte) 0x0c,
+        (byte) 0xd6, (byte) 0xdd, (byte) 0x02, (byte) 0x1a};
     private String masterPasswordFile;
     private static char[] masterPassword;
     /** This class is a singleton and this is the access point for it. Being final users
@@ -223,7 +227,7 @@ public final class PasswordFileManager extends Observable {
                     characters = Character.toChars(readInt);
                     passBuilder.append(characters);
                     charCounter++;
-                    notifyObservers(new Double(100 * (double) charCounter) / ((double) size));
+                    notifyObservers(new Double(MAX_PERCENTAGE_COMPLETED * (double) charCounter) / ((double) size));
                 }
             }
             FileWriter fw = new FileWriter(destination);
@@ -332,11 +336,8 @@ public final class PasswordFileManager extends Observable {
                 }
             }
             java.security.Security.addProvider(new com.sun.crypto.provider.SunJCE());
-            byte[] salt = {
-                (byte) 0xaf, (byte) 0x35, (byte) 0x11, (byte) 0x0c,
-                (byte) 0xd6, (byte) 0xdd, (byte) 0x02, (byte) 0x1a};
             int iterations = cryptoIterations;
-            createChipher(masterPassword, salt, iterations);
+            createChipher(masterPassword, SALT, iterations);
         }
     }
 
@@ -548,12 +549,14 @@ public final class PasswordFileManager extends Observable {
     }
 
     public static void main(String... art) throws Exception {
+        final int size = 1000;
+        final long delay = 200;
         Thread createPasswordFile = new Thread() {
 
             @Override
             public void run() {
                 try {
-                    CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", 1000, false);
+                    CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", size, false);
                 } catch (IOException ex) {
                     org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class).warn(null, ex);
                 }
@@ -569,7 +572,7 @@ public final class PasswordFileManager extends Observable {
             if (Math.abs(CRYPTO.getPasswordGenerationProgress() - 100) < 0.001) {
                 break;
             }
-            Thread.sleep(100);
+            Thread.sleep(delay);
         }
 
 

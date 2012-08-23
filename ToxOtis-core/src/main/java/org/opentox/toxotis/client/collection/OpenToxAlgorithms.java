@@ -67,7 +67,7 @@ public enum OpenToxAlgorithms {
         this.serviceURI = serviceURI;
     }
 
-    public static final Date getLastUpdated() {
+    public static Date getLastUpdated() {
         return LAST_UPDATE;
     }
 

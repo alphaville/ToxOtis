@@ -33,6 +33,7 @@
 package org.opentox.toxotis.util;
 
 import java.util.concurrent.Callable;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.core.component.Task;
 import org.opentox.toxotis.core.component.Task.Status;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
@@ -94,13 +95,13 @@ public class TaskRunner implements Callable<Task> {
     private Task updateTask(Task old) throws ServiceInvocationException {
         task.loadFromRemote(getToken());
         float taskHttpStatus = old.getHttpStatus();
-        if (taskHttpStatus == 201) { // Created new task
+        if (taskHttpStatus == HttpStatusCodes.Created.getStatus()) { // Created new task
             Task created = new Task(task.getResultUri());
             task = created;
             return updateTask(created);
-        } else if (taskHttpStatus == 200) {// Done!
+        } else if (taskHttpStatus == HttpStatusCodes.Success.getStatus()) {// Done!
             return task;
-        } else if (taskHttpStatus == 202) {// Waiting for completion!
+        } else if (taskHttpStatus == HttpStatusCodes.Accepted.getStatus()) {// Waiting for completion!
             try {
                 // Waiting for completion!
                 Thread.sleep(delay);

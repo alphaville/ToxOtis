@@ -44,6 +44,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
@@ -83,7 +84,7 @@ public class Dataset extends OTPublishable<Dataset> {
     private long timeParse = -1;
     private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
-    private static final int HASH_OFFSET = 7, HASH_MOD = 29;
+    private static final int HASH_OFFSET = 7, HASH_MOD = 29, PERCENTAGE_WHEN_COMPLETE = 100;
     private static final String INACTIVE_TOKEN_MSG = "The Provided token is inactive";
 
     /**
@@ -322,15 +323,15 @@ public class Dataset extends OTPublishable<Dataset> {
         String remoteResult = client.getResponseText();
         logger.debug("Publishing >> Response : " + remoteResult);
         logger.debug("Publishing >> STATUS   : " + status);
-        if (status == 202) {
+        if (status == HttpStatusCodes.Accepted.getStatus()) {
             try {
                 dsUpload.setUri(new VRI(remoteResult));
             } catch (URISyntaxException ex) {
                 throw new IllegalArgumentException(ex);
             }
             dsUpload.loadFromRemote();
-        } else if (status == 200) {
-            dsUpload.setPercentageCompleted(100);
+        } else if (status == HttpStatusCodes.Success.getStatus()) {
+            dsUpload.setPercentageCompleted(PERCENTAGE_WHEN_COMPLETE);
             dsUpload.setStatus(Task.Status.COMPLETED);
             try {
                 dsUpload.setUri(new VRI(remoteResult));

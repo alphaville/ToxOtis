@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.InternalServerError;
@@ -88,7 +89,7 @@ public class DeleteHttpsClient extends AbstractHttpsClient {
             con = initializeConnection(vri.toURI());
             try {
                 int code = con.getResponseCode();
-                if (code != 200) {
+                if (code != HttpStatusCodes.Success.getStatus()) {
                     throw new RemoteServiceException("DELETE failed on '" + vri + "'. The remote service responded "
                             + "with status code " + code);
                 }

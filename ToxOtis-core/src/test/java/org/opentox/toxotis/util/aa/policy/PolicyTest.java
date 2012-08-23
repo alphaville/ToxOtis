@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.TokenPool;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -164,7 +165,8 @@ public class PolicyTest {
 
     @Test
     public void testCreateAPolicy() throws Exception {
-        AuthenticationToken at = new AuthenticationToken("hampos", "arabela");
+        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/.my.key");
+        AuthenticationToken at = TokenPool.getInstance().login(passwordFile);
 
         Policy pol = new Policy("NTUA_all_users");
         pol.addSubject(GroupSubject.DEVELOPMENT);

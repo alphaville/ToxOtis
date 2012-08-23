@@ -43,6 +43,7 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -77,7 +78,7 @@ public class Feature extends OTPublishable<Feature> {
     private String units;
     private Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Feature.class);
-    private static final int HASH_OFFSET=3, HASH_MOD=19;
+    private static final int HASH_OFFSET = 3, HASH_MOD = 19;
 
     public Feature() {
         super();
@@ -249,7 +250,7 @@ public class Feature extends OTPublishable<Feature> {
         client.setMediaType("text/uri-list");
         client.post();
         int status = client.getResponseCode();
-        if (status == 200) {
+        if (status == HttpStatusCodes.Success.getStatus()) {
             Task readyTask = new Task();
             readyTask.setPercentageCompleted(100);
             readyTask.setStatus(Task.Status.COMPLETED);
@@ -272,16 +273,16 @@ public class Feature extends OTPublishable<Feature> {
                 //No Error Report - No problem!
             }
 
-            if (status == 405) {
+            if (status == HttpStatusCodes.MethodNotAllowed.getStatus()) {
                 MethodNotAllowed methodNotAllowed = new MethodNotAllowed("Method not allowed on the URI " + getUri());
                 methodNotAllowed.setErrorReport(remoteServiceErrorReport);
                 throw methodNotAllowed;
-            } else if (status == 403) {
+            } else if (status == HttpStatusCodes.Forbidden.getStatus()) {
                 ForbiddenRequest forbidden = new ForbiddenRequest();
                 forbidden.setDetails("The operation you tried to perform is forbidden");
                 forbidden.setErrorReport(remoteServiceErrorReport);
                 throw forbidden;
-            } else if (status == 401) {
+            } else if (status == HttpStatusCodes.Unauthorized.getStatus()) {
                 Unauthorized unauth = new Unauthorized("You are not authorized to perform this request.");
                 unauth.setActor("Client");
                 unauth.setErrorReport(remoteServiceErrorReport);

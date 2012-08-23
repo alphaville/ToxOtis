@@ -42,6 +42,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
@@ -134,22 +135,22 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
         client.setMediaType(Media.APPLICATION_RDF_XML);
         try {
             int status = client.getResponseCode();
-            if (status != 200) {
+            if (status != HttpStatusCodes.Success.getStatus()) {
                 OntModel om = client.getResponseOntModel();
                 ErrorReportSpider ersp = new ErrorReportSpider(om);
                 ErrorReport er = ersp.parse();
 
-                if (status == 403) {
+                if (status == HttpStatusCodes.Forbidden.getStatus()) {
                     ForbiddenRequest fr = new ForbiddenRequest("Access denied to : '" + uri + "'");
                     fr.setErrorReport(er);
                     throw fr;
                 }
-                if (status == 401) {
+                if (status == HttpStatusCodes.Unauthorized.getStatus()) {
                     Unauthorized unauth = new Unauthorized("User is not authorized to access : '" + uri + "'");
                     unauth.setErrorReport(er);
                     throw unauth;
                 }
-                if (status == 404) {
+                if (status == HttpStatusCodes.NotFound.getStatus()) {
                     NotFound notFound = new NotFound("The following algorithm was not found : '" + uri + "'");
                     notFound.setErrorReport(er);
                     throw notFound;
