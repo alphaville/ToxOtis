@@ -158,6 +158,7 @@ public class TrainerTest {
         assertEquals(200f, task.getHttpStatus(), 1E-6);
         assertEquals(OTClasses.model(), task.getResultUri().getOntologicalClass());
 
+        System.out.println(task.getResultUri());
         ModelSpider modelSpider = new ModelSpider(task.getResultUri(), at);
         Model model = modelSpider.parse();
         modelSpider.close();                
@@ -171,7 +172,9 @@ public class TrainerTest {
         while (paramIterator.hasNext()) {
             Parameter currentParam = paramIterator.next();
             assertNotNull(currentParam);
-            if ("gamma".equals(currentParam.getName().getValueAsString())) {
+            System.out.println(currentParam.getMeta().getTitles()+"<<");
+            if (currentParam.getName()!=null && 
+                    "gamma".equals(currentParam.getName().getValueAsString())) {
                 failParamGammaNotFound = false;
                 assertEquals(0.875d, Double.parseDouble(currentParam.getTypedValue().getValueAsString()), 1E-8);
             }

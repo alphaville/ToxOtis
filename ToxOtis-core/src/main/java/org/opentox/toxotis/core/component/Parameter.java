@@ -148,14 +148,16 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
 
     public Parameter(String name, LiteralValue value) {
         super();
-        setName(name);
-        setTypedValue(value);
+        this.name = name;
+        this.typedValue = value;
+        this.meta.addTitle(name);
     }
 
     public Parameter(VRI uri, String name, LiteralValue value) {
         super(uri);
-        setName(name);
-        setTypedValue(value);
+        this.name = name;
+        this.typedValue = value;
+        this.meta.addTitle(name);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
@@ -207,10 +209,12 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
 
     public Parameter setName(String name) {
         this.name = name;
+        this.meta.addTitle(name);
         return this;
     }
 
 // </editor-fold>
+    
     @Override
     public Individual asIndividual(OntModel model) {
 
@@ -235,6 +239,12 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
             indiv.addLiteral(OTDatatypeProperties.paramValue().asDatatypeProperty(model),
                     model.createTypedLiteral(getValue(), xsdType));
         }
+        /*
+         * Note: There is no ontological property for the name of the parameter
+         * as it is considered to be redundant in light of dc:title. Use
+         * DC properties instead. Notice that the method setName adds a title
+         * for the parameter using the metaInfo of this parameter instance.
+         */
 
         return indiv;
     }

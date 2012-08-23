@@ -75,7 +75,7 @@ public class SuperPredictorTest {
     @Test
     public void testPredict() throws Exception {
         AuthenticationToken at = new AuthenticationToken("hampos", "arabela");
-        VRI modelVri = new VRI("http://opentox.ntua.gr:8080/model/3094c2dc-7c86-474b-87a6-037ec5065221");
+        VRI modelVri = new VRI("http://opentox.ntua.gr:8080/model/4fd5637a-7982-4b3e-97f3-0c683d477f66");
         VRI compoundVri = new VRI("http://apps.ideaconsult.net:8080/ambit2/compound/100");
         SuperPredictor predictor = new SuperPredictor(compoundVri, modelVri, at);
         predictor.prediction();

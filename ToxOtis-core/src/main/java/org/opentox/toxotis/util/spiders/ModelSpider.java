@@ -120,7 +120,6 @@ public class ModelSpider extends Tarantula<Model> {
     @Override
     public Model parse() throws ServiceInvocationException {
         Model m = new Model();
-
         m.setUri(uri);
         m.setMeta(new MetaInfoSpider(resource, model).parse());
 
@@ -195,7 +194,8 @@ public class ModelSpider extends Tarantula<Model> {
 
         Set<Parameter> parameters = new LinkedHashSet<Parameter>();
         while (itParam.hasNext()) {
-            ParameterSpider paramSpider = new ParameterSpider(model, itParam.nextStatement().getObject().as(Resource.class));
+            ParameterSpider paramSpider = new ParameterSpider(model, 
+                    itParam.nextStatement().getObject().as(Resource.class));
             parameters.add(paramSpider.parse());
         }
         m.setParameters(parameters);

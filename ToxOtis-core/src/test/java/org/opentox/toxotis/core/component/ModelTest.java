@@ -74,5 +74,6 @@ public class ModelTest {
         assertNotNull(m.getMeta());
         assertNotNull(m.getMeta().getRights());
     }
+        
     
 }
