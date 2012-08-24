@@ -55,7 +55,7 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
  */
 public class ConformerSpider extends Tarantula<Conformer> {
 
-    VRI uri;
+    private VRI uri;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ConformerSpider.class);
 
     public ConformerSpider(VRI uri) throws ToxOtisException, ServiceInvocationException {
@@ -64,8 +64,8 @@ public class ConformerSpider extends Tarantula<Conformer> {
         IGetClient client = ClientFactory.createGetClient(uri);
         client.setMediaType("application/rdf+xml");
         client.setUri(uri);
-        model = client.getResponseOntModel();
-        resource = model.getResource(uri.toString());
+        setOntModel(client.getResponseOntModel());
+        setResource(getOntModel().getResource(uri.toString()));
     }
 
     public ConformerSpider(Resource resource, OntModel model) {
@@ -79,13 +79,13 @@ public class ConformerSpider extends Tarantula<Conformer> {
 
     public ConformerSpider(OntModel model, String uri) {
         super();
-        this.model = model;
+        setOntModel(model);
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
             logger.debug(null, ex);
         }
-        this.resource = model.getResource(uri);
+        setResource(model.getResource(uri));
     }
 
     @Override
@@ -97,14 +97,14 @@ public class ConformerSpider extends Tarantula<Conformer> {
             throw new BadRequestException("Not a valid conformer URI : '" + uri + "'. "
                     + "Parsing of remote resource won't continue!", ex);
         }
-        StmtIterator itCompound = model.listStatements(
+        StmtIterator itCompound = getOntModel().listStatements(
                 new SimpleSelector(null,
                 RDF.type,
-                OTClasses.conformer().inModel(model)));
+                OTClasses.conformer().inModel(getOntModel())));
 
         if (itCompound.hasNext()) {
             Statement stmt = itCompound.nextStatement();
-            MetaInfoSpider metaSpider = new MetaInfoSpider(stmt.getSubject(), model);
+            MetaInfoSpider metaSpider = new MetaInfoSpider(stmt.getSubject(), getOntModel());
             conformer.setMeta(metaSpider.parse());
         }
 

@@ -76,25 +76,26 @@ public class DataEntrySpider extends Tarantula<DataEntry>{
     @Override
     public DataEntry parse() throws ServiceInvocationException  {
         DataEntry dataEntry = new DataEntry();
-        StmtIterator conformerIt = model.listStatements(
-                    new SimpleSelector(resource,
-                    OTObjectProperties.compound().asObjectProperty(model),
+        StmtIterator conformerIt = getOntModel().listStatements(
+                    new SimpleSelector(getResource(),
+                    OTObjectProperties.compound().asObjectProperty(getOntModel()),
                     (RDFNode)null));
             if(conformerIt.hasNext()){
                 Statement compStmt = conformerIt.nextStatement();
-                CompoundSpider conformerSpider = new CompoundSpider(model, compStmt.getObject().as(Resource.class).getURI());
+                CompoundSpider conformerSpider = new CompoundSpider(getOntModel(), 
+                        compStmt.getObject().as(Resource.class).getURI());
                 Compound conformer = conformerSpider.parse();
                 dataEntry.setConformer(conformer);
             }
         conformerIt.close();
-        StmtIterator valuesIt = model.listStatements(
-                new SimpleSelector(resource,
-                OTObjectProperties.values().asObjectProperty(model),
+        StmtIterator valuesIt = getOntModel().listStatements(
+                new SimpleSelector(getResource(),
+                OTObjectProperties.values().asObjectProperty(getOntModel()),
                 (RDFNode)null));
         List<FeatureValue> featureValues = new ArrayList<FeatureValue>();
         while(valuesIt.hasNext()){
             Resource valueResource = valuesIt.nextStatement().getObject().as(Resource.class);
-            FeatureValueSpider featureValueSpider = new FeatureValueSpider(valueResource, model);
+            FeatureValueSpider featureValueSpider = new FeatureValueSpider(valueResource, getOntModel());
             featureValues.add(featureValueSpider.parse());
         }
         valuesIt.close();

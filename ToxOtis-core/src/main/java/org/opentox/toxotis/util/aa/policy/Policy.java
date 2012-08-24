@@ -113,7 +113,7 @@ public class Policy implements IPolicy {
         for (PolicySubject subject : subjects) {
             subjectElement = doc.createElement("Subject");
             subjectElement.setAttribute("name", subject.getSubjectName());
-            subjectElement.setAttribute("type", subject.LDAP_Type);
+            subjectElement.setAttribute("type", subject.getLdapType());
             subjectElement.setAttribute("includeType", "inclusive");
 
             Element subjAVP = doc.createElement("AttributeValuePair");

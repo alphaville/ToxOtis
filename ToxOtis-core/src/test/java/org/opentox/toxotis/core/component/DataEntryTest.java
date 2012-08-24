@@ -33,19 +33,30 @@
 
 package org.opentox.toxotis.core.component;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.ontology.OntModel;
+import java.util.HashSet;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.ontology.LiteralValue;
+import org.opentox.toxotis.ontology.ResourceValue;
+import org.opentox.toxotis.ontology.WonderWebValidator;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.util.ROG;
 
 /**
  *
  * @author chung
  */
 public class DataEntryTest {
+    
+    private static final ROG ROG = new ROG();
     
     public DataEntryTest() {
     }
@@ -67,5 +78,27 @@ public class DataEntryTest {
         VRI uri2 = de.getUri();
         assertNotNull(uri2);
         assertNotSame(uri1, uri2);
+    }
+    
+    @Test
+    public void testRdf() throws ToxOtisException, ServiceInvocationException {
+        DataEntry de = new DataEntry();
+        de.setConformer(new Compound(Services.anonymous().augment("compound", ROG.nextString(40))));
+        de.setMeta(ROG.nextMeta());
+        de.getMeta().setSeeAlso(new HashSet<ResourceValue>());
+        FeatureValue fv = new FeatureValue();
+        fv.setFeature(new Feature(Services.anonymous().augment("feature", ROG.nextInt(40))));
+        fv.setUri(ROG.nextVri());
+        fv.getOntologicalClasses().add(OTClasses.featureValueNumeric());
+        fv.setValue(new LiteralValue(ROG.nextDouble(), XSDDatatype.XSDdouble));
+        
+        de.addFeatureValue(fv);
+        
+        de.addOntologicalClasses(OTClasses.dataEntry());
+        OntModel om = de.asOntModel();
+        assertNotNull(om);
+        WonderWebValidator validator = new WonderWebValidator(om);        
+        assertTrue(validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL));
+        
     }
 }

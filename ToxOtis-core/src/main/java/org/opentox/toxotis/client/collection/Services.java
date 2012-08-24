@@ -161,7 +161,7 @@ public class Services {
          *      MLR algorithm URI.
          */
         public static VRI mlr() {
-            return NTUA_ALGORITHM.augment("mlr");
+            return new VRI(NTUA_ALGORITHM).augment("mlr");
         }
 
         /**
@@ -170,7 +170,7 @@ public class Services {
          *      SVN algorithm URI.
          */
         public static VRI svm() {
-            return NTUA_ALGORITHM.augment("svm");
+            return new VRI(NTUA_ALGORITHM).augment("svm");
         }
 
         /**
@@ -180,7 +180,7 @@ public class Services {
          *      Leverage DoA algorithm URI.
          */
         public static VRI leverage() {
-            return NTUA_ALGORITHM.augment("leverages");
+            return new VRI(NTUA_ALGORITHM).augment("leverages");
         }
 
         /**
@@ -189,7 +189,7 @@ public class Services {
          *      Filter algorithm URI.
          */
         public static VRI filter() {
-            return NTUA_ALGORITHM.augment("filter");
+            return new VRI(NTUA_ALGORITHM).augment("mvh");
         }
     }
 

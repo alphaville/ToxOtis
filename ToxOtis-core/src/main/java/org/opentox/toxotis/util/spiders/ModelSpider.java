@@ -83,8 +83,8 @@ public class ModelSpider extends Tarantula<Model> {
             client.setMediaType(Media.APPLICATION_RDF_XML);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
-            model = client.getResponseOntModel();
-            resource = model.getResource(uri.toString());
+            setOntModel(client.getResponseOntModel());
+            setResource(getOntModel().getResource(uri.toString()));
         } finally {
             if (client != null) {
                 try {
@@ -108,20 +108,20 @@ public class ModelSpider extends Tarantula<Model> {
 
     public ModelSpider(OntModel model, String uri) {
         super();
-        this.model = model;
+        setOntModel(model);
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
             logger.debug(null, ex);
         }
-        this.resource = model.getResource(uri);
+        setResource(model.getResource(uri));
     }
 
     @Override
     public Model parse() throws ServiceInvocationException {
         Model m = new Model();
         m.setUri(uri);
-        m.setMeta(new MetaInfoSpider(resource, model).parse());
+        m.setMeta(new MetaInfoSpider(getResource(), getOntModel()).parse());
 
         if (token != null) {
             try {
@@ -132,9 +132,9 @@ public class ModelSpider extends Tarantula<Model> {
             }
         }
 
-        StmtIterator itDataset = model.listStatements(
-                new SimpleSelector(resource,
-                OTObjectProperties.trainingDataset().asObjectProperty(model),
+        StmtIterator itDataset = getOntModel().listStatements(
+                new SimpleSelector(getResource(),
+                OTObjectProperties.trainingDataset().asObjectProperty(getOntModel()),
                 (RDFNode) null));
         if (itDataset.hasNext()) {
             try {
@@ -144,57 +144,57 @@ public class ModelSpider extends Tarantula<Model> {
             }
         }
 
-        StmtIterator itFeature = model.listStatements(
-                new SimpleSelector(resource,
-                OTObjectProperties.predictedVariables().asObjectProperty(model),
+        StmtIterator itFeature = getOntModel().listStatements(
+                new SimpleSelector(getResource(),
+                OTObjectProperties.predictedVariables().asObjectProperty(getOntModel()),
                 (RDFNode) null));
 
         while (itFeature.hasNext()) {
-            FeatureSpider fspider = new FeatureSpider(model,
+            FeatureSpider fspider = new FeatureSpider(getOntModel(),
                     itFeature.nextStatement().getObject().as(Resource.class).getURI());
             m.addPredictedFeatures(fspider.parse());
         }
 
-        itFeature = model.listStatements(
-                new SimpleSelector(resource,
-                OTObjectProperties.dependentVariables().asObjectProperty(model),
+        itFeature = getOntModel().listStatements(
+                new SimpleSelector(getResource(),
+                OTObjectProperties.dependentVariables().asObjectProperty(getOntModel()),
                 (RDFNode) null));
         while (itFeature.hasNext()) {
-            FeatureSpider fspider = new FeatureSpider(model,
+            FeatureSpider fspider = new FeatureSpider(getOntModel(),
                     itFeature.nextStatement().getObject().as(Resource.class).getURI());
             m.addDependentFeatures(fspider.parse());
         }
 
-        itFeature = model.listStatements(
-                new SimpleSelector(resource,
-                OTObjectProperties.independentVariables().asObjectProperty(model),
+        itFeature = getOntModel().listStatements(
+                new SimpleSelector(getResource(),
+                OTObjectProperties.independentVariables().asObjectProperty(getOntModel()),
                 (RDFNode) null));
         List<Feature> indepFeatures = new ArrayList<Feature>();
         while (itFeature.hasNext()) {
-            FeatureSpider fspider = new FeatureSpider(model,
+            FeatureSpider fspider = new FeatureSpider(getOntModel(),
                     itFeature.nextStatement().getObject().as(Resource.class).getURI());
             indepFeatures.add(fspider.parse());
         }
         m.setIndependentFeatures(indepFeatures);
 
-        StmtIterator itAlgorithm = model.listStatements(
-                new SimpleSelector(resource,
-                OTObjectProperties.algorithm().asObjectProperty(model),
+        StmtIterator itAlgorithm = getOntModel().listStatements(
+                new SimpleSelector(getResource(),
+                OTObjectProperties.algorithm().asObjectProperty(getOntModel()),
                 (RDFNode) null));
         if (itAlgorithm.hasNext()) {
             AlgorithmSpider aspider;
-            aspider = new AlgorithmSpider(itAlgorithm.nextStatement().getObject().as(Resource.class), model);
+            aspider = new AlgorithmSpider(itAlgorithm.nextStatement().getObject().as(Resource.class), getOntModel());
             m.setAlgorithm(aspider.parse());
         }
 
-        StmtIterator itParam = model.listStatements(
-                new SimpleSelector(resource,
-                OTObjectProperties.parameters().asObjectProperty(model),
+        StmtIterator itParam = getOntModel().listStatements(
+                new SimpleSelector(getResource(),
+                OTObjectProperties.parameters().asObjectProperty(getOntModel()),
                 (RDFNode) null));
 
         Set<Parameter> parameters = new LinkedHashSet<Parameter>();
         while (itParam.hasNext()) {
-            ParameterSpider paramSpider = new ParameterSpider(model, 
+            ParameterSpider paramSpider = new ParameterSpider(getOntModel(), 
                     itParam.nextStatement().getObject().as(Resource.class));
             parameters.add(paramSpider.parse());
         }

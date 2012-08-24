@@ -59,63 +59,64 @@ public final class OTFeatures {
         if (methodCache == null) {
             methodCache = new java.util.HashMap<String, Method>();
             for (Method method : OTFeatures.class.getDeclaredMethods()) {
-                if (OntologicalClass.class.equals(method.getReturnType()) && method.getParameterTypes().length == 0) {
+                if (OntologicalClass.class.equals(method.getReturnType()) 
+                        && method.getParameterTypes().length == 0) {
                     methodCache.put(method.getName(), method);
                 }
             }
         }
     }
 
-    public static OntologicalClass IUPACName() {
+    public static OntologicalClass iupacName() {
         if (iupacName == null) {
             iupacName = new OntologicalClassImpl("IUPACName");
         }
         return iupacName;
     }
 
-    public static OntologicalClass CASRN() {
+    public static OntologicalClass casRN() {
         if (casRN == null) {
             casRN = new OntologicalClassImpl("CASRN");
         }
         return casRN;
     }
 
-    public static OntologicalClass ChemicalName() {
+    public static OntologicalClass chemicalName() {
         if (chemicalName == null) {
             chemicalName = new OntologicalClassImpl("ChemicalName");
         }
         return chemicalName;
     }
 
-    public static OntologicalClass EINECS() {
+    public static OntologicalClass einecs() {
         if (einecs == null) {
             einecs = new OntologicalClassImpl("EINECS");
         }
         return einecs;
     }
 
-    public static OntologicalClass SMILES() {
+    public static OntologicalClass smiles() {
         if (smiles == null) {
             smiles = new OntologicalClassImpl("SMILES");
         }
         return smiles;
     }
 
-    public static OntologicalClass InChI_std() {
+    public static OntologicalClass inchiStd() {
         if (inChIStd == null) {
             inChIStd = new OntologicalClassImpl("InChI_std");
         }
         return inChIStd;
     }
 
-    public static OntologicalClass InChIKey_std() {
+    public static OntologicalClass inchiKeyStd() {
         if (inChIKeyStd == null) {
             inChIKeyStd = new OntologicalClassImpl("InChIKey_std");
         }
         return inChIKeyStd;
     }
 
-    public static OntologicalClass REACHRegistrationDate() {
+    public static OntologicalClass reachRegistrationDate() {
         if (reachRegistrationDate == null) {
             reachRegistrationDate = new OntologicalClassImpl("REACHRegistrationDate");
         }

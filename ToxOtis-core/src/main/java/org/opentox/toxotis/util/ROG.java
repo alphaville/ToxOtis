@@ -153,15 +153,13 @@ public class ROG {
                 addSubject(nextString(SMALL_COMMENT)).addSubject(nextString(SMALL_COMMENT)).
                 addSubject(nextString(SMALL_COMMENT)).addSubject(nextString(SMALL_COMMENT)).
                 addHasSource(new ResourceValue(
-                Services.anonymous().augment("x", nextString(VRI_LEN)),
-                OTClasses.featureValueNominal())).
+                    Services.anonymous().augment("xyz", nextString(VRI_LEN)),
+                    OTClasses.featureValueNominal())).
                 addSameAs(new ResourceValue(
-                Services.anonymous().augment("x", nextString(VRI_LEN)),
-                null)).
+                    Services.anonymous().augment("xyz", nextString(VRI_LEN)), null)).
                 addSeeAlso(new ResourceValue(
-                Services.anonymous().augment("x", nextString(VRI_LEN)),
-                OTClasses.compound()));
-
+                    Services.anonymous().augment("xyz","compound", nextString(VRI_LEN)),
+                    OTClasses.compound()));
         return mi;
     }
 

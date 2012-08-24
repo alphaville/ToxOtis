@@ -66,7 +66,7 @@ public class FeatureValue extends OTComponent<FeatureValue> {
 
     public FeatureValue() {
         super();
-        this.meta = null;
+        setMeta(null);
     }
 
     public FeatureValue(Feature feature, LiteralValue value) {
@@ -99,8 +99,8 @@ public class FeatureValue extends OTComponent<FeatureValue> {
         if (value != null) {
             indiv.addLiteral(OTDatatypeProperties.value().asDatatypeProperty(model), model.createTypedLiteral(value.getValue(), value.getType()));
         }
-        if (meta != null) {
-            meta.attachTo(indiv, model);
+        if (getMeta() != null) {
+            getMeta().attachTo(indiv, model);
         }
         return indiv;
     }

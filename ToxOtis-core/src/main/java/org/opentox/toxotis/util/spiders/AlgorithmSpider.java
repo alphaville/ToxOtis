@@ -177,8 +177,8 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
 
                 }
             }
-            model = client.getResponseOntModel();
-            resource = model.getResource(uri.getStringNoQuery());
+            setOntModel(client.getResponseOntModel());
+            setResource(getOntModel().getResource(uri.getStringNoQuery()));
         } finally { // Have to close the client (disconnect)
             if (client != null) {
                 try {
@@ -203,15 +203,16 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
         if (algorithm == null) {
             throw new ServiceInvocationException("Make sure that the URI you provided holds a valid representation of an OpenTox algorithm.");
         }
-        algorithm.setOntologies(getOTATypes(resource));
-        MetaInfoSpider metaSpider = new MetaInfoSpider(model, uri.getStringNoQuery());
+        algorithm.setOntologies(getOTATypes(getResource()));
+        MetaInfoSpider metaSpider = new MetaInfoSpider(getOntModel(), uri.getStringNoQuery());
         algorithm.setMeta(metaSpider.parse());
-        StmtIterator itParam = model.listStatements(
-                new SimpleSelector(resource,
-                OTObjectProperties.parameters().asObjectProperty(model),
+        StmtIterator itParam = getOntModel().listStatements(
+                new SimpleSelector(getResource(),
+                OTObjectProperties.parameters().asObjectProperty(getOntModel()),
                 (RDFNode) null));
         while (itParam.hasNext()) {
-            ParameterSpider paramSpider = new ParameterSpider(model, itParam.nextStatement().getObject().as(Resource.class));
+            ParameterSpider paramSpider = new ParameterSpider(getOntModel(), 
+                    itParam.nextStatement().getObject().as(Resource.class));
             algorithm.getParameters().add(paramSpider.parse());
         }
         return algorithm;

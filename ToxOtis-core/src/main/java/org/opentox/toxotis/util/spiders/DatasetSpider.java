@@ -59,7 +59,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  */
 public class DatasetSpider extends Tarantula<Dataset> {
 
-    VRI datasetUri;
+    private VRI datasetUri;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DatasetSpider.class);
 
     public DatasetSpider(VRI uri) throws ServiceInvocationException {
@@ -76,9 +76,9 @@ public class DatasetSpider extends Tarantula<Dataset> {
         try {
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
-            model = client.getResponseOntModel();
-            resource = model.getResource(uri.getStringNoQuery());
-            readRemoteTime = System.currentTimeMillis() - timeFlag;
+            setOntModel(client.getResponseOntModel());
+            setResource(getOntModel().getResource(uri.getStringNoQuery()));
+            setReadRemoteTime(System.currentTimeMillis() - timeFlag);
         } finally {
             if (client != null) {
                 try {
@@ -106,13 +106,13 @@ public class DatasetSpider extends Tarantula<Dataset> {
 
     public DatasetSpider(OntModel model, String uri) {
         super();
-        this.model = model;
+        setOntModel(model);
         try {
             this.datasetUri = new VRI(uri);
         } catch (URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
-        this.resource = model.getResource(uri);
+        setResource(model.getResource(uri));
     }
 
     @Override
@@ -127,25 +127,25 @@ public class DatasetSpider extends Tarantula<Dataset> {
          * to have explicit declarations of ot:Feature, ot:NominalFeautre, ot:NumericFeature 
          * and ot:StringFeature
          */
-        OTClasses.feature().inModel(model);
-        OTClasses.nominalFeature().inModel(model);
-        OTClasses.numericFeature().inModel(model);
-        OTClasses.stringFeature().inModel(model);
+        OTClasses.feature().inModel(getOntModel());
+        OTClasses.nominalFeature().inModel(getOntModel());
+        OTClasses.numericFeature().inModel(getOntModel());
+        OTClasses.stringFeature().inModel(getOntModel());
         /** END **
          */
-        dataset.setMeta(new MetaInfoSpider(resource, model).parse());
-        StmtIterator entryIt = model.listStatements(
-                new SimpleSelector(resource, OTObjectProperties.dataEntry().asObjectProperty(model),
+        dataset.setMeta(new MetaInfoSpider(getResource(), getOntModel()).parse());
+        StmtIterator entryIt = getOntModel().listStatements(
+                new SimpleSelector(getResource(), OTObjectProperties.dataEntry().asObjectProperty(getOntModel()),
                 (RDFNode) null));
         ArrayList<DataEntry> dataEntries = new ArrayList<DataEntry>();
         while (entryIt.hasNext()) {
             Resource entryResource = entryIt.nextStatement().getObject().as(Resource.class);
-            DataEntrySpider dataEntrySpider = new DataEntrySpider(entryResource, model);
+            DataEntrySpider dataEntrySpider = new DataEntrySpider(entryResource, getOntModel());
             dataEntries.add(dataEntrySpider.parse());
         }
         dataset.setDataEntries(dataEntries);
-        parseTime = System.currentTimeMillis() - timeFlag;
-        model.close();
+        setParseTime(System.currentTimeMillis() - timeFlag);
+        getOntModel().close();
         return dataset;
     }
 }

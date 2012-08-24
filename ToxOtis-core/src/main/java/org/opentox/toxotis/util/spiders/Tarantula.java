@@ -79,23 +79,23 @@ public abstract class Tarantula<Result> implements Closeable {
      * The core resource that is to be parsed out of the
      * datamodel into an OpenTox component object.
      */
-    protected Resource resource;
+    private Resource resource;
     /**
      * The data model which is used in the parsing procedure
      * and also hold the {@link Tarantula#resource base resource}
      */
-    protected OntModel model;
+    private OntModel model;
     /**
      * Time in ms that was needed for the reading the data model from
      * the remote location identified by the URI of the parsed entity.
      */
-    protected long readRemoteTime = -1;
+    private long readRemoteTime = -1;
     /**
      * Computational time needed for the parsing of the data model. Does not include the
      * time needed for the entity to be downloaded and/or converted into a
      * datamodel (OntModel of Jena).
      */
-    protected long parseTime = -1;
+    private long parseTime = -1;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Tarantula.class);
 
     /**
@@ -114,6 +114,27 @@ public abstract class Tarantula<Result> implements Closeable {
     public Tarantula() {
     }
 
+    protected void setOntModel(OntModel model) {
+        this.model = model;
+    }
+
+    protected Resource getResource() {
+        return resource;
+    }
+
+    protected void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    protected void setReadRemoteTime(long readRemoteTime) {
+        this.readRemoteTime = readRemoteTime;
+    }
+
+
+    protected void setParseTime(long parseTime) {
+        this.parseTime = parseTime;
+    }
+
     /**
      * Parse the data model of an OpenTox entity and create an ToxOtis object
      * according to the data content of the data model.
@@ -122,8 +143,8 @@ public abstract class Tarantula<Result> implements Closeable {
      *      The parsed object.
      * @throws ServiceInvocationException
      */
-    public abstract Result parse() throws ServiceInvocationException;    
-    
+    public abstract Result parse() throws ServiceInvocationException;
+
     protected Set<LiteralValue> retrievePropertyLiterals(Property prop) {
         Set<LiteralValue> results = new HashSet<LiteralValue>();
         StmtIterator it = model.listStatements(new SimpleSelector(resource, prop, (RDFNode) null));
@@ -309,9 +330,9 @@ public abstract class Tarantula<Result> implements Closeable {
         if (status == HttpStatusCodes.NotFound.getStatus()) {
             throw new NotFound("The following task was not found : '" + actionUri + "' (status 404)");
         }
-        if (status != HttpStatusCodes.Success.getStatus() && 
-                status != HttpStatusCodes.Accepted.getStatus() && 
-                status != HttpStatusCodes.Created.getStatus()) {
+        if (status != HttpStatusCodes.Success.getStatus()
+                && status != HttpStatusCodes.Accepted.getStatus()
+                && status != HttpStatusCodes.Created.getStatus()) {
             throw new ConnectionException("Communication Error with : '" + actionUri + "'. status = " + status);
         }
     }

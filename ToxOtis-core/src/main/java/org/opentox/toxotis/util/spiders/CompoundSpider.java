@@ -72,7 +72,7 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
  */
 public class CompoundSpider extends Tarantula<Compound> {
 
-    VRI uri;
+    private VRI uri;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CompoundSpider.class);
     private boolean downloadDetails = true;
     private String keyword;
@@ -185,8 +185,8 @@ public class CompoundSpider extends Tarantula<Compound> {
 
                 }
             }
-            model = compoundClient.getResponseOntModel();
-            resource = model.getResource(uri.toString());
+            setOntModel(compoundClient.getResponseOntModel());
+            setResource(getOntModel().getResource(uri.toString()));
         } finally { // Have to close the client (disconnect)
             if (compoundClient != null) {
                 try {
@@ -233,8 +233,8 @@ public class CompoundSpider extends Tarantula<Compound> {
 
                 }
             }
-            model = compoundClient.getResponseOntModel();
-            resource = model.getResource(uri.toString());
+            setOntModel(compoundClient.getResponseOntModel());
+            setResource(getOntModel().getResource(uri.toString()));
         } finally { // Have to close the client (disconnect)
             if (compoundClient != null) {
                 try {
@@ -258,22 +258,22 @@ public class CompoundSpider extends Tarantula<Compound> {
 
     public CompoundSpider(OntModel model, String uri) {
         super();
-        this.model = model;
+        setOntModel(model);
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
             logger.debug(null, ex);
         }
-        this.resource = model.getResource(uri);
+        setResource(model.getResource(uri));
     }
 
     private String getValue(Resource valueNode) {
-        return valueNode.getProperty(OTDatatypeProperties.value().asDatatypeProperty(model)).getLiteral().getString();
+        return valueNode.getProperty(OTDatatypeProperties.value().asDatatypeProperty(getOntModel())).getLiteral().getString();
     }
 
     private String getFeatureUri(Resource valueNode) {
-        StmtIterator featuresIt = model.listStatements(new SimpleSelector(valueNode,
-                OTObjectProperties.feature().asObjectProperty(model), (RDFNode) null));
+        StmtIterator featuresIt = getOntModel().listStatements(new SimpleSelector(valueNode,
+                OTObjectProperties.feature().asObjectProperty(getOntModel()), (RDFNode) null));
         if (featuresIt != null && featuresIt.hasNext()) {
             Resource featureRS = featuresIt.nextStatement().getObject().asResource();
             return featureRS.getProperty(OWL.sameAs).getObject().asResource().getURI();
@@ -290,8 +290,8 @@ public class CompoundSpider extends Tarantula<Compound> {
             throw new BadRequestException("Not a valid compound URI : '" + uri + "'. "
                     + "Parsing of remote resource won't continue!", ex);
         }
-        if (resource != null) {
-            compound.setMeta(new MetaInfoSpider(resource, model).parse());
+        if (getResource() != null) {
+            compound.setMeta(new MetaInfoSpider(getResource(), getOntModel()).parse());
         }
         StmtIterator datasetIt = null;
         StmtIterator dataEntryIt = null;
@@ -302,17 +302,18 @@ public class CompoundSpider extends Tarantula<Compound> {
         Resource valueRS = null;
 
         if (downloadDetails && keyword != null && lookupService != null) {
-            datasetIt = model.listStatements(new SimpleSelector(null, RDF.type, OTClasses.dataset().inModel(model)));
+            datasetIt = getOntModel().listStatements(
+                    new SimpleSelector(null, RDF.type, OTClasses.dataset().inModel(getOntModel())));
             if (datasetIt != null && datasetIt.hasNext()) { // dataset found
                 datasetRS = datasetIt.nextStatement().getSubject();
-                dataEntryIt = model.listStatements(
+                dataEntryIt = getOntModel().listStatements(
                         new SimpleSelector(
-                        datasetRS, OTObjectProperties.dataEntry().asObjectProperty(model),
+                        datasetRS, OTObjectProperties.dataEntry().asObjectProperty(getOntModel()),
                         (RDFNode) null));
                 if (dataEntryIt != null && dataEntryIt.hasNext()) {
                     dataEntryRS = dataEntryIt.nextStatement().getObject().asResource();
-                    valuesIt = model.listStatements(new SimpleSelector(
-                            dataEntryRS, OTObjectProperties.values().asObjectProperty(model), (RDFNode) null));
+                    valuesIt = getOntModel().listStatements(new SimpleSelector(
+                            dataEntryRS, OTObjectProperties.values().asObjectProperty(getOntModel()), (RDFNode) null));
                     if (valuesIt != null) {
                         while (valuesIt.hasNext()) {
                             valueRS = valuesIt.nextStatement().getObject().asResource();

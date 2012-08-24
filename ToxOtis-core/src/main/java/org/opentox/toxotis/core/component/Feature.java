@@ -197,8 +197,8 @@ public class Feature extends OTPublishable<Feature> {
             indiv.addProperty(unitsProp, model.createTypedLiteral(units, XSDDatatype.XSDstring));
         }
         /* Add meta data */
-        if (meta != null) {
-            meta.attachTo(indiv, model);
+        if (getMeta() != null) {
+            getMeta().attachTo(indiv, model);
         }
         return indiv;
     }
@@ -211,9 +211,9 @@ public class Feature extends OTPublishable<Feature> {
             builder.append(getUri());
             builder.append("\n\n");
         }
-        if (meta != null) {
+        if (getMeta() != null) {
             builder.append("Meta information....\n");
-            builder.append(meta);
+            builder.append(getMeta());
             builder.append("\n");
         }
         if (!getOntologicalClasses().isEmpty()) {

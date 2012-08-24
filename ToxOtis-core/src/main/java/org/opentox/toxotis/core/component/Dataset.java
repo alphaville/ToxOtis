@@ -103,7 +103,7 @@ public class Dataset extends OTPublishable<Dataset> {
                         + "' is not a valid Dataset uri according to the OpenTox specifications.");
             }
         }
-        this.meta = null;
+        setMeta(null);
     }
 
     /**
@@ -384,8 +384,8 @@ public class Dataset extends OTPublishable<Dataset> {
         String datasetUri = getUri() != null ? getUri().getStringNoQuery() : null;
         Individual indiv = model.createIndividual(datasetUri, OTClasses.dataset().inModel(model));
         /* Attach the metadata to the dataset node... */
-        if (meta != null) {
-            meta.attachTo(indiv, model);
+        if (getMeta() != null) {
+            getMeta().attachTo(indiv, model);
         }
         if (dataEntries != null && !dataEntries.isEmpty()) {
             ObjectProperty otdataentry = OTObjectProperties.dataEntry().asObjectProperty(model);

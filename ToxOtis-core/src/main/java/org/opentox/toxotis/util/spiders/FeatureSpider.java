@@ -55,14 +55,13 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTDatatypeProperties;
 
 /**
- * Downloader and parser for a Feature resource available in RDF.s
+ * Downloader and parser for a Feature resource available in RDF.
  * @author Charalampos Chomenides
  * @author Pantelis Sopasakis
  */
 public class FeatureSpider extends Tarantula<Feature> {
 
-    VRI uri;
-
+    private VRI uri;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FeatureSpider.class);
 
     public FeatureSpider(VRI uri) throws ServiceInvocationException {
@@ -74,14 +73,14 @@ public class FeatureSpider extends Tarantula<Feature> {
 //            client.setUri(uri);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
-            model = client.getResponseOntModel();
-            resource = model.getResource(uri.toString());
+            setOntModel(client.getResponseOntModel());
+            setResource(getOntModel().getResource(uri.toString()));
         } finally {
             if (client != null) {
                 try {
                     client.close();
                 } catch (IOException ex) {
-                    throw new ConnectionException( "Error while trying to close the stream "
+                    throw new ConnectionException("Error while trying to close the stream "
                             + "with the remote location at :'" + ((uri != null) ? uri.toString() : null) + "'", ex);
                 }
             }
@@ -99,22 +98,22 @@ public class FeatureSpider extends Tarantula<Feature> {
 
     public FeatureSpider(OntModel model, String uri) {
         super();
-        this.model = model;
+        setOntModel(model);
         try {
             this.uri = new VRI(uri);
         } catch (URISyntaxException ex) {
             logger.debug(null, ex);
         }
-        this.resource = model.getResource(uri);
+        setResource(model.getResource(uri));
     }
 
     @Override
     public Feature parse() {
         Feature feature = new Feature();
-        feature.setMeta(new MetaInfoSpider(resource, model).parse()); // Parse meta-info
+        feature.setMeta(new MetaInfoSpider(getResource(), getOntModel()).parse()); // Parse meta-info
         feature.setUri(uri);
-        feature.setOntologicalClasses(getOntologicalTypes(resource));
-        Statement unitsStatement = resource.getProperty(OTDatatypeProperties.units().asDatatypeProperty(model));
+        feature.setOntologicalClasses(getOntologicalTypes(getResource()));
+        Statement unitsStatement = getResource().getProperty(OTDatatypeProperties.units().asDatatypeProperty(getOntModel()));
         if (unitsStatement != null) {
             feature.setUnits(unitsStatement.getString());
         }
@@ -122,7 +121,8 @@ public class FeatureSpider extends Tarantula<Feature> {
         if (feature.getOntologicalClasses() != null && feature.getOntologicalClasses().contains(OTClasses.nominalFeature())) {
             // Gather 'accept' values from the RDF and add them to the feature
             Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
-            StmtIterator acceptIt = resource.listProperties(OTDatatypeProperties.acceptValue().asDatatypeProperty(model));
+            StmtIterator acceptIt = getResource().listProperties(
+                    OTDatatypeProperties.acceptValue().asDatatypeProperty(getOntModel()));
             while (acceptIt.hasNext()) {
                 Literal acceptValueLiteral = acceptIt.nextStatement().getObject().as(Literal.class);
                 LiteralValue acceptValue = new LiteralValue(acceptValueLiteral.getValue().toString(),

@@ -30,48 +30,29 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.util.aa.policy;
+package org.opentox.toxotis.util;
 
+import java.io.PrintStream;
+import java.util.Observable;
+import java.util.Observer;
+import org.opentox.toxotis.util.aa.PasswordFileManager;
 
 /**
- * A collection of standard groups of Users used to identify certain access levels.
+ * An observer for the {@link PasswordFileManager Password File Manager}.
+ * 
  * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
  */
-public class GroupSubject extends PolicySubject {
+public class PrintStateObserver implements Observer {
 
-    /**
-     * Group of all OpenTox developers.
-     */
-    public static final GroupSubject DEVELOPMENT = new GroupSubject("development");
-    /**
-     * Group of all partners in OpenTox.
-     */
-    public static final GroupSubject PARTNER = new GroupSubject("partner");
-    /**
-     * All OpenTox members as a group, including the user <code>guest:guest</code>.
-     */
-    public static final GroupSubject MEMBER = new GroupSubject("member");
+    private PrintStream stream = System.out;
 
-    /**
-     *
-     */
-    public GroupSubject() {
-        setLdapType("LDAPGroups");
+    public PrintStateObserver setStream(PrintStream stream) {
+        this.stream = stream;
+        return this;
     }
 
-    private GroupSubject(String groupName) {
-        this();
-        setSubjectName(groupName);
-    }
-
-    /**
-     *
-     * @return
-     */
     @Override
-    public String getValue() {
-        return "cn=" + getSubjectName() + ", ou=groups, dc=opentox,dc=org";
+    public void update(Observable o, Object o1) {
+        stream.println(o1);
     }
-
 }

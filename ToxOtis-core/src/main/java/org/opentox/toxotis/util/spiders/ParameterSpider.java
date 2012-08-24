@@ -70,7 +70,7 @@ public class ParameterSpider extends Tarantula<Parameter> {
          * Parse parameter scope...
          */
         Set<LiteralValue> scopes = retrievePropertyLiterals(OTDatatypeProperties.paramScope().
-                asDatatypeProperty(model));
+                asDatatypeProperty(getOntModel()));
         if (scopes != null && !scopes.isEmpty()) {
             if (scopes.size() > 1) {
                 logger.warn("[WARN ] Multiple scopes declared for the parsed parameter! "
@@ -80,7 +80,8 @@ public class ParameterSpider extends Tarantula<Parameter> {
             parameter.setScope(Parameter.ParameterScope.valueOf(scope.getValue().toString().toUpperCase()));
         }
 
-        Set<LiteralValue> paramTypedValues = retrievePropertyLiterals(OTDatatypeProperties.paramValue().asDatatypeProperty(model));
+        Set<LiteralValue> paramTypedValues = retrievePropertyLiterals(
+                OTDatatypeProperties.paramValue().asDatatypeProperty(getOntModel()));
         if (paramTypedValues != null && !paramTypedValues.isEmpty()) {
             if (paramTypedValues.size() > 1) {
                 logger.warn("[WARN ] Multiple parameter values are declared for a single parameter. "
@@ -90,7 +91,7 @@ public class ParameterSpider extends Tarantula<Parameter> {
             parameter.setTypedValue(paramTypedValue);
         }
 
-        MetaInfoSpider metaSpider = new MetaInfoSpider(resource, model);
+        MetaInfoSpider metaSpider = new MetaInfoSpider(getResource(), getOntModel());
         MetaInfo mi = metaSpider.parse();
         parameter.setMeta(mi);
 

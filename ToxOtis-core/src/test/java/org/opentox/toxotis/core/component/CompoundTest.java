@@ -32,15 +32,10 @@
  */
 package org.opentox.toxotis.core.component;
 
-import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.ontology.OntModel;
-import java.io.File;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Set;
 import javax.swing.ImageIcon;
-import javax.xml.stream.XMLStreamWriter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -51,13 +46,10 @@ import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.exceptions.IConnectionException;
 import org.opentox.toxotis.exceptions.INotFound;
-import org.opentox.toxotis.exceptions.IUnauthorized;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
-import org.opentox.toxotis.factory.CompoundFactory;
 import org.opentox.toxotis.ontology.LiteralValue;
-import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.CompoundSpider;
 

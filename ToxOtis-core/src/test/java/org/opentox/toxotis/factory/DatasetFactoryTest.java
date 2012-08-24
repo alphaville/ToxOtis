@@ -60,6 +60,7 @@ public class DatasetFactoryTest {
         cli.setMediaType(Media.WEKA_ARFF);
         InputStream stream = cli.getRemoteStream();
         Dataset ds = DatasetFactory.getInstance().createFromArff(stream);
-        System.out.println(ds.getInstances());
+        assertNotNull(ds);
+        //TODO: More tests
     }
 }

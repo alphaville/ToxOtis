@@ -32,14 +32,18 @@
  */
 package org.opentox.toxotis.ontology.impl;
 
+import com.hp.hpl.jena.ontology.OntModel;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.DummyComponent;
+import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
+import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.util.spiders.MetaInfoSpider;
 import static org.junit.Assert.*;
 
@@ -61,7 +65,7 @@ public class MetaInfoImplTest {
     }
 
     @Test
-    public void testMetaInfoRDF() {
+    public void testMetaInfoRDF() throws ServiceInvocationException {
         MetaInfo meta = new MetaInfoImpl();
         meta.addTitle("Lalala").
                 addIdentifier("anonymous.org/element/123").
@@ -75,9 +79,19 @@ public class MetaInfoImplTest {
 
         DummyComponent dummy = new DummyComponent();
         dummy.setMeta(meta);
-        dummy.asOntModel().write(System.out);
-
-
-
+        OntModel om = dummy.asOntModel();
+        WonderWebValidator validator = new WonderWebValidator(om);
+        boolean isOntModelDLValid = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
+        assertTrue(isOntModelDLValid);        
+    }
+    @Test
+    public void testMetaInfoRDF2() throws ServiceInvocationException {       
+        DummyComponent dummy = new DummyComponent();
+        dummy.setMeta(new ROG().nextMeta());
+        dummy.addOntologicalClasses(OTClasses.openToxResource());
+        OntModel om = dummy.asOntModel();
+        WonderWebValidator validator = new WonderWebValidator(om);
+        boolean isOntModelDLValid = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
+        assertTrue(isOntModelDLValid);        
     }
 }

@@ -32,6 +32,8 @@
  */
 package org.opentox.toxotis.core.component;
 
+import com.hp.hpl.jena.ontology.OntModel;
+import java.util.HashSet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,6 +43,8 @@ import org.opentox.toxotis.client.collection.Services;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.ontology.ResourceValue;
+import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.policy.PolicyManager;
@@ -51,6 +55,7 @@ import org.opentox.toxotis.util.aa.policy.PolicyManager;
  */
 public class BibTeXTest {
 
+    private static final ROG ROG = new ROG();
     public BibTeXTest() {
     }
 
@@ -97,8 +102,17 @@ public class BibTeXTest {
             PolicyManager.defaultSignleUserPolicy("allow_bibtex", Services.ntua().augment("bibtex"), at).
                     publish(null, at);
         }
-        ROG rog = new ROG();
-        BibTeX bib = rog.nextBibTeX();        
-
+        
+        BibTeX bib = ROG.nextBibTeX();        
+    }
+    
+    @Test
+    public void testRdf() throws ServiceInvocationException{
+        BibTeX bt = ROG.nextBibTeX();
+        bt.setMeta(ROG.nextMeta());
+        bt.getMeta().setSeeAlso(new HashSet<ResourceValue>());//The Wonderweb Validator has a problem with see also...
+        OntModel om =bt.asOntModel();
+        WonderWebValidator validator = new WonderWebValidator(om);
+        assertTrue(validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL));
     }
 }

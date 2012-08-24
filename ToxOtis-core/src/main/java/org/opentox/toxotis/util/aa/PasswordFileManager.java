@@ -41,6 +41,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Observable;
@@ -126,7 +127,10 @@ public final class PasswordFileManager extends Observable {
     private javax.crypto.Cipher eCipher;
     private javax.crypto.Cipher dCipher;
     private static final String PATH_SEP = System.getProperty("file.separator");
-    private static final String DEFAULT_MASTER_PASSWORD_FILE = System.getProperty("user.home") + PATH_SEP + "toxotisKeys" + PATH_SEP + "master.key";
+    private static final String MASTER_START = "--- START MASTER KEY ---",
+            MASTER_END = "--- END MASTER KEY ---", ENCODING_STD = "UTF-8";
+    private static final String DEFAULT_MASTER_PASSWORD_FILE =
+            System.getProperty("user.home") + PATH_SEP + "toxotisKeys" + PATH_SEP + "master.key";
     private static final double MAX_PERCENTAGE_COMPLETED = 100;
     private static final byte[] SALT = {
         (byte) 0xaf, (byte) 0x35, (byte) 0x11, (byte) 0x0c,
@@ -140,7 +144,16 @@ public final class PasswordFileManager extends Observable {
     private static PasswordFileManager instanceOfThis = null;
     private double fileCreationProgress = 0;
     private static final Random RNG = new Random();
+    private PrintStream printStream = System.out;
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class);
+
+    /**
+     * Where to stream messages. This is meaningful only in 
+     * verbose mode.
+     */
+    public void setPrintStream(PrintStream printStream) {
+        this.printStream = printStream;
+    }
 
     private static PasswordFileManager getInstance() {
         if (instanceOfThis == null) {
@@ -170,6 +183,77 @@ public final class PasswordFileManager extends Observable {
         return fileCreationProgress;
     }
 
+    private String getPassStrength(final int size) {
+        String passStrength;
+        if (size < PWD_STRENGTH1) {
+            passStrength = "POOR";
+        } else if (size >= PWD_STRENGTH1 && size < PWD_STRENGTH2) {
+            passStrength = "ACCEPTABLE";
+        } else if (size >= PWD_STRENGTH2 && size < PWD_STRENGTH3) {
+            passStrength = "GOOD";
+        } else {
+            passStrength = "EXCELECT";
+        }
+        return passStrength;
+    }
+
+    private StringBuilder readRandomGenerator(String randomGenerator, int size)
+            throws IOException {
+        FileInputStream fis = null;
+        InputStreamReader isr = null;
+        BufferedReader br = null;
+        try {
+            fis = new FileInputStream(randomGenerator);
+            isr = new InputStreamReader(fis);
+            br = new BufferedReader(isr);
+            char[] characters;
+            int readInt = -1;
+            StringBuilder passBuilder = new StringBuilder();
+            int charCounter = 0;
+            super.setChanged();
+            while ((readInt = br.read()) != -1 && charCounter < size) {
+                if (readInt < MAX_CHAR_INDEX && readInt > MIN_CHAR_INDEX) {
+                    characters = Character.toChars(readInt);
+                    passBuilder.append(characters);
+                    charCounter++;
+                    notifyObservers(new Double(MAX_PERCENTAGE_COMPLETED * (double) charCounter) / ((double) size));
+                    super.setChanged();
+                }
+            }
+            return passBuilder;
+        } finally {
+            IOException ioexception = null;
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (final IOException e) {
+                    logger.error("Cannot close buffered reader", e);
+                    ioexception = e;
+                }
+            }
+            if (isr != null) {
+                try {
+                    isr.close();
+                } catch (final IOException e) {
+                    logger.error("Cannot close ISR", e);
+                    ioexception = e;
+                }
+            }
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (final IOException e) {
+                    logger.error("Cannot close FIS", e);
+                    ioexception = e;
+                }
+            }
+            if (ioexception != null) {
+                throw ioexception;
+            }
+        }
+
+    }
+
     /**
      * Create a master password file for managing you password files. You credentials
      * will be stored in a password file
@@ -188,51 +272,30 @@ public final class PasswordFileManager extends Observable {
      *      In case either the random generator or the destination for the master
      *      password are unreachable or a read/write exception occurs.
      */
-    public void createMasterPasswordFile(final String randomGenerator, final String destination, final int size, boolean verbose) throws IOException {
+    public void createMasterPasswordFile(final String randomGenerator,
+            final String destination, final int size, boolean verbose) throws IOException {
         if (verbose) {
-            System.out.println("----- ToxOtis Pasword Generator -----");
+            printStream.println("----- ToxOtis Pasword Generator -----");
         }
-        String passStrength;
-        if (size < PWD_STRENGTH1) {
-            passStrength = "POOR";
-        } else if (size >= PWD_STRENGTH1 && size < PWD_STRENGTH2) {
-            passStrength = "ACCEPTABLE";
-        } else if (size >= PWD_STRENGTH2 && size < PWD_STRENGTH3) {
-            passStrength = "GOOD";
-        } else {
-            passStrength = "EXCELECT";
-        }
+        String passStrength = getPassStrength(size);
+
         String rng = randomGenerator != null ? randomGenerator : "Secure RNG (java.security.SecureRandom)";
         if (verbose) {
-            System.out.println("Random number generator : " + rng);
-            System.out.println("Password file           : " + destination);
-            System.out.println("Password Stength        : " + passStrength + " (" + size + ")");
+            printStream.println("Random number generator : " + rng);
+            printStream.println("Password file           : " + destination);
+            printStream.println("Password Stength        : " + passStrength + " (" + size + ")");
         }
 
         if (randomGenerator != null) {
             if (randomGenerator.contains("/random") && verbose) {
-                System.out.println("\nMore Entropy needed... Move your mouse around the screen to generate some random bits.");
-                System.out.println("This procedure might take a few minutes... You may use /dev/urandom to create a pseudo random key faster");
+                printStream.println("\nMore Entropy needed... Move your mouse around the screen to generate some random bits.");
+                printStream.println("This procedure might take a few minutes... You may use /dev/urandom to create a pseudo random key faster");
             }
-            FileInputStream fis = new FileInputStream(randomGenerator);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            char[] characters;
-            int readInt = -1;
-            StringBuilder passBuilder = new StringBuilder();
-            int charCounter = 0;
-            while ((readInt = br.read()) != -1 && charCounter < size) {
-                if (readInt < MAX_CHAR_INDEX && readInt > MIN_CHAR_INDEX) {
-                    super.setChanged();
-                    characters = Character.toChars(readInt);
-                    passBuilder.append(characters);
-                    charCounter++;
-                    notifyObservers(new Double(MAX_PERCENTAGE_COMPLETED * (double) charCounter) / ((double) size));
-                }
-            }
+            StringBuilder passBuilder = readRandomGenerator(randomGenerator, size);
+
             FileWriter fw = new FileWriter(destination);
             BufferedWriter bufferedWriter = new BufferedWriter(fw);
-            bufferedWriter.write("--- START MASTER KEY ---");
+            bufferedWriter.write(MASTER_START);
             bufferedWriter.newLine();
             String mPass = Base64.encodeString(passBuilder.toString());
             int lineCharsCounter = 0;
@@ -245,7 +308,7 @@ public final class PasswordFileManager extends Observable {
                 }
             }
             bufferedWriter.newLine();
-            bufferedWriter.write("--- END MASTER KEY ---");
+            bufferedWriter.write(MASTER_END);
             if (bufferedWriter != null) {
                 bufferedWriter.close();
             }
@@ -259,7 +322,7 @@ public final class PasswordFileManager extends Observable {
                 }
                 FileWriter fw = new FileWriter(destination);
                 BufferedWriter bufferedWriter = new BufferedWriter(fw);
-                bufferedWriter.write("--- START MASTER KEY ---");
+                bufferedWriter.write(MASTER_START);
                 bufferedWriter.newLine();
                 String mPass = Base64.encodeString(builder.toString());
                 int lineCharsCounter = 0;
@@ -272,7 +335,7 @@ public final class PasswordFileManager extends Observable {
                     }
                 }
                 bufferedWriter.newLine();
-                bufferedWriter.write("--- END MASTER KEY ---");
+                bufferedWriter.write(MASTER_END);
                 if (bufferedWriter != null) {
                     bufferedWriter.close();
                 }
@@ -293,7 +356,7 @@ public final class PasswordFileManager extends Observable {
             try {
                 File secretFile = new File(masterPasswordFile);
                 if (!secretFile.exists()) {
-                    throw new RuntimeException(
+                    throw new IllegalArgumentException(
                             String.format("File containing the master password was not found at : '%s'",
                             secretFile.getAbsolutePath()));
                 }
@@ -302,13 +365,13 @@ public final class PasswordFileManager extends Observable {
                 String line = null;
                 StringBuilder buffer = new StringBuilder();
                 int count = 0;
-                while ((line = br.readLine()) != null && !line.equals("--- START MASTER KEY ---")) {
+                while ((line = br.readLine()) != null && !line.equals(MASTER_START)) {
                     count++;
                     if (count > MAX_COMMENT_LINES) {
-                        throw new IllegalArgumentException("Invalid Master-Key filef");
+                        throw new IllegalArgumentException("Invalid Master-Key file");
                     }
                 }
-                while ((line = br.readLine()) != null && !line.equals("--- END MASTER KEY ---")) {
+                while ((line = br.readLine()) != null && !line.equals(MASTER_END)) {
                     line = line.trim();
                     buffer.append(line);
                 }
@@ -341,7 +404,7 @@ public final class PasswordFileManager extends Observable {
         }
     }
 
-    private void createChipher(char[] pass, byte[] salt, int iterations) throws SecurityException {
+    private void createChipher(char[] pass, byte[] salt, int iterations) {
         try {
             javax.crypto.spec.PBEParameterSpec paramSpec =
                     new javax.crypto.spec.PBEParameterSpec(salt, iterations);
@@ -359,26 +422,30 @@ public final class PasswordFileManager extends Observable {
         }
     }
 
-    protected synchronized String encrypt(final String message) throws SecurityException {
+    protected synchronized String encrypt(final String message) {
         initializeMasterPassword();
         try {
-            byte[] stringBytes = message.getBytes("UTF-8");
+            byte[] stringBytes = message.getBytes(ENCODING_STD);
             byte[] enc = eCipher.doFinal(stringBytes);
             return new String(Base64.encode(enc));
-        } catch (Exception exc) {
+        } catch (final Exception exc) {
+            logger.error("Encryption Error", exc);
             throw new SecurityException(exc);
         }
     }
 
-    protected synchronized String decrypt(final String encrypted) throws SecurityException {
+    protected synchronized String decrypt(final String encrypted) {
         initializeMasterPassword();
         try {
             byte[] dec = Base64.decode(encrypted);
             byte[] utf8 = dCipher.doFinal(dec);
-            return new String(utf8, "UTF-8");
+            return new String(utf8, ENCODING_STD);
         } catch (BadPaddingException ex) {
-            throw new SecurityException("The master key at " + masterPasswordFile + " might has been corrupted!", ex);
-        } catch (Exception exc) {
+            String msg = "The master key at " + masterPasswordFile + " might has been corrupted!";
+            logger.error(msg, ex);
+            throw new SecurityException(msg, ex);
+        } catch (final Exception exc) {
+            logger.error("Deciphering Error", exc);
             throw new SecurityException(exc);
         }
     }
@@ -398,7 +465,8 @@ public final class PasswordFileManager extends Observable {
      *      write priviledges to that file or other I/O event inhibits the data
      *      transaction.
      */
-    public synchronized void createPasswordFile(String username, String password, String filePath) throws IOException {
+    public synchronized void createPasswordFile(String username, String password, String filePath)
+            throws IOException {
         initializeMasterPassword();
         FileWriter fstream = null;
         BufferedWriter out = null;
@@ -445,7 +513,8 @@ public final class PasswordFileManager extends Observable {
      *      is not valid.
      * @see PasswordFileManager#authFromFile(java.io.File) authFromFile(File)
      */
-    public synchronized AuthenticationToken authFromFile(String filePath) throws IOException, ToxOtisException, ServiceInvocationException {
+    public synchronized AuthenticationToken authFromFile(String filePath)
+            throws IOException, ToxOtisException, ServiceInvocationException {
         initializeMasterPassword();
         File file = new File(filePath);
         if (!file.exists()) {
@@ -477,7 +546,8 @@ public final class PasswordFileManager extends Observable {
      *      is not valid.
      * @see PasswordFileManager#authFromFile(java.lang.String) authFromFile(String)
      */
-    public synchronized AuthenticationToken authFromFile(File file) throws IOException, ToxOtisException, ServiceInvocationException {
+    public synchronized AuthenticationToken authFromFile(File file)
+            throws IOException, ToxOtisException, ServiceInvocationException {
         initializeMasterPassword();
         FileReader fr = new FileReader(file);
         BufferedReader br = null;
@@ -502,8 +572,7 @@ public final class PasswordFileManager extends Observable {
             if (line == null || (line != null && !line.equals("--- END PRIVATE KEY ---"))) {
                 throw new ToxOtisException("Invalid password file: Footer not found!");
             }
-            AuthenticationToken at = new AuthenticationToken(username, password);
-            return at;
+            return new AuthenticationToken(username, password);
         } finally {
             username = null;
             password = null;
@@ -546,35 +615,5 @@ public final class PasswordFileManager extends Observable {
      */
     public void setCryptoIterations(int cryptoIterations) {
         this.cryptoIterations = cryptoIterations;
-    }
-
-    public static void main(String... art) throws Exception {
-        final int size = 1000;
-        final long delay = 200;
-        Thread createPasswordFile = new Thread() {
-
-            @Override
-            public void run() {
-                try {
-                    CRYPTO.createMasterPasswordFile("/dev/urandom", "/home/chung/toxotisKeys/any.key", size, false);
-                } catch (IOException ex) {
-                    org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class).warn(null, ex);
-                }
-            }
-        };
-
-        createPasswordFile.start();
-
-        while (true) {
-            if (CRYPTO.hasChanged()) {
-                System.out.println(CRYPTO.getPasswordGenerationProgress() + " %");
-            }
-            if (Math.abs(CRYPTO.getPasswordGenerationProgress() - 100) < 0.001) {
-                break;
-            }
-            Thread.sleep(delay);
-        }
-
-
     }
 }

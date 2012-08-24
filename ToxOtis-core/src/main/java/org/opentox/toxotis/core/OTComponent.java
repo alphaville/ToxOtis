@@ -66,7 +66,7 @@ public abstract class OTComponent<T extends IOTComponent>
     /** URI of the component */
     private VRI uri;
     /** Meta information (including DC and OT meta) about the component */
-    protected MetaInfo meta = new MetaInfoImpl();
+    private MetaInfo meta = new MetaInfoImpl();
     private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
     /* Every component is enabled by default */
     private boolean enabled = true;

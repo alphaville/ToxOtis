@@ -81,8 +81,8 @@ public class TaskSpider extends Tarantula<Task> {
             final int status = client.getResponseCode();
             assessHttpStatus(status, vri);
             httpStatus = status;
-            model = client.getResponseOntModel();
-            resource = model.getResource(vri.getStringNoQuery());
+            setOntModel(client.getResponseOntModel());
+            setResource(getOntModel().getResource(vri.getStringNoQuery()));
         } finally {
             if (client != null) {
                 try {
@@ -104,7 +104,7 @@ public class TaskSpider extends Tarantula<Task> {
     @Override
     public Task parse() throws ServiceInvocationException {
         Task task = new Task(vri);
-        task.setMeta(new MetaInfoSpider(resource, model).parse());
+        task.setMeta(new MetaInfoSpider(getResource(), getOntModel()).parse());
         task.setHttpStatus(httpStatus);
 
         if (token != null) {
@@ -120,8 +120,8 @@ public class TaskSpider extends Tarantula<Task> {
             }
         }
 
-        Statement hasStatusProp = resource.getProperty(
-                OTDatatypeProperties.hasStatus().asProperty(model));
+        Statement hasStatusProp = getResource().getProperty(
+                OTDatatypeProperties.hasStatus().asProperty(getOntModel()));
         if (hasStatusProp != null) {
             Literal hasStatus = hasStatusProp.getObject().as(Literal.class);
             if (hasStatus != null) {
@@ -129,8 +129,8 @@ public class TaskSpider extends Tarantula<Task> {
             }
         }
 
-        Statement resultUriStmt = resource.getProperty(
-                OTDatatypeProperties.resultURI().asDatatypeProperty(model));
+        Statement resultUriStmt = getResource().getProperty(
+                OTDatatypeProperties.resultURI().asDatatypeProperty(getOntModel()));
         Literal resultUri = null;
         if (resultUriStmt != null) {
             resultUri = resultUriStmt.getObject().as(Literal.class);
@@ -143,20 +143,20 @@ public class TaskSpider extends Tarantula<Task> {
                 logger.debug(null, ex);
             }
         }
-        Statement percentageStmt = resource.getProperty(
-                OTDatatypeProperties.percentageCompleted().asDatatypeProperty(model));
+        Statement percentageStmt = getResource().getProperty(
+                OTDatatypeProperties.percentageCompleted().asDatatypeProperty(getOntModel()));
         Literal percentageCompleted = percentageStmt != null ? percentageStmt.getObject().as(Literal.class) : null;
 
         if (percentageCompleted != null) {
             task.setPercentageCompleted(percentageCompleted.getFloat());
         }
 
-        Statement errorReportStmt = resource.getProperty(
-                OTObjectProperties.errorReport().asObjectProperty(model));
+        Statement errorReportStmt = getResource().getProperty(
+                OTObjectProperties.errorReport().asObjectProperty(getOntModel()));
         Resource errorReport = errorReportStmt != null ? errorReportStmt.getObject().as(Resource.class) : null;
 
         if (errorReport != null) {
-            task.setErrorReport(new ErrorReportSpider(errorReport, model).parse());
+            task.setErrorReport(new ErrorReportSpider(errorReport, getOntModel()).parse());
         }
         return task;
     }

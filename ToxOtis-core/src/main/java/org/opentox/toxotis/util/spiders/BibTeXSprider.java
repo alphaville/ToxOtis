@@ -161,8 +161,8 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
 
                 }
             }
-            model = client.getResponseOntModel();
-            resource = model.getResource(uri.getStringNoQuery());
+            setOntModel(client.getResponseOntModel());
+            setResource(getOntModel().getResource(uri.getStringNoQuery()));
         } catch (ServiceInvocationException ex) {
             logger.trace("ServiceInvocationException caught in BibTeXSpider", ex);
             throw ex;
@@ -179,34 +179,34 @@ public class BibTeXSprider extends Tarantula<BibTeX> {
 
     @Override
     public BibTeX parse() throws ServiceInvocationException {
-        if (resource == null) {
-            resource = getresource(model);
+        if (getResource() == null) {
+            setResource(getresource(getOntModel()));
         }
-        if (resource == null) {
+        if (getResource() == null) {
             throw new BadRequestException("Could not parse the BibTex resource because no "
                     + "bibtex entity (Article, Book, Conference, etc) was found.");
         }
 
-        String hasAbstract = forProperty(model, resource, KnoufDatatypeProperties.hasAbstract());
-        String bookTitle = forProperty(model, resource, KnoufDatatypeProperties.hasBookTitle());
-        String author = forProperty(model, resource, KnoufDatatypeProperties.hasAuthor());
-        String chapter = forProperty(model, resource, KnoufDatatypeProperties.hasChapter());
-        String copy = forProperty(model, resource, KnoufDatatypeProperties.hasCopyright());
-        String crossref = forProperty(model, resource, KnoufDatatypeProperties.hasCrossRef());
-        String isbn = forProperty(model, resource, KnoufDatatypeProperties.hasISBN());
-        String issn = forProperty(model, resource, KnoufDatatypeProperties.hasISSN());
-        String edition = forProperty(model, resource, KnoufDatatypeProperties.hasEdition());
-        String editor = forProperty(model, resource, KnoufDatatypeProperties.hasEditor());
-        String journal = forProperty(model, resource, KnoufDatatypeProperties.hasJournal());
-        String series = forProperty(model, resource, KnoufDatatypeProperties.hasSeries());
-        String title = forProperty(model, resource, KnoufDatatypeProperties.hasTitle());
-        String url = forProperty(model, resource, KnoufDatatypeProperties.hasURL());
+        String hasAbstract = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasAbstract());
+        String bookTitle = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasBookTitle());
+        String author = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasAuthor());
+        String chapter = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasChapter());
+        String copy = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasCopyright());
+        String crossref = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasCrossRef());
+        String isbn = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasISBN());
+        String issn = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasISSN());
+        String edition = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasEdition());
+        String editor = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasEditor());
+        String journal = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasJournal());
+        String series = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasSeries());
+        String title = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasTitle());
+        String url = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasURL());
 
-        String volume = forProperty(model, resource, KnoufDatatypeProperties.hasVolume());
-        String number = forProperty(model, resource, KnoufDatatypeProperties.hasNumber());
-        String year = forProperty(model, resource, KnoufDatatypeProperties.hasYear());
+        String volume = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasVolume());
+        String number = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasNumber());
+        String year = forProperty(getOntModel(), getResource(), KnoufDatatypeProperties.hasYear());
 
-        StmtIterator typeIterator = model.listStatements(new SimpleSelector(resource, RDF.type, (RDFNode) null));
+        StmtIterator typeIterator = getOntModel().listStatements(new SimpleSelector(getResource(), RDF.type, (RDFNode) null));
         BibTeX.BibTYPE bibtype = null;
         if (typeIterator.hasNext()) {
             try {

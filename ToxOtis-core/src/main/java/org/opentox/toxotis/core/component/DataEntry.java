@@ -74,7 +74,7 @@ public class DataEntry extends OTComponent<DataEntry> {
     public DataEntry() {
         featureValues = new ArrayList<FeatureValue>();
         conformer = new Compound();
-        this.meta = null;
+        setMeta(null);
     }
 
     public DataEntry(Compound compound, List<FeatureValue> featureValues) {
@@ -126,8 +126,8 @@ public class DataEntry extends OTComponent<DataEntry> {
     public Individual asIndividual(OntModel model) {
         String dataEntryUri = getUri() != null ? getUri().getStringNoQuery() : null;
         Individual indiv = model.createIndividual(dataEntryUri, OTClasses.dataEntry().inModel(model));
-        if (meta != null) {
-            meta.attachTo(indiv, model);
+        if (getMeta() != null) {
+            getMeta().attachTo(indiv, model);
         }
         indiv.addProperty(OTObjectProperties.compound().asObjectProperty(model), conformer.asIndividual(model));
 

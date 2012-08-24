@@ -54,6 +54,7 @@ import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 public class MetaInfoImpl implements MetaInfo {
@@ -137,14 +138,20 @@ public class MetaInfoImpl implements MetaInfo {
      *      An object property used to connect the resource
      *      with the given resources.
      */
-    private void attachResource(Resource resource, OntModel model, Set<ResourceValue> resources, Property property) {
+    private void attachResource(Resource resource, OntModel model,
+            Set<ResourceValue> resources, Property property, boolean defineProp) {
         if (resources != null && !resources.isEmpty()) {
-            ObjectProperty objectProperty = model.getObjectProperty(property.getURI());
-            if (objectProperty == null) {
-                objectProperty = model.createObjectProperty(property.getURI());
+            Property myProp = null;
+            if (defineProp) {
+                myProp = model.getObjectProperty(property.getURI());
+            } else {
+                myProp = model.getProperty(property.getURI());
             }
+            if (myProp == null) {
+                myProp = model.createObjectProperty(property.getURI());
+            }            
             for (ResourceValue r : resources) {
-                resource.addProperty(objectProperty, r.inModel(model));
+                resource.addProperty(myProp, r.inModel(model));
             }
         }
     }
@@ -160,14 +167,19 @@ public class MetaInfoImpl implements MetaInfo {
         attachAnnotation(resource, model, comments, RDFS.comment, XSDDatatype.XSDstring);
         attachAnnotation(resource, model, contributors, DC.contributor, XSDDatatype.XSDstring);
         attachAnnotation(resource, model, rights, DC.rights, XSDDatatype.XSDstring);
-        attachResource(resource, model, sameAs, OWL.sameAs);
-        attachResource(resource, model, seeAlso, RDFS.seeAlso);
+        /*
+         * Note: owl:sameAs and rdfs:seeAlso are *not* properties in our
+         * ontology, therefore we don't need to add them to the definition
+         * schema of our model.
+         */
+        attachResource(resource, model, sameAs, OWL.sameAs, false);
+        attachResource(resource, model, seeAlso, RDFS.seeAlso, false);
         /*
          * Note: hasSource is an Object property that according to the OpenTox ontology
          * is a mapping from ot:Feature ot ot:Dataset or ot:Dataset or ot:Model.
          */
-        attachResource(resource, model, hasSources, OTObjectProperties.hasSource().asObjectProperty(model));
-              
+        attachResource(resource, model, hasSources, OTObjectProperties.hasSource().asObjectProperty(model), true);
+
         if (date != null) {
             AnnotationProperty dateProperty = model.createAnnotationProperty(DC.date.getURI());
             resource.addLiteral(dateProperty, date.inModel(model));
@@ -781,7 +793,7 @@ public class MetaInfoImpl implements MetaInfo {
         return builder.toString();
     }
 
-    @Override   
+    @Override
     public HTMLContainer inHtml() {
         HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
         HTMLTable table = builder.addTable(2);

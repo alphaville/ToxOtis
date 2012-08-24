@@ -123,7 +123,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
             throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
                     + "' is not a valid Compound uri according to the OpenTox specifications.");
         }
-        this.meta = null;
+        setMeta(null);
     }
 
     /**

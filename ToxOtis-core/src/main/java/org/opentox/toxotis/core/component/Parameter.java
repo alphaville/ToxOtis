@@ -150,14 +150,14 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
         super();
         this.name = name;
         this.typedValue = value;
-        this.meta.addTitle(name);
+        getMeta().addTitle(name);
     }
 
     public Parameter(VRI uri, String name, LiteralValue value) {
         super(uri);
         this.name = name;
         this.typedValue = value;
-        this.meta.addTitle(name);
+        getMeta().addTitle(name);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
@@ -209,7 +209,7 @@ public class Parameter<T> extends OTComponent<Parameter<T>> implements IHTMLSupp
 
     public Parameter setName(String name) {
         this.name = name;
-        this.meta.addTitle(name);
+        getMeta().addTitle(name);
         return this;
     }
 

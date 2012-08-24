@@ -39,11 +39,9 @@ package org.opentox.toxotis.util.aa.policy;
  * @author Charalampos Chomenides
  */
 public abstract class PolicySubject {
-    
+
     private static final int HASH_OFFSET = 5, HASH_MOD = 37;
-
-    protected String LDAP_Type;
-
+    private String ldapType;
     private String subjectName;
 
     public String getSubjectName() {
@@ -52,6 +50,14 @@ public abstract class PolicySubject {
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
+    }
+
+    public String getLdapType() {
+        return ldapType;
+    }
+
+    public void setLdapType(String ldapType) {
+        this.ldapType = ldapType;
     }
 
     public abstract String getValue();
@@ -77,7 +83,4 @@ public abstract class PolicySubject {
         hash = HASH_MOD * hash + (this.subjectName != null ? this.subjectName.hashCode() : 0);
         return hash;
     }
-    
-    
-
 }

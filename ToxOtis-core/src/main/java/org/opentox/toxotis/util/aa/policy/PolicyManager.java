@@ -274,7 +274,6 @@ public final class PolicyManager {
             responseStatus = sgt.getResponseCode();
 
             if (responseStatus == HttpStatusCodes.Success.getStatus()) {
-//                System.out.println(sgt.getResponseText());
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 try {
                     Document d = factory.newDocumentBuilder().parse(sgt.getRemoteStream());

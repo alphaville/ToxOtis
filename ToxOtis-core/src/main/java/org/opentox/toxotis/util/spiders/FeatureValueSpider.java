@@ -64,14 +64,16 @@ public class FeatureValueSpider extends Tarantula<FeatureValue> {
 
     @Override
     public FeatureValue parse() throws ServiceInvocationException {
-        Statement featureResourceStatement = resource.getProperty(OTObjectProperties.feature().asObjectProperty(model));
+        Statement featureResourceStatement = getResource().
+                getProperty(OTObjectProperties.feature().asObjectProperty(getOntModel()));
         if (featureResourceStatement == null) {
             throw new ServiceInvocationException("Error while parsing a feature value node: No features where assigned to the feature value node!");
         }
         Resource featureResource = featureResourceStatement.getResource();
-        FeatureSpider fSpider = new FeatureSpider(featureResource, model);
+        FeatureSpider fSpider = new FeatureSpider(featureResource, getOntModel());
         Feature feature = fSpider.parse();
-        Statement valueStatement = resource.getProperty(OTDatatypeProperties.value().asDatatypeProperty(model));
+        Statement valueStatement = getResource().
+                getProperty(OTDatatypeProperties.value().asDatatypeProperty(getOntModel()));
         if (valueStatement == null) {
             throw new ServiceInvocationException("Error while parsing a feature value node: No value is assigned to the feature value node!");
         }

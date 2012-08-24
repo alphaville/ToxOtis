@@ -52,13 +52,13 @@ public class Conformer extends Compound {
 
     public Conformer() {
         super();
-        this.meta = null;
+        setMeta(null);
     }
 
     public Conformer(VRI uri) throws ToxOtisException {
         super();
         setUri(uri);
-        this.meta = null;
+        setMeta(null);
     }
 
     

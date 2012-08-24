@@ -81,23 +81,23 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
      */
     public ErrorReportSpider(OntModel model) {
         super();
-        this.model = model;
+        setOntModel(model);
         Property traceProperty = model.getProperty(OTObjectProperties.trace().getUri());
         if (traceProperty != null) {
             StmtIterator traceIter = model.listStatements(new SimpleSelector(null, traceProperty, (RDFNode) null));
             while (traceIter.hasNext()) {
                 Statement traceStatement = traceIter.next();
                 if (traceStatement.getObject() != null && traceStatement.getSubject() == null) {
-                    resource = traceStatement.getObject().as(Resource.class);
+                    setResource(traceStatement.getObject().as(Resource.class));
                     return;
                 }
             }
         }
-        if (resource == null) {
+        if (getResource() == null) {
             StmtIterator allErrorReportsIter = model.listStatements(
                     new SimpleSelector(null, RDF.type, OTClasses.errorReport().inModel(model)));
             if (allErrorReportsIter.hasNext()) {
-                resource = allErrorReportsIter.next().getSubject().as(Resource.class);
+                setResource(allErrorReportsIter.next().getSubject().as(Resource.class));
             }
         }
 
@@ -116,12 +116,12 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
      *      Ontological model of the error report.
      */
     ErrorReportSpider(VRI actor, OntModel model) {
-        this.model = model;
+        setOntModel(model);
         Property actorProperty = OTDatatypeProperties.actor().asDatatypeProperty(model);
         if (actorProperty != null) {
             StmtIterator reportIt = model.listStatements(new SimpleSelector(null, actorProperty, actor.getStringNoQuery()));
             if (reportIt.hasNext()) {
-                resource = reportIt.nextStatement().getSubject().as(Resource.class);
+                setResource(reportIt.nextStatement().getSubject().as(Resource.class));
             }
         }
     }
@@ -129,20 +129,20 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
     @Override
     public ErrorReport parse() {
         ErrorReport errorReport = new ErrorReport();
-        if (resource != null) {
+        if (getResource() != null) {
             try {
-                errorReport.setUri(new VRI(resource.getURI()));
+                errorReport.setUri(new VRI(getResource().getURI()));
             } catch (URISyntaxException ex) {
                 throw new IllegalArgumentException("Bad URI Syntax",ex);
             }
         }
-        if (resource == null){
+        if (getResource() == null){
             return null;//nothing to parse!
         }
-        errorReport.setMeta(new MetaInfoSpider(resource, model).parse());
+        errorReport.setMeta(new MetaInfoSpider(getResource(), getOntModel()).parse());
 
-        Statement httpStatusStmt = resource.getProperty(
-                OTDatatypeProperties.httpStatus().asDatatypeProperty(model));
+        Statement httpStatusStmt = getResource().getProperty(
+                OTDatatypeProperties.httpStatus().asDatatypeProperty(getOntModel()));
         if (httpStatusStmt != null) {
             Literal httpStatus = httpStatusStmt.getObject().as(Literal.class);
 
@@ -151,15 +151,16 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
             }
         }
 
-        Literal errorCode = resource.getProperty(
-                OTDatatypeProperties.errorCode().asDatatypeProperty(model)).getObject().as(Literal.class);
+        Literal errorCode = getResource().getProperty(
+                OTDatatypeProperties.errorCode().asDatatypeProperty(getOntModel())).getObject().as(Literal.class);
         if (errorCode != null) {
             errorReport.setErrorCode(errorCode.getString());
         }
 
         
         
-            Statement detailsStmt = resource.getProperty(OTDatatypeProperties.details().asDatatypeProperty(model));
+            Statement detailsStmt = getResource().getProperty(OTDatatypeProperties.details().
+                    asDatatypeProperty(getOntModel()));
             if (detailsStmt != null) {
                 Literal details = detailsStmt.getObject().as(Literal.class);
 
@@ -169,25 +170,26 @@ public class ErrorReportSpider extends Tarantula<ErrorReport> {
             }
         
 
-        Literal message = resource.getProperty(
-                OTDatatypeProperties.message().asDatatypeProperty(model)).getObject().as(Literal.class);
+        Literal message = getResource().getProperty(
+                OTDatatypeProperties.message().asDatatypeProperty(getOntModel())).getObject().as(Literal.class);
 
         if (message != null) {
             errorReport.setMessage(message.getString());
         }
 
-        Literal actor = resource.getProperty(
-                OTDatatypeProperties.actor().asDatatypeProperty(model)).getObject().as(Literal.class);
+        Literal actor = getResource().getProperty(
+                OTDatatypeProperties.actor().asDatatypeProperty(getOntModel())).getObject().as(Literal.class);
 
         if (actor != null) {
             errorReport.setActor(actor.getString());
         }
 
-        Statement traceProp = resource.getProperty(OTObjectProperties.errorReport().asObjectProperty(model));
+        Statement traceProp = getResource().getProperty(OTObjectProperties.errorReport().
+                asObjectProperty(getOntModel()));
         if (traceProp != null) {
             Resource errorCause = traceProp.getResource();
             if (errorCause != null) {
-                ErrorReportSpider causeSpider = new ErrorReportSpider(errorCause, model);
+                ErrorReportSpider causeSpider = new ErrorReportSpider(errorCause, getOntModel());
                 errorReport.setErrorCause(causeSpider.parse());
             }
         }

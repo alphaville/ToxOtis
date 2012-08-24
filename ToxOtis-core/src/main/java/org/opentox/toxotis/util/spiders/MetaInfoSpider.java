@@ -53,8 +53,8 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
 
     public MetaInfoSpider(OntModel model, String uri) {
         super();
-        this.model = model;
-        resource = model.getResource(uri);
+        setOntModel(model);
+        setResource(model.getResource(uri));
     }
 
     public MetaInfoSpider(Resource resource, OntModel model) {
@@ -73,7 +73,7 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
         /* title */
         temp = retrievePropertyLiterals(DC.rights);
         dcmeta.setRights(temp);
-        
+
         /* subject */
         temp = retrievePropertyLiterals(DC.subject);
         dcmeta.setSubjects(temp);
@@ -102,7 +102,8 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
         }
 
         /* hasSource */
-        temp2 = retrievePropertyNodes(org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(model));
+        temp2 = retrievePropertyNodes(
+                org.opentox.toxotis.ontology.collection.OTObjectProperties.hasSource().asObjectProperty(getOntModel()));
         dcmeta.setHasSources(temp2);
         /* sameAs */
         temp2 = retrievePropertyNodes(OWL.sameAs);
@@ -111,10 +112,10 @@ public class MetaInfoSpider extends Tarantula<MetaInfo> {
         temp2 = retrievePropertyNodes(RDFS.seeAlso);
         dcmeta.setSeeAlso(temp2);
 
-        temp =retrievePropertyLiterals(model.createAnnotationProperty("http://purl.org/dc/elements/1.1/audience"));
+        temp = retrievePropertyLiterals(getOntModel().createAnnotationProperty("http://purl.org/dc/elements/1.1/audience"));
         dcmeta.setAudiences(temp);
 
-        if (dcmeta.isEmpty()){
+        if (dcmeta.isEmpty()) {
             return null;
         }
         return dcmeta;
