@@ -88,7 +88,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     remote stream
      */
     private IStAXWritable staxComponent;
-    public WriteLock postLock = new ReentrantReadWriteLock().writeLock();
+    private WriteLock postLock = new ReentrantReadWriteLock().writeLock();
 
     public PostHttpClient() {
         super();
@@ -96,7 +96,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
 
     public PostHttpClient(VRI vri) {
         super();
-        this.vri = vri;
+        setUri(vri);
     }
 
     @Override
@@ -264,21 +264,21 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
             java.net.URL target = uri.toURL();
-            con = (java.net.HttpURLConnection) target.openConnection();
-            con.setRequestMethod(METHOD);
-            con.setAllowUserInteraction(false);
-            con.setDoInput(true);
-            con.setDoOutput(true); // allow data to be posted
-            con.setUseCaches(false);
+            setConnection((java.net.HttpURLConnection) target.openConnection());
+            getConnection().setRequestMethod(METHOD);
+            getConnection().setAllowUserInteraction(false);
+            getConnection().setDoInput(true);
+            getConnection().setDoOutput(true); // allow data to be posted
+            getConnection().setUseCaches(false);
             if (contentType != null) {
-                con.setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
+                getConnection().setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
             }
-            if (acceptMediaType != null) {
-                con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
+            if (getMediaType() != null) {
+                getConnection().setRequestProperty(RequestHeaders.ACCEPT, getMediaType());
             }
-            if (!headerValues.isEmpty()) {
-                for (Map.Entry<String, String> e : headerValues.entrySet()) {
-                    con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
+            if (!getHeaderValues().isEmpty()) {
+                for (Map.Entry<String, String> e : getHeaderValues().entrySet()) {
+                    getConnection().setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
             }
             /* If there are some parameters to be posted, then the POST will
@@ -286,11 +286,11 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
              */
             if (!postParameters.isEmpty()) {
                 setContentType(Media.APPLICATION_FORM_URL_ENCODED);
-                con.setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
-                con.setRequestProperty(RequestHeaders.CONTENT_LENGTH,
+                getConnection().setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
+                getConnection().setRequestProperty(RequestHeaders.CONTENT_LENGTH,
                         Integer.toString(getParametersAsQuery().getBytes().length));
             }
-            return con;
+            return getConnection();
         } catch (final IOException ex) {
             throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
         } catch (final Exception unexpectedException) {
@@ -312,11 +312,11 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      */
     @Override
     public void post() throws ServiceInvocationException {
-        connect(vri.toURI());
+        connect(getUri().toURI());
         DataOutputStream wr;
         try {
             getPostLock().lock(); // LOCK
-            wr = new DataOutputStream(con.getOutputStream());
+            wr = new DataOutputStream(getConnection().getOutputStream());
             String query = getParametersAsQuery();
             if (query != null && !query.isEmpty()) {
                 wr.writeBytes(getParametersAsQuery());// POST the parameters

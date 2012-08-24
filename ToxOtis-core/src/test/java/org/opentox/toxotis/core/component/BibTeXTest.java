@@ -41,6 +41,9 @@ import org.opentox.toxotis.client.collection.Services;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.util.ROG;
+import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.policy.PolicyManager;
 
 /**
  *
@@ -78,9 +81,9 @@ public class BibTeXTest {
         String btDownloadedString = bt.toString();//downloaded and **converted** to string
         assertNotNull("Conversion to String returns null", btDownloadedString);
         assertFalse("Conversion to String returns empty string", btDownloadedString.isEmpty());
-        assertTrue("Bad Conversion from BibTeX to String", 
+        assertTrue("Bad Conversion from BibTeX to String",
                 btDownloadedString.contains("Series = \"ADME Evaluation in Drug Discovery\""));
-        assertTrue("Bad Conversion from BibTeX to String", 
+        assertTrue("Bad Conversion from BibTeX to String",
                 btDownloadedString.contains("Number = \"5\""));
         assertFalse(btDownloadedString.contains("Pass"));
         assertFalse(btDownloadedString.contains("opensso.in-silico.ch"));
@@ -88,5 +91,14 @@ public class BibTeXTest {
 
     @Test
     public void testPublishBibTeX() throws ToxOtisException, ServiceInvocationException {
+        AuthenticationToken at = new AuthenticationToken("guest", "guest");
+        String bibtexPolicyOwner = PolicyManager.getPolicyOwner(Services.ntua().augment("bibtex"), null, at);
+        if (bibtexPolicyOwner == null) {
+            PolicyManager.defaultSignleUserPolicy("allow_bibtex", Services.ntua().augment("bibtex"), at).
+                    publish(null, at);
+        }
+        ROG rog = new ROG();
+        BibTeX bib = rog.nextBibTeX();        
+
     }
 }

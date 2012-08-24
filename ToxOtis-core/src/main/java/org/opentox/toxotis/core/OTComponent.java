@@ -64,11 +64,10 @@ public abstract class OTComponent<T extends IOTComponent>
         implements IOTComponent, IStAXWritable, Serializable {
 
     /** URI of the component */
-    protected VRI uri;
+    private VRI uri;
     /** Meta information (including DC and OT meta) about the component */
     protected MetaInfo meta = new MetaInfoImpl();
     private Set<OntologicalClass> ontologies = new HashSet<OntologicalClass>();
-    protected static final String tokenid = "tokenid";
     /* Every component is enabled by default */
     private boolean enabled = true;
     private Set<OntologicalClass> ontologicalClassVault = new HashSet<OntologicalClass>();

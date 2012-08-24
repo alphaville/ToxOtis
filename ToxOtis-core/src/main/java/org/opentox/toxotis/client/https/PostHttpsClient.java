@@ -79,7 +79,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     private IStAXWritable staxComponent;
     /** Arbitrary object to be posted to the remote server s*/
     private File fileContentToPost = null;
-    public WriteLock postLock = new ReentrantReadWriteLock().writeLock();
+    private WriteLock postLock = new ReentrantReadWriteLock().writeLock();
 
     public PostHttpsClient() {
         super();
@@ -119,23 +119,23 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     protected HttpURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
             java.net.URL targetUrl = uri.toURL();
-            con = (javax.net.ssl.HttpsURLConnection) targetUrl.openConnection();
-            con.setRequestMethod(METHOD);
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
+            setConnection((javax.net.ssl.HttpsURLConnection) targetUrl.openConnection());
+            getConnection().setRequestMethod(METHOD);
+            getConnection().setDoInput(true);
+            getConnection().setDoOutput(true);
+            getConnection().setUseCaches(false);
             if (contentType != null) {
-                con.setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
+                getConnection().setRequestProperty(RequestHeaders.CONTENT_TYPE, contentType);
             }
-            if (acceptMediaType != null) {
-                con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
+            if (getMediaType() != null) {
+                getConnection().setRequestProperty(RequestHeaders.ACCEPT, getMediaType());
             }
-            if (!headerValues.isEmpty()) {
-                for (Map.Entry<String, String> e : headerValues.entrySet()) {
-                    con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
+            if (!getHeaderValues().isEmpty()) {
+                for (Map.Entry<String, String> e : getHeaderValues().entrySet()) {
+                    getConnection().setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
             }
-            return con;
+            return getConnection();
         } catch (final IOException ex) {
             throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
         } catch (final Exception unexpectedException) {
@@ -180,11 +180,11 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
 
     @Override
     public void post() throws ServiceInvocationException {
-        connect(vri.toURI());
+        connect(getUri().toURI());
         DataOutputStream wr;
         try {
             getPostLock().lock(); // LOCK
-            wr = new DataOutputStream(con.getOutputStream());
+            wr = new DataOutputStream(getConnection().getOutputStream());
             String query = getParametersAsQuery();
             if (query != null && !query.isEmpty()) {
                 wr.writeBytes(getParametersAsQuery());// POST the parameters

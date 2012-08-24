@@ -78,7 +78,7 @@ import weka.core.Instances;
  */
 public class Dataset extends OTPublishable<Dataset> {
 
-    public static final String compoundUri = "compound_uri";
+    public static final String COMPOUND_URI = "compound_uri";
     private long timeInstancesConversion = -1;
     private long timeDownload = -1;
     private long timeParse = -1;
@@ -466,7 +466,7 @@ public class Dataset extends OTPublishable<Dataset> {
         Set<Feature> features = getContainedFeatures();
         // THE EXISTENCE OF THE (STRING) ATTRIBUTE 'COMPOUND_URI' IS MANDATORY FOR ALL
         // DATASETS. THIS IS ALWAYS THE FIRST ATTRIBUTE IN THE LIST.
-        attributes.addElement(new Attribute(compoundUri, (FastVector) null));
+        attributes.addElement(new Attribute(COMPOUND_URI, (FastVector) null));
         // ADD NUMERIC AND STRING ATTRIBUTES INTO THE FASTVECTOR:
         for (Feature feature : features) {
             WekaDataTypes dataType = WekaDataTypes.getFromFeature(feature);
@@ -495,8 +495,8 @@ public class Dataset extends OTPublishable<Dataset> {
 
             Compound conformer = dataEntry.getConformer();
 
-            vals[data.attribute(compoundUri).index()] =
-                    data.attribute(compoundUri).addStringValue(conformer.getUri().getStringNoQuery());
+            vals[data.attribute(COMPOUND_URI).index()] =
+                    data.attribute(COMPOUND_URI).addStringValue(conformer.getUri().getStringNoQuery());
 
             for (FeatureValue featureValue : dataEntry.getFeatureValues()) {
                 Feature feature = featureValue.getFeature();

@@ -41,23 +41,25 @@ import org.opentox.toxotis.exceptions.IBadRequest;
  */
 public class BadRequestException extends ServiceInvocationException implements IBadRequest {
 
+    private static final int HTTP_STATUS = 400;
+    
     public BadRequestException(String message, Throwable cause) {
         super(message, cause);
-        setHttpStatus(400);
+        setHttpStatus(HTTP_STATUS);
     }
 
     public BadRequestException(Throwable cause) {
         super(cause);
-        setHttpStatus(400);
+        setHttpStatus(HTTP_STATUS);
     }
 
     public BadRequestException(String msg) {
         super(msg);
-        setHttpStatus(400);
+        setHttpStatus(HTTP_STATUS);
     }
 
     public BadRequestException() {
         super();
-        setHttpStatus(400);
+        setHttpStatus(HTTP_STATUS);
     }
 }

@@ -61,15 +61,14 @@ public class DataEntry extends OTComponent<DataEntry> {
 
     @Override
     public VRI getUri() {
-        if (uri == null) {
-            int hash = 91;
-            for (FeatureValue fv : featureValues) {
-                hash += 3 * (fv!=null?(fv.getUri()!=null?fv.getUri().hashCode():0):0);
-            }
-            uri = Services.anonymous().augment(DISCRIMINATOR,
-                    hash, conformer!=null?conformer.getUri().toString().hashCode():"x");
+        int hash = 91;
+        for (FeatureValue fv : featureValues) {
+            hash += 3 * (fv != null ? (fv.getUri() != null ? fv.getUri().hashCode() : 0) : 0);
         }
-        return uri;
+        setUri(Services.anonymous().augment(DISCRIMINATOR,
+                hash, (conformer != null && conformer.getUri() != null)
+                ? conformer.getUri().toString().hashCode() : "x"));
+        return super.getUri();
     }
 
     public DataEntry() {

@@ -30,34 +30,41 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.core.html.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.opentox.toxotis.core.html.HTMLComponent;
-import org.opentox.toxotis.core.html.HTMLExpandableComponent;
+package org.opentox.toxotis.core.component;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public abstract class HTMLExpandableComponentImpl implements HTMLExpandableComponent {
-
-    private List<HTMLComponent> componentList = new ArrayList<HTMLComponent>();
-
-    public HTMLExpandableComponentImpl() {
-    }
-
-    @Override
-    public void addComponent(HTMLComponent component) {
-        componentList.add(component);
-    }
-
-    @Override
-    public List<HTMLComponent> getComponents() {
-        return componentList;
-    }
+public class FeatureValueTest {
     
+    public FeatureValueTest() {
+    }
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Test
+    public void testFVUri() {
+        FeatureValue fv = new FeatureValue();
+        VRI uri1 = fv.getUri();
+        assertNotNull(uri1);
+        fv.setFeature(new Feature(Services.anonymous().augment("feature",123456)));
+        VRI uri2 = fv.getUri();
+        assertNotNull(uri2);
+        assertNotSame(uri1, uri2);
+    }
 }

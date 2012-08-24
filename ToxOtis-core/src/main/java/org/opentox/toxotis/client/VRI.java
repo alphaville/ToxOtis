@@ -68,8 +68,12 @@ public class VRI implements Serializable { // Well tested!
     private static final long serialVersionUID = 184328712643L;
     private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
     private static final int HASH_OFFSET = 3, HASH_MOD = 37;
-    private static final String END_SLASH_OR_NOTHING = "([^/]+/$|[^/]+)$";
+    private static final int PORT_HTTP_DEFAULT = 80, PORT_HTTPS_DEFAULT = 443;
+    private static final String END_SLASH_OR_NOTHING = "([^/]+/$|[^/]+)$", TRAILING_SLASH = ".+/$",
+            COL_SLSL = "://";
     private static final String SLASH = "/", QUESTION_MARK = "?", AMPBESAND = "&", EQUALS = "=";
+    private static final String HTTP_PROTOCOL = "http", HTTPS_PROTOCOL = "https",
+            UNSUPPORTED_ENC_MSG = "Unsupported encoding!";
 
     /**
      * Keywords that appear in OpenTox URIs.
@@ -201,8 +205,10 @@ public class VRI implements Serializable { // Well tested!
     private void doProcessUri(String uri) throws URISyntaxException {
         URI uRItest = new URI(uri);
         String modifiedUri = uri;
-        if (!modifiedUri.contains("://")) {
-            modifiedUri = "http://" + modifiedUri;
+        StringBuilder sb = new StringBuilder();
+        if (!modifiedUri.contains(COL_SLSL)) {
+            sb.append(HTTP_PROTOCOL).append(COL_SLSL).append(modifiedUri);
+            modifiedUri = sb.toString();
         }
         this.uri = modifiedUri;
         if (modifiedUri.contains(QUESTION_MARK)) {
@@ -232,9 +238,9 @@ public class VRI implements Serializable { // Well tested!
                         urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING), // paramname cannot be null
                                 paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : ""));
                     }
-                } catch (UnsupportedEncodingException ex) {
-                    logger.error("Unsupported encoding!", ex);
-                    throw new IllegalArgumentException(ex);
+                } catch (final UnsupportedEncodingException ex) {
+                    logger.error(UNSUPPORTED_ENC_MSG, ex);
+                    throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
                 }
             }
 
@@ -280,8 +286,9 @@ public class VRI implements Serializable { // Well tested!
                 try {
                     urlParams.add(new Pair(URLEncoder.encode(paramName, URL_ENCODING),
                             paramValue != null ? URLEncoder.encode(paramValue, URL_ENCODING) : null));
-                } catch (UnsupportedEncodingException ex) {
-                    throw new IllegalArgumentException(ex);
+                } catch (final UnsupportedEncodingException ex) {
+                    logger.error(UNSUPPORTED_ENC_MSG, ex);
+                    throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
                 }
             }
         }
@@ -313,8 +320,9 @@ public class VRI implements Serializable { // Well tested!
         String encodedParamName = null;
         try {
             encodedParamName = URLEncoder.encode(paramName, URL_ENCODING);
-        } catch (UnsupportedEncodingException ex) {
-            logger.debug("Unsupported encoding exception", ex);
+        } catch (final UnsupportedEncodingException ex) {
+            logger.error(UNSUPPORTED_ENC_MSG, ex);
+            throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
         }
         ArrayList<Pair<String, String>> urlParamsClone = new ArrayList<Pair<String, String>>(urlParams);
         for (Pair<String, String> pair : urlParamsClone) {
@@ -341,8 +349,9 @@ public class VRI implements Serializable { // Well tested!
         try {
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
                     URLEncoder.encode(paramValue, URL_ENCODING)));
-        } catch (UnsupportedEncodingException ex) {
-            throw new IllegalArgumentException(ex);
+        } catch (final UnsupportedEncodingException ex) {
+            logger.error(UNSUPPORTED_ENC_MSG, ex);
+            throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
         }
         return this;
     }
@@ -363,8 +372,9 @@ public class VRI implements Serializable { // Well tested!
         try {
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
                     URLEncoder.encode(new Double(paramValue).toString(), URL_ENCODING)));
-        } catch (UnsupportedEncodingException ex) {
-            throw new IllegalArgumentException(ex);
+        } catch (final UnsupportedEncodingException ex) {
+            logger.error(UNSUPPORTED_ENC_MSG, ex);
+            throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
         }
         return this;
     }
@@ -385,8 +395,9 @@ public class VRI implements Serializable { // Well tested!
         try {
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
                     URLEncoder.encode(Integer.valueOf(paramValue).toString(), URL_ENCODING)));
-        } catch (UnsupportedEncodingException ex) {
-            throw new IllegalArgumentException(ex);
+        } catch (final UnsupportedEncodingException ex) {
+            logger.error(UNSUPPORTED_ENC_MSG, ex);
+            throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
         }
         return this;
     }
@@ -450,7 +461,7 @@ public class VRI implements Serializable { // Well tested!
     public VRI augment(String... fragments) {
         String noQueryUri = getStringNoQuery();
         StringBuilder builder = new StringBuilder(getStringNoQuery());
-        if (!noQueryUri.matches(".+/$")) {
+        if (!noQueryUri.matches(TRAILING_SLASH)) {
             builder.append(SLASH); // Append a slash at the end (if not any)
         }
 
@@ -459,8 +470,9 @@ public class VRI implements Serializable { // Well tested!
             if (frg != null) {
                 try {
                     builder.append(URLEncoder.encode(frg, URL_ENCODING));
-                } catch (UnsupportedEncodingException ex) {
-                    throw new IllegalArgumentException(ex);
+                } catch (final UnsupportedEncodingException ex) {
+                    logger.error(UNSUPPORTED_ENC_MSG, ex);
+                    throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
                 }
                 if (i < fragments.length - 1) {
                     builder.append(SLASH);
@@ -506,10 +518,10 @@ public class VRI implements Serializable { // Well tested!
      *      Protocol as a string
      */
     public String getProtocol() {
-        if (uri.contains("://")) {
-            return uri.split(Pattern.quote("://"))[0];
+        if (uri.contains(COL_SLSL)) {
+            return uri.split(Pattern.quote(COL_SLSL))[0];
         } else {
-            return "http";
+            return HTTP_PROTOCOL;
         }
     }
 
@@ -517,10 +529,10 @@ public class VRI implements Serializable { // Well tested!
     public int getPort() {
         int port = toURI().getPort();
         if (port == -1) {
-            if (getProtocol().equals("http")) {
-                port = 80;// Default
-            } else if (getProtocol().equals("https")) {
-                port = 443;// Default
+            if (HTTP_PROTOCOL.equals(getProtocol())) {
+                port = PORT_HTTP_DEFAULT;// Default
+            } else if (HTTPS_PROTOCOL.equals(getProtocol())) {
+                port = PORT_HTTPS_DEFAULT;// Default
             }
         }
         return port;

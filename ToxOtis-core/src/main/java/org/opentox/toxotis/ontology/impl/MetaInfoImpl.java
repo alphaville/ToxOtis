@@ -97,118 +97,77 @@ public class MetaInfoImpl implements MetaInfo {
         return new String(builder);
     }
 
+    /**
+     * Attach a set of literal values to a given resource using some
+     * annotation property. The property is added to the ontological model.
+     * @param resource
+     *      The current resource.
+     * @param model
+     *      The overall ontological model.
+     * @param literals
+     *      Set of literal values.
+     * @param property
+     *      A property to be used as an annotation property.
+     * @param datatype 
+     *      A data-type for the literal values.
+     */
+    private void attachAnnotation(Resource resource, OntModel model, Set<LiteralValue> literals,
+            Property property, XSDDatatype datatype) {
+        if (literals != null && !literals.isEmpty()) {
+            AnnotationProperty annotationProperty = model.getAnnotationProperty(property.getURI());
+            if (annotationProperty == null) {
+                annotationProperty = model.createAnnotationProperty(property.getURI());
+            }
+            for (LiteralValue ltr : literals) {
+                resource.addLiteral(annotationProperty, model.createTypedLiteral(ltr.getValue(), datatype));
+            }
+        }
+    }
+
+    /**
+     * Attach a resource through an object property to the current resource.
+     * @param resource
+     *      The current resource on which the new resources will
+     *      be appended
+     * @param model
+     *      The overall ontological model.
+     * @param resources
+     *      Resources to be attached
+     * @param property 
+     *      An object property used to connect the resource
+     *      with the given resources.
+     */
+    private void attachResource(Resource resource, OntModel model, Set<ResourceValue> resources, Property property) {
+        if (resources != null && !resources.isEmpty()) {
+            ObjectProperty objectProperty = model.getObjectProperty(property.getURI());
+            if (objectProperty == null) {
+                objectProperty = model.createObjectProperty(property.getURI());
+            }
+            for (ResourceValue r : resources) {
+                resource.addProperty(objectProperty, r.inModel(model));
+            }
+        }
+    }
+
     @Override
     public Resource attachTo(Resource resource, OntModel model) {
-        if (identifiers != null && !identifiers.isEmpty()) {
-            AnnotationProperty identProp = model.getAnnotationProperty(DC.identifier.getURI());
-            if (identProp == null) {
-                identProp = model.createAnnotationProperty(DC.identifier.getURI());
-            }
-            for (LiteralValue identifier : identifiers) {
-                resource.addLiteral(identProp, model.createTypedLiteral(identifier.getValue(), XSDDatatype.XSDanyURI));
-            }
-        }
-
-        if (titles != null && !titles.isEmpty()) {
-            AnnotationProperty titleProp = model.getAnnotationProperty(DC.title.getURI());
-            if (titleProp == null) {
-                titleProp = model.createAnnotationProperty(DC.title.getURI());
-            }
-            for (LiteralValue title : titles) {
-                resource.addLiteral(titleProp, model.createTypedLiteral(title.getValue()));
-            }
-        }
-        if (descriptions != null && !descriptions.isEmpty()) {
-            AnnotationProperty descriptionProp = model.getAnnotationProperty(DC.description.getURI());
-            if (descriptionProp == null) {
-                descriptionProp = model.createAnnotationProperty(DC.description.getURI());
-            }
-            for (LiteralValue description : descriptions) {
-                resource.addLiteral(descriptionProp, model.createTypedLiteral(description.getValue()));
-            }
-        }
-        if (sameAs != null && !sameAs.isEmpty()) {
-            Property sameAsProp = model.getProperty(OWL.sameAs.getURI());
-            if (sameAsProp == null) {
-                sameAsProp = model.createObjectProperty(OWL.sameAs.getURI());
-            }
-            for (ResourceValue sa : sameAs) {
-                resource.addProperty(sameAsProp, sa.inModel(model));
-            }
-        }
-        if (seeAlso != null && !seeAlso.isEmpty()) {
-            ObjectProperty seeAlsoProp = model.getObjectProperty(RDFS.seeAlso.getURI());
-            if (seeAlsoProp == null) {
-                seeAlsoProp = model.createObjectProperty(RDFS.seeAlso.getURI());
-            }
-            for (ResourceValue see : seeAlso) {
-                resource.addProperty(seeAlsoProp, see.inModel(model));
-            }
-        }
-        if (publishers != null && !publishers.isEmpty()) {
-            AnnotationProperty publisherProp = model.getAnnotationProperty(DC.publisher.getURI());
-            if (publisherProp == null) {
-                publisherProp = model.createAnnotationProperty(DC.publisher.getURI());
-            }
-            for (LiteralValue publisher : publishers) {
-                resource.addLiteral(publisherProp, model.createTypedLiteral(publisher.getValue()));
-            }
-        }
-        if (creators != null && !creators.isEmpty()) {
-            AnnotationProperty creatorProp = model.getAnnotationProperty(DC.creator.getURI());
-            if (creatorProp == null) {
-                creatorProp = model.createAnnotationProperty(DC.creator.getURI());
-            }
-            for (LiteralValue creator : creators) {
-                resource.addLiteral(creatorProp, creator.inModel(model));
-            }
-        }
-        if (subjects != null && !subjects.isEmpty()) {
-            AnnotationProperty subjectProp = model.getAnnotationProperty(DC.subject.getURI());
-            if (subjectProp == null) {
-                subjectProp = model.createAnnotationProperty(DC.subject.getURI());
-            }
-            for (LiteralValue subject : subjects) {
-                resource.addLiteral(DC.subject.inModel(model).as(Property.class), subject.inModel(model));
-            }
-        }
-        if (hasSources != null && !hasSources.isEmpty()) {
-            /*
-             * Note: hasSource is an Object property that according to the OpenTox ontology
-             * is a mapping from ot:Feature ot ot:Dataset or ot:Dataset or ot:Model.
-             */
-            ObjectProperty hasSourceProp = OTObjectProperties.hasSource().asObjectProperty(model);
-            for (ResourceValue source : hasSources) {
-                Resource sourceResource = source.inModel(model);
-                resource.addProperty(hasSourceProp, sourceResource);
-                if (source.getOntologicalClass() != null) {
-                    source.inModel(model).addProperty(RDF.type, source.getOntologicalClass().inModel(model));
-                }
-            }
-
-        }
-        if (comments != null && !comments.isEmpty()) {
-            AnnotationProperty commentsProp = model.createAnnotationProperty(RDFS.comment.getURI());
-            for (LiteralValue comment : comments) {
-                resource.addLiteral(commentsProp, comment.inModel(model));
-            }
-
-        }
-        if (contributors != null && !contributors.isEmpty()) {
-            AnnotationProperty commentsProp = model.createAnnotationProperty(DC.contributor.getURI());
-            for (LiteralValue contributor : contributors) {
-                resource.addLiteral(commentsProp, contributor.inModel(model));
-            }
-
-        }
-        if (rights != null && !rights.isEmpty()) {
-            AnnotationProperty commentsProp = model.createAnnotationProperty(DC.rights.getURI());
-            for (LiteralValue right : rights) {
-                resource.addLiteral(commentsProp, right.inModel(model));
-            }
-
-        }
-
+        attachAnnotation(resource, model, identifiers, DC.identifier, XSDDatatype.XSDanyURI);
+        attachAnnotation(resource, model, titles, DC.title, XSDDatatype.XSDstring);
+        attachAnnotation(resource, model, descriptions, DC.description, XSDDatatype.XSDstring);
+        attachAnnotation(resource, model, publishers, DC.publisher, XSDDatatype.XSDstring);
+        attachAnnotation(resource, model, creators, DC.creator, XSDDatatype.XSDstring);
+        attachAnnotation(resource, model, subjects, DC.subject, XSDDatatype.XSDstring);
+        attachAnnotation(resource, model, comments, RDFS.comment, XSDDatatype.XSDstring);
+        attachAnnotation(resource, model, contributors, DC.contributor, XSDDatatype.XSDstring);
+        attachAnnotation(resource, model, rights, DC.rights, XSDDatatype.XSDstring);
+        attachResource(resource, model, sameAs, OWL.sameAs);
+        attachResource(resource, model, seeAlso, RDFS.seeAlso);
+        /*
+         * Note: hasSource is an Object property that according to the OpenTox ontology
+         * is a mapping from ot:Feature ot ot:Dataset or ot:Dataset or ot:Model.
+         */
+        attachResource(resource, model, hasSources, OTObjectProperties.hasSource().asObjectProperty(model));
+              
         if (date != null) {
             AnnotationProperty dateProperty = model.createAnnotationProperty(DC.date.getURI());
             resource.addLiteral(dateProperty, date.inModel(model));
@@ -822,7 +781,7 @@ public class MetaInfoImpl implements MetaInfo {
         return builder.toString();
     }
 
-    @Override
+    @Override   
     public HTMLContainer inHtml() {
         HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
         HTMLTable table = builder.addTable(2);

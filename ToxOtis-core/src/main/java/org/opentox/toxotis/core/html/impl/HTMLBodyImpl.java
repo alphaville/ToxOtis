@@ -46,7 +46,7 @@ public class HTMLBodyImpl  extends HTMLExpandableComponentImpl implements HTMLBo
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("<body>\n");
-        for (HTMLComponent component : componentList){
+        for (HTMLComponent component : getComponents()){
             builder.append(component.toString());
             builder.append("\n");
         }

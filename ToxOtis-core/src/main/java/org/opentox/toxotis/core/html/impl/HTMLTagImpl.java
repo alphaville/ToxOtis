@@ -106,7 +106,7 @@ public final class HTMLTagImpl extends HTMLExpandableComponentImpl implements HT
         String attributesString = attributesBuilder != null
                 ? new String(attributesBuilder) : "";
         builder.append("<").append(tag).append(attributesString).append(">");
-        for (HTMLComponent component : componentList) {
+        for (HTMLComponent component : getComponents()) {
             builder.append(component.toString());
         }
         builder.append("</").append(tag).append(">");

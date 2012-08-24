@@ -65,17 +65,17 @@ public class DeleteHttpsClient extends AbstractHttpsClient {
     protected HttpsURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
             java.net.URL targetUrl = uri.toURL();
-            con = (javax.net.ssl.HttpsURLConnection) targetUrl.openConnection();
-            con.setRequestMethod(METHOD);
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            if (!headerValues.isEmpty()) {
-                for (Map.Entry<String, String> e : headerValues.entrySet()) {
-                    con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
+            setConnection((javax.net.ssl.HttpsURLConnection) targetUrl.openConnection());
+            getConnection().setRequestMethod(METHOD);
+            getConnection().setDoInput(true);
+            getConnection().setDoOutput(true);
+            getConnection().setUseCaches(false);
+            if (!getHeaderValues().isEmpty()) {
+                for (Map.Entry<String, String> e : getHeaderValues().entrySet()) {
+                    getConnection().setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
             }
-            return (HttpsURLConnection) con;
+            return (HttpsURLConnection) getConnection();
         } catch (final IOException ex) {
             throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
         } catch (final Exception unexpectedException) {
@@ -85,13 +85,13 @@ public class DeleteHttpsClient extends AbstractHttpsClient {
     }
 
     public void doDelete() throws ServiceInvocationException {
-        if (con == null) {
-            con = initializeConnection(vri.toURI());
+        if (getConnection() == null) {
+            setConnection(initializeConnection(getUri().toURI()));
             try {
-                int code = con.getResponseCode();
+                int code = getConnection().getResponseCode();
                 if (code != HttpStatusCodes.Success.getStatus()) {
-                    throw new RemoteServiceException("DELETE failed on '" + vri + "'. The remote service responded "
-                            + "with status code " + code);
+                    throw new RemoteServiceException("DELETE failed on '" + getUri()
+                            + "'. The remote service responded with status code " + code);
                 }
             } catch (IOException ex) {
                 throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);

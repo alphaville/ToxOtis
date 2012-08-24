@@ -60,15 +60,15 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 public abstract class AbstractClient implements IClient {
 
     /** Target URI */
-    protected VRI vri = null;
+    private VRI vri = null;
     /** Connection to the above URI */
-    protected java.net.HttpURLConnection con = null;
+    private java.net.HttpURLConnection con = null;
     /** Size of a buffer used to download the data from the remote server */
     protected static final int bufferSize = 4194304;
     /** Accepted media-type  */
-    protected String acceptMediaType = null;
+    private String acceptMediaType = null;
     /** A mapping from parameter names to their corresponding values */
-    protected Map<String, String> headerValues = new HashMap<String, String>();
+    private Map<String, String> headerValues = new HashMap<String, String>();
     private ReentrantReadWriteLock.ReadLock readLock = new ReentrantReadWriteLock().readLock();
     private ReentrantReadWriteLock.WriteLock connectionLock = new ReentrantReadWriteLock().writeLock();
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractClient.class);
@@ -88,6 +88,10 @@ public abstract class AbstractClient implements IClient {
 
     public void setConnection(HttpURLConnection con) {
         this.con = con;
+    }
+
+    protected Map<String, String> getHeaderValues() {
+        return headerValues;
     }
 
     @Override

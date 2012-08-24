@@ -27,10 +27,11 @@ package org.opentox.toxotis.util.aa;
 final class Base64 {  /// <<<< Can be accessed only from inside this package!
 
 // The line separator string of the operating system.
-    private static final String systemLineSeparator = System.getProperty("line.separator");
+    private static final String SYS_LINE_SEPARATOR = System.getProperty("line.separator");
     private static final int MAP1_SIZE = 64, MAP2_SIZE = 128, ENCODE_LINES_STD_LENGTH = 76,
             ILEN_MOD = 4, ILEN_OFF = 2, ILEN_Q = 3, P2=2, P3=3, P6=6,
             MAX_CHAR_INDEX = 127;
+    private static final int ENC0 = 0xff, ENC1=0xf, ENC2=0x3F;
 // Mapping table from 6-bit nibbles to Base64 characters.
     private static char[] map1 = new char[MAP1_SIZE];
 
@@ -77,7 +78,7 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
      * @return    A String containing the Base64 encoded data, broken into lines.
      */
     public static String encodeLines(byte[] in) {
-        return encodeLines(in, 0, in.length, ENCODE_LINES_STD_LENGTH, systemLineSeparator);
+        return encodeLines(in, 0, in.length, ENCODE_LINES_STD_LENGTH, SYS_LINE_SEPARATOR);
     }
 
     /**
@@ -144,13 +145,13 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
         int iEnd = iOff + iLen;
         int op = 0;
         while (ip < iEnd) {
-            int i0 = in[ip++] & 0xff;
-            int i1 = ip < iEnd ? in[ip++] & 0xff : 0;
-            int i2 = ip < iEnd ? in[ip++] & 0xff : 0;
+            int i0 = in[ip++] & ENC0;
+            int i1 = ip < iEnd ? in[ip++] & ENC0 : 0;
+            int i2 = ip < iEnd ? in[ip++] & ENC0 : 0;
             int o0 = i0 >>> P2;
             int o1 = ((i0 & P3) << ILEN_MOD) | (i1 >>> ILEN_MOD);
-            int o2 = ((i1 & 0xf) << P2) | (i2 >>> P6);
-            int o3 = i2 & 0x3F;
+            int o2 = ((i1 & ENC1) << P2) | (i2 >>> P6);
+            int o3 = i2 & ENC2;
             out[op++] = map1[o0];
             out[op++] = map1[o1];
             out[op] = op < oDataLen ? map1[o2] : '=';
@@ -251,7 +252,7 @@ final class Base64 {  /// <<<< Can be accessed only from inside this package!
                 throw new IllegalArgumentException("Illegal character in Base64 encoded data.");
             }
             int o0 = (b0 << P2) | (b1 >>> ILEN_MOD);
-            int o1 = ((b1 & 0xf) << ILEN_MOD) | (b2 >>> P2);
+            int o1 = ((b1 & ENC1) << ILEN_MOD) | (b2 >>> P2);
             int o2 = ((b2 & P3) << P6) | b3;
             out[op++] = (byte) o0;
             if (op < oLen) {

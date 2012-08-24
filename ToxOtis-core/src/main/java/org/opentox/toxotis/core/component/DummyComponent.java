@@ -76,6 +76,7 @@ public class DummyComponent extends OTComponent<DummyComponent>{
         }
         String componentUri = getUri()!=null?getUri().toString():null;
         Individual indiv = om.createIndividual(componentUri, ontologicalClass.inModel(om));
+        getMeta().attachTo(indiv, om);
         return indiv;
     }
 

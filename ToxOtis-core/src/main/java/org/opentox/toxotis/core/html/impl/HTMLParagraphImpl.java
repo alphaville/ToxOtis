@@ -70,8 +70,8 @@ public class HTMLParagraphImpl extends HTMLExpandableComponentImpl implements HT
         if (align != null) {
             alignment = " align=\"" + align + "\"";
         }
-        builder.append("<p" + alignment + ">");
-        for (HTMLComponent component : componentList) {
+        builder.append("<p").append(alignment).append(">");
+        for (HTMLComponent component : getComponents()) {
             builder.append(component.toString());
         }
         builder.append("</p>");

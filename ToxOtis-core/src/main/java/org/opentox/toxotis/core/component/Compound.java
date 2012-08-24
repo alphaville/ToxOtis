@@ -171,8 +171,8 @@ public class Compound extends DescriptorCaclulation<Compound> {
         VRI newUri = null;
 
 
-        if (uri.getOpenToxType().equals(Conformer.class)) {
-            String uriString = uri.toString();
+        if (getUri().getOpenToxType().equals(Conformer.class)) {
+            String uriString = getUri().toString();
             String withoutConformer = uriString.split("/conformer/")[0];
 
 
@@ -184,7 +184,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
                 throw new IllegalArgumentException(ex);
             }
         } else {
-            newUri = new VRI(uri).augment("conformer");
+            newUri = new VRI(getUri()).augment("conformer");
         }
         GetHttpClient client = new GetHttpClient(newUri);
         client.authorize(token);
@@ -389,7 +389,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      In case the remote service responds with an error status code.
      */
     public Set<VRI> listAvailableFeatures() throws ServiceInvocationException {
-        VRI featuresUri = new VRI(uri).augment("feature");
+        VRI featuresUri = new VRI(getUri()).augment("feature");
         GetHttpClient client = new GetHttpClient(featuresUri);
         Set<VRI> availableUris = new HashSet<VRI>();
         for (VRI fUri : client.getResponseUriList()) {
@@ -594,7 +594,8 @@ public class Compound extends DescriptorCaclulation<Compound> {
         if (depiction == null) {
             try {
                 try {
-                    depiction = new ImageIcon(new VRI(uri.toString()).addUrlParameter("media", "image/png").toURI().toURL());
+                    depiction = new ImageIcon(new VRI(getUri().toString()).
+                            addUrlParameter("media", "image/png").toURI().toURL());
                 } catch (URISyntaxException ex) {
                     logger.error(null, ex);
                     throw new IllegalArgumentException(ex);

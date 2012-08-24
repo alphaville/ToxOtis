@@ -203,7 +203,7 @@ public final class DatasetFactory {
         try {
             while (attributes.hasMoreElements()) {
                 Attribute attribute = (Attribute) attributes.nextElement();
-                if (attribute.name().equals(Dataset.compoundUri) || attribute.name().equals("URI")) {
+                if (attribute.name().equals(Dataset.COMPOUND_URI) || attribute.name().equals("URI")) {
                     de.setConformer(new Compound(new VRI(instance.stringValue(attribute))));
                 } else {
                     FeatureValue fv = new FeatureValue();

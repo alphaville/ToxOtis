@@ -30,7 +30,6 @@
  * tel. +30 210 7723236
  *
  */
-
 package org.opentox.toxotis.exceptions.impl;
 
 import org.opentox.toxotis.exceptions.IRemoteServiceException;
@@ -41,26 +40,25 @@ import org.opentox.toxotis.exceptions.IRemoteServiceException;
  */
 public class RemoteServiceException extends ServiceInvocationException implements IRemoteServiceException {
 
+    private static final int HTTP_STATUS = 502;
+
     public RemoteServiceException(String message, Throwable cause) {
         super(message, cause);
-        setHttpStatus(502);
+        setHttpStatus(HTTP_STATUS);
     }
 
     public RemoteServiceException(Throwable cause) {
         super(cause);
-        setHttpStatus(502);
+        setHttpStatus(HTTP_STATUS);
     }
 
     public RemoteServiceException(String msg) {
         super(msg);
-        setHttpStatus(502);
+        setHttpStatus(HTTP_STATUS);
     }
 
     public RemoteServiceException() {
         super();
-        setHttpStatus(502);
+        setHttpStatus(HTTP_STATUS);
     }
-
-
-
 }

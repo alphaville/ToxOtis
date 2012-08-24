@@ -167,6 +167,25 @@ public class VRITest {
     }
 
     @Test
+    public void testVriStrange() throws URISyntaxException {
+        VRI vri1 = new VRI("asdf");
+        VRI vri2 = new VRI("http://asdf");
+        VRI vri3 = new VRI("https://asdf");
+        assertEquals(vri1, vri2);
+        assertNotSame(vri3, vri1);
+    }
+
+    @Test
+    public void testVriTraillingSlash() throws URISyntaxException {
+        VRI vri1 = new VRI("http://server.com:8081/resource/1/");
+        VRI vri2 = new VRI("http://server.com:8081/resource/1");
+        assertEquals("http", vri1.getProtocol());
+        assertEquals(8081, vri1.getPort());
+        assertEquals(vri1, vri2);
+
+    }
+
+    @Test
     public void testVriAsString() {
         VRI myuri = Services.ideaconsult().augment("services", "dataset", 54).
                 addUrlParameter("a", 1).
@@ -188,6 +207,5 @@ public class VRITest {
         assertEquals("http://apps.ideaconsult.net:8080/ambit2/services/dataset/54", myuri.getStringNoQuery());
         assertEquals(Services.ideaconsult().augment("services", "dataset", 54).toString(), myuri.getStringNoQuery());
     }
-    
     //TODO: Test cases where new VRI("myserver.com/blah");.. i.e. http:// is missing!
 }

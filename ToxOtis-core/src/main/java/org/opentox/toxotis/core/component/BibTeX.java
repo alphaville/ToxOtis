@@ -797,13 +797,13 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * 
-     * @param Url
+     * @param url
      *      The URL of the BibTeX actual document.
      * @return 
      *      The current modifiable BibTeX object updated annotation.
      */
-    public BibTeX setUrl(String Url) {
-        this.mUrl = Url;
+    public BibTeX setUrl(String url) {
+        this.mUrl = url;
         return this;
     }// </editor-fold>
 
@@ -840,11 +840,11 @@ public class BibTeX extends OTPublishable<BibTeX>
      *      The BibTeX service as a {@link VRI URI}.
      */
     public VRI getBibTexService() {
-        if (uri == null) {
+        if (getUri() == null) {
             return null;
         }
         Pattern pattern = Pattern.compile("/bibtex/");
-        String[] splitted = pattern.split(uri.toString());
+        String[] splitted = pattern.split(getUri().toString());
         String bibtexUri = splitted[0] + "/bibtex";
         try {
             return new VRI(bibtexUri);
@@ -1080,7 +1080,7 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     @Override
     public Individual asIndividual(OntModel model) {
-        String bibtexUri = uri != null ? uri.toString() : null;
+        String bibtexUri = getUri() != null ? getUri().toString() : null;
         Individual indiv = null;
 
         OntologicalClass bibTypeClass = KnoufBibTex.entry();

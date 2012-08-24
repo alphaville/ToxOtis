@@ -206,9 +206,9 @@ public class Feature extends OTPublishable<Feature> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        if (uri != null) {
+        if (getUri() != null) {
             builder.append("URI...\n");
-            builder.append(uri);
+            builder.append(getUri());
             builder.append("\n\n");
         }
         if (meta != null) {
@@ -413,7 +413,7 @@ public class Feature extends OTPublishable<Feature> {
             return false;
         }
         final Feature other = (Feature) obj;
-        if (this.uri != other.uri && (this.uri == null || !this.uri.equals(other.uri))) {
+        if (this.getUri() != other.getUri() && (this.getUri() == null || !this.getUri().equals(other.getUri()))) {
             return false;
         }
         return true;

@@ -65,20 +65,20 @@ public class GetHttpsClient extends AbstractHttpsClient implements IGetClient{
     protected HttpURLConnection initializeConnection(URI uri) throws ServiceInvocationException {
         try {
             java.net.URL targetUrl = uri.toURL();
-            con = (javax.net.ssl.HttpsURLConnection) targetUrl.openConnection();
-            con.setRequestMethod(METHOD);
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            if (!headerValues.isEmpty()) {
-                for (Map.Entry<String, String> e : headerValues.entrySet()) {
-                    con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
+            setConnection((javax.net.ssl.HttpsURLConnection) targetUrl.openConnection());
+            getConnection().setRequestMethod(METHOD);
+            getConnection().setDoInput(true);
+            getConnection().setDoOutput(true);
+            getConnection().setUseCaches(false);
+            if (!getHeaderValues().isEmpty()) {
+                for (Map.Entry<String, String> e : getHeaderValues().entrySet()) {
+                    getConnection().setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
             }
-            if (acceptMediaType != null) {
-                con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
+            if (getMediaType() != null) {
+                getConnection().setRequestProperty(RequestHeaders.ACCEPT, getMediaType());
             }
-            return con;
+            return getConnection();
         } catch (final IOException ex) {
             throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
         } catch (final Exception unexpectedException) {

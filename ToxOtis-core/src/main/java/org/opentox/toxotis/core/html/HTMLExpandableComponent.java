@@ -32,7 +32,6 @@
  */
 package org.opentox.toxotis.core.html;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

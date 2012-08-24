@@ -70,19 +70,19 @@ public class GetHttpClient extends AbstractHttpClient implements IGetClient {
         try {
             java.net.HttpURLConnection.setFollowRedirects(true);
             java.net.URL url = uri.toURL();
-            con = (java.net.HttpURLConnection) url.openConnection();
-            con.setDoInput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod(METHOD);
-            if (acceptMediaType != null) {
-                con.setRequestProperty(RequestHeaders.ACCEPT, acceptMediaType);
+            setConnection((java.net.HttpURLConnection) url.openConnection());
+            getConnection().setDoInput(true);
+            getConnection().setUseCaches(false);
+            getConnection().setRequestMethod(METHOD);
+            if (getMediaType() != null) {
+                getConnection().setRequestProperty(RequestHeaders.ACCEPT, getMediaType());
             }
-            if (headerValues != null && !headerValues.isEmpty()) {
-                for (Map.Entry<String, String> e : headerValues.entrySet()) {
-                    con.setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
+            if (getHeaderValues() != null && !getHeaderValues().isEmpty()) {
+                for (Map.Entry<String, String> e : getHeaderValues().entrySet()) {
+                    getConnection().setRequestProperty(e.getKey(), e.getValue());// These are already URI-encoded!
                 }
             }
-            return con;
+            return getConnection();
         } catch (final IOException ex) {
             throw new ConnectionException("Unable to connect to the remote service at '" + getUri() + "'", ex);
         } catch (final Exception unexpectedException) {

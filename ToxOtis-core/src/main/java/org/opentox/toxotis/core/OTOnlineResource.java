@@ -124,7 +124,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @see OTComponent#setUri(org.opentox.toxotis.client.VRI)
      */
     public T loadFromRemote() throws ServiceInvocationException {
-        return loadFromRemote(uri, null);
+        return loadFromRemote(getUri(), null);
     }
 
     /**
@@ -147,7 +147,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      in general invalid.
      */
     public T loadFromRemote(AuthenticationToken authentication) throws ServiceInvocationException {
-        VRI authenticatedUri = new VRI(uri);
+        VRI authenticatedUri = new VRI(getUri());
         return loadFromRemote(authenticatedUri, authentication);
     }
 
@@ -267,7 +267,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
             throw new ServiceInvocationException(imageMedia + " is not a valid image media type");
         }
         BufferedImage image = null;
-        IGetClient client = ClientFactory.createGetClient(uri);
+        IGetClient client = ClientFactory.createGetClient(getUri());
         client.setMediaType(imageMedia);
         client.authorize(token);
         try {

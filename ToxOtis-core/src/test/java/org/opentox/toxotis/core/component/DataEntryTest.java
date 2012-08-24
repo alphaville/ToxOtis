@@ -30,34 +30,42 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.core.html.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.opentox.toxotis.core.html.HTMLComponent;
-import org.opentox.toxotis.core.html.HTMLExpandableComponent;
+package org.opentox.toxotis.core.component;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Services;
+import static org.junit.Assert.*;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public abstract class HTMLExpandableComponentImpl implements HTMLExpandableComponent {
-
-    private List<HTMLComponent> componentList = new ArrayList<HTMLComponent>();
-
-    public HTMLExpandableComponentImpl() {
-    }
-
-    @Override
-    public void addComponent(HTMLComponent component) {
-        componentList.add(component);
-    }
-
-    @Override
-    public List<HTMLComponent> getComponents() {
-        return componentList;
-    }
+public class DataEntryTest {
     
+    public DataEntryTest() {
+    }
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Test
+    public void testNullity() throws ToxOtisException {
+        DataEntry de = new DataEntry();
+        VRI uri1 = de.getUri();
+        assertNotNull(uri1);
+        de.setConformer(new Compound(Services.anonymous().augment("compound", 123)));
+        VRI uri2 = de.getUri();
+        assertNotNull(uri2);
+        assertNotSame(uri1, uri2);
+    }
 }

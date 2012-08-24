@@ -14,7 +14,7 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 public class GoogleAnalytics {
 
     private static Properties properties = null;
-    public static final String googleAnalytics = getGoogleAnalytics();
+    public static final String GOOGLE_ANALYTICS = getGoogleAnalytics();
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GoogleAnalytics.class);
 
     static {
@@ -26,7 +26,7 @@ public class GoogleAnalytics {
     }
 
     public static String getGAaccount() {
-        return googleAnalytics;
+        return GOOGLE_ANALYTICS;
     }
 
     public static String getGAjs() {

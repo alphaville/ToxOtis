@@ -60,10 +60,8 @@ public class FeatureValue extends OTComponent<FeatureValue> {
 
     @Override
     public VRI getUri() {
-        if (uri == null) {
-            uri = Services.anonymous().augment(DISCRIMINATOR, hashCode());
-        }
-        return uri;        
+        setUri(Services.anonymous().augment(DISCRIMINATOR, hashCode()));
+        return super.getUri();
     }
 
     public FeatureValue() {

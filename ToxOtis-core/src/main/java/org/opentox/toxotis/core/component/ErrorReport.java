@@ -130,10 +130,8 @@ public class ErrorReport extends OTComponent<ErrorReport>
 
     @Override
     public VRI getUri() {
-        if (uri == null) {
-            uri = Services.anonymous().augment(DISCRIMINATOR, uuid.toString());
-        }
-        return uri;
+        setUri(Services.anonymous().augment(DISCRIMINATOR, uuid.toString()));
+        return super.getUri();
     }
 
     public String getActor() {
@@ -237,9 +235,9 @@ public class ErrorReport extends OTComponent<ErrorReport>
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        if (uri != null) {
+        if (getUri() != null) {
             builder.append("URI     : ");
-            builder.append(uri);
+            builder.append(getUri());
             builder.append("\n");
         }
         if (actor != null) {
