@@ -32,66 +32,46 @@
  */
 package org.opentox.toxotis.core.html.impl;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.html.Alignment;
-import org.opentox.toxotis.core.html.HTMLComponent;
 import org.opentox.toxotis.core.html.HTMLParagraph;
-import org.opentox.toxotis.core.html.HTMLText;
+import org.opentox.toxotis.core.html.HTMLTag;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ * @author chung
  */
-public class HTMLParagraphImpl extends HTMLExpandableComponentImpl implements HTMLParagraph {
+public class HTMLTagImplTest {
 
-    private Alignment align;
-
-    public HTMLParagraphImpl() {
+    public HTMLTagImplTest() {
     }
 
-    public HTMLParagraphImpl(String paragraphText) {
-        addComponent(new HTMLTextImpl(paragraphText));
+    @BeforeClass
+    public static void setUpClass() throws Exception {
     }
 
-    public HTMLParagraphImpl(HTMLText htmlText) {
-        addComponent(htmlText);
+    @AfterClass
+    public static void tearDownClass() throws Exception {
     }
 
-    @Override
-    public HTMLParagraph addText(HTMLText text) {
-        addComponent(text);
-        return this;
-    }
+    @Test
+    public void testTags() {
+        HTMLTag tag = new HTMLTagImpl("a");
+        tag.addTagAttribute("href", Services.anonymous().toString());
+        tag.setContent("My Link");
+        assertEquals("<a href=\"http://anonymous.org/\">My Link</a>", tag.toString());
+        assertEquals("a", tag.getTag());
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        String alignment = "";
-        if (align != null) {
-            alignment = " align=\"" + align + "\"";
-        }
-        builder.append("<p").append(alignment).append(">");
-        for (HTMLComponent component : getComponents()) {
-            builder.append(component.toString());
-        }
-        builder.append("</p>");
-        return builder.toString();
-    }
-
-    @Override
-    public HTMLParagraph setAlignment(Alignment align) {
-        this.align = align;
-        return this;
-    }
-
-    @Override
-    public Alignment getAlignment() {
-        return align;
-    }
-
-    @Override
-    public HTMLParagraph addText(String text) {
-        addText(new HTMLTextImpl(text));
-        return this;
+        HTMLParagraph paragraph = new HTMLParagraphImpl();
+        paragraph.addComponent(tag);
+        paragraph.addComponent(tag);
+        paragraph.setAlignment(Alignment.left);
+        assertEquals("<p align=\"left\"><a href=\"http://anonymous.org/\">My Link</a>"
+                + "<a href=\"http://anonymous.org/\">My Link</a></p>", paragraph.toString());
+        assertEquals(Alignment.left, paragraph.getAlignment());
     }
 }

@@ -56,8 +56,7 @@ public class RetriableRequest<T> {
     private T retry(int currentTry, int maxRetries, long milliSecondsDelay, Object... methodParams) throws ToxOtisException {
         if (currentTry <= maxRetries) {
             try {
-                T result = (T) method.invoke(object, methodParams);
-                return result;
+                return (T) method.invoke(object, methodParams);
             } catch (IllegalAccessException ex) {
                 logger.debug(null, ex);
                 throw new ToxOtisException("Method " + method.getName() + " defined in " + method.getDeclaringClass().getName() + "should be accessible!", ex);

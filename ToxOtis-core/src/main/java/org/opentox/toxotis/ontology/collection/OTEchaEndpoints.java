@@ -42,6 +42,11 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
  * @author Charalampos Chomenides
  */
 public final class OTEchaEndpoints {
+    
+    private OTEchaEndpoints(){
+        // Hidden Constructor. 
+        // This is a utility class.
+    }
 
     private static final String ECHA_NS = "http://www.opentox.org/echaEndpoints.owl#%s";
     public static final String NS = String.format(ECHA_NS, "");

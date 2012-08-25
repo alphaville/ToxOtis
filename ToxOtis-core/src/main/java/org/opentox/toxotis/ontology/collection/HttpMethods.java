@@ -46,6 +46,11 @@ import org.opentox.toxotis.ontology.ResourceValue;
  * @author Charalampos Chomenides
  */
 public class HttpMethods {
+    
+    private HttpMethods(){
+        // Hidden Constructor. 
+        // This is a utility class.
+    }
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(HttpMethods.class);
     private static final VRI POST_VRI, GET_VRI, PUT_VRI, DELETE_VRI, OPTIONS_VRI, HEAD_VRI;

@@ -35,8 +35,6 @@ package org.opentox.toxotis.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.core.component.Compound;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
@@ -56,6 +54,7 @@ public class SimilarityRetriever {
     private boolean retrieveDepiction = false;
     private boolean retrieveConformers = true;
     private String depictionService = null;
+    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SimilarityRetriever.class);
 
     public boolean isRetrieveConformers() {
         return retrieveConformers;
@@ -91,12 +90,8 @@ public class SimilarityRetriever {
     }
 
     public List<Compound> similarCompounds() throws ServiceInvocationException {
-//        System.out.println("Similarity Search engine started");
         Set<VRI> similarCompoundVRIs = compound.getSimilar(similarity, token);
-//        System.out.println("  L similar compounds found (listing uris)");
-//        for (VRI v : similarCompoundVRIs) {
-//            System.out.println("        L  o --> " + v);
-//        }
+
         Compound current;
         ArrayList<Compound> similarCompounds = new ArrayList<Compound>(similarCompoundVRIs.size());
         for (VRI sVri : similarCompoundVRIs) {
@@ -105,16 +100,14 @@ public class SimilarityRetriever {
                 if (retrieveDepiction) {
                     current.getDepiction(depictionService);
                 }
-                if (retrieveConformers){
+                if (retrieveConformers) {
                     current.getConformers();
                 }
                 similarCompounds.add(current);
             } catch (ToxOtisException ex) {
-                Logger.getLogger(SimilarityRetriever.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("xxx : Compound download failure for " + sVri);
+                logger.warn("Compound download failure for " + sVri);
             }
         }
-//        System.out.println("Similar compounds downloaded!");
         return similarCompounds;
     }
 }

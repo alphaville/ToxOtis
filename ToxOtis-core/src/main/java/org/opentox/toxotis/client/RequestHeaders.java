@@ -63,6 +63,9 @@ package org.opentox.toxotis.client;
  */
 public class RequestHeaders {
 
+    private RequestHeaders(){
+        // Hidden Constructor - RequestHeaders is a utility class.
+    }
     /**
      * Specifies which Internet media types are acceptable
      * for the response and to assign preferences to them.

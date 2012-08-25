@@ -77,16 +77,15 @@ public class ROG {
             AUDIENCE_BIG = 255, SMALL_AUDIENCE = 2,
             BIG_COMMENT = 1000, SMALL_COMMENT = 145, SEEDING_FRAC = 62,
             STD_LN = 255, CTRB_LEN = 1050, CREATOR_LN = 120, CREATOR_LN_BIG = 580,
-            RIGHTS_LN = 5046, ISBN_LN = 15, KEY_LN = 41, HUGE_LN = 8503,
-            PAR0=2031, PAR1=4998, PAR2=10403, PAR3=12000, HTTP_STATUS = 407;
+            RIGHTS_LN = 5046, ISBN_LN = 15, KEY_LN = 41,
+            PAR0 = 2031, PAR1 = 4998, PAR2 = 10403, PAR3 = 12000, HTTP_STATUS = 407;
 
     public ROG() {
         RNG.setSeed(System.currentTimeMillis() * SEED_MOD + SEED_OFF);
     }
 
     private UUID nextUuid() {
-        UUID uuid = UUID.randomUUID();
-        return uuid;
+        return UUID.randomUUID();
     }
 
     public Task.Status nextTaskStatus() {
@@ -110,10 +109,47 @@ public class ROG {
         return RNG.nextLong();
     }
 
+    /**
+     * This is a delegated method from <code>java.util.Random#nextInt(int n)</code>.
+     * 
+     * 
+     * <p>Returns a pseudorandom, uniformly distributed {@code int} value
+     * between 0 (inclusive) and the specified value (exclusive), drawn from
+     * this random number generator's sequence.  The general contract of
+     * {@code nextInt} is that one {@code int} value in the specified range
+     * is pseudorandomly generated and returned.  All {@code n} possible
+     * {@code int} values are produced with (approximately) equal
+     * probability</p>
+     * 
+     * @param i 
+     *      The bound on the random number to be returned.  Must be
+     *      positive.
+     * 
+     * @return 
+     *      The next pseudorandom, uniformly distributed {@code int}
+     *      value between {@code 0} (inclusive) and {@code n} (exclusive)
+     *      from this random number generator's sequence.
+     * 
+     * @throws IllegalArgumentException 
+     *      If n is not positive.
+     */
     public int nextInt(int i) {
         return RNG.nextInt(i);
     }
 
+    /**
+     * Returns the next pseudorandom, uniformly distributed <code>int</code> value from 
+     * this random number generator's sequence. 
+     * 
+     * <p>The general contract of nextInt is that one <code>int</code> value is 
+     * pseudorandomly generated and returned. All <code>2<sup>32</sup></code> 
+     * possible <code>int</code> values are produced with (approximately) 
+     * equal probability.
+     * 
+     * @return 
+     *      The next pseudorandom, uniformly distributed <code>int</code> value 
+     *      from this random number generator's sequence.
+     */
     public int nextInt() {
         return RNG.nextInt();
     }
@@ -138,6 +174,15 @@ public class ROG {
         return RNG.nextBoolean();
     }
 
+    /**
+     * Returns a random instance of {@link VRI}. The format of the VRI is
+     * <code>http://anonymous.org/rnd/{rnd_100}</code>, where <code>{rnd_100}</code>
+     * is a random string of length 100 characters.
+     * 
+     * @return 
+     *      The next pseudorandom, uniformly distributed <code>VRI</code> value 
+     *      from this random object generator's sequence.
+     */
     public VRI nextVri() {
         return Services.anonymous().augment("rnd", nextString(VRI_LEN));
     }
@@ -153,20 +198,33 @@ public class ROG {
                 addSubject(nextString(SMALL_COMMENT)).addSubject(nextString(SMALL_COMMENT)).
                 addSubject(nextString(SMALL_COMMENT)).addSubject(nextString(SMALL_COMMENT)).
                 addHasSource(new ResourceValue(
-                    Services.anonymous().augment("xyz", nextString(VRI_LEN)),
-                    OTClasses.featureValueNominal())).
+                Services.anonymous().augment("xyz", nextString(VRI_LEN)),
+                OTClasses.featureValueNominal())).
                 addSameAs(new ResourceValue(
-                    Services.anonymous().augment("xyz", nextString(VRI_LEN)), null)).
+                Services.anonymous().augment("xyz", nextString(VRI_LEN)), null)).
                 addSeeAlso(new ResourceValue(
-                    Services.anonymous().augment("xyz","compound", nextString(VRI_LEN)),
-                    OTClasses.compound()));
+                Services.anonymous().augment("xyz", "compound", nextString(VRI_LEN)),
+                OTClasses.compound())).
+                addCreator(nextString(CREATOR_LN)).addCreator(nextString(CREATOR_LN_BIG));
         return mi;
     }
 
+    /**
+     * Creates a random {@link Task Task} object with a given
+     * number of trace elements. The {@link Task#getStatus() status} 
+     * of the returned task is fixed to <code>ERROR</code>. The task
+     * has a random URI of the form <code>http://anonymous.org/task/{uuid}</code>
+     * where <code>{uuid}</code> is a random UUID.
+     * 
+     * @param nTrace
+     *      Number of trace elements.
+     * @return 
+     *      Random task.
+     */
     public Task nextTask(int nTrace) {
         Task t = new Task(Services.ntua().augment("task", UUID.randomUUID()));
         t.setErrorReport(nextErrorReport(nTrace));
-        t.setPercentageCompleted(0);
+        t.setPercentageCompleted(nextInt(100));
         t.setHttpStatus(HTTP_STATUS);
         t.setStatus(Task.Status.ERROR);
         t.setMeta(nextMeta());
@@ -267,6 +325,17 @@ public class ROG {
         return random;
     }
 
+    /**
+     * Generates a random BibTeX object. Useful for testing. The abstract, the address,
+     * the annotation, the author and other fields of the BibTeX object are set to random 
+     * strings of length <code>255</code>. The BibTeX object that is generated has also
+     * some random meta-data.
+     * 
+     * @return 
+     *      Random BibTeX object.
+     * 
+     * @see #nextMeta() 
+     */
     public BibTeX nextBibTeX() {
         try {
             BibTeX random = new BibTeX(Services.anonymous().augment("bibtex", nextUuid()));
@@ -289,25 +358,7 @@ public class ROG {
             random.setJournal(nextString(STD_LN));
             random.setKey(nextString(KEY_LN));
             random.setKeywords(nextString(STD_LN));
-            random.setMeta(
-                    new MetaInfoImpl().addAudience(nextString(AUDIENCE_BIG)).
-                    addComment(nextString(BIG_COMMENT)).
-                    addContributor(nextString(CTRB_LEN)).
-                    addCreator(nextString(CREATOR_LN_BIG)).
-                    addDescription(nextString(BIG_COMMENT)).
-                    addHasSource(new ResourceValue(Services.opentox().augment("model", RNG.nextInt()),
-                    OTClasses.model())).
-                    addIdentifier(random.getUri().toString()).
-                    addPublisher(nextString(BIG_COMMENT)).
-                    addRights(nextString(BIG_COMMENT)).
-                    addSubject(nextString(BIG_COMMENT)).
-                    addTitle(nextString(HUGE_LN)).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark", RNG.nextInt()),
-                    OTClasses.compound())).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment(nextString(50), RNG.nextLong()),
-                    OTClasses.featureValueString())).
-                    addSeeAlso(new ResourceValue(Services.anonymous().augment("bookmark", RNG.nextInt()),
-                    OTClasses.algorithm())));
+            random.setMeta(nextMeta());
             random.setNumber(RNG.nextInt());
             random.setPages(RNG.nextInt() + " to " + RNG.nextInt());
             random.setSeries(nextString(STD_LN));
@@ -321,6 +372,13 @@ public class ROG {
         }
     }
 
+    /**
+     * Creates a seed.
+     * @param len
+     *      Length of the seed.
+     * @return 
+     *      Seed as a String.
+     */
     private static String getSeed(int len) {
         String str = "#. aF$0b9338nH94&cLdU|K2eHfJgTP8XhiFj61DOk.lNm9n/BoI5pGqYVrs3C tSuMZvwWx4yE7zR";
         StringBuilder sb = new StringBuilder();
@@ -332,6 +390,13 @@ public class ROG {
         return sb.toString();
     }
 
+    /**
+     * Random String of a given length.
+     * @param len
+     *      Desired length of the string.
+     * @return 
+     *      Random string of the specified length.
+     */
     public String nextString(int len) {
         String str = STRING_SEED;
         StringBuilder sb = new StringBuilder();

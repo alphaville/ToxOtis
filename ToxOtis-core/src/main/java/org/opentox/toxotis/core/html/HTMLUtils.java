@@ -48,6 +48,10 @@ import org.opentox.toxotis.ontology.ResourceValue;
  * @author Charalampos Chomenides
  */
 public class HTMLUtils {
+    
+    private HTMLUtils(){
+        // Hidden Constructor - HTMLUtils is a utility class.
+    }
 
     private static final String LIST_START = "<li>",
             LIST_END = "</li>\n", LIST_ELEMENT = "_list",

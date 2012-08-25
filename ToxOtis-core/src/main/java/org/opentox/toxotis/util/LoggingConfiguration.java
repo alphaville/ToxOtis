@@ -40,6 +40,10 @@ import java.net.URL;
  * @author Charalampos Chomenides
  */
 public class LoggingConfiguration {
+    
+    private LoggingConfiguration(){
+        // Hidden Constructor - LoggingConfiguration is a utility class.
+    }
 
     /**
      * Default configuration for LOG4J.

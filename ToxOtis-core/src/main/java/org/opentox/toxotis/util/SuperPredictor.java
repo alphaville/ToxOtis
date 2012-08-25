@@ -116,7 +116,7 @@ public class SuperPredictor {
                 lv = compound.getProperty(model.getPredictedFeatures().get(0), token);
                 logger.debug("Value predicted : " + lv);
             } else {
-                System.out.println("Value found in DB : " + lv);
+                logger.debug("Value found in DB : " + lv);
             }
             return lv;
         } catch (ServiceInvocationException ex) {

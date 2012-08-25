@@ -87,7 +87,8 @@ import org.opentox.toxotis.util.spiders.ModelSpider;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public class Model extends OTOnlineResource<Model> implements IOntologyServiceSupport<Model>, IHTMLSupport, IBibTexReferencable {
+public class Model extends OTOnlineResource<Model>
+        implements IOntologyServiceSupport<Model>, IHTMLSupport, IBibTexReferencable {
 
     private VRI dataset;
     private Set<VRI> references = new HashSet<VRI>();
@@ -117,9 +118,9 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             IFACE_TABLE_BORDER = 0,
             VALIDATION_CELL_PADDING = 5,
             VALIDATION_CELL_SPACING = 2,
-            VALIDATION_TABLE_BORDER = 0, 
-            FEATURES_CELL_PADDING = 5, 
-            FEATURES_CELL_SPACING = 2, 
+            VALIDATION_TABLE_BORDER = 0,
+            FEATURES_CELL_PADDING = 5,
+            FEATURES_CELL_SPACING = 2,
             FEATURES_TABLE_BORDER = 1;
     private static final int[] IFACE_DIM = new int[]{250, 550},
             VLD_DIM = new int[]{250, 550},
@@ -726,17 +727,8 @@ public class Model extends OTOnlineResource<Model> implements IOntologyServiceSu
             builder.addComponent(metaContainer);
         }
 
-        StringBuilder paragraphBuilder = new StringBuilder();
-        paragraphBuilder.append("<small>Other Formats <a href=\"").
-                append(getUri()).
-                append("?accept=application/rdf%2Bxml\">RDF/XML</a>,<a href=\"").
-                append(getUri()).
-                append("?accept=application/x-turtle\">Turtle</a>,<a href=\"").
-                append(getUri()).
-                append("?accept=text/n-triples\">N-Triple</a><a href=\"").
-                append(getUri()).
-                append("?accept=text/uri-list\">Uri-list</a>.</small>");
-        builder.addParagraph(paragraphBuilder.toString(), Alignment.left);
+        builder.addComponent(createLinksFooter());
+
         return builder.getDiv();
     }
 

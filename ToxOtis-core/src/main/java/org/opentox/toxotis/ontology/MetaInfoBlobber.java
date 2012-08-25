@@ -58,8 +58,7 @@ public class MetaInfoBlobber {
         if (meta == null) {
             return null;
         }
-        Blob blob = new SerialBlob(getBytes());
-        return blob;
+        return new SerialBlob(getBytes());
 
     }
 
@@ -74,7 +73,6 @@ public class MetaInfoBlobber {
         oos.flush();
         oos.close();
         bos.close();
-        byte[] data = bos.toByteArray();
-        return data;
+        return bos.toByteArray();
     }
 }

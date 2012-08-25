@@ -148,8 +148,7 @@ public final class OTClasses {
             if (method == null) {
                 return null;
             }
-            OntologicalClass oc = (OntologicalClass) method.invoke(null);
-            return oc;
+            return (OntologicalClass) method.invoke(null);
         } catch (final IllegalAccessException ex) {
             throw new IllegalArgumentException(ex);
         } catch (final InvocationTargetException ex) {

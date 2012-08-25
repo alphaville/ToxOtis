@@ -158,7 +158,6 @@ public class TrainerTest {
         assertEquals(200f, task.getHttpStatus(), 1E-6);
         assertEquals(OTClasses.model(), task.getResultUri().getOntologicalClass());
 
-        System.out.println(task.getResultUri());
         ModelSpider modelSpider = new ModelSpider(task.getResultUri(), at);
         Model model = modelSpider.parse();
         modelSpider.close();                
@@ -172,7 +171,6 @@ public class TrainerTest {
         while (paramIterator.hasNext()) {
             Parameter currentParam = paramIterator.next();
             assertNotNull(currentParam);
-            System.out.println(currentParam.getMeta().getTitles()+"<<");
             if (currentParam.getName()!=null && 
                     "gamma".equals(currentParam.getName().getValueAsString())) {
                 failParamGammaNotFound = false;
@@ -186,7 +184,6 @@ public class TrainerTest {
          * Post some part of the training set to the model and get predictions...
          * 
          */
-        System.out.println(model.getUri());
     }
 
     @Test

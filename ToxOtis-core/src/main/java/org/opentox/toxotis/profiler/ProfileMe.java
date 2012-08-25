@@ -12,6 +12,10 @@ import weka.core.Instances;
  * @author Charalampos Chomenides
  */
 public class ProfileMe {
+    
+    private ProfileMe(){
+        
+    }
 
     private static void downloadAndParseRDF() throws Exception {
         long mem0 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -20,9 +24,6 @@ public class ProfileMe {
 
 
         VRI dataset = Services.ideaconsult().augment("dataset", "585036").addUrlParameter("max", "500");
-//        OntModel model = ModelFactory.createOntologyModel();
-//        model.read(dataset.toString());
-//        model.close();
 
         DatasetSpider dss = new DatasetSpider(dataset);
         Dataset ds = dss.parse();

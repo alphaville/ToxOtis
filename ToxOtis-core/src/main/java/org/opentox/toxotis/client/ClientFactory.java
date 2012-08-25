@@ -43,6 +43,10 @@ import org.opentox.toxotis.client.https.PostHttpsClient;
  * @author Charalampos Chomenides
  */
 public class ClientFactory {
+    
+    private ClientFactory(){
+        // Hidden Constructor - ClientFactory is a utility class.
+    }
 
     /**
      * Create a Get-client as an instance of {@link IGetClient } providing it's

@@ -46,6 +46,10 @@ import java.util.regex.Pattern;
  * @author Charalampos Chomenides
  */
 public class EmailValidator {
+    
+    private EmailValidator(){
+        // Hidden Constructor - EmailValidator is a utility class.
+    }
 
     /** Regex copied from: http://www.regular-expressions.info/email.html */
     private static final String MAIL_REGEX_RFC_2822 = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*"

@@ -151,8 +151,8 @@ public class Dataset extends OTPublishable<Dataset> {
         writeClass(writer, OTClasses.nominalFeature());
         writeClass(writer, OTClasses.numericFeature());
         writeClass(writer, OTClasses.stringFeature());
-        
-        
+
+
         writeSuperClassRelationships(writer);
 
         /*
@@ -255,14 +255,14 @@ public class Dataset extends OTPublishable<Dataset> {
                         writer.writeEndElement();// #__NODE_ACCEPT_VALUE
                     }
                 }
-                if (featureOntologies.contains(OTClasses.numericFeature()) || 
-                        featureOntologies.contains(OTClasses.numeric())) {
+                if (featureOntologies.contains(OTClasses.numericFeature())
+                        || featureOntologies.contains(OTClasses.numeric())) {
                     writer.writeEmptyElement(RDF_TYPE); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute(RDF_RESOURCE, OTClasses.numericFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
                 }
-                if (featureOntologies.contains(OTClasses.stringFeature()) || 
-                        featureOntologies.contains(OTClasses.string())) {
+                if (featureOntologies.contains(OTClasses.stringFeature())
+                        || featureOntologies.contains(OTClasses.string())) {
                     writer.writeEmptyElement(RDF_TYPE); // #NODE_FEATURE_TYPE_DECL
                     explicitTypeDeclaration = true;
                     writer.writeAttribute(RDF_RESOURCE, OTClasses.stringFeature().getUri());// REFERS TO #NODE_FEATURE_TYPE_DECL
@@ -285,13 +285,6 @@ public class Dataset extends OTPublishable<Dataset> {
             /* Feature Meta Data*/
             if (f.getMeta() != null) {
                 f.getMeta().writeToStAX(writer);
-//                if (f.getMeta().getSameAs() != null && f.getMeta().getSameAs().getValue() != null) {
-//                    String featureUri = f.getMeta().getSameAs().getValue().toString();
-//                    if (!featureUri.contains("http")) {
-//                        featureUri = OTClasses.NS + featureUri;
-//                    }
-//                    sameAsFeatures.add(featureUri);
-//                }
             }
             writer.writeEndElement();// #__NODE_FEATURE_DECLARATION
         }
@@ -426,7 +419,7 @@ public class Dataset extends OTPublishable<Dataset> {
         }
         return features;
     }
-    
+
     /**
      * The set of all feature URIs in the dataset.
      * @return 
@@ -509,7 +502,7 @@ public class Dataset extends OTPublishable<Dataset> {
                             vals[data.attribute(featureName).index()] =
                                     Double.parseDouble(value.getValue().toString());
                         } catch (NumberFormatException ex) {
-                            // Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE,"Type is: "+ value.getType().getURI(), ex);
+                            logger.warn("NFE while trying to convert to double the value " + value.getValue(), ex);
                         }
                     } else if (WekaDataTypes.getFromFeature(feature).equals(WekaDataTypes.string)) {
                         vals[data.attribute(featureName).index()] =
@@ -569,7 +562,7 @@ public class Dataset extends OTPublishable<Dataset> {
         client.setMediaType(Media.APPLICATION_RDF_XML);
         IPostClient pc = new PostHttpClient(descriptorCalculationAlgorithm);
         pc.authorize(token);
-        pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={dataset_uri}
+        pc.addPostParameter("dataset_uri", getUri().toString()); // notice that dataset_uri={dataset_uri}
         pc.addPostParameter("ALL", "true");
         pc.setMediaType(Media.TEXT_URI_LIST);
         pc.post();

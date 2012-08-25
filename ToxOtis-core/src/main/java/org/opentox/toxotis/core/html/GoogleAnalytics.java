@@ -12,6 +12,10 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  * @author Charalampos Chomenides
  */
 public class GoogleAnalytics {
+    
+    private GoogleAnalytics(){
+        // Hidden Constructor - GoogleAnalytics is a utility class.
+    }
 
     private static Properties properties = null;
     public static final String GOOGLE_ANALYTICS = getGoogleAnalytics();

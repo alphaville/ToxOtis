@@ -76,7 +76,7 @@ public abstract class DescriptorCaclulation<T extends OTPublishable> extends OTP
         /** REQUEST */
         IPostClient pc = ClientFactory.createPostClient(descriptorCalculationAlgorithm);
         pc.authorize(token);
-        pc.addPostParameter("dataset_uri", getUri().toString()); // dataset_uri={compound_uri}
+        pc.addPostParameter("dataset_uri", getUri().toString()); // and also we have dataset_uri={compound_uri} in certain cases
         if (serviceConfiguration != null) {
             for (int i = 0; i < serviceConfiguration.length; i++) {
                 pc.addPostParameter(serviceConfiguration[i], serviceConfiguration[++i]);

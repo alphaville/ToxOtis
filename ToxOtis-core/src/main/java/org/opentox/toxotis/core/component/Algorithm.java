@@ -385,14 +385,9 @@ public class Algorithm extends OTOnlineResource<Algorithm>
             builder.addComponent(metaContainer);
         }
 
-        builder.addParagraph("<small>Other Formats: "
-                + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"
-                + "<a href=\"" + getUri() + "?accept=application/x-turtle" + "\">Turtle</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/n-triples" + "\">N-Triple</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/uri-list" + "\">Uri-list</a>,"
-                + "</small>", Alignment.left);
-
+        builder.addComponent(createLinksFooter());        
 
         return builder.getDiv();
     }
+    
 }

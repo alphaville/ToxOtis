@@ -30,7 +30,6 @@ public class RemoteArffRertiever implements Closeable {
     private IGetClient client;
     private InputStream is;
     private Instances instances;
-//    private Instance tempInstance;
     private BufferedReader br;
     private int nAttr;
     private double[] currentValues;

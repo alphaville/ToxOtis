@@ -42,6 +42,11 @@ import org.opentox.toxotis.client.VRI;
  * @author Charalampos Chomenides
  */
 public class Services {
+    
+    private Services(){
+        // Static Members only - Initialization not allowed
+        // Hidden Constructor - Services is a utility class.
+    }
 
     private static final String NTUA_SERVICES = "http://opentox.ntua.gr:8080/%s";
     private static final String AMBIT_PLOVDIV = "https://ambit.uni-plovdiv.bg:8443/ambit2/%s";

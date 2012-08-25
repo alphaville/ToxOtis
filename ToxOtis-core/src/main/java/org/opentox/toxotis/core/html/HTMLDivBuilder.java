@@ -65,6 +65,11 @@ public class HTMLDivBuilder {
         return getDiv();
     }
 
+    public HTMLContainer addParagraph(HTMLComponent text, Alignment align) {
+        div.addComponent(new HTMLParagraphImpl(text.toString()).setAlignment(align));
+        return getDiv();
+    }
+
     public HTMLContainer addParagraph(String text, Alignment align) {
         div.addComponent(new HTMLParagraphImpl(text).setAlignment(align));
         return getDiv();
@@ -95,14 +100,13 @@ public class HTMLDivBuilder {
         return div;
     }
 
-
-    public HTMLForm addForm(){
+    public HTMLForm addForm() {
         HTMLForm form = new HTMLFormImpl();
         div.addComponent(form);
         return form;
     }
 
-    public HTMLForm addForm(String actionUri, String method){
+    public HTMLForm addForm(String actionUri, String method) {
         HTMLForm form = new HTMLFormImpl();
         form.setActionUrl(actionUri);
         form.setMethod(method);
@@ -124,5 +128,12 @@ public class HTMLDivBuilder {
 
     public HTMLContainer getDiv() {
         return div;
+    }
+
+    public HTMLTag addLink(String target, String text) {
+        HTMLTag linkTag = new HTMLTagImpl("a");
+        linkTag.addTagAttribute("href", target);
+        div.addComponent(linkTag);
+        return linkTag;
     }
 }

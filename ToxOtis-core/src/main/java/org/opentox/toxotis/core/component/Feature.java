@@ -386,12 +386,6 @@ public class Feature extends OTPublishable<Feature> {
         String sameAsFeatureUri = null;
         if (getMeta() != null) {
             getMeta().writeToStAX(writer);
-//            if (getMeta().getSameAs() != null && getMeta().getSameAs(). != null) {
-//                sameAsFeatureUri = getMeta().getSameAs().getValue().toString();
-//                if (!sameAsFeatureUri.contains("http")) {
-//                    sameAsFeatureUri = OTClasses.NS + sameAsFeatureUri;
-//                }
-//            }
         }
         writer.writeEndElement();// #__NODE_FEATURE_DECLARATION
 

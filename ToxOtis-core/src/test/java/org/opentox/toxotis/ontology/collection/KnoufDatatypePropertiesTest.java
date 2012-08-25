@@ -30,22 +30,43 @@
  * tel. +30 210 7723236
  *
  */
-package org.opentox.toxotis.core.html;
+package org.opentox.toxotis.ontology.collection;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.ontology.OTDatatypeProperty;
 
 /**
- * A paragraph of formatted HTML text. A paragraph is descibed here by its content
- * (i.e. formatted text as an instance of {@link HTMLText } and its {@link Alignment } ).
- * 
- * @author Pantelis Sopasakis
- * @author Charalampos Chomenides
+ *
+ * @author chung
  */
-public interface HTMLParagraph extends HTMLExpandableComponent {
+public class KnoufDatatypePropertiesTest {
+    
+    public KnoufDatatypePropertiesTest() {
+    }
 
-    HTMLParagraph addText(HTMLText text);
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
 
-    HTMLParagraph addText(String text);
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
 
-    HTMLParagraph setAlignment(Alignment align);
-
-    Alignment getAlignment();
+    @Test
+    public void testCache() throws ToxOtisException {
+        assertNotNull(KnoufDatatypeProperties.forName("hasTitle"));
+        OTDatatypeProperty prop = KnoufDatatypeProperties.forName("hasVolume");
+        assertNotNull(prop);
+        assertNotNull(prop.getMetaInfo());
+        assertNotNull(prop.getMetaInfo().getTitles());
+        assertFalse(prop.getMetaInfo().getTitles().isEmpty());
+        assertTrue(prop.getRange().contains(XSDDatatype.XSDnonNegativeInteger));
+        assertTrue(prop.getDomain().contains(KnoufBibTex.entry()));
+        assertEquals(1,prop.getDomain().size());
+    }
 }

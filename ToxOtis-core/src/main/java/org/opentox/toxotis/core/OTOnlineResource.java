@@ -52,6 +52,13 @@ import org.opentox.toxotis.client.ClientFactory;
 import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IGetClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.core.html.Alignment;
+import org.opentox.toxotis.core.html.HTMLParagraph;
+import org.opentox.toxotis.core.html.HTMLTag;
+import org.opentox.toxotis.core.html.impl.HTMLLink;
+import org.opentox.toxotis.core.html.impl.HTMLParagraphImpl;
+import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
+import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
 import org.opentox.toxotis.exceptions.impl.NotFound;
@@ -67,7 +74,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  */
 public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> implements IOnlineResource {
 
-    private static final String XSD_DOC_PAGE_TEMPLATE = "http://www.w3.org/TR/xmlschema-2/#%s";
+    private static final String XSD_DOC_PAGE_TEMPLATE = "http://www.w3.org/TR/xmlschema-2/#%s", COMMA = ",";
     /**
      * Assigns a documentation link to each XSDDataType element.
      */
@@ -384,5 +391,23 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
         } catch (IOException ex) {
             throw new ServiceInvocationException("Remote stream from '" + newUri.getStringNoQuery() + "' is not readable!", ex);
         }
+    }
+    
+    protected HTMLParagraph createLinksFooter() {
+        HTMLParagraph paragraph = new HTMLParagraphImpl();
+        
+        HTMLTag small = new HTMLTagImpl("small");        
+        small.addComponent(new HTMLTextImpl("Other formats:"));
+        small.addComponent(new HTMLLink(getUri() + "?accept=application/rdf%2Bxml", "RDF/XML"));
+        small.addComponent(new HTMLTextImpl(COMMA));
+        small.addComponent(new HTMLLink(getUri() + "?accept=application/x-turtle", "Turtle"));
+        small.addComponent(new HTMLTextImpl(COMMA));
+        small.addComponent(new HTMLLink(getUri() + "?accept=text/n-triples", "N-Triple"));
+        small.addComponent(new HTMLTextImpl(COMMA));
+        small.addComponent(new HTMLLink(getUri() + "?accept=text/uri-list", "Uri-list"));
+        
+        paragraph.addComponent(small);
+        paragraph.setAlignment(Alignment.left);
+        return paragraph;
     }
 }

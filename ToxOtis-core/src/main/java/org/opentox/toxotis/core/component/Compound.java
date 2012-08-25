@@ -43,6 +43,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -422,16 +423,6 @@ public class Compound extends DescriptorCaclulation<Compound> {
      */
     @Deprecated
     public ImageIcon getDepictionFromRemote(AuthenticationToken token) throws ServiceInvocationException {
-//        ImageIcon depiction;
-//        try {
-//            StringWriter writer = new StringWriter();
-//            download(writer, Media.CHEMICAL_SMILES, token);
-//            String smiles = writer.toString();
-//            depiction = new ImageIcon(new URL(Services.Depiction.ideaCdkImage().
-//                    addUrlParameter("query", smiles).appendToken(token).toString()));
-//        } catch (MalformedURLException ex) {
-//            throw new ServiceInvocationException(ex);
-//        }
         return depiction;
     }
 

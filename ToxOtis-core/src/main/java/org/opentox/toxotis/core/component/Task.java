@@ -44,7 +44,6 @@ import org.opentox.toxotis.core.OTOnlineResource;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
-import org.opentox.toxotis.core.html.HTMLForm;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
@@ -141,17 +140,7 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
             builder.addComponent(getMeta().inHtml());
         }
 
-//        HTMLForm form = builder.addForm(getUri() + "?method=DELETE", "POST");
-//        
-//        form.addComponent();
-
-
-        builder.addParagraph("<small>Other Formats: "
-                + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"
-                + "<a href=\"" + getUri() + "?accept=application/x-turtle" + "\">Turtle</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/n-triples" + "\">N-Triple</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/uri-list" + "\">Uri-list</a>,"
-                + "</small>", Alignment.left);
+        builder.addComponent(createLinksFooter());
 
         return builder.getDiv();
     }

@@ -212,12 +212,8 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
         builder.addParagraph("Check out user's quota <a href=\"" + getUri().augment("quota") + "\">here</a>",
                 Alignment.left);
 
-        builder.addParagraph("<small>Other Formats: "
-                + "<a href=\"" + getUri() + "?accept=application/rdf%2Bxml" + "\">RDF/XML</a>,"
-                + "<a href=\"" + getUri() + "?accept=application/x-turtle" + "\">Turtle</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/n-triples" + "\">N-Triple</a>,"
-                + "<a href=\"" + getUri() + "?accept=text/uri-list" + "\">Uri-list</a>,"
-                + "</small>", Alignment.left);
+        builder.addComponent(createLinksFooter());
+        
         return builder.getDiv();
     }
 }

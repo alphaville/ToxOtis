@@ -58,7 +58,6 @@ public class PolicyTest {
         for (String mid : model1Ds) {
             VRI currentmodelUri = new VRI(modelService).augment(mid);
             String model_owner = PolicyManager.getPolicyOwner(currentmodelUri, null, at);
-            System.out.println("Owner of model '" + mid + "' is '" + model_owner + "'");
             if (model_owner == null) {
                 System.out.println("[Policy Maker] Publishing Policy!");
                 IPolicyWrapper ipw = PolicyManager.defaultSignleUserPolicy("M" + mid, currentmodelUri, at);

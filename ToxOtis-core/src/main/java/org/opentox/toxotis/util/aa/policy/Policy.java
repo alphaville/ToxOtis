@@ -51,6 +51,7 @@ import org.w3c.dom.Element;
 public class Policy implements IPolicy {
 
     private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Policy.class);
+    private static final String NAME = "name";
 
     /**
      * New empty policy.
@@ -76,7 +77,7 @@ public class Policy implements IPolicy {
 
     Element xmlElement(Document doc, Element policies) {
         Element policy = (Element) doc.createElement("Policy");
-        policy.setAttribute("name", getPolicyName());
+        policy.setAttribute(NAME, getPolicyName());
         policy.setAttribute("referralPolicy", "false");
         policy.setAttribute("active", "true");
         policies.appendChild(policy);
@@ -84,13 +85,13 @@ public class Policy implements IPolicy {
         Element ruleElement = null;
         for (IPolicyRule rule : rules) {
             ruleElement = doc.createElement("Rule");
-            ruleElement.setAttribute("name", rule.getName());
+            ruleElement.setAttribute(NAME, rule.getName());
 
             Element serviceName = doc.createElement("ServiceName");
-            serviceName.setAttribute("name", rule.getServiceName());
+            serviceName.setAttribute(NAME, rule.getServiceName());
             ruleElement.appendChild(serviceName);
             Element resourceName = doc.createElement("ResourceName");
-            resourceName.setAttribute("name", rule.getTargetUri());
+            resourceName.setAttribute(NAME, rule.getTargetUri());
             ruleElement.appendChild(resourceName);
 
             Element getAVP = actionElement(doc, "GET", rule.isAllowGet());
@@ -107,18 +108,18 @@ public class Policy implements IPolicy {
         }
 
         Element subjectsAll = doc.createElement("Subjects");
-        subjectsAll.setAttribute("name", subjectsCollectionName);
+        subjectsAll.setAttribute(NAME, subjectsCollectionName);
         subjectsAll.setAttribute("description", subjectsDescription);
         Element subjectElement = null;
         for (PolicySubject subject : subjects) {
             subjectElement = doc.createElement("Subject");
-            subjectElement.setAttribute("name", subject.getSubjectName());
+            subjectElement.setAttribute(NAME, subject.getSubjectName());
             subjectElement.setAttribute("type", subject.getLdapType());
             subjectElement.setAttribute("includeType", "inclusive");
 
             Element subjAVP = doc.createElement("AttributeValuePair");
             Element subjA = doc.createElement("Attribute");
-            subjA.setAttribute("name", "Values");
+            subjA.setAttribute(NAME, "Values");
             Element subjV = doc.createElement("Value");
             subjV.setTextContent(subject.getValue());
             subjAVP.appendChild(subjA);
@@ -134,7 +135,7 @@ public class Policy implements IPolicy {
     private Element actionElement(Document document, String actionName, boolean isAllowed) {
         Element actionAVP = document.createElement("AttributeValuePair");
         Element actionA = document.createElement("Attribute");
-        actionA.setAttribute("name", actionName);
+        actionA.setAttribute(NAME, actionName);
         Element actionV = document.createElement("Value");
         actionV.setTextContent(isAllowed ? "allow" : "deny");
         actionAVP.appendChild(actionA);

@@ -55,6 +55,10 @@ import javax.net.ssl.X509TrustManager;
  * @author Charalampos Chomenides
  */
 public class SSLConfiguration {
+    
+    private SSLConfiguration(){
+        // Hidden Constructor - SSLConfiguration is a utility class.
+    }
 
     private static boolean isSslInitialized = false;
     private static final String PROTOCOL = "SSL";

@@ -43,6 +43,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLPage;
 import org.opentox.toxotis.core.html.impl.HTMLPageImpl;
 import org.opentox.toxotis.exceptions.IBadRequest;
@@ -165,7 +166,7 @@ public class AlgorithmTest {
                 addPublisher(Services.anonymous().getUri()).setDate(new LiteralValue<Date>(
                 new Date(System.currentTimeMillis()))).
                 addIdentifier(svm.getUri().toString()).
-                addSeeAlso(new ResourceValue(Services.anonymous().augment("algorithm","mlr"), OTClasses.algorithm()));
+                addSeeAlso(new ResourceValue(Services.anonymous().augment("algorithm", "mlr"), OTClasses.algorithm()));
         svm.setParameters(new HashSet<Parameter>());
 
         Parameter kernel =
@@ -223,9 +224,9 @@ public class AlgorithmTest {
         svm.getOntologies().add(OTAlgorithmTypes.eagerLearning());
         svm.getMeta().addRights("GPL v3");
         svm.setEnabled(true);
-        
+
         OntModel om = svm.asOntModel();
-        
+
         AlgorithmSpider as = new AlgorithmSpider(om.getResource(svm.getUri().toString()), om);
         Algorithm parsed = as.parse();
         assertNotNull(parsed);
@@ -237,6 +238,10 @@ public class AlgorithmTest {
         assertFalse(parsed.getMeta().isEmpty());
         assertFalse(parsed.getMeta().getComments().isEmpty());
         assertTrue(parsed.getMeta().getComments().containsAll(svm.getMeta().getComments()));
-        assertTrue(parsed.getOntologies().containsAll(svm.getOntologies()));                
+        assertTrue(parsed.getOntologies().containsAll(svm.getOntologies()));
+
+        HTMLContainer container = svm.inHtml();
+        assertTrue(container.toString().contains("<p align=\"left\"><small>Other formats:<a href"));
+        assertTrue(container.toString().contains("<a href=\"http://anonymous.org/algorithm/svm?accept=application/x-turtle\">Turtle</a>"));
     }
 }

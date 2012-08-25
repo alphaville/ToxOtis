@@ -45,6 +45,11 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
  * @author Charalampos Chomenides
  */
 public final class OTRestObjectProperties {
+    
+    private OTRestObjectProperties(){
+        // Hidden Constructor. 
+        // This is a utility class.
+    }
 
     /**
      * NameSpace of the OpenTox REST ontology.

@@ -62,6 +62,10 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Charalampos Chomenides
  */
 public class FeatureFactory {
+    
+    private FeatureFactory(){
+        // Hidden Constructor - FeatureFactory is a utility class.
+    }
 
     /**
      * Retrieve a collection of Feature URIs that are <code>same as</code> a certain

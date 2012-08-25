@@ -13,6 +13,10 @@ import org.opentox.toxotis.util.aa.policy.SingleSubject;
  * @author chung
  */
 public class PolicyCreator {
+    
+    private PolicyCreator(){
+        // Hidden Constructor - PolicyCreator is a utility class.
+    }
 
     private static final String GUEST_SECRET_KEY = System.getProperty("user.home") + "/toxotisKeys/.sopasakis.key";
 

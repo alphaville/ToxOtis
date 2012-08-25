@@ -42,6 +42,11 @@ import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
  * @author Charalampos Chomenides
  */
 public final class OTRestDatatypeProperties {
+    
+    private OTRestDatatypeProperties(){
+        // Hidden Constructor. 
+        // This is a utility class.
+    }
 
     private static OTDatatypeProperty hasAttribute;
     private static OTDatatypeProperty hasURI;

@@ -37,6 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.OTDatatypeProperty;
 import org.opentox.toxotis.ontology.impl.OTDatatypePropertyImpl;
@@ -111,6 +112,16 @@ public final class KnoufDatatypeProperties {
 
     }
 
+    /**
+     * An abstract of the work. This is a datatype property that maps Knouf
+     * BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasAbstract #Entry -> XMLSchema#string
+     * </pre>
+     * 
+     * @see BibTeX#getAbstract() 
+     */
     public static OTDatatypeProperty hasAbstract() {
         if (hasAbstract == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAbstract");
@@ -124,6 +135,14 @@ public final class KnoufDatatypeProperties {
         return hasAbstract;
     }
 
+    /**
+     * The work's title, typed as explained in the LaTeX book. This is a datatype
+     * property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasTitle #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasTitle() {
         if (hasTitle == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasTitle");
@@ -136,6 +155,18 @@ public final class KnoufDatatypeProperties {
         return hasTitle;
     }
 
+    /**
+     * The WWW Universal Resource Locator that points to the item being referenced. 
+     * This often is used for technical reports to point to the ftp or web site 
+     * where the postscript source of the report is located. This is a datatype 
+     * property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasURL #Entry -> XMLSchema#string
+     * </pre>
+     * 
+     * @see BibTeX#getUrl() 
+     */
     public static OTDatatypeProperty hasURL() {
         if (hasURL == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasURL");
@@ -148,6 +179,14 @@ public final class KnoufDatatypeProperties {
         return hasURL;
     }
 
+    /*
+     * The name(s) of the author(s), in the format described in the LaTeX book.
+     * This is a datatype property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasAuthor #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasAuthor() {
         if (hasAuthor == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAuthor");
@@ -160,6 +199,15 @@ public final class KnoufDatatypeProperties {
         return hasAuthor;
     }
 
+    /**
+     * Title of a book, part of which is being cited. See the LaTeX book for 
+     * how to type titles. For book entries, use the title field instead.
+     * This is a datatype property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasBookTitle #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasBookTitle() {
         if (hasBookTitle == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasBookTitle");
@@ -172,6 +220,13 @@ public final class KnoufDatatypeProperties {
         return hasBookTitle;
     }
 
+    /**
+     * A chapter (or section or whatever) number.
+     * 
+     * <pre>
+     * hasChapter #Entry -> XMLSchema#nonNegativeInteger
+     * </pre>
+     */
     public static OTDatatypeProperty hasChapter() {
         if (hasChapter == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasChapter");
@@ -184,6 +239,14 @@ public final class KnoufDatatypeProperties {
         return hasChapter;
     }
 
+    /**
+     * Copyright information. This is a datatype property that maps Knouf BibTeX 
+     * resources to literals.
+     * 
+     * <pre>
+     * hasCopyright #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasCopyright() {
         if (hasCopyright == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasCopyright");
@@ -196,6 +259,14 @@ public final class KnoufDatatypeProperties {
         return hasCopyright;
     }
 
+    /**
+     * The database key of the entry being cross referenced. This is a datatype 
+     * property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasCrossref #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasCrossRef() {
         if (hasCrossref == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasCrossref");
@@ -208,6 +279,16 @@ public final class KnoufDatatypeProperties {
         return hasCrossref;
     }
 
+    /**
+     * The edition of a book--for example, "Second". This should be an ordinal, 
+     * and should have the first letter capitalized, as shown here; the standard
+     * styles convert to lower case when necessary. This is a datatype property 
+     * that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasEdition #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasEdition() {
         if (hasEdition == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasEdition");
@@ -220,6 +301,16 @@ public final class KnoufDatatypeProperties {
         return hasEdition;
     }
 
+    /**
+     * Name(s) of editor(s), typed as indicated in the LaTeX book. If there is also 
+     * an author field, then the editor field gives the editor of the book or 
+     * collection in which the reference appears. This is a datatype property 
+     * that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasEditor #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasEditor() {
         if (hasEditor == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasEditor");
@@ -232,6 +323,14 @@ public final class KnoufDatatypeProperties {
         return hasEditor;
     }
 
+    /**
+     * The International Standard Book Number. This is a datatype property 
+     * that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasISBN #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasISBN() {
         if (hasISBN == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasISBN");
@@ -244,6 +343,14 @@ public final class KnoufDatatypeProperties {
         return hasISBN;
     }
 
+    /**
+     * The International Standard Serial Number. Used to identify a journal.
+     * This is a datatype property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasISSN #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasISSN() {
         if (hasISSN == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasISSN");
@@ -256,6 +363,11 @@ public final class KnoufDatatypeProperties {
         return hasISSN;
     }
 
+    /**
+     * A journal name. Abbreviations are provided for many journals; 
+     * see the Local Guide. This is a datatype property that maps 
+     * Knouf BibTeX resources to literals.
+     */
     public static OTDatatypeProperty hasJournal() {
         if (hasJournal == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasJournal");
@@ -268,6 +380,14 @@ public final class KnoufDatatypeProperties {
         return hasJournal;
     }
 
+    /**
+     * The organization that sponsors a conference or that publishes a manual.
+     * This is a datatype property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasOrganization #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasOrganization() {
         if (hasOrganization == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasOrganization");
@@ -280,6 +400,17 @@ public final class KnoufDatatypeProperties {
         return hasOrganization;
     }
 
+    /**
+     * Usually the address of the publisher or other type of institution. 
+     * For major publishing houses, van Leunen recommends omitting 
+     * the information entirely. For small publishers, on the other 
+     * hand, you can help the reader by giving the complete address.
+     * This is a datatype property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasAddress #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasAddress() {
         if (hasAddress == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAddress");
@@ -292,6 +423,14 @@ public final class KnoufDatatypeProperties {
         return hasAddress;
     }
 
+    /**
+     * The authors affiliation. This is a datatype property that maps Knouf 
+     * BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasAffiliation #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasAffiliation() {
         if (hasAffiliation == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAffiliation");
@@ -304,6 +443,15 @@ public final class KnoufDatatypeProperties {
         return hasAffiliation;
     }
 
+    /**
+     * An annotation. It is not used by the standard bibliography styles, but may
+     * be used by others that produce an annotated bibliography.
+     * This is a datatype property that maps Knouf BibTeX resources to literals.
+     * 
+     * <pre>
+     * hasAnnotation #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasAnnotation() {
         if (hasAnnotation == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasAnnotation");
@@ -316,6 +464,15 @@ public final class KnoufDatatypeProperties {
         return hasAnnotation;
     }
 
+    /**
+     * The key for a particular bibTeX entry. Note that the <code>rdf:ID</code> 
+     * for each Entry instance could be the bibTeX key as well, possibly making 
+     * this property redundant.
+     * 
+     * <pre>
+     * hasKey #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasKey() {
         if (hasKey == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasKey");
@@ -328,6 +485,13 @@ public final class KnoufDatatypeProperties {
         return hasKey;
     }
 
+    /**
+     * Key-words used for searching or possibly for annotation.
+     * 
+     * <pre>
+     * hasKeywords #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasKeywords() {
         if (hasKeywords == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasKeywords");
@@ -340,6 +504,15 @@ public final class KnoufDatatypeProperties {
         return hasKeywords;
     }
 
+    /**
+     * The month in which the work was published or, for an unpublished work, 
+     * in which it was written. You should use the standard three-letter 
+     * abbreviation, as described in Appendix B.1.3 of the LaTeX book.
+     * 
+     * <pre>
+     * hasMonth #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasMonth() {
         if (hasMonth == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasMonth");
@@ -352,6 +525,17 @@ public final class KnoufDatatypeProperties {
         return hasMonth;
     }
 
+    /**
+     * The number of a journal, magazine, technical report, or of a work in 
+     * a series. An issue of a journal or magazine is usually identified by 
+     * its volume and number; the organization that issues a technical report 
+     * usually gives it a number; and sometimes books are given numbers 
+     * in a named series.
+     * 
+     * <pre>
+     * hasNumber #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasNumber() {
         if (hasNumber == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasNumber");
@@ -364,11 +548,18 @@ public final class KnoufDatatypeProperties {
         return hasNumber;
     }
 
+    /**
+     * The volume of a journal or multi-volume book.
+     * 
+     * <pre>
+     * hasVolume #Entry -> XMLSchema#nonNegativeInteger
+     * </pre>
+     */
     public static OTDatatypeProperty hasVolume() {
         if (hasVolume == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasVolume");
             property.getDomain().add(KnoufBibTex.entry());
-            property.getRange().add(XSDDatatype.XSDstring);
+            property.getRange().add(XSDDatatype.XSDnonNegativeInteger);
             property.getMetaInfo().addTitle("has volume");
             property.setNameSpace(KnoufBibTex.NS);
             hasVolume = property;
@@ -376,6 +567,12 @@ public final class KnoufDatatypeProperties {
         return hasVolume;
     }
 
+    /**
+     * The name of the school where a thesis was written.
+     * <pre>
+     * hasSchool #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasSchool() {
         if (hasSchool == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasSchool");
@@ -388,6 +585,18 @@ public final class KnoufDatatypeProperties {
         return hasSchool;
     }
 
+    /**
+     * One or more page numbers or range of numbers, such as 42-111 or 
+     * 7,41,73-97 or 43+ (the `+' in this last example indicates pages 
+     * following that don't form a simple range). To make it easier to 
+     * maintain Scribe-compatible databases, the standard styles convert 
+     * a single dash (as in 7-33) to the double dash used in TeX to denote 
+     * number ranges (as in 7-33).
+     * 
+     * <pre>
+     * hasPages #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasPages() {
         if (hasPages == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasPages");
@@ -400,6 +609,16 @@ public final class KnoufDatatypeProperties {
         return hasPages;
     }
 
+    /**
+     * The name of a series or set of books. When citing an entire book, 
+     * the the title field gives its title and an optional series field 
+     * gives the name of a series or multi-volume set in which the book 
+     * is published.
+     * 
+     * <pre>
+     * hasSeries #Entry -> XMLSchema#string
+     * </pre>
+     */
     public static OTDatatypeProperty hasSeries() {
         if (hasSeries == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasSeries");
@@ -412,11 +631,21 @@ public final class KnoufDatatypeProperties {
         return hasSeries;
     }
 
+    /**
+     * The year of publication or, for an unpublished work, the year it was 
+     * written. Generally it should consist of four numerals, such as 1984, 
+     * although the standard styles can handle any year whose last four 
+     * nonpunctuation characters are numerals, such as '(about 1984)'.
+     * 
+     * <pre>
+     * hasYear #Entry -> XMLSchema#nonNegativeInteger
+     * </pre>
+     */
     public static OTDatatypeProperty hasYear() {
         if (hasYear == null) {
             OTDatatypeProperty property = new OTDatatypePropertyImpl("hasYear");
             property.getDomain().add(KnoufBibTex.entry());
-            property.getRange().add(XSDDatatype.XSDstring);
+            property.getRange().add(XSDDatatype.XSDnonNegativeInteger);
             property.getMetaInfo().addTitle("has year");
             property.setNameSpace(KnoufBibTex.NS);
             hasYear = property;

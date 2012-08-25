@@ -44,7 +44,7 @@ import org.opentox.toxotis.core.html.HTMLTag;
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
-public final class HTMLTagImpl extends HTMLExpandableComponentImpl implements HTMLTag {
+public class HTMLTagImpl extends HTMLExpandableComponentImpl implements HTMLTag {
 
     private String tag;
     private Map<String, String> tagAttributes = new HashMap<String, String>();
@@ -55,7 +55,7 @@ public final class HTMLTagImpl extends HTMLExpandableComponentImpl implements HT
 
     public HTMLTagImpl(String tag, String content) {
         this.tag = tag;
-        setContent(content);
+        addComponent(new HTMLTextImpl(content));
     }
 
     public HTMLTagImpl(String tag, HTMLComponent content) {

@@ -90,8 +90,7 @@ public class ResourceValue implements Serializable {
             return false;
         }
         final ResourceValue other = (ResourceValue) obj;
-        boolean isEq = getHash() == other.getHash();
-        return isEq;
+        return getHash() == other.getHash();
     }
 
     @Override
@@ -100,8 +99,7 @@ public class ResourceValue implements Serializable {
     }
 
     public long getHash() {
-        long hash = HASH_OFFSET + HASH_MOD * (this.uri != null ? uri.toString().trim().hashCode() : 0);
-        return hash;
+        return HASH_OFFSET + HASH_MOD * (this.uri != null ? uri.toString().trim().hashCode() : 0);
     }
 
     public void setHash(long hashCode) {/* Do nothing! */ }

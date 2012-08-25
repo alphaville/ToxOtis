@@ -70,7 +70,6 @@ public class FeatureSpider extends Tarantula<Feature> {
         IGetClient client = ClientFactory.createGetClient(uri);
         try {
             client.setMediaType(Media.APPLICATION_RDF_XML.getMime());
-//            client.setUri(uri);
             int status = client.getResponseCode();
             assessHttpStatus(status, uri);
             setOntModel(client.getResponseOntModel());
