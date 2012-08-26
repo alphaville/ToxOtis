@@ -627,11 +627,14 @@ public class VRI implements Serializable { // Well tested!
             String queryString = getQueryAsString();
             if (queryString == null || (queryString != null && queryString.isEmpty())) {
                 return rex.getOntologicalClass();
+            } else if (queryString.contains("feature_uri")) {
+                // If the compound or conformer VRI contains a uri parameter
+                // like feature_uri=... or feature_uris[]=..., then the result
+                // is a dataset and not a conformer.
+                return OTClasses.dataset();
             }
-        } else {
-            return rex.getOntologicalClass();
         }
-        return null;
+        return rex.getOntologicalClass();
     }
 
     /**
@@ -718,6 +721,11 @@ public class VRI implements Serializable { // Well tested!
         return toString();
     }
 
+    /**
+     * Simple setter method of the URI as String.
+     * @param uri 
+     *      The URI as String.
+     */
     public void setUri(String uri) {
         try {
             doProcessUri(uri);
@@ -726,18 +734,43 @@ public class VRI implements Serializable { // Well tested!
         }
     }
 
+    /**
+     * Returns the ID of the current VRI object. 
+     * 
+     * <p>For example, for the VRI
+     * <code>http://server.com:8080/algorithm/mlr</code> will return <code>mlr</code>.
+     * This method will first remove the query part of the VRI and then will remove
+     * also the base part of the URI. the rest of the string will be split at the
+     * slash symbol from where the Id is properly retrieved.</p>
+     * 
+     * <p>In case the VRI has more than one IDs, such as a conformer, then the most
+     * specific one is returned. For instance, in the VRI 
+     * <code>http://server.com:8080/compound/1/conformer/25</code>, the ID of the 
+     * compound is <code>1</code>, but the ID of the conformer is <code>25</code>; and
+     * this particular VRI is identified as a conformer, therefore its ID is 
+     * <code>25</code> and not <code>1</code>.</p>
+     * 
+     * <p>One little detail to be noted is that in case the VRI is of the form
+     * <code>http://anonymous.org:9090/compound/1/conformer/2?feature_uri[]=...</code>,
+     * i.e. it is a {@link OTClasses#dataset() dataset}, the returned ID will
+     * be the ID of the conformer. In such cases you should combine this method
+     * with {@link #getOntologicalClass() #getOntologicalClass()} to have full
+     * control of what is returned.</p>
+     * 
+     * @return 
+     *      The ID of the current URI as a String or <code>null</code> if no
+     *      ID is found.
+     */
     public String getId() {
         String residual = getStringNoQuery().replaceAll(getServiceBaseUri().toString(), "").trim();
         String[] parts = residual.split(SLASH);
-
-        if (parts.length == 3 || parts.length == 4) {
+        if (parts.length >= 3) {
             String id = parts[parts.length - 1];
             if (id.endsWith(SLASH)) {
                 id = id.substring(0, id.length() - 2);
             }
             return id;
         }
-
         return null;
     }
 }

@@ -46,8 +46,8 @@ public class HTMLPageImpl extends HTMLExpandableComponentImpl implements HTMLPag
 
     private static final String xhtmlStrict = "<!DOCTYPE html PUBLIC \""
             + "-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
-    private static final String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-    private static final String xmlNs = "http://www.w3.org/1999/xhtml";
+    private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+    private static final String XML_NS = "http://www.w3.org/1999/xhtml";
     private HTMLHead head;
     private HTMLBody body;
 
@@ -81,11 +81,11 @@ public class HTMLPageImpl extends HTMLExpandableComponentImpl implements HTMLPag
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(xml);
+        builder.append(XML_HEAD);
         builder.append("\n");
         builder.append(xhtmlStrict);
         builder.append("\n");
-        String namespaceDeclaration = " xmlns=\""+xmlNs+"\"";
+        String namespaceDeclaration = " xmlns=\""+XML_NS+"\"";
         builder.append("<head>");
         builder.append(GoogleAnalytics.getGAjs());
         builder.append("</head>");

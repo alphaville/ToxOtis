@@ -58,7 +58,7 @@ public interface  HTMLExpandableComponent extends HTMLComponent {
      * @return
      *      A list of all HTMLComponent object wrapped with the current object.
      *      Returns <code>null</code> if the component does not include such a list and
-     *      an empty list if the currect object has been initialized but no elements
+     *      an empty list if the current object has been initialized but no elements
      *      have been added in the list.
      */
     List<HTMLComponent> getComponents();

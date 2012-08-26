@@ -122,7 +122,7 @@ public class TrainerTest {
         assertNotNull(task);
         assertNotNull(task.getUri());
         assertEquals(OTClasses.task(), task.getUri().getOntologicalClass());
-        assertEquals(202, task.getHttpStatus(), 1E-6);
+        assertTrue(Math.abs(202 - task.getHttpStatus()) < 1E-6 || Math.abs(200 - task.getHttpStatus()) < 1E-6);
         while (!Task.Status.COMPLETED.equals(task.getStatus())) {
             if (Task.Status.ERROR.equals(task.getStatus())) {
                 fail("Task finished with error!");
@@ -151,7 +151,7 @@ public class TrainerTest {
         assertNotNull(task);
         assertNotNull(task.getUri());
         assertEquals(OTClasses.task(), task.getUri().getOntologicalClass());
-        assertEquals(202, task.getHttpStatus(), 1E-6);
+        assertTrue(Math.abs(202 - task.getHttpStatus()) < 1E-6 || Math.abs(200 - task.getHttpStatus()) < 1E-6);
         TaskRunner runner = new TaskRunner(task);
         runner.setDelay(1000);
         task = runner.call();
@@ -160,7 +160,7 @@ public class TrainerTest {
 
         ModelSpider modelSpider = new ModelSpider(task.getResultUri(), at);
         Model model = modelSpider.parse();
-        modelSpider.close();                
+        modelSpider.close();
 
         assertNotNull(model);
         Set<Parameter> modelParameters = model.getParameters();
@@ -171,8 +171,8 @@ public class TrainerTest {
         while (paramIterator.hasNext()) {
             Parameter currentParam = paramIterator.next();
             assertNotNull(currentParam);
-            if (currentParam.getName()!=null && 
-                    "gamma".equals(currentParam.getName().getValueAsString())) {
+            if (currentParam.getName() != null
+                    && "gamma".equals(currentParam.getName().getValueAsString())) {
                 failParamGammaNotFound = false;
                 assertEquals(0.875d, Double.parseDouble(currentParam.getTypedValue().getValueAsString()), 1E-8);
             }

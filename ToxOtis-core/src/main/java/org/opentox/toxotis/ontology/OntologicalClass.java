@@ -50,31 +50,89 @@ import java.util.Set;
  */
 public interface OntologicalClass extends OTResource, java.io.Serializable {
 
+    /**
+     * The name-space of the ontological class.
+     * 
+     * @return 
+     *      The name-space.
+     */
     String getNameSpace();
 
+    /**
+     * Set the name-space of this ontological class as a String.
+     * @param ns
+     *      The name-space URI.
+     * @return 
+     *      Updated ontological class.
+     */
     OntologicalClass setNameSpace(String ns);
 
+    /**
+     * The unique name (with respect to the namespace) of the
+     * current ontological class.
+     * @return 
+     *      Name of this class.
+     */
     String getName();
 
+    /**
+     * Set the name of the ontological class.
+     * @param name
+     *      Name to be set.
+     * @return 
+     *      The current updated ontological class with the new name
+     *      provided by this method.
+     */
     OntologicalClass setName(String name);
 
+    /**
+     * Meta-information about the current ontological class.
+     * @return 
+     *      Meta-info object.
+     */
     MetaInfo getMetaInfo();
 
     OntologicalClass setMetaInfo(MetaInfo metaInfo);
 
+    /**
+     * Set of super-classes for this ontological class.
+     * @return 
+     *      Set of super-classes.
+     */
     Set<OntologicalClass> getSuperClasses();
 
     OntologicalClass setSuperClasses(Set<OntologicalClass> superClasses);
 
+    /**
+     * Set of ontological classes that are always disjoint with
+     * the current ontological class.
+     * 
+     * @return 
+     *      Set of disjoint classes.
+     */
     Set<OntologicalClass> getDisjointWith();
 
     @Override
     String getUri();
 
+    /**
+     * Set the URI of this ontological class.
+     * @param uri
+     *      The URI to be set.
+     * @return 
+     *      The current updated ontological class.
+     */
     OntologicalClass setUri(String uri);
 
     OntologicalClass setDisjointWith(Set<OntologicalClass> disjointWith);
 
+    /**
+     * Wrap the current ontological class in an ontological model.
+     * @param model
+     *      An ontological model to encapsulate the current ontological class.
+     * @return 
+     *      The current instance of OntologicalClass.
+     */
     OntClass inModel(OntModel model);
 
     @Override

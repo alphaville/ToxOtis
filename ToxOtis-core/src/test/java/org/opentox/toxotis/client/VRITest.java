@@ -208,4 +208,27 @@ public class VRITest {
         assertEquals(Services.ideaconsult().augment("services", "dataset", 54).toString(), myuri.getStringNoQuery());
     }
     //TODO: Test cases where new VRI("myserver.com/blah");.. i.e. http:// is missing!
+
+    @Test
+    public void testId() {
+        VRI vri = Services.anonymous().augment("compound", "12", "conformer", "12345").addUrlParameter("a", 100);
+        assertEquals("12345", vri.getId());
+        vri = Services.anonymous().augment("compound", "125").addUrlParameter("a", 100);
+        vri = Services.anonymous().augment("compound", "abcd");
+        assertEquals("abcd", vri.getId());
+    }
+
+    @Test
+    public void testOntologicalClasses() {
+        final String compoundId = "123", conformerId = "12345678";
+        final String compound = "compound", conformer = "conformer";
+        VRI vri = Services.anonymous().augment(compound, compoundId, conformer, conformerId);
+        assertEquals(OTClasses.conformer(), vri.getOntologicalClass());
+        assertEquals(conformerId, vri.getId());
+        vri = Services.anonymous().augment("compound", compoundId, "conformer", conformerId).addUrlParameter("a", 1);
+        assertEquals(OTClasses.conformer(), vri.getOntologicalClass());
+        vri = Services.anonymous().augment("compound", compoundId, "conformer", conformerId).addUrlParameter("feature_uris[]", "xyz");
+        assertEquals(conformerId, vri.getId());
+        assertEquals(OTClasses.dataset(), vri.getOntologicalClass());
+    }
 }

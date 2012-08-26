@@ -57,7 +57,7 @@ public class ROGTest {
     @Test(timeout = 25000)// Speed and Robustness test
     public void testNextRandom() {
         ROG rog = new ROG();
-        for (int i = 1; i < 500; i++) {
+        for (int i = 1; i < 50; i++) {
             rog.nextMeta();
             rog.nextBibTeX();
             rog.nextUser();

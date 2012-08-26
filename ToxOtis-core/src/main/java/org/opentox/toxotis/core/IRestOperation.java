@@ -42,6 +42,7 @@ import org.opentox.toxotis.core.component.RestOperation;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.HttpMethods.MethodsEnum;
+import org.opentox.toxotis.ontology.collection.OTRestClasses;
 
 /**
  * Interface documentation for a web service. OpenTox web services define the supported
@@ -56,18 +57,47 @@ import org.opentox.toxotis.ontology.collection.HttpMethods.MethodsEnum;
  */
 public interface IRestOperation extends IOTComponent {
 
+    /**
+     * Add HTTP parameters to the current rest operation.
+     * 
+     * @param httpParameters
+     *      Array of HTTP parameters.
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated parameters.
+     */
     RestOperation addHttpParameters(HttpParameter... httpParameters);
 
+    /**
+     * Add supported HTTP status codes to the current rest operation.
+     * 
+     * @param httpParameters
+     *      Array of HTTP status codes.
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated HTTP status codes.
+     */
     RestOperation addHttpStatusCodes(HttpStatus... httpStatusCodes);
 
+    /**
+     * Add REST-related ontological classes.
+     * 
+     * @param restClasses
+     *      Array of ontological classes.
+     * 
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated ontological classes.
+     */
     RestOperation addRestClasses(OntologicalClass... restClasses);
 
     /**
      * Set of input parameters which are expected by the client on POST. These are
      * either posted as a {@link Media#APPLICATION_FORM_URL_ENCODED form} or included
      * in the URL as URL parameters.
+     * 
      * @return
-     * Specifications for the input parameters expected by the client.
+     *      Specifications for the input parameters expected by the client.
      */
     Set<HttpParameter> getHttpParameters();
 
@@ -78,14 +108,14 @@ public interface IRestOperation extends IOTComponent {
      * OTRestClasses#HTTPStatus() } such as {@link OTRestClasses#STATUS_200() }.
      *
      * @return
-     * Set of ontological classes that describe the available status codes.
+     *      Set of ontological classes that describe the available status codes.
      */
     Set<HttpStatus> getHttpStatusCodes();
 
     /**
      * The HTTP method which are supported by the web service.
      * @return
-     * Http Method as element of the enumeration {@link MethodsEnum }.
+     *      Http Method as element of the enumeration {@link MethodsEnum }.
      */
     HttpMethod getMethod();
 
@@ -95,33 +125,178 @@ public interface IRestOperation extends IOTComponent {
      * {@link OTRestClasses }.
      *
      * @return
-     * Set of ontological classes
+     *      Set of ontological classes
      */
     Set<OntologicalClass> getRestClasses();
 
+    /**
+     * Setter method for the Set of HTTP parameters.
+     * @param httpParameters
+     *      A set of HTTP parameters.
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated set of HTTP parameters.
+     */
     RestOperation setHttpParameters(Set<HttpParameter> httpParameters);
 
+    /**
+     * Setter method for the possible HTTP status codes returned by
+     * the current REST method.
+     * 
+     * @param httpStatusCodes
+     *      Set of HTTP status codes.
+     * 
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated set of HTTP status codes.
+     */
     RestOperation setHttpStatusCodes(Set<HttpStatus> httpStatusCodes);
 
+    /**
+     * Setter method for the HTTP method definition for this REST operation.
+     * 
+     * @param httpMethod
+     *      A HTTP method.
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated HTTP method definition.
+     */
     RestOperation setMethod(HttpMethod httpMethod);
 
+    /**
+     * 
+     * @param httpMethod
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated HTTP method.
+     * @see #setMethod(org.opentox.toxotis.core.component.HttpMethod) #setMethod(HttpMethod) 
+     */
     RestOperation setMethod(MethodsEnum httpMethod);
 
+    /**
+     * Setter method for the set of Ontological Classes describing this
+     * REST operation.
+     * 
+     * @param restClasses
+     *      Set of ontological classes.
+     * 
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated set of REST classes.
+     * 
+     * @see OTRestClasses
+     */
     RestOperation setRestClasses(Set<OntologicalClass> restClasses);
 
+    /**
+     * Get the set of supported MIMEs by the current REST operation.
+     * 
+     * @return 
+     *      Set of supported media types.
+     */
     Set<HttpMediatype> getMediaTypes();
 
+    /**
+     * Setter method for the Set of supported media-types.
+     * 
+     * @param mediaTypes
+     *      Set of HttpMediaType objects.
+     * 
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated set of MIMEs.
+     */
     IRestOperation setMediaTypes(Set<HttpMediatype> mediaTypes);
 
+    /**
+     * Add MIME definitions to the current REST operation.
+     * 
+     * @param mediaTypes
+     *      Array of HttpMediaType objects.
+     * 
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated set of MIMEs.
+     */
     IRestOperation addMediaTypes(HttpMediatype... mediaTypes);
 
+    /**
+     * Add a URL parameter to this REST operation.
+     * @param urlParameterName
+     *      Name of the URL parameter.
+     * @param optional
+     *      Whether the URL parameter is optional (<code>true</code>) 
+     *      or mandatory (<code>false</code>).
+     * @param type
+     *      The XSD data-type of the URL parameter.
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated URL parameter definitions.
+     */
     IRestOperation addUrlParameter(String urlParameterName, boolean optional, XSDDatatype type);
 
+    /**
+     * Add a URL parameter to this REST operation.
+     * @param urlParameterName
+     *      Name of the URL parameter.
+     * @param optional
+     *      Whether the URL parameter is optional (<code>true</code>) 
+     *      or mandatory (<code>false</code>).
+     * @param type
+     *      The XSD data-type of the URL parameter.
+     * @param meta 
+     *      Meta-information about the URL parameter being added.
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated URL parameter definitions.
+     */
     IRestOperation addUrlParameter(String urlParameterName, boolean optional, XSDDatatype type, MetaInfo meta);
 
+    /**
+     * Add a header to the current REST operation.
+     * 
+     * @param headerName
+     *      Name of the header.
+     * @param optional
+     *      Whether the HTTP header is optional (<code>true</code>) 
+     *      or mandatory (<code>false</code>).
+     * @param xsdType
+     *      The XSD data-type definition of the current header being added.
+     * 
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated list of Headers.
+     */
     IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType);
 
+    /**
+     * Add a header to the current REST operation.
+     * 
+     * @param headerName
+     *      Name of the header.
+     * @param optional
+     *      Whether the HTTP header is optional (<code>true</code>) 
+     *      or mandatory (<code>false</code>).
+     * @param xsdType
+     *      The XSD data-type definition of the current header being added.
+     * @param meta
+     *      Meta-information about the header.
+     * 
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated list of Headers.
+     */
     IRestOperation addSimpleHeader(String headerName, boolean optional, XSDDatatype xsdType, MetaInfo meta);
 
+    /**
+     * Specify whether the resource is protected by the OpenTox SSO 
+     * infrastructure.
+     * 
+     * @param protectedResource
+     *      Whether the resource is protected.
+     * @return 
+     *      The current modifiable instance of IRestOperation with
+     *      updated information about whether the resource is protected.
+     */
     IRestOperation setProtectedResource(boolean protectedResource);
 }

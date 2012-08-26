@@ -116,6 +116,9 @@ public final class OTClasses {
         }
     }
 
+    /**
+     * Set with all OpenTox ontological classes.
+     */
     public static Set<OntologicalClass> getAll() {
         initMethodCache();
         Set<OntologicalClass> result = new HashSet<OntologicalClass>();
@@ -135,8 +138,9 @@ public final class OTClasses {
     }
 
     /**
-     *
+     * Returns an ontological class with the given name.
      * @param name
+     *      Search for an ontological class.
      * @return
      *      OntologicalClass instance for the given name of <code>null</code> if
      *      no such class is found.
@@ -267,6 +271,9 @@ public final class OTClasses {
         return model;
     }
 
+    /**
+     * A dataEntry in a dataset.
+     */
     public static OntologicalClass dataEntry() {
         if (dataEntry == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DataEntry");
@@ -276,6 +283,9 @@ public final class OTClasses {
         return dataEntry;
     }
 
+    /**
+     * A dataType.
+     */
     public static OntologicalClass dataType() {
         if (dataType == null) {
             OntologicalClass clazz = new OntologicalClassImpl("DataType");
@@ -304,6 +314,9 @@ public final class OTClasses {
         return dataset;
     }
 
+    /**
+     * An OpenTox feature.
+     */
     public static OntologicalClass feature() {
         if (feature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Feature");
@@ -313,6 +326,9 @@ public final class OTClasses {
         return feature;
     }
 
+    /**
+     * A feature-value pair.
+     */
     public static OntologicalClass featureValuePair() {
         if (featureValuePair == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValuePair");
@@ -322,6 +338,9 @@ public final class OTClasses {
         return featureValuePair;
     }
 
+    /**
+     * A value of a feature.
+     */
     public static OntologicalClass featureValue() {
         if (featureValue == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValue");
@@ -331,6 +350,10 @@ public final class OTClasses {
         return featureValue;
     }
 
+    /**
+     * A numeric value of a feature.
+     * @see #featureValue() 
+     */
     public static OntologicalClass featureValueNumeric() {
         if (featureValueNumeric == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValueNumeric");
@@ -340,6 +363,9 @@ public final class OTClasses {
         return featureValueNumeric;
     }
 
+    /**
+     * A string-type feature value.
+     */
     public static OntologicalClass featureValueString() {
         if (featureValueString == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValue");
@@ -349,6 +375,10 @@ public final class OTClasses {
         return featureValueString;
     }
 
+    /**
+     * A nominal (class-type) feature value.
+     * @see #featureValue() 
+     */
     public static OntologicalClass featureValueNominal() {
         if (featureValueNominal == null) {
             OntologicalClass clazz = new OntologicalClassImpl("FeatureValueNominal");
@@ -358,6 +388,10 @@ public final class OTClasses {
         return featureValueNominal;
     }
 
+    /**
+     * A nominal dataType.
+     * @see #dataType() 
+     */
     public static OntologicalClass nominal() {
         if (nominal == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Nominal");
@@ -367,6 +401,13 @@ public final class OTClasses {
         return nominal;
     }
 
+    /**
+     * A nominal-type feature. Subclass of {@link #feature() ot:Feature}
+     * and {@link #nominal() ot:Nominal}.
+     * 
+     * @see #nominal() Feature
+     * @see #feature() Nominal
+     */
     public static OntologicalClass nominalFeature() {
         if (nominalFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("NominalFeature");
@@ -377,6 +418,10 @@ public final class OTClasses {
         return nominalFeature;
     }
 
+    /**
+     * Numeric data-type. Subclass of {@link #feature() ot:Feature}
+     * and {@link #numeric()  ot:Numeric}.
+     */
     public static OntologicalClass numeric() {
         if (numeric == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Numeric");
@@ -386,6 +431,9 @@ public final class OTClasses {
         return numeric;
     }
 
+    /*
+     * A numeric-type feature.
+     */
     public static OntologicalClass numericFeature() {
         if (numericFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("NumericFeature");
@@ -396,6 +444,11 @@ public final class OTClasses {
         return numericFeature;
     }
 
+    /**
+     * String data-type.
+     * 
+     * @see #dataType() 
+     */
     public static OntologicalClass string() {
         if (string == null) {
             OntologicalClass clazz = new OntologicalClassImpl("String");
@@ -405,6 +458,9 @@ public final class OTClasses {
         return string;
     }
 
+    /**
+     * A string-valued feature.
+     */
     public static OntologicalClass stringFeature() {
         if (stringFeature == null) {
             OntologicalClass clazz = new OntologicalClassImpl("StringFeature");
@@ -415,6 +471,9 @@ public final class OTClasses {
         return stringFeature;
     }
 
+    /**
+     * An OpenTox parameter (for algorithms and/or models).
+     */
     public static OntologicalClass parameter() {
         if (parameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Parameter");
@@ -424,6 +483,9 @@ public final class OTClasses {
         return parameter;
     }
 
+    /**
+     * A vector-parameter.
+     */
     public static OntologicalClass vectorParameter() {
         if (vectorParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("VectorParameter");
@@ -433,6 +495,9 @@ public final class OTClasses {
         return vectorParameter;
     }
 
+    /**
+     * Information for a variable.
+     */
     public static OntologicalClass variableInfo() {
         if (variableInfo == null) {
             OntologicalClass clazz = new OntologicalClassImpl("VariableInfo");
@@ -442,6 +507,9 @@ public final class OTClasses {
         return variableInfo;
     }
 
+    /**
+     * Value of a parameter.
+     */
     public static OntologicalClass parameterValue() {
         if (parameterValue == null) {
             OntologicalClass clazz = new OntologicalClassImpl("ParameterValue");
@@ -451,6 +519,9 @@ public final class OTClasses {
         return parameterValue;
     }
 
+    /**
+     * A multi-parameter.
+     */
     public static OntologicalClass multiParameter() {
         if (multiParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("MultiParameter");
@@ -461,6 +532,9 @@ public final class OTClasses {
         return multiParameter;
     }
 
+    /**
+     * A set-valued parameter.
+     */
     public static OntologicalClass setValuedParameter() {
         if (setValuedParameter == null) {
             OntologicalClass clazz = new OntologicalClassImpl("SetValuedParameter");
@@ -470,6 +544,9 @@ public final class OTClasses {
         return setValuedParameter;
     }
 
+    /**
+     * Value for a variable.
+     */
     public static OntologicalClass variableValue() {
         if (variableValue == null) {
             OntologicalClass clazz = new OntologicalClassImpl("VariableValue");
@@ -479,6 +556,9 @@ public final class OTClasses {
         return variableValue;
     }
 
+    /**
+     * An asynchronously executed task.
+     */
     public static OntologicalClass task() {
         if (task == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Task");

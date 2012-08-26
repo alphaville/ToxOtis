@@ -48,11 +48,11 @@ public class HTMLTextImpl
     private boolean tt;
     private boolean undelined;
     private boolean pre;
-    private static final String _bold = "<b>%s</b>";
-    private static final String _italix = "<em>%s</em>";
-    private static final String _tt = "<tt>%s</tt>";
-    private static final String _underlined = "<u>%s</u>";
-    private static final String _PRE = "<pre>%s</pre>";
+    private static final String BOLD = "<b>%s</b>";
+    private static final String ITALIX = "<em>%s</em>";
+    private static final String TRUETYPE = "<tt>%s</tt>";
+    private static final String UNDERLINED = "<u>%s</u>";
+    private static final String PREFORMATTED = "<pre>%s</pre>";
 
     public HTMLTextImpl() {
     }
@@ -81,19 +81,19 @@ public class HTMLTextImpl
     @Override
     public String toString() {
         if (bold) {
-            text = String.format(_bold, text);
+            text = String.format(BOLD, text);
         }
         if (italics) {
-            text = String.format(_italix, text);
+            text = String.format(ITALIX, text);
         }
         if (tt) {
-            text = String.format(_tt, text);
+            text = String.format(TRUETYPE, text);
         }
         if (undelined) {
-            text = String.format(_underlined, text);
+            text = String.format(UNDERLINED, text);
         }
         if (pre) {
-            text = String.format(_PRE, text);
+            text = String.format(PREFORMATTED, text);
         }
         return text;
     }

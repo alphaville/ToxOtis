@@ -39,13 +39,39 @@ package org.opentox.toxotis.core.html;
  */
 public interface HTMLTableRow {
 
+    /**
+     * Number of columns.
+     * @return 
+     *      The number of columns of this row.
+     */
     int getNumColumns();
 
+    /**
+     * Moves the cursor one position up.
+     * 
+     * @return 
+     *      Updated HTML table row.
+     */
     HTMLTableRow cursorUp();
 
+    /**
+     * Moves the cursor one position down.
+     * 
+     * @return 
+     *      Updated HTML table row.
+     */
     HTMLTableRow cursorDown();
 
-    HTMLTableRow moveCursorAt(int i) throws ArrayIndexOutOfBoundsException;
+    /**
+     * Moves the cursor at some defined position.
+     * 
+     * @param i 
+     *      Where to move the cursor to.
+     * 
+     * @return 
+     *      Updated HTML table row.
+     */
+    HTMLTableRow moveCursorAt(int i);
 
     /**
      *
@@ -56,22 +82,79 @@ public interface HTMLTableRow {
      */
     HTMLComponent get(int index);
 
+    /**
+     * Get the current HTML component at the position of the 
+     * cursor.
+     * 
+     * @return 
+     *      The current HTML component.
+     */
     HTMLComponent getCurrent();
 
+    /**
+     * Set a component at the position of the cursor.
+     * @param component
+     *      An HTML component to be added to the table row.
+     * @return 
+     *      Updated HTML table row.
+     */
     HTMLTableRow setAtCursor(HTMLComponent component);
 
+    /**
+     * Set the width of the current column (where the cursor is).
+     * @param width
+     *      Column width in pixels.
+     * @return 
+     *      Updated HTML table row.
+     */
     HTMLTableRow setCurrentColumnWidth(int width);
 
+    /**
+     * Set the width of a particular column.
+     * @param column
+     *      Index of the column. First is <code>0</code>.
+     * @param width
+     *      Width in pixels.
+     * @return 
+     *      Updated HTMLTableRow.
+     */
     HTMLTableRow setColumnWidth(int column, int width);
 
+    /**
+     * Specify the widths of the columns.
+     * @param widths
+     *      Integer array with the widths of the columns.
+     * @return 
+     *      Updated instance of HTMLTableRow.
+     */
     HTMLTableRow setColumnWidths(int... widths);
 
+    /**
+     * Whether the cursor is at the final position.
+     * @return 
+     *      <code>true</code> if the cursor cannot move any further and 
+     *      <code>false</code> otherwise.
+     */
     boolean isCursorLast();
 
+    /**
+     * Whether the cursor is at the beginning (initial position)
+     * @return 
+     *      <code>true</code> if the cursor is at the starting position
+     *      and <code>false</code> otherwise.
+     */
     boolean isCursorFirst();
 
+    /**
+     * The position of the cursor.
+     */
     int cursorPosition();
 
+    /**
+     * Whether the row is empty.
+     * 
+     * @return 
+     *       <code>true</code> if the row is empty and <code>false</code> otherwise.
+     */
     boolean isRowEmpty();
 }
-

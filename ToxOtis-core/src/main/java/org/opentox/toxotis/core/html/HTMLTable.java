@@ -34,34 +34,129 @@ package org.opentox.toxotis.core.html;
 
 /**
  * A table in an HTML document.
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
 public interface HTMLTable extends HTMLExpandableComponent {
 
+    /**
+     * Number of rows.
+     * @return 
+     *      number of rows.
+     */
     int getRows();
 
+    /**
+     * Number of columns.
+     * @return 
+     *      number of columns.
+     */
     int getCols();
 
-    HTMLTable setAtCursor(HTMLComponent entry) throws ArrayIndexOutOfBoundsException;
+    /**
+     * Set an HTML components exactly at the position of the cursor.
+     * @param entry
+     *      The HTML component to be added.
+     * @return
+     *      Updated HTML Table.
+     * @throws ArrayIndexOutOfBoundsException 
+     *      In case the table has no more space and the cursor has
+     *      or move off the predefined bounds.
+     */
+    HTMLTable setAtCursor(HTMLComponent entry);
 
-    HTMLTable setTextAtCursor(String entry) throws ArrayIndexOutOfBoundsException;
+    /**
+     * Set some text exactly at the position of the cursor.
+     * @param entry
+     *      The text to be added.
+     * @return
+     *      Updated HTML Table.
+     * @throws ArrayIndexOutOfBoundsException 
+     *      In case the table has no more space and the cursor has
+     *      or move off the predefined bounds.
+     */
+    HTMLTable setTextAtCursor(String entry);
 
+    /**
+     * The current row where the cursor points.
+     * @return
+     *      The current row.
+     */
     HTMLTableRow currentRow();
 
+    /**
+     * Moves the cursor to the next row.
+     * @return 
+     *      The next row.
+     */
     HTMLTableRow nextRow();
 
+    /**
+     * Moves the row-cursor back to the previous row and returns
+     * the previous row.
+     * @return 
+     *      The previous row.
+     */
     HTMLTableRow previousRow();
 
+    /**
+     * Set a summary for the HTML table.
+     * @param summary
+     *      The summary as String.
+     * @return 
+     *     Updated HTML table.
+     */
     HTMLTable setSummary(String summary);
 
+    /**
+     * Set the overall width of the table.
+     * @param tableWidth
+     *      Width of the table in pixels.
+     * @return 
+     *      The updated table.
+     */
     HTMLTable setTableWidth(int tableWidth);
 
+    /**
+     * Set the cell-spacing if the table in pixels.
+     * @param cellSpacing
+     *      The cell-to-cell spacing.
+     * @return 
+     *      The updated table.
+     */
     HTMLTable setCellSpacing(int cellSpacing);
 
+    /**
+     * Set the thickness of the table border. By default
+     * this is set to 0.
+     * 
+     * @param tableBorder
+     *      The table border thickness.
+     * 
+     * @return 
+     *      The updated HTML table.
+     */
     HTMLTable setTableBorder(int tableBorder);
 
+    /**
+     * Set the cell padding distance.
+     * @param cellPadding
+     *      The cell padding in pixels.
+     * @return 
+     *      The current modifiable instance of HTML table with updated
+     *      cell padding.
+     */
     HTMLTable setCellPadding(int cellPadding);
 
+    /**
+     * Set the width of a particular column.
+     * @param col
+     *      Index of a column.
+     * @param width
+     *      Prescribed width for the column in pixels.
+     * @return 
+     *      Updated table.
+     */
     HTMLTable setColWidth(int col, int width);
 }
