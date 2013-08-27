@@ -1,9 +1,9 @@
 -- 
 -- DATABASE VERSION : 2.1.0
 --
-DROP DATABASE IF EXISTS `toxotisdb2Test`;
-CREATE DATABASE `toxotisdb2Test` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `toxotisdb2Test`;
+DROP DATABASE IF EXISTS `toxotisdb2Test2`;
+CREATE DATABASE `toxotisdb2Test2` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `toxotisdb2Test2`;
 --
 -- Version
 --
@@ -326,15 +326,7 @@ CREATE TABLE `JFeature` (
     REFERENCES `OTComponent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO JFeature (id,units,type) VALUES 
-('smiles','','String'),
-('inchi','','String'),
-('inchiKey','','String'),
-('synonyms','','String'),
-('casrn','','String'),
-('regDate','','String'),
-('mw','g/mol','Numeric'),
-('iupacName','','String');
+
 --
 -- Features Values
 --
