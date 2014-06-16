@@ -287,6 +287,7 @@ public class ROG {
                 addRights(nextString(RIGHTS_LN)).addSubject(nextString(SMALL_COMMENT)).
                 addSubject(nextString(SMALL_COMMENT)).addSubject(nextString(SMALL_COMMENT)).
                 addSubject(nextString(SMALL_COMMENT)).addSubject(nextString(SMALL_COMMENT)).
+                addTitle(nextString(SMALL_COMMENT)).
                 addHasSource(new ResourceValue(
                 Services.anonymous().augment("xyz", nextString(VRI_LEN)),
                 OTClasses.featureValueNominal())).

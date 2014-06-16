@@ -106,12 +106,14 @@ public class BibTeXTest {
         BibTeX bib = ROG.nextBibTeX();        
     }
     
+    // !!!Wonderweb Validator is DOWN!!!
     @Test
     public void testRdf() throws ServiceInvocationException{
         BibTeX bt = ROG.nextBibTeX();
         bt.setMeta(ROG.nextMeta());
         bt.getMeta().setSeeAlso(new HashSet<ResourceValue>());//The Wonderweb Validator has a problem with see also...
         OntModel om =bt.asOntModel();
+        om.write(System.out);
         WonderWebValidator validator = new WonderWebValidator(om);
         assertTrue(validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL));
     }

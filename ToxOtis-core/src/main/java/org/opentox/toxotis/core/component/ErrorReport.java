@@ -59,10 +59,11 @@ import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
- * Error Reports are part of the OpenTox API since version 1.1. Error Reports define a
- * formal way to handle exceptional situations while invoking a service or during
- * inter-service communication thus facilitating debugging. They are sufficiently
- * documented online at <a href="http://opentox.org/dev/apis/api-1.1/Error%20Reports">
+ * Error Reports are part of the OpenTox API since version 1.1. Error Reports
+ * define a formal way to handle exceptional situations while invoking a service
+ * or during inter-service communication thus facilitating debugging. They are
+ * sufficiently documented online at <a
+ * href="http://opentox.org/dev/apis/api-1.1/Error%20Reports">
  * http://opentox.org/dev/apis/api-1.1/Error Reports</a>.
  *
  * @author Pantelis Sopasakis
@@ -71,17 +72,29 @@ import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 public class ErrorReport extends OTComponent<ErrorReport>
         implements IHTMLSupport {
 
-    /** The HTTP status that accompanied the Error Report */
+    /**
+     * The HTTP status that accompanied the Error Report
+     */
     private int httpStatus;
-    /** The peer that threw the exception or reported an exceptional event */
+    /**
+     * The peer that threw the exception or reported an exceptional event
+     */
     private String actor;
-    /** Brief explanatory message */
+    /**
+     * Brief explanatory message
+     */
     private String message;
-    /** Technical Details */
+    /**
+     * Technical Details
+     */
     private String details;
-    /** Error Cause Identification Code */
+    /**
+     * Error Cause Identification Code
+     */
     private String errorCode;
-    /** Trace... */
+    /**
+     * Trace...
+     */
     private ErrorReport errorCause;
     private UUID uuid = UUID.randomUUID();
     private static final String DISCRIMINATOR = "error";
@@ -117,7 +130,9 @@ public class ErrorReport extends OTComponent<ErrorReport>
     }
 
     public ErrorReport(VRI uri) {
-        super(uri);
+        super(uri);     
+        // Set the UUID when setting the URI - important for retrievals from the DB
+        this.uuid = UUID.fromString(uri.getId());
     }
 
     public ErrorReport(int httpStatus, String actor, String message, String details, String errorCode) {
@@ -287,7 +302,7 @@ public class ErrorReport extends OTComponent<ErrorReport>
                 setTextAtCursor("Error Code").setTextAtCursor(getErrorCode()).
                 setTextAtCursor("Message").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getMessage())).setAlignment(Alignment.justify)).
                 setTextAtCursor("HTTP Code").setAtCursor(
-                new HTMLParagraphImpl("<a href= \"" + ERROR_CODE_REFERENCE.get(getHttpStatus()) + "\" >" + Integer.toString(getHttpStatus()) + "</a>").setAlignment(Alignment.justify)).
+                        new HTMLParagraphImpl("<a href= \"" + ERROR_CODE_REFERENCE.get(getHttpStatus()) + "\" >" + Integer.toString(getHttpStatus()) + "</a>").setAlignment(Alignment.justify)).
                 setTextAtCursor("Who is to Blame").setAtCursor(new HTMLParagraphImpl(htmlNormalize(getActor())).setAlignment(Alignment.justify));
         if (errorCause != null) {
             table.setTextAtCursor("Trace").setTextAtCursor(HTMLUtils.linkUrlsInText(getErrorCause().getUri().toString()));
