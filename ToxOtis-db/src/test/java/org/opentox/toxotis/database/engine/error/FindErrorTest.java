@@ -86,8 +86,6 @@ public class FindErrorTest {
             currentVri = it.next().getUri();
             assertNotNull(currentVri);
             assertEquals(OTClasses.errorReport(), currentVri.getOntologicalClass());
-            assertEquals("opentox.ntua.gr", currentVri.getHost());
-            assertEquals("http://opentox.ntua.gr:8080", currentVri.getServiceBaseUri().toString());
         }
         it.close();
         fe.close();
@@ -142,10 +140,10 @@ public class FindErrorTest {
             FindError fe = new FindError(Services.ntua());
             fe.setRetrieveStackTrace(true);
             fe.setSearchById(er.getUri().getId());
-
+            
             IDbIterator<ErrorReport> it = fe.list();
             boolean found = false;
-            while (it.hasNext()) {
+            while (it.hasNext()) {                
                 found = true;
                 ErrorReport nextReport = it.next();
                 assertEquals(er.getUri().getId(), nextReport.getUri().getId());
@@ -153,6 +151,8 @@ public class FindErrorTest {
                 assertEquals(er.getDetails(), nextReport.getDetails());
                 assertEquals(er.getActor(), nextReport.getActor());
                 assertEquals(er.getMeta(), nextReport.getMeta());
+                assertEquals(er.getErrorCause().getUri().getId(), nextReport.getErrorCause().getUri().getId());
+                assertEquals(er.getErrorCause().getActor(), nextReport.getErrorCause().getActor());
             }
             assertTrue(found);
             it.close();
