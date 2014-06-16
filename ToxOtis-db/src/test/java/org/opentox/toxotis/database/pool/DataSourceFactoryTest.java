@@ -40,6 +40,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.database.global.DbConfiguration;
 
 /**
  *
@@ -51,13 +52,15 @@ public class DataSourceFactoryTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-        org.opentox.toxotis.database.TestUtils.setUpDB();
+    public static void setUpClass() throws Exception {        
+        DbConfiguration.setC3p0PropertiedFile(DbConfiguration.TEST_C3P0_FILE);      
+        assertTrue(DataSourceFactory.getInstance().ping(1));
+        org.opentox.toxotis.database.TestUtils.setUpDB();              
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        DataSourceFactory.getInstance().close();
+            DataSourceFactory.getInstance().close();         
     }
 
     @Before
@@ -70,15 +73,15 @@ public class DataSourceFactoryTest {
 
     @Test
     public void testInvokeDataSource() {
-        try {
-            DataSourceFactory factory = DataSourceFactory.getInstance();
+        try {            
+            DataSourceFactory factory = DataSourceFactory.getInstance();            
 
             Connection connection = factory.getDataSource().getConnection();
             assertNotNull(connection);
             assertTrue(factory.ping(50));
+            System.out.println(DbConfiguration.getInstance().getProperpties().getProperty("c3p0.jdbcUrl"));
 //            assertEquals("TEST00001==/", DbConfiguration.getInstasnce().getProperpties().getProperty("key"));
-            assertEquals("jdbc:mysql://localhost:3306/toxotisdb2Test?useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8",
-                    DataSourceFactory.getInstance().getConnection().getMetaData().getURL());
+            
             ComboPooledDataSource ds = (ComboPooledDataSource) DataSourceFactory.getInstance().getDataSource();
             assertEquals(1025, ds.getMaxPoolSize());
             assertEquals(51, ds.getMinPoolSize());
@@ -91,7 +94,7 @@ public class DataSourceFactoryTest {
             assertTrue(ds.isTestConnectionOnCheckin());
             assertTrue(ds.isTestConnectionOnCheckout());
             assertNotNull(ds.getUser());
-            assertNotNull(ds.getPassword());            
+            assertNotNull(ds.getPassword());
         } catch (Exception ex) {
             fail("Database is inaccessible! " + ex);
         }

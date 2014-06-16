@@ -46,11 +46,6 @@ public class TestUtils {
     public static void setUpDB() throws Exception {
         DbConfiguration.setC3p0PropertiedFile(DbConfiguration.TEST_C3P0_FILE);
         assertTrue(DataSourceFactory.getInstance().ping(10));
-        if (!DbConfiguration.getInstance().getProperpties().getProperty("c3p0.jdbcUrl").
-                equals("jdbc:mysql://localhost:3306/toxotisdb2Test?"
-                + "useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8")) {
-            throw new Exception("Wrong JDBC URL");
-        }
     }
     
     @Test
