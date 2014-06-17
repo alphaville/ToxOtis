@@ -32,6 +32,9 @@
  */
 package org.opentox.toxotis.database.engine.bibtex;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,8 +46,11 @@ import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.util.ROG;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.database.exception.DbException;
-import org.opentox.toxotis.database.global.DbConfiguration;
 import org.opentox.toxotis.database.pool.DataSourceFactory;
+import org.opentox.toxotis.ontology.LiteralValue;
+import org.opentox.toxotis.ontology.ResourceValue;
+import org.opentox.toxotis.ontology.collection.OTClasses;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
 /**
  *
@@ -95,6 +101,11 @@ public class FindBibTeXTest {
 
         for (int i = 1; i < 10; i++) {
             BibTeX bibtex = rog.nextBibTeX();
+            bibtex.getMeta().addSeeAlso(new ResourceValue(
+                    Services.anonymous().augment("xyz", "compound", rog.nextString(10)),
+                    OTClasses.compound())).addSeeAlso(new ResourceValue(
+                                    Services.anonymous().augment("xyz", "compound", rog.nextString(10)),
+                                    OTClasses.compound()));
 
             AddBibTeX adder = new AddBibTeX(bibtex);
             adder.write();
@@ -126,16 +137,33 @@ public class FindBibTeXTest {
                 assertEquals(bibtex.getUrl(), nextBibTexFound.getUrl());
                 assertEquals(bibtex.getVolume(), nextBibTexFound.getVolume());
                 assertEquals(bibtex.getYear(), nextBibTexFound.getYear());
-                assertEquals(bibtex.getMeta().getContributors().iterator().next().getValue(), nextBibTexFound.getMeta().getContributors().iterator().next().getValue());
-                assertEquals(bibtex.getMeta().getComments().iterator().next().getValue(), nextBibTexFound.getMeta().getComments().iterator().next().getValue());
-                assertEquals(bibtex.getMeta().getCreators().iterator().next().getValue(), nextBibTexFound.getMeta().getCreators().iterator().next().getValue());
-                assertEquals(bibtex.getMeta().getDescriptions().iterator().next().getValue(), nextBibTexFound.getMeta().getDescriptions().iterator().next().getValue());
+                
+                
+                
+                /* Assertions on the retrieved metadata */               
+                // Really exhaustive testing...               
+                assertEquals(((MetaInfoImpl)bibtex.getMeta()).getHash(), nextBibTexFound.getMeta().getHash()); //this shoudl suffice! (Updated in v0.8.8-SNAPSHOT)
+                assertEquals(bibtex.getMeta().getIdentifiers().size(), nextBibTexFound.getMeta().getIdentifiers().size());                                
                 assertEquals(bibtex.getMeta().getIdentifiers().iterator().next().getValue(), nextBibTexFound.getMeta().getIdentifiers().iterator().next().getValue());
                 assertEquals(bibtex.getMeta().getPublishers().iterator().next().getValue(), nextBibTexFound.getMeta().getPublishers().iterator().next().getValue());
                 assertEquals(bibtex.getMeta().getRights().iterator().next().getValue(), nextBibTexFound.getMeta().getRights().iterator().next().getValue());
-                assertEquals(bibtex.getMeta().getSubjects().iterator().next().getValue(), nextBibTexFound.getMeta().getSubjects().iterator().next().getValue());
-                assertEquals(bibtex.getMeta().getTitles().iterator().next().getValue(), nextBibTexFound.getMeta().getTitles().iterator().next().getValue());
+
+                if (bibtex.getMeta().getTitles() != null) {                    
+                    assertNotNull(nextBibTexFound.getMeta().getTitles());
+                    assertEquals(bibtex.getMeta().getTitles().size(), nextBibTexFound.getMeta().getTitles().size());
+                    Iterator<LiteralValue> bibtexTitlesIterator = bibtex.getMeta().getTitles().iterator();
+                    Iterator<LiteralValue> foubdBibtexTitlesIterator = nextBibTexFound.getMeta().getTitles().iterator();
+                    Set<String> setTitles = new HashSet<String>();
+                    Set<String> foundSetTitles = new HashSet<String>();
+                    while (bibtexTitlesIterator.hasNext()) {
+                        setTitles.add(bibtexTitlesIterator.next().getValueAsString());
+                        foundSetTitles.add(foubdBibtexTitlesIterator.next().getValueAsString());
+                    }
+                    assertTrue(setTitles.containsAll(foundSetTitles));                    
+                }
                 assertEquals(3, bibtex.getMeta().getSeeAlso().size());
+                assertEquals(nextBibTexFound.getMeta().getSeeAlso().size(), bibtex.getMeta().getSeeAlso().size());                
+                assertEquals(3, bibtex.getMeta().getCreators().size());
             }
             iterator.close();
             finder.close();

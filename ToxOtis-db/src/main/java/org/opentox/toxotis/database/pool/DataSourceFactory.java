@@ -50,11 +50,12 @@ public class DataSourceFactory {
     protected static final String amark = "&";
     private final Random pingRandom = new Random();
     private final String pingQuery = "SELECT %s";
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DataSourceFactory.class);
+    private final org.slf4j.Logger logger;
     private static final long serialVersionUID = -5768L;
     protected volatile IDataSourceC3P0 datasource;
 
     private DataSourceFactory() {
+        this.logger = org.slf4j.LoggerFactory.getLogger(DataSourceFactory.class);
     }
 
     private static class DatasourceFactoryHolder {
@@ -109,7 +110,7 @@ public class DataSourceFactory {
     /**
      * Does nothing, the pool will be still active
      * @param connectURI
-     * @throws AmbitException
+     * @throws DbException
      */
     public void logout(String connectURI) throws DbException {
     }

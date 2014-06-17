@@ -49,7 +49,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.14</version>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.dbunit</groupId>
@@ -65,12 +65,19 @@
         <dependency>
             <groupId>org.opentox.toxotis</groupId>
             <artifactId>ToxOtis-core</artifactId>
-            <version>0.8.6</version>
-        </dependency>       
+            <version>0.8.8-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 
-    <repositories>
+    <repositories>        
+        <repository>
+            <id>jbossrepo</id>
+            <url> https://repository.jboss.org/nexus/content/groups/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <!-- AMBIT PLOVDIV REPO -->
         <repository>
             <id>ambit-plovdiv</id>
@@ -79,13 +86,13 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>      
-        <repository>
+        <!-- <repository>
             <id>opentox-ntua-gr</id>
             <url>http://opentox.ntua.gr:8081/nexus/content/repositories/releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>      
+        </repository>      -->
     </repositories>
 
 

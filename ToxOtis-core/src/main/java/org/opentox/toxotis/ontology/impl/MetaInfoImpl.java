@@ -34,17 +34,16 @@ package org.opentox.toxotis.ontology.impl;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.AnnotationProperty;
-import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import org.opentox.toxotis.core.html.HTMLContainer;
@@ -54,7 +53,6 @@ import org.opentox.toxotis.core.html.HTMLUtils;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
-import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
 
 public class MetaInfoImpl implements MetaInfo {
@@ -141,7 +139,7 @@ public class MetaInfoImpl implements MetaInfo {
     private void attachResource(Resource resource, OntModel model,
             Set<ResourceValue> resources, Property property, boolean defineProp) {
         if (resources != null && !resources.isEmpty()) {
-            Property myProp = null;
+            Property myProp;
             if (defineProp) {
                 myProp = model.getObjectProperty(property.getURI());
             } else {
@@ -653,22 +651,46 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
 
+    private static long hashCodeSet_LV(Set<LiteralValue> set){       
+        if (set.isEmpty()){
+            return 0;
+        }
+        int return_value = 0;
+        Iterator<LiteralValue> iter = set.iterator();
+        while (iter.hasNext()){
+            return_value += 17 + 5*iter.next().getValueAsString().hashCode();
+        }
+        return return_value;
+    }
+    
+    private static long hashCodeSet_RV(Set<ResourceValue> set){       
+        if (set.isEmpty()){
+            return 0;
+        }
+        int return_value = 0;
+        Iterator<ResourceValue> iter = set.iterator();
+        while (iter.hasNext()){
+            return_value += 3 + 7*iter.next().getHash();
+        }
+        return return_value;
+    }
+    
     @Override
     public long getHash() {
-        int hash = HASH_OFFSET;
-        hash = HASH_MOD * hash + (this.identifiers != null ? this.identifiers.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.comments != null ? this.comments.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.descriptions != null ? this.descriptions.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.titles != null ? this.titles.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.subjects != null ? this.subjects.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.publishers != null ? this.publishers.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.creators != null ? this.creators.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.contributors != null ? this.contributors.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.audiences != null ? this.audiences.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.date != null ? this.date.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.sameAs != null ? this.sameAs.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.seeAlso != null ? this.seeAlso.hashCode() : 0);
-        hash = HASH_MOD * hash + (this.hasSources != null ? this.hasSources.hashCode() : 0);
+        long hash = HASH_OFFSET;
+        hash = HASH_MOD * hash + (getIdentifiers() != null ? hashCodeSet_LV(getIdentifiers()) : 0);
+        hash = HASH_MOD * hash + (getComments() != null ? hashCodeSet_LV(getComments()) : 0);
+        hash = HASH_MOD * hash + (getDescriptions() != null ? hashCodeSet_LV(getDescriptions()) : 0);
+        hash = HASH_MOD * hash + (getTitles() != null ? hashCodeSet_LV(getTitles()) : 0);
+        hash = HASH_MOD * hash + (getSubjects() != null ? hashCodeSet_LV(getSubjects()) : 0);
+        hash = HASH_MOD * hash + (getPublishers() != null ? hashCodeSet_LV(getPublishers()) : 0);
+        hash = HASH_MOD * hash + (getCreators() != null ? hashCodeSet_LV(getCreators()) : 0);
+        hash = HASH_MOD * hash + (getContributors() != null ? hashCodeSet_LV(getContributors()) : 0);
+        hash = HASH_MOD * hash + (getAudiences() != null ? hashCodeSet_LV(getAudiences()) : 0);
+        hash = HASH_MOD * hash + (getDate() != null ? getDate().getValueAsString().hashCode() : 0);
+        hash = HASH_MOD * hash + (getSameAs() != null ? hashCodeSet_RV(getSameAs()) : 0);
+        hash = HASH_MOD * hash + (getSeeAlso() != null ? hashCodeSet_RV(getSeeAlso()) : 0);
+        hash = HASH_MOD * hash + (getHasSources() != null ?hashCodeSet_RV(getHasSources()) : 0);
         return hash;
     }
 
@@ -780,7 +802,7 @@ public class MetaInfoImpl implements MetaInfo {
 
     private String listOfCreators() {
         StringBuilder builder = new StringBuilder();
-        String creatorId = null;
+        String creatorId;
         for (LiteralValue creator : creators) {
             creatorId = creator.getValueAsString();
             builder.append(A_TAG_OPEN);
