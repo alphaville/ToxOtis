@@ -34,11 +34,11 @@ package org.opentox.toxotis.database.engine.metainfo;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import org.opentox.toxotis.database.IDbIterator;
 import org.opentox.toxotis.util.ROG;
-import org.opentox.toxotis.database.engine.task.ListTasks;
 import static org.junit.Assert.*;
+import org.junit.Test;
+import org.opentox.toxotis.core.component.Task;
+import org.opentox.toxotis.database.engine.task.AddTask;
 import org.opentox.toxotis.database.exception.DbException;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 
@@ -61,14 +61,22 @@ public class UpdateMetaInfoTest {
         org.opentox.toxotis.database.pool.DataSourceFactory.getInstance().close();
     }
 
-    @Test
+    @Test 
     public void testSomeMethod() throws DbException {
         final ROG rog = new ROG();
+        
+        Task t = rog.nextTask(2);
+        t.setMeta(rog.nextMeta());
+        
+        AddTask task_adder = new AddTask(t);
+        task_adder.write();
+        task_adder.close();
+        
         UpdateMetaInfo updater = new UpdateMetaInfo();
         updater.setUpdateMode(UpdateMetaInfo.UpdateMode.REPLACE);
-        updater.setComponentId("0002a659-6b9f-40e1-83a1-4437ea71ec75");
+        updater.setComponentId(t.getUri().getId());
         updater.setMeta(new MetaInfoImpl().addComment(rog.nextString(20)));
-        assertEquals(2, updater.update());
+        assertEquals(2, updater.update()); // 2 rows updated: one for the Task and 1 for the Meta.
         updater.close();
     }
 }

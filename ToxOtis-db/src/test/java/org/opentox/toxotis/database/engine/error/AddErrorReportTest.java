@@ -75,7 +75,7 @@ public class AddErrorReportTest {
 
     @Test
     public void testLongError() throws DbException {
-        int N = 3000;
+        int N = 1500;
         ErrorReport er = new ROG().nextErrorReport(N);
         assertNotNull(er.getUri());
         ErrorReport current = er;
