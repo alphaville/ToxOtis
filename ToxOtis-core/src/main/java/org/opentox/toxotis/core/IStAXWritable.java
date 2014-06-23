@@ -69,10 +69,10 @@ public interface IStAXWritable extends IOTComponent {
      * @param writer
      *      XML Stream Writer used for the serialization of the dataset object.
      * @throws javax.xml.stream.XMLStreamException
-     * @throws XMLStreamException
      *      In case the serialization is not possible due to syntax errors.
      * @throws UnsupportedOperationException
      *      If the method is not implemented yet.
      */
-    void writeRdf(javax.xml.stream.XMLStreamWriter writer) throws javax.xml.stream.XMLStreamException;
+    void writeRdf(javax.xml.stream.XMLStreamWriter writer) 
+            throws javax.xml.stream.XMLStreamException;
 }

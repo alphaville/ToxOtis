@@ -47,7 +47,7 @@ import org.opentox.toxotis.ontology.impl.OntologicalClassImpl;
 /**
  * A collection of all algorithm types specified in OpenTox. The namespace for these
  * algorithms is <code>http://www.opentox.org/algorithmTypes.owl/</code> and is usually
- * abbreviated as <code><ota</code>.
+ * abbreviated as <code>ota</code>.
  * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -167,6 +167,8 @@ public final class OTAlgorithmTypes {
 
     /**
      * Generic learning algorithm
+     * @return 
+     *      The ontological class ot:Learning.
      */
     public static OntologicalClass learning() {
         if (msLearning == null) {

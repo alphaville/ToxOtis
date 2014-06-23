@@ -103,7 +103,7 @@ public interface IPolicyRule {
     /**
      * Set the access regime for the GET method.
      * 
-     * @param allowDelete
+     * @param allowGet
      *      Whether the GET method is allowed
      * @return 
      *      The current modifiable policy rule object with updated rule for the
@@ -114,7 +114,7 @@ public interface IPolicyRule {
     /**
      * Set the access regime for the POST method.
      * 
-     * @param allowDelete
+     * @param allowPost
      *      Whether the POST method is allowed
      * @return 
      *      The current modifiable policy rule object with updated rule for the
@@ -125,7 +125,7 @@ public interface IPolicyRule {
     /**
      * Set the access regime for the PUT method.
      * 
-     * @param allowDelete
+     * @param allowPut
      *      Whether the PUT method is allowed
      * @return 
      *      The current modifiable policy rule object with updated rule for the

@@ -41,7 +41,7 @@ import org.opentox.toxotis.ontology.impl.OTObjectPropertyImpl;
 
 /**
  * Collection of all object propertied used in OpenTox (API version 1.1).
- * 
+ *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -71,6 +71,8 @@ public final class OTObjectProperties {
     private static OTObjectProperty variableValues;
     private static OTObjectProperty variable;
     private static OTObjectProperty multiParameter;
+    private static OTObjectProperty substance;
+    private static OTObjectProperty image;
     private static Map<String, Method> methodCache;
 
     private synchronized static void initMethodCache() {
@@ -85,11 +87,12 @@ public final class OTObjectProperties {
     }
 
     /**
-     * Search for an OpenTox object property in this class providing
-     * the name of the property.
-     * 
-     * @param name 
-     *      What to search for. Name of the desired object property.
+     * Search for an OpenTox object property in this class providing the name of
+     * the property.
+     *
+     * @param name What to search for. Name of the desired object property.
+     * @return An ObjectProperty that corresponds to the given
+     * <code>name</code>.
      */
     public static OTObjectProperty forName(String name) {
         initMethodCache();
@@ -109,17 +112,56 @@ public final class OTObjectProperties {
     }
 
     /**
+     * Assigns a microscope image to a substance.
+     *
+     * @return The ontological property ot:image.
+     */
+    public static OTObjectProperty image() {
+        if (image == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("image");
+            property.getDomain().add(OTClasses.substance());
+            property.getRange().add(OTClasses.image());
+            property.getMetaInfo().
+                    addDescription("Assigns a microscope image to a substance").
+                    addComment("Tentative API");
+            image = property;
+        }
+        return image;
+    }
+
+    /**
+     * Substance.
+     *
+     * @return The ontological property ot:substance.
+     */
+    public static OTObjectProperty substance() {
+        if (substance == null) {
+            OTObjectProperty property = new OTObjectPropertyImpl("substance");
+            property.getDomain().add(OTClasses.dataEntry());
+            property.getRange().add(OTClasses.substance());
+            property.getMetaInfo().addDescription("A dataentry can map to a substance that can "
+                    + "describe nanomaterials and other materials that cannot be "
+                    + "categorized as compounds").
+                    addComment("Tentative API");
+            substance = property;
+        }
+        return substance;
+    }
+
+    /**
      * A chemical compound.
      * <pre>
-     * [ot:compound] ot:DataEntry --> ot:Compound
+     * [ot:compound] ot:DataEntry to ot:Compound
      * </pre>
+     *
+     * @return The object property <code>compound</code>.
      */
     public static OTObjectProperty compound() {
         if (compound == null) {
             OTObjectProperty property = new OTObjectPropertyImpl("compound");
             property.getDomain().add(OTClasses.dataEntry());
             property.getRange().add(OTClasses.compound());
-            property.getMetaInfo().addComment("A DataEntry is defined with a "
+            property.getMetaInfo().addDescription("A DataEntry is defined with a "
                     + "single compound and multiple feature values. "
                     + "This property sets the relationship between a DataEntry and a Compound");
             compound = property;
@@ -130,8 +172,10 @@ public final class OTObjectProperties {
     /**
      * A conformer.
      * <pre>
-     * [ot:conformer] ot:Compound --> ot:Conformer
+     * [ot:conformer] ot:Compound to ot:Conformer
      * </pre>
+     *
+     * @return ot:conformer as an ontological property.
      */
     public static OTObjectProperty conformer() {
         if (conformer == null) {
@@ -146,15 +190,17 @@ public final class OTObjectProperties {
     /**
      * A dataEntry of a dataset.
      * <pre>
-     * [ot:dataEntry] ot:Dataset --> ot:DataEntry
+     * [ot:dataEntry] ot:Dataset to ot:DataEntry
      * </pre>
+     *
+     * @return ot:dataEntry as an ontological property.
      */
     public static OTObjectProperty dataEntry() {
         if (dataEntry == null) {
             OTObjectProperty property = new OTObjectPropertyImpl("dataEntry");
             property.getDomain().add(OTClasses.dataset());
             property.getRange().add(OTClasses.dataEntry());
-            property.getMetaInfo().addComment("A Dataset contains multiple DataEntries.  "
+            property.getMetaInfo().addDescription("A Dataset contains multiple DataEntries.  "
                     + "This property specifies the relationship between Dataset and DataEntry.");
             dataEntry = property;
         }
@@ -164,8 +210,10 @@ public final class OTObjectProperties {
     /**
      * A feature.
      * <pre>
-     * [ot:feature] ot:FeatureValuePair --> ot:Feature
+     * [ot:feature] ot:FeatureValuePair to ot:Feature
      * </pre>
+     *
+     * @return ot:feature as an ontological property.
      */
     public static OTObjectProperty feature() {
         if (feature == null) {
@@ -174,34 +222,38 @@ public final class OTObjectProperties {
             property.getRange().add(OTClasses.feature());
             property.getMetaInfo().addDescription("FeatureValue contains a value for "
                     + "specific Feature, specified by this relationship.");
-            property.getMetaInfo().addComment("feature: FeatureValuePair --> Feature");
+            property.getMetaInfo().addDescription("feature: FeatureValuePair to Feature");
             feature = property;
         }
         return feature;
     }
 
     /**
-     * Super-property for other properties such as 
+     * Super-property for other properties such as
      * <code>{@link #algorithm() ot:algorithm}: {@link OTClasses#model() ot:Model}
-     * --> {@link OTClasses#algorithm() ot:Algorithm}</code>, or
-     * <code>{@link #dependentVariables() ot:dependentVariables}: 
-     * {@link OTClasses#model() ot:Model} --> {@link OTClasses#feature()  ot:Feature}</code> and other.
+     * to {@link OTClasses#algorithm() ot:Algorithm}</code>, or      <code>{@link #dependentVariables() ot:dependentVariables}: 
+     * {@link OTClasses#model() ot:Model} to
+     * {@link OTClasses#feature()  ot:Feature}</code> and other.
+     *
+     * @return ot:model as an ontological property.
      */
     public static OTObjectProperty model() {
         if (model == null) {
             OTObjectProperty property = new OTObjectPropertyImpl("model");
             property.getDomain().add(OTClasses.model());
             property.getRange().add(OTClasses.dataset());
-            property.getMetaInfo().addComment("Superproperty for other properties such as "
-                    + "algorithm:Model-->Algorithm, dependentVariables: Model --> Feature and other");
+            property.getMetaInfo().addDescription("Superproperty for other properties such as "
+                    + "algorithm:ModeltoAlgorithm, dependentVariables: Model to Feature and other");
             model = property;
         }
         return model;
     }
 
     /**
-     * The algorithm, used to create the Model. Maps OpenTox models to a training
-     * algorithm.
+     * The algorithm, used to create the Model. Maps OpenTox models to a
+     * training algorithm.
+     *
+     * @return ot:algorithm as an ontological property.
      */
     public static OTObjectProperty algorithm() {
         if (algorithm == null) {
@@ -217,6 +269,8 @@ public final class OTObjectProperties {
 
     /**
      * Variables, holding the predicted values, generated by the model.
+     *
+     * @return ot:predictedVariables as an ontological property.
      */
     public static OTObjectProperty predictedVariables() {
         if (predictedVariables == null) {
@@ -232,8 +286,10 @@ public final class OTObjectProperties {
     }
 
     /**
-     * A model can have one or more dependent variables, described as multiple features, 
-     * specified by this relationship.
+     * A model can have one or more dependent variables, described as multiple
+     * features, specified by this relationship.
+     *
+     * @return ot:depdendentVariables as an ontological property.
      */
     public static OTObjectProperty dependentVariables() {
         if (dependentVariables == null) {
@@ -250,8 +306,10 @@ public final class OTObjectProperties {
     }
 
     /**
-     * A model can have multiple independent variables, described as multiple features, 
-     * specified by this relationship.
+     * A model can have multiple independent variables, described as multiple
+     * features, specified by this relationship.
+     *
+     * @return ot:independentVariables as an ontological property.
      */
     public static OTObjectProperty independentVariables() {
         if (independentVariables == null) {
@@ -268,9 +326,11 @@ public final class OTObjectProperties {
     }
 
     /**
-     * An object property that assigns a parameter to a Model 
-     * (parameters: Model --> Parameter) or an Algorithm (parameters: Algorithm --> Parameter).
+     * An object property that assigns a parameter to a Model (parameters: Model
+     * to Parameter) or an Algorithm (parameters: Algorithm to Parameter).
      * Algorithms and Models can have multiple parameters.
+     *
+     * @return ot:parameters as an ontological property.
      */
     public static OTObjectProperty parameters() {
         if (parameters == null) {
@@ -280,16 +340,18 @@ public final class OTObjectProperties {
             property.getRange().add(OTClasses.parameter());
             property.getSuperProperties().add(model());
             property.getMetaInfo().addDescription("An object property that assigns a parameter to a Model "
-                    + "(parameters: Model --> Parameter) or an Algorithm (parameters: Algorithm --> Parameter)");
-            property.getMetaInfo().addComment("Algorithms and Models can have multiple parameters");
+                    + "(parameters: Model to Parameter) or an Algorithm (parameters: Algorithm to Parameter)");
+            property.getMetaInfo().addDescription("Algorithms and Models can have multiple parameters");
             parameters = property;
         }
         return parameters;
     }
 
     /**
-     * The training dataset. Assigns a dataset to a model.
-     * A model is derived by applying an Algorithm on a training Dataset.
+     * The training dataset. Assigns a dataset to a model. A model is derived by
+     * applying an Algorithm on a training Dataset.
+     *
+     * @return ot:trainingDataset as an ontological property.
      */
     public static OTObjectProperty trainingDataset() {
         if (trainingDataset == null) {
@@ -305,8 +367,11 @@ public final class OTObjectProperties {
     }
 
     /**
-     * A DataEntry is defined with a single compound and multiple feature values. This property 
-     * sets the relationship between a DataEntry and multiple FeatureValues.
+     * A DataEntry is defined with a single compound and multiple feature
+     * values. This property sets the relationship between a DataEntry and
+     * multiple FeatureValues.
+     *
+     * @return ot:values as an ontological property.
      */
     public static OTObjectProperty values() {
         if (values == null) {
@@ -322,9 +387,11 @@ public final class OTObjectProperties {
     }
 
     /**
-     * Some other ErrorReport corresponding to an exceptional event that triggered 
-     * this one. Is particularly useful when a service acts as a proxy or 
-     * gateway to other services. trace: ErrorReport --> ErrorReport.
+     * Some other ErrorReport corresponding to an exceptional event that
+     * triggered this one. Is particularly useful when a service acts as a proxy
+     * or gateway to other services. trace: ErrorReport to ErrorReport.
+     *
+     * @return ot:trace as an ontological property.
      */
     public static OTObjectProperty trace() {
         if (trace == null) {
@@ -334,7 +401,7 @@ public final class OTObjectProperties {
             property.getMetaInfo().addDescription("Some other ErrorReport corresponding "
                     + "to an exceptional event that triggered this one. Is particularly "
                     + "useful when a service acts as a proxy or gateway to other services.");
-            property.getMetaInfo().addComment("trace: ErrorReport --> ErrorReport");
+            property.getMetaInfo().addDescription("trace: ErrorReport to ErrorReport");
             trace = property;
         }
         return trace;
@@ -342,6 +409,8 @@ public final class OTObjectProperties {
 
     /**
      * Assigns an error report generated by a failed task.
+     *
+     * @return ot:errorReport as an ontological property.
      */
     public static OTObjectProperty errorReport() {
         if (errorReport == null) {
@@ -349,15 +418,17 @@ public final class OTObjectProperties {
             property.getDomain().add(OTClasses.task());
             property.getRange().add(OTClasses.featureValuePair());
             property.getMetaInfo().addDescription("Assigns an error report generated by a failed task.");
-            property.getMetaInfo().addComment("errorReport: Task --> ErrorReport");
+            property.getMetaInfo().addDescription("errorReport: Task to ErrorReport");
             errorReport = property;
         }
         return errorReport;
     }
 
     /**
-     * Assigns a bibliographic reference to an OpenTox resource such as an algorithm, 
-     * a model, a dataset or other resource of interest. 
+     * Assigns a bibliographic reference to an OpenTox resource such as an
+     * algorithm, a model, a dataset or other resource of interest.
+     *
+     * @return ot:bibtex as an ontological property.
      */
     public static OTObjectProperty bibTex() {
         if (bibtex == null) {
@@ -370,7 +441,7 @@ public final class OTObjectProperties {
             property.getRange().add(KnoufBibTex.entry());
             property.getMetaInfo().addDescription("Assigns a bibliographic reference to an OpenTox resource "
                     + "such as an algorithm, a model, a dataset or other resource of interest.");
-            property.getMetaInfo().addComment("errorReport: OpeTox BibTex Subject --> BibTeX");
+            property.getMetaInfo().addDescription("errorReport: OpeTox BibTex Subject to BibTeX");
             bibtex = property;
         }
         return bibtex;
@@ -378,6 +449,8 @@ public final class OTObjectProperties {
 
     /**
      * Source of an OpenTox resource.
+     *
+     * @return ot:hasSource as an ontological property.
      */
     public static OTObjectProperty hasSource() {
         if (hasSource == null) {
@@ -394,6 +467,8 @@ public final class OTObjectProperties {
 
     /**
      * Variable Info.
+     *
+     * @return ot:variableInfo as an ontological property.
      */
     public static OTObjectProperty variableInfo() {
         if (variableInfo == null) {
@@ -405,8 +480,10 @@ public final class OTObjectProperties {
         return variableInfo;
     }
 
-    /*
+    /**
      * Parameter Values.
+     *
+     * @return ot:parameterValues as an ontological property.
      */
     public static OTObjectProperty parameterValues() {
         if (parameterValues == null) {
@@ -420,6 +497,8 @@ public final class OTObjectProperties {
 
     /**
      * Variable values.
+     *
+     * @return ot:variableValues as an ontological property.
      */
     public static OTObjectProperty variableValues() {
         if (variableValues == null) {
@@ -433,8 +512,8 @@ public final class OTObjectProperties {
 
     /**
      * Assigns a multi-parameter (ot:MultiParameter) to a Model or an Algorithm
-     * @return
-     *      Object Property ot:multiParameter
+     *
+     * @return Object Property ot:multiParameter
      */
     public static OTObjectProperty multiParameter() {
         if (multiParameter == null) {
@@ -449,6 +528,8 @@ public final class OTObjectProperties {
 
     /**
      * A variable.
+     *
+     * @return ot:variable as an ontological property.
      */
     public static OTObjectProperty variable() {
         if (variable == null) {
@@ -462,6 +543,8 @@ public final class OTObjectProperties {
 
     /**
      * An element of a list.
+     *
+     * @return ot:listElement as an ontological property.
      */
     public static OTObjectProperty listElement() {
         if (listElement == null) {

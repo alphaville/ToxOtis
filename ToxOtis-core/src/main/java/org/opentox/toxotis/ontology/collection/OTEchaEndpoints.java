@@ -460,7 +460,7 @@ public final class OTEchaEndpoints {
 
     /**
      * Respiratory sensitisation.
-     * @see OTEchaEndpoints#AcuteInhalationToxicity() #AcuteInhalationToxicity()
+     * @see OTEchaEndpoints#acuteInhalationToxicity() #acuteInhalationToxicity()
      */
     public static OntologicalClass respiratorySensitisation() {
         if (msRespiratorySensitisation == null) {

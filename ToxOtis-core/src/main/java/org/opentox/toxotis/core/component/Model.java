@@ -72,18 +72,20 @@ import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.MetaInfo;
+import org.opentox.toxotis.ontology.collection.KnoufBibTex;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.ModelSpider;
 
 /**
  * QSAR, DoA or other OpenTox models. Models in OpenTox are services on which a
- * dataset can be POSTed for processing. An OpenTox model may correspond to a predictive
- * QSAR model, a domain of applicability estimator,  a filtering model that outputs
- * a (filtered) dataset or any other process on datasets and is not identical to the
- * notion of a predictive model as it appears in QSAR.
- * 
+ * dataset can be POSTed for processing. An OpenTox model may correspond to a
+ * predictive QSAR model, a domain of applicability estimator, a filtering model
+ * that outputs a (filtered) dataset or any other process on datasets and is not
+ * identical to the notion of a predictive model as it appears in QSAR.
+ *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  */
@@ -130,8 +132,8 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Create a new empty Model with a given URI.
-     * @param uri 
-     *      URI of the model.
+     *
+     * @param uri URI of the model.
      */
     public Model(VRI uri) {
         super(uri);
@@ -148,30 +150,31 @@ public class Model extends OTOnlineResource<Model>
      * The actual model, serializable object, that encapsulates all necessary
      * information for the calculated model that was trained by some algorithm.
      * Can be any implementation of {@link Serializable }, meaning practically
-     * almost anything. Users can implement their own models that can encapsulate
-     * potentially a Weka model file and a PMML representation of the model.
-     * @return
-     *      Model object with which predictions can be done.
+     * almost anything. Users can implement their own models that can
+     * encapsulate potentially a Weka model file and a PMML representation of
+     * the model.
+     *
+     * @return Model object with which predictions can be done.
      */
     public Serializable getActualModel() {
         return actualModel;
     }
 
     /**
-     * Set the actual model. This object is converted into an array of bytes using a
-     * <code>ByteArrayOutputStream</code> and an <code>ObjectOutputStream</code>.
-     * 
-     * @param actualModel
-     *      The object which can be used to perform predictions.
-     * @return
-     *      The current updated instance of the model containing the actual model
-     * @throws NotSerializableException
-     *      In case the provided actual model cannot be serialized. This is the case
-     *      when the provided model is an instance of a class which implements
-     *      <code>java.io.Serializable</code> but has some non-serializable fields.
-     *      In that case it is good practise to either exclude these fields from the
-     *      serialization tagging them as <code>transient</code> or replace them with
-     *      other serializable fields if possible
+     * Set the actual model. This object is converted into an array of bytes
+     * using a <code>ByteArrayOutputStream</code> and an
+     * <code>ObjectOutputStream</code>.
+     *
+     * @param actualModel The object which can be used to perform predictions.
+     * @return The current updated instance of the model containing the actual
+     * model
+     * @throws NotSerializableException In case the provided actual model cannot
+     * be serialized. This is the case when the provided model is an instance of
+     * a class which implements <code>java.io.Serializable</code> but has some
+     * non-serializable fields. In that case it is good practise to either
+     * exclude these fields from the serialization tagging them as
+     * <code>transient</code> or replace them with other serializable fields if
+     * possible
      *
      */
     public Model setActualModel(Serializable actualModel) throws NotSerializableException {
@@ -201,8 +204,9 @@ public class Model extends OTOnlineResource<Model>
     }
 
     /**
-     * If the actual model is stored as a file on the file system, this method returns
-     * the pathname for it.
+     * If the actual model is stored as a file on the file system, this method
+     * returns the pathname for it.
+     *
      * @return
      *
      */
@@ -211,11 +215,10 @@ public class Model extends OTOnlineResource<Model>
     }
 
     /**
-     * Sets the local code of the model. With this code the model is locally 
+     * Sets the local code of the model. With this code the model is locally
      * identified (e.g. on the file system).
-     * 
-     * @param localCode 
-     *      A custom (unique) identifier.
+     *
+     * @param localCode A custom (unique) identifier.
      */
     public void setLocalCode(String localCode) {
         this.localCode = localCode;
@@ -223,8 +226,8 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * The algorithm with which the model was built/trained.
-     * @return 
-     *      An instance of {@link Algorithm}
+     *
+     * @return An instance of {@link Algorithm}
      */
     public Algorithm getAlgorithm() {
         return algorithm;
@@ -232,8 +235,8 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Specify the algorithm that was used to train the model.
-     * @param algorithm 
-     *      An instance of {@link Algorithm}.
+     *
+     * @param algorithm An instance of {@link Algorithm}.
      */
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
@@ -241,8 +244,8 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * The user that created the model.
-     * @return 
-     *      An instance of {@link User}
+     *
+     * @return An instance of {@link User}
      */
     public User getCreatedBy() {
         return createdBy;
@@ -250,20 +253,18 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Specify who created this model.
-     * @param createdBy 
-     *      An instance of {@link User}
+     *
+     * @param createdBy An instance of {@link User}
      */
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
 
     /**
-     * Get the URI of the dataset that was used to train the model.
-     * The actual data should be fetched from the remote location if
-     * necessary.
-     * 
-     * @return 
-     *      URI of training dataset.
+     * Get the URI of the dataset that was used to train the model. The actual
+     * data should be fetched from the remote location if necessary.
+     *
+     * @return URI of training dataset.
      */
     public VRI getDataset() {
         return dataset;
@@ -271,11 +272,10 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Specify the URI of the training dataset.
-     * @param dataset
-     *      URI of the training set.
-     * @return 
-     *      The current modifiable instance of {@link Model} 
-     *      with updated training dataset.
+     *
+     * @param dataset URI of the training set.
+     * @return The current modifiable instance of {@link Model} with updated
+     * training dataset.
      */
     public Model setDataset(VRI dataset) {
         this.dataset = dataset;
@@ -283,10 +283,10 @@ public class Model extends OTOnlineResource<Model>
     }
 
     /**
-     * A list of the dependent features of the model, i.e. the
-     * target property (the response, e.g. experimentally measured property).
-     * @return 
-     *      List of {@link Feature features}
+     * A list of the dependent features of the model, i.e. the target property
+     * (the response, e.g. experimentally measured property).
+     *
+     * @return List of {@link Feature features}
      */
     public List<Feature> getDependentFeatures() {
         return dependentFeatures;
@@ -294,10 +294,9 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Set the list of dependent features of the current model
-     * @param dependentFeature
-     *      List of dependent features.
-     * @return 
-     *      The current Model instance with an updated list of features.
+     *
+     * @param dependentFeature List of dependent features.
+     * @return The current Model instance with an updated list of features.
      */
     public Model setDependentFeatures(List<Feature> dependentFeature) {
         this.dependentFeatures = dependentFeature;
@@ -306,10 +305,9 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Adds dependent features to the current list of features.
-     * @param features
-     *      Array of features.
-     * @return 
-     *      The current model with updated list of dependent features.
+     *
+     * @param features Array of features.
+     * @return The current model with updated list of dependent features.
      */
     public Model addDependentFeatures(Feature... features) {
         if (getDependentFeatures() == null) {
@@ -320,11 +318,9 @@ public class Model extends OTOnlineResource<Model>
     }
 
     /**
-     * A list of the independent features of the model, i.e. the
-     * descriptors.
-     * 
-     * @return 
-     *      List of {@link Feature features}
+     * A list of the independent features of the model, i.e. the descriptors.
+     *
+     * @return List of {@link Feature features}
      */
     public List<Feature> getIndependentFeatures() {
         return independentFeatures;
@@ -332,10 +328,10 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Set the list of independent features of the current model.
-     * @param independentFeatures 
-     *      List of independent features.
-     * @return 
-     *      The current Model instance with an updated list of independent features.
+     *
+     * @param independentFeatures List of independent features.
+     * @return The current Model instance with an updated list of independent
+     * features.
      */
     public Model setIndependentFeatures(List<Feature> independentFeatures) {
         this.independentFeatures = independentFeatures;
@@ -344,10 +340,9 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Adds independent features to the current list of features.
-     * @param features
-     *      Array of features.
-     * @return 
-     *      The current model with updated list of independent features.
+     *
+     * @param features Array of features.
+     * @return The current model with updated list of independent features.
      */
     public Model addIndependentFeatures(Feature... features) {
         if (getIndependentFeatures() == null) {
@@ -359,8 +354,8 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * The parameters of the model.
-     * @return 
-     *      A set of parameters for the current model.
+     *
+     * @return A set of parameters for the current model.
      * @see Parameter
      */
     public Set<Parameter> getParameters() {
@@ -369,7 +364,8 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Specify the set of parameters for the current model.
-     * @param parameters 
+     *
+     * @param parameters
      */
     public void setParameters(Set<Parameter> parameters) {
         this.parameters = parameters;
@@ -385,11 +381,10 @@ public class Model extends OTOnlineResource<Model>
     }
 
     /**
-     * A list of the predicted features of the model, i.e. the properties
-     * that the model predicts.
-     * 
-     * @return 
-     *      List of predicted {@link Feature features}.
+     * A list of the predicted features of the model, i.e. the properties that
+     * the model predicts.
+     *
+     * @return List of predicted {@link Feature features}.
      */
     public List<Feature> getPredictedFeatures() {
         return predictedFeatures;
@@ -397,10 +392,10 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Set the list of predicted features of the current model.
-     * @param predictedFeature  
-     *      List of predicted features.
-     * @return 
-     *      The current Model instance with an updated list of predicted features.
+     *
+     * @param predictedFeature List of predicted features.
+     * @return The current Model instance with an updated list of predicted
+     * features.
      */
     public Model setPredictedFeatures(List<Feature> predictedFeature) {
         this.predictedFeatures = predictedFeature;
@@ -409,10 +404,9 @@ public class Model extends OTOnlineResource<Model>
 
     /**
      * Adds predicted features to the current list of features.
-     * @param features
-     *      Array of predicted features.
-     * @return 
-     *      The current model with updated list of predicted features.
+     *
+     * @param features Array of predicted features.
+     * @return The current model with updated list of predicted features.
      */
     public Model addPredictedFeatures(Feature... features) {
         if (getPredictedFeatures() == null) {
@@ -478,9 +472,27 @@ public class Model extends OTOnlineResource<Model>
             indiv.addProperty(OTObjectProperties.algorithm().asObjectProperty(model), algorithm.asIndividual(model));
         }
 
+        if (references != null) {
+            Property bibtexProp = OTObjectProperties.bibTex().asObjectProperty(model);
+            for (VRI bibtex_reference_uri : references) {
+                // Create a BibTeX individual
+                Individual bibtex_indiv
+                        = model.createIndividual(
+                                bibtex_reference_uri.getStringNoQuery(),
+                                KnoufBibTex.entry().inModel(model));
+                // Attach some metadata to the bibtex entry
+                MetaInfo bibtex_meta = new MetaInfoImpl();
+                bibtex_meta.addIdentifier(bibtex_reference_uri.getStringNoQuery()).
+                        addComment("A BibTeX reference for Model " + 
+                                getUri().getStringNoQuery());
+                bibtex_meta.attachTo(bibtex_indiv, model); // Attach the metadata to the bibtex individual
+                indiv.addProperty(bibtexProp, bibtex_indiv);
+            }
+        }
+
         return indiv;
     }
-
+       
     @Override
     protected Model loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
         ModelSpider spider = new ModelSpider(uri, token);
@@ -594,7 +606,6 @@ public class Model extends OTOnlineResource<Model>
         builder.addSubSubHeading(getUri().toString());
         builder.getDiv().setAlignment(Alignment.justify).breakLine().horizontalSeparator();
 
-
         /**
          * Interface for making predictions
          */
@@ -605,14 +616,14 @@ public class Model extends OTOnlineResource<Model>
         HTMLTable interfacetable = new HTMLAppendableTableImpl(2);
         interfacetable.setAtCursor(new HTMLTextImpl("Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_uri").setType(HTMLInput.HTMLInputType.TEXT).
-                setValue(getDataset() != null ? getDataset().toString() : "").setSize(HTML_TEXTBOX_SIZE)).
+                        setValue(getDataset() != null ? getDataset().toString() : "").setSize(HTML_TEXTBOX_SIZE)).
                 setAtCursor(new HTMLTextImpl("Dataset Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("dataset_service").
-                setType(HTMLInput.HTMLInputType.TEXT).
-                setValue(dataset != null ? dataset.getServiceBaseUri().augment("dataset").toString() : "").
-                setSize(HTML_TEXTBOX_SIZE)).
+                        setType(HTMLInput.HTMLInputType.TEXT).
+                        setValue(dataset != null ? dataset.getServiceBaseUri().augment("dataset").toString() : "").
+                        setSize(HTML_TEXTBOX_SIZE)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).
-                setValue("Predict")).
+                        setValue("Predict")).
                 setTextAtCursor("");
 
         interfacetable.setCellPadding(IFACE_CELL_PADDING).
@@ -623,8 +634,6 @@ public class Model extends OTOnlineResource<Model>
         form.addComponent(interfacetable);
 
         builder.getDiv().breakLine().breakLine();
-
-
 
         /**
          * Interface for model validation
@@ -640,13 +649,13 @@ public class Model extends OTOnlineResource<Model>
         HTMLTable validationtable = new HTMLAppendableTableImpl(2);
         validationtable.setAtCursor(new HTMLTextImpl("Test Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("test_dataset_uri").setType(HTMLInput.HTMLInputType.TEXT).
-                setValue(getDataset() != null ? getDataset().toString() : "").setSize(textBoxSize2)).
+                        setValue(getDataset() != null ? getDataset().toString() : "").setSize(textBoxSize2)).
                 setAtCursor(new HTMLTextImpl("Target Dataset URI").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("test_target_dataset_uri").
-                setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset != null ? dataset.toString() : "").setSize(textBoxSize2)).
+                        setType(HTMLInput.HTMLInputType.TEXT).setValue(dataset != null ? dataset.toString() : "").setSize(textBoxSize2)).
                 setAtCursor(new HTMLTextImpl("Validation Service").formatBold(true)).
                 setAtCursor(new HTMLInputImpl().setName("validation_service").
-                setType(HTMLInput.HTMLInputType.TEXT).setValue("http://toxcreate2.in-silico.ch/validation/test_set_validation").setSize(textBoxSize2)).
+                        setType(HTMLInput.HTMLInputType.TEXT).setValue("http://toxcreate2.in-silico.ch/validation/test_set_validation").setSize(textBoxSize2)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Validate")).setTextAtCursor("");
         validationtable.setCellPadding(VALIDATION_CELL_PADDING).
                 setCellSpacing(VALIDATION_CELL_SPACING).
@@ -689,7 +698,6 @@ public class Model extends OTOnlineResource<Model>
             featuresTable.setTextAtCursor(refs.toString());
         }
 
-
         featuresTable.setCellPadding(FEATURES_CELL_PADDING).
                 setCellSpacing(FEATURES_CELL_SPACING).
                 setTableBorder(FEATURES_TABLE_BORDER).
@@ -706,7 +714,7 @@ public class Model extends OTOnlineResource<Model>
                 parametersTable.setAtCursor(new HTMLTagImpl("a", prm.getName().getValueAsString()).addTagAttribute("href", getAlgorithm().getUri().toString()));
                 parametersTable.setAtCursor(prm.getTypedValue() != null
                         ? new HTMLTagImpl("a", prm.getTypedValue().getValueAsString()).addTagAttribute(
-                        "href", XSD_DATATYPE_LINKS.get(prm.getType().getURI())) : new HTMLTextImpl("-"));
+                                "href", XSD_DATATYPE_LINKS.get(prm.getType().getURI())) : new HTMLTextImpl("-"));
             }
             parametersTable.setCellPadding(5).
                     setCellSpacing(2).

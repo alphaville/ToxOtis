@@ -58,7 +58,9 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  * provide. The master key is used when you need to create a new username+password file
  * or when you need to use this password file to authenticate your self. This way,
  * you will never need to provide your credentials within your application. Firstly,
- * you have to create a password file that has the following structure:<br/><br/></p>
+ * you have to create a password file that has the following structure:</p>
+ * 
+ * 
  * <pre>--- START MASTER KEY ---
  * m2gWQ1FRUVdSXXxhOVBnazQyKy8vUzRcPWFfJ2tmKpE
  * tZm1rcm5rZ2MNCaA/RPQtLjJfFjt/bHQ0S0Q/MzkxbU
@@ -68,23 +70,29 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  * ... [ More random characters go here ] ....
  * eq25nDVg4sfmaFp4g5taFghtSD2g5l09Ufn*adegHlo
  * --- END MASTER KEY ---</pre>
- * <br/>
+ * 
+ * 
  * <p align=justify>
  * This can be done using the method {@link PasswordFileManager#createMasterPasswordFile(java.lang.String, java.lang.String, int, boolean)  }.
  * Store this file somewhere on your machine (We suggest that you made it hidden
  * and specify its permissions properly). Then you can use this file to create an
  * encrypted password file or authenticate yourself against the SSO server providing
  * the path of your password file and not your credentials! Here are two examples:
- * </p><br/>
+ * </p>
+ * 
+ * 
  * <pre> // Example 1: Create a password file
  * PasswordFileManager.CRYPTO.createMasterPasswordFile("john", "s3cret", "./secret/my.key");
  * </pre>
+ * 
+ * 
  * <pre> // Example 2: Authentication using the password file
  * // No credentials are provided
  * AuthenticationToken at = PasswordFileManager.CRYPTO.
  *    authFromFile("./secret/my.key");
  * </pre>
- * <p align=justify>
+ * 
+ * 
  * <b>It does not work:</b> The most common reasons for exceptional events are the
  * following:
  * <ol>
@@ -103,7 +111,7 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
  * Check out the salting iterations using the method {@link PasswordFileManager#getCryptoIterations()
  * getCryptoIterations()} (The default value is 23).</li>
  * </ol>
- * </p>
+ * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
  *
@@ -145,11 +153,12 @@ public final class PasswordFileManager extends Observable {
     private double fileCreationProgress = 0;
     private static final Random RNG = new Random();
     private PrintStream printStream = System.out;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class);
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PasswordFileManager.class);
 
     /**
      * Where to stream messages. This is meaningful only in 
      * verbose mode.
+     * @param printStream
      */
     public void setPrintStream(PrintStream printStream) {
         this.printStream = printStream;
@@ -216,7 +225,7 @@ public final class PasswordFileManager extends Observable {
                     characters = Character.toChars(readInt);
                     passBuilder.append(characters);
                     charCounter++;
-                    notifyObservers(new Double(MAX_PERCENTAGE_COMPLETED * (double) charCounter) / ((double) size));
+                    notifyObservers(MAX_PERCENTAGE_COMPLETED * (double) charCounter / ((double) size));
                     super.setChanged();
                 }
             }
@@ -511,6 +520,7 @@ public final class PasswordFileManager extends Observable {
      *      Unauthorized or 403 - Forbidden), other HTTP related events inhibit the
      *      creation of am Authentication Token or if the provided password file
      *      is not valid.
+     * @throws org.opentox.toxotis.exceptions.impl.ServiceInvocationException
      * @see PasswordFileManager#authFromFile(java.io.File) authFromFile(File)
      */
     public synchronized AuthenticationToken authFromFile(String filePath)
@@ -544,6 +554,7 @@ public final class PasswordFileManager extends Observable {
      *      Unauthorized or 403 - Forbidden), other HTTP related events inhibit the
      *      creation of am Authentication Token or if the provided password file
      *      is not valid.
+     * @throws org.opentox.toxotis.exceptions.impl.ServiceInvocationException
      * @see PasswordFileManager#authFromFile(java.lang.String) authFromFile(String)
      */
     public synchronized AuthenticationToken authFromFile(File file)

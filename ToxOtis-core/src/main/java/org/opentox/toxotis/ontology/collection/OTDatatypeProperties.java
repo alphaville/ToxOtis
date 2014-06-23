@@ -114,7 +114,7 @@ public final class OTDatatypeProperties {
 
     /**
      * The property <code>ot:hasStatus</code> assigns status values to Tasks. The
-     * domain of this property is the ontological class {@link OTClasses#Task() }
+     * domain of this property is the ontological class {@link OTClasses#task()  }
      * and its range is <code>xsd:string</code>. Acceptable values are <code>RUNNING</code>,
      * <code>COMPLETED</code>, <code>ERROR</code> and <code>CANCELED</code>.
      * @return
@@ -134,7 +134,7 @@ public final class OTDatatypeProperties {
     /**
      * Datatype property used to link an <code>ot:Nominal</code> with its admissible
      * values. This property is also used to assign range values to Nominal Features.
-     * The domain of this property is the class {@link OTClasses#Nominal() } and its
+     * The domain of this property is the class {@link OTClasses#nominal() } and its
      * range is <code>xsd:string</code>.
      * @return
      *      The datatype property ot:acceptValue

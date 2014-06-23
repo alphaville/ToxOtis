@@ -38,17 +38,17 @@ import com.hp.hpl.jena.ontology.OntModel;
 import java.util.Collection;
 
 /**
- * <p align=justify width=80%>
+ * <p align=justify>
  * According to the OWL specification provided by W3C, datatype properties link
  * individuals to data values.
  * </p>
  *
  * @author Sopasakis Pantelis
  */
-public interface OTDatatypeProperty extends OTProperty{
+public interface OTDatatypeProperty extends OTProperty {
 
     /**
-     * <p align=justify width=80%>
+     * <p align=justify>
      * For a property one can define (multiple) <code>rdfs:range</code> axioms. Syntactically, <code>rdfs:range</code>
      * is a built-in property that links a property (some instance of the class <code>rdf:Property</code>) to to
      * either a class description or a data range. An <code>rdfs:range</code> axiom asserts that the values of
@@ -63,7 +63,8 @@ public interface OTDatatypeProperty extends OTProperty{
      *    The range of an object property specifies the admissible XSD datatypes
      *    for this property.
      *
-     * @see http://www.w3.org/TR/owl-ref/#ObjectProperty-def
+     * @see <a href="http://www.w3.org/TR/owl-ref/#ObjectProperty-def">Object Property Definition</a>
+     * 
      */
     Collection<XSDDatatype> getRange();
 

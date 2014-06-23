@@ -42,7 +42,7 @@ import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
- * A minimal implementaiton of a component with just a URI and a set of ontological
+ * A minimal implementation of a component with just a URI and a set of ontological
  * classes and not much functionality therein.
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -50,9 +50,9 @@ import org.opentox.toxotis.ontology.collection.OTClasses;
 public class DummyComponent extends OTComponent<DummyComponent>{
 
     /**
-     * Dummy constructor for this component with no arguments. Calls the contructor
+     * Dummy constructor for this component with no arguments. Calls the constructor
      * in the <code>super</code> class and initializes the ontological classes for it
-     * with {@link OTClasses#OpenToxResource() }
+     * with {@link OTClasses#openToxResource()  }
      *
      */
     public DummyComponent() {

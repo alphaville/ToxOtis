@@ -60,7 +60,7 @@ public class SuperPredictor {
     private Compound compound;
     private Model model;
     private AuthenticationToken token;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SuperPredictor.class);
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SuperPredictor.class);
 
     private SuperPredictor(AuthenticationToken token) {
         this.token = token;

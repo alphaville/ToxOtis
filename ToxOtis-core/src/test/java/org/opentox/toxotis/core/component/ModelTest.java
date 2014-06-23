@@ -32,6 +32,8 @@
  */
 package org.opentox.toxotis.core.component;
 
+import com.hp.hpl.jena.ontology.ObjectProperty;
+import com.hp.hpl.jena.ontology.OntModel;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,6 +42,8 @@ import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.ontology.collection.OTObjectProperties;
+import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 
 /**
@@ -68,12 +72,25 @@ public class ModelTest {
     }
 
     @Test
-    public void testModel() throws ServiceInvocationException {
-        AuthenticationToken token = new AuthenticationToken("guest", "guest");                
+    public void testModelAsIndividual() {
+        ROG rog = new ROG();
+        Model m = rog.nextModel();
+        m.addBibTeXReferences(Services.anonymous().augment("bibtex", 1));
+        OntModel m_ontModel = m.asOntModel();
+        m_ontModel.write(System.out, "N3");
+        assertNotNull(m_ontModel);
+        ObjectProperty op_bibtex = m_ontModel.getObjectProperty(
+                OTObjectProperties.bibTex().getUri());
+        assertNotNull(op_bibtex);
+        //TODO Test more
+    }
+
+    //@Test
+    public void testLoadModel() throws ServiceInvocationException {
+        AuthenticationToken token = new AuthenticationToken("guest", "guest");
         Model m = new Model(Services.ntua().augment("algorithm", "mlr")).loadFromRemote(token);
         assertNotNull(m.getMeta());
         assertNotNull(m.getMeta().getRights());
     }
-        
-    
+
 }

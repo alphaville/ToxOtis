@@ -205,6 +205,8 @@ public class Services {
 
         /**
          * AMBIT CKD-based depiction.
+         * @return 
+         *  VRI of ABMIT CDK/Image service.
          */
         public static VRI ambitCdkImage() {
             try {
@@ -217,6 +219,8 @@ public class Services {
         /**
          * 
          * AMBIT Daylight depiction service.
+         * @return 
+         *  VRI of AMBIT's DaylightImage services.
          */
         public static VRI ambitDaylightImage() {
             try {
@@ -229,6 +233,9 @@ public class Services {
         /**
          * 
          * AMBIT CACTVS-based depiction service.
+         * 
+         * @return
+         *      VRI of the AMBIT Cactus Image Service.
          */
         public static VRI ambitCactvsImage() {
             try {
@@ -241,6 +248,9 @@ public class Services {
         /**
          * 
          * IDEAconsult CDK-based depiction service.
+         * 
+         * @return
+         *      VRI of the IDEA CDK image service.
          */
         public static VRI ideaCdkImage() {
             return ideaconsult().augment("depict", "cdk");
@@ -249,6 +259,9 @@ public class Services {
         /**
          * 
          * IDEAconsult DAYLIGHT-based depiction service.
+         * 
+         * @return 
+         *      VRI fo the ideaconsult daylight image service.
          */
         public static VRI ideaDaylightImage() {
             return ideaconsult().augment("depict", "daylight");
@@ -257,6 +270,8 @@ public class Services {
         /**
          * 
          * IDEAconsult CACTVS-based depiction service.
+         * @return 
+         *  Cactus Image service by ideaconsult.
          */
         public static VRI ideaCactvsImage() {
             return ideaconsult().augment("depict", "cactvs");
@@ -270,6 +285,9 @@ public class Services {
 
         /**
          * SSO Identity service.
+         * 
+         * @return
+         *      VRI of the SSO identity service.
          */
         public static VRI ssoIdentity() {
             try {
@@ -281,6 +299,9 @@ public class Services {
 
         /**
          * SSO Authentication service
+         * 
+         * @return 
+         * VRI of the SSO authentication service.
          */
         public static VRI ssoAuthenticate() {
             try {
@@ -292,6 +313,9 @@ public class Services {
 
         /**
          * SSO policy service.
+         * 
+         * @return
+         *      VRI of the SSO policy service.
          */
         public static VRI ssoPolicy() {
             try {
@@ -304,6 +328,7 @@ public class Services {
         /**
          * SSO Old Policy service.
          * @deprecated 
+         * @return VRI of the old SSO policy service.
          */
         @Deprecated
         public static VRI ssoPolicyOld() {
@@ -316,6 +341,8 @@ public class Services {
 
         /**
          * SSO Attributes service.
+         * @return 
+         *  VRI of the SSO-attributes service.
          */
         public static VRI ssoAttributes() {
             try {
@@ -327,6 +354,9 @@ public class Services {
 
         /**
          * SSO identity validation service.
+         * 
+         * @return 
+         *      VRI of the SSO validation service.
          */
         public static VRI ssoValidate() {
             try {
@@ -338,6 +368,9 @@ public class Services {
 
         /**
          * SSO logout/token-invalidation service.
+         * 
+         * @return
+         *      VRI of the SSO invalidate/logout service.
          */
         public static VRI ssoInvalidate() {
             try {
@@ -349,6 +382,9 @@ public class Services {
 
         /**
          * SSO authorization service.
+         * 
+         * @return
+         *      VRI of the SSO authorization service.
          */
         public static VRI ssoAuthorize() {
             try {
@@ -366,6 +402,9 @@ public class Services {
 
         /**
          * JOElib service.
+         * 
+         * @return
+         *      VRI of the joelib service.
          */
         public static VRI joelib() {
             return Services.tumDev().augment("algorithm", "JOELIB2");
@@ -373,6 +412,10 @@ public class Services {
 
         /**
          * CDK physicochemical calculation service.
+         * 
+         * @return  
+         *      VRI fo the CDK physicochemical descriptor calculation
+         *      service.
          */
         public static VRI cdkPhysChem() {
             return Services.tumDev().augment("algorithm", "CDKPhysChem");

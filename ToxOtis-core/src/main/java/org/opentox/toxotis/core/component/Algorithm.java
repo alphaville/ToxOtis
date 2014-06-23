@@ -174,6 +174,8 @@ public class Algorithm extends OTOnlineResource<Algorithm>
      * ParameterValue the parameters of the algorithm.
      * @param parameters
      *      ParameterValue of parameters.
+     * @return 
+     *      The current modifiable instance of Algorithm.
      */
     public Algorithm setParameters(Set<Parameter> parameters) {
         this.parameters = parameters;
@@ -241,7 +243,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
      * @return
      *      Updates this algorithm object and returns the updated instance.
      *
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the input stream does not provide a valid data model for
      *      an algorithm
      */

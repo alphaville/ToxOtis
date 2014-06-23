@@ -36,6 +36,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
@@ -51,9 +52,9 @@ import org.opentox.toxotis.ontology.collection.OTRestObjectProperties;
 
 /**
  * Provides a machine-readable documentation for the consumption of all available
- * services provided including information about diffferent HTTP methods, possible
+ * services provided including information about different HTTP methods, possible
  * status codes, input parameters and more. This can be used to generate human-readable
- * guidelines for the invokation of the web service.
+ * guidelines for the invocation of the web service.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -67,7 +68,7 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
      * A <code>ServiceRestDocumentation</code> object should be initialized with
      * an OpenTox component.
      * @param component
-     *      An opentox component or an instance of {@link DummyCompo
+     *      An OpenTox component or an instance of {@link DummyComponent }
      */
     public ServiceRestDocumentation(IOTComponent component) {
         super();
@@ -101,9 +102,7 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
         if (getRestOperations() == null) {
             setRestOperations(new HashSet<IRestOperation>());
         }
-        for (IRestOperation rest : restOperations) {
-            getRestOperations().add(rest);
-        }
+        getRestOperations().addAll(Arrays.asList(restOperations));
         return this;
     }
 
@@ -134,7 +133,12 @@ public class ServiceRestDocumentation extends OTComponent<ServiceRestDocumentati
         if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
             classForCoreComponent = getOntologicalClasses().iterator().next();
         }
-        Individual indiv = model.createIndividual(getUri().toString(), classForCoreComponent.inModel(model));
+        if (classForCoreComponent==null){
+            throw new NullPointerException("Null ontological class included in the "
+                    + "collection of ont. classes!");
+        }
+        Individual indiv = model.createIndividual(getUri().toString(), 
+                classForCoreComponent.inModel(model));
         if (getOntologicalClasses() != null && !getOntologicalClasses().isEmpty()) {
             for (OntologicalClass oc : getOntologicalClasses()) {
                 indiv.addRDFType(oc.inModel(model));

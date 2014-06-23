@@ -41,7 +41,7 @@ import org.opentox.toxotis.core.IHTMLSupport;
  *
  * Interface describing meta-information for a resource.
  * 
- * <p align=justify width=80%>
+ * <p align=justify>
  * The term metadata is usually used to describe <em>data about data</em> that include 
  * a definition, description and other auxiliary information about the underlying resource. 
  * The interface MetaInfo provides access to a set of such metadata about
@@ -70,7 +70,7 @@ import org.opentox.toxotis.core.IHTMLSupport;
  *
  * @author Sopasakis Pantelis
  *
- * @see http://dublincore.org/documents/usageguide/elements.shtml
+ * @see <a href="http://dublincore.org/documents/usageguide/elements.shtml">Dublin Core Documentation</a>
  */
 public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
 
@@ -507,7 +507,7 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      be assigned. The resource provided as input to this method is updated
      *      according to the metadata and various statements are assigned to it
      *      concerning the non-null fields of the metadata object to which the method
-     *      is applied.<br/>
+     *      is applied.
      * @param model
      *      The ontological model holding the individual provided in this method.
      * @return
@@ -519,8 +519,8 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * Write the meta information in RDF/XML format using an XML Stream Writer. The
      * data are written at the current position of the cursor of the writer. The method
      * appends meta information about the underlying resource that is described in the
-     * RDF/XML document. Note that the writter should include at least the following
-     * namespaces before the invokation of this method:
+     * RDF/XML document. Note that the writer should include at least the following
+     * namespaces before the invocation of this method:
      *
      * <pre>
      * ot   : http://www.opentox.org/api/1.1#

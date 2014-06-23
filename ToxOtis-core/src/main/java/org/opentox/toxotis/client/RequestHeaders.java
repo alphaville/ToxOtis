@@ -50,9 +50,9 @@ package org.opentox.toxotis.client;
  * <pre> message-header = field-name ":" [ field-value ]
  *      field-name     = token
  *      field-value    = *( field-content | LWS )
- *      field-content  = <the OCTETs making up the field-value
+ *      field-content  = (the OCTETs making up the field-value
  *                       and consisting of either *TEXT or combinations
- *                       of token, separators, and quoted-string>
+ *                       of token, separators, and quoted-string)
  *</pre>
  *
  * @author Pantelis Sopasakis

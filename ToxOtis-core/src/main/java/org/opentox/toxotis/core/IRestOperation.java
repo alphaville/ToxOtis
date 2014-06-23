@@ -71,7 +71,7 @@ public interface IRestOperation extends IOTComponent {
     /**
      * Add supported HTTP status codes to the current rest operation.
      * 
-     * @param httpParameters
+     * @param httpStatusCodes
      *      Array of HTTP status codes.
      * @return 
      *      The current modifiable instance of IRestOperation with
@@ -93,7 +93,7 @@ public interface IRestOperation extends IOTComponent {
 
     /**
      * Set of input parameters which are expected by the client on POST. These are
-     * either posted as a {@link Media#APPLICATION_FORM_URL_ENCODED form} or included
+     * either posted as a {@link org.opentox.toxotis.client.collection.Media#APPLICATION_FORM_URL_ENCODED form} or included
      * in the URL as URL parameters.
      * 
      * @return
@@ -104,8 +104,8 @@ public interface IRestOperation extends IOTComponent {
     /**
      * A set of the status codes that might occur when invoking the service, including
      * all redirection, error and success status codes. As ontological classes, status
-     * codes are found in the colleciton {@link OTRestClasses }, and subclass {@link
-     * OTRestClasses#HTTPStatus() } such as {@link OTRestClasses#STATUS_200() }.
+     * codes are found in the collection {@link OTRestClasses }, and subclass {@link
+     * OTRestClasses#httpStatus()  } such as {@link OTRestClasses#status200()  }.
      *
      * @return
      *      Set of ontological classes that describe the available status codes.
@@ -166,6 +166,7 @@ public interface IRestOperation extends IOTComponent {
     /**
      * 
      * @param httpMethod
+     *      The underlying HTTP method.
      * @return 
      *      The current modifiable instance of IRestOperation with
      *      updated HTTP method.

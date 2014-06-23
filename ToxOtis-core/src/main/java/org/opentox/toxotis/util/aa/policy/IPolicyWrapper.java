@@ -64,12 +64,11 @@ public interface IPolicyWrapper {
      * @return
      * Server's response message
      *
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      * In case a HTTP related error occurs (I/O communication error, or the
      * remote server is down), the service respondes in an unexpected manner
      * like a status code 500 or 503 or authentication/authorization fails and
      * a status code 403 or 401 are returned respectively.
-     * @throws InactiveTokenException
      * If the token the user uses is not active (because it has been invalidated,
      * expired, or not initialized yet).
      */

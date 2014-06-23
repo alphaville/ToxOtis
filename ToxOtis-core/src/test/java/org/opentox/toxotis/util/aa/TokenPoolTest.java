@@ -50,10 +50,10 @@ import static org.junit.Assert.*;
 public class TokenPoolTest {
 
     static final String MASTER_KEY_LOCATION = System.getProperty("user.home") + "/toxotisKeys/master.key",
-            GUEST_SECRET_KEY = System.getProperty("user.home") + "/toxotisKeys/.guest.key",
+            GUEST_SECRET_KEY = System.getProperty("user.home") + "/toxotisKeys/guest.key",
             RNG_SYS = "/dev/random";
-    
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TokenPoolTest.class);
+
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TokenPoolTest.class);
 
     public TokenPoolTest() {
     }
@@ -77,7 +77,7 @@ public class TokenPoolTest {
     /**
      * If there is no master password file, create it.
      */
-    public void createMasterPasswordFileIfMissing() throws URISyntaxException {
+    private void createMasterPasswordFileIfMissing() throws URISyntaxException {
         File masterPassFile = new File(MASTER_KEY_LOCATION);
 
         if (!masterPassFile.exists()) {
@@ -105,22 +105,26 @@ public class TokenPoolTest {
         }
     }
 
+    @Test
     public void createGuestCredentialsFileIfMissing() throws Exception {
         createMasterPasswordFileIfMissing();
         PasswordFileManager.CRYPTO.setMasterPasswordFile(MASTER_KEY_LOCATION);
-        PasswordFileManager.CRYPTO.createPasswordFile("guest", "guest", GUEST_SECRET_KEY);
+        File privateKeyFile = new File(GUEST_SECRET_KEY);
+        if (!privateKeyFile.exists()) {
+            PasswordFileManager.CRYPTO.createPasswordFile("guest", "guest", GUEST_SECRET_KEY);
+        }
+        assertTrue(privateKeyFile.exists());
     }
 
     @Test
     public void testLogin() throws Exception {
         createGuestCredentialsFileIfMissing();
-
         TokenPool tokenPool = TokenPool.getInstance();
         for (int i = 0; i < 10; i++) {
-            tokenPool.login(System.getProperty("user.home") + "/toxotisKeys/.my.key");
-            tokenPool.login("guest", "guest");
+            tokenPool.login(GUEST_SECRET_KEY);
+            tokenPool.login(GUEST_SECRET_KEY);
         }
-        assertEquals(2, tokenPool.size());
+        assertEquals(1, tokenPool.size());
 
     }
 }

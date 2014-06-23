@@ -151,10 +151,10 @@ public class HTMLUtils {
      * Returns a list of elements in an HTML container out of a given list of Resources.
      * Users can specify whether the HTML elements will appear as links or in plain text
      * format. The list is compiled as a list of URIs and is constructed my iterated
-     * invokation of the method {@link ResourceValue#getUri() }.
+     * invocation of the method {@link ResourceValue#getUri() }.
      *
      * @param objects
-     *      List of resources for which a uri list in HTML is needed
+     *      List of resources for which a URI list in HTML is needed
      * @param listTag
      *      The tag that defines the list. It's default value is <code>ol</code>, so
      *      in case <code>null</code> is provided, a numbered list will be created.
@@ -190,10 +190,10 @@ public class HTMLUtils {
      * Returns a list of elements in an HTML container out of a given list of {@link OntologicalClass }
      * instances. Users can specify whether the HTML elements will appear as links or in plain text
      * format. The list is compiled as a list of URIs and is constructed my iterated
-     * invokation of the method {@link OntologicalClass#getUri() }.
+     * invocation of the method {@link OntologicalClass#getUri() }.
      *
      * @param objects
-     *      List of {@link OntologicalClass ontological classes} for which a uri list in HTML is needed
+     *      List of {@link OntologicalClass ontological classes} for which a URI list in HTML is needed
      * @param listTag
      *      The tag that defines the list. It's default value is <code>ol</code>, so
      *      in case <code>null</code> is provided, a numbered list will be created.
@@ -212,9 +212,9 @@ public class HTMLUtils {
         for (OntologicalClass o : objects) {
             sb.append(LIST_START);
             if (doLink) {
-                sb.append("<a href=\"").append(o.getUri().toString()).append("\">");
+                sb.append("<a href=\"").append(o.getUri()).append("\">");
             }
-            sb.append(o.getUri().toString());
+            sb.append(o.getUri());
             if (doLink) {
                 sb.append("</a>");
             }
@@ -257,8 +257,11 @@ public class HTMLUtils {
     }
 
     /**
-     * Normalizes a text for use in HTML. Replaces all new lines (<code>/n</code>)
-     * by the HTML element <code><br/></code> and all <code>&</code> by <code>&amp;</code>.
+     * Normalizes a text for use in HTML. 
+     * 
+     * Replaces all new lines (<code>/n</code>)
+     * by the HTMLline-break element and all 
+     * ampersands by <code>&amp;</code>.
      * 
      * @param plainText
      *      Text to be HTML-normalized

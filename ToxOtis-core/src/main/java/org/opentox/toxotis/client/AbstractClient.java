@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.http.AbstractHttpClient;
 import org.opentox.toxotis.exceptions.impl.BadRequestException;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.RemoteServiceException;
@@ -68,17 +69,19 @@ public abstract class AbstractClient implements IClient {
     /** Accepted media-type  */
     private String acceptMediaType = null;
     /** A mapping from parameter names to their corresponding values */
-    private Map<String, String> headerValues = new HashMap<String, String>();
-    private ReentrantReadWriteLock.ReadLock readLock = new ReentrantReadWriteLock().readLock();
-    private ReentrantReadWriteLock.WriteLock connectionLock = new ReentrantReadWriteLock().writeLock();
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractClient.class);
+    private final Map<String, String> headerValues = new HashMap<String, String>();
+    private final ReentrantReadWriteLock.ReadLock readLock = new ReentrantReadWriteLock().readLock();
+    private final ReentrantReadWriteLock.WriteLock connectionLock = new ReentrantReadWriteLock().writeLock();
+    private final org.slf4j.Logger logger;
     private static final String NO_TARGET_MSG = "No target specified",
             IO_ERROR_MSG = "Input-Output error occured while connecting to the server at %s";
 
     public AbstractClient() {
+        this.logger = org.slf4j.LoggerFactory.getLogger(AbstractClient.class);
     }
 
     public AbstractClient(VRI vri) {
+        this.logger = org.slf4j.LoggerFactory.getLogger(AbstractClient.class);
         this.vri = vri;
     }
 
@@ -184,14 +187,16 @@ public abstract class AbstractClient implements IClient {
      * @return
      *      An instance of HttpURLConnection that is used to perform the remote
      *      HTTP request.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an error status code is received from the remote service or
      *      an I/O exception is thrown due to communication problems with the remote
      *      server.
      */
-    protected abstract java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws ServiceInvocationException;
+    protected abstract java.net.HttpURLConnection 
+        initializeConnection(final java.net.URI uri) throws ServiceInvocationException;
 
-    protected java.net.HttpURLConnection connect(final java.net.URI uri) throws ServiceInvocationException {
+    protected java.net.HttpURLConnection 
+        connect(final java.net.URI uri) throws ServiceInvocationException {
         connectionLock.lock();
         try {
             return initializeConnection(uri);
@@ -229,10 +234,7 @@ public abstract class AbstractClient implements IClient {
      *      In case an error status code is received from the remote location.
      * @throws ConnectionException
      *      In case no connection is feasible to the remote resource. Stream cannot
-     *      open and the generated connection is <code>null</code>
-     * @throws java.io.IOException
-     *      In case some communication error occurs during the transmission
-     *      of the data.
+     *      open and the generated connection is <code>null</code>.
      */
     @Override
     public java.io.InputStream getRemoteStream() throws ServiceInvocationException {
@@ -270,7 +272,7 @@ public abstract class AbstractClient implements IClient {
      *      String consisting of the response body (in a MediaType which results
      *      from content negotiation, taking into account the Accept header of the
      *      request)
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case some communication, server or request error occurs.
      */
     @Override
@@ -325,7 +327,7 @@ public abstract class AbstractClient implements IClient {
      *
      * @return
      *      The ontological model from the response body.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      A ToxOtisException is thrown in case the server did not provide a valid
      *      (syntactically correct) ontological model, or in case some communication
      *      error will arise.
@@ -387,11 +389,10 @@ public abstract class AbstractClient implements IClient {
      * Get the HTTP status of the response
      * @return
      *      Response status code.
-     * @throws ToxOtisException
-     *      In case the connection cannot be established because a {@link ToxOtisException }
-     *      is thrown from the method {@link AbstractHttpClient#initializeConnection(java.net.URI)
+     * @throws ServiceInvocationException
+     *      In case the connection cannot be established because a {@link ServiceInvocationException }
+     *      is thrown from the method {@link AbstractHttpClient#initializeConnection(java.net.URI) }
      *      initializeConnection(URI)}.
-     * @throws java.io.IOException
      *      In case some communication error with the remote location occurs during
      *      the transaction of data.
      */
@@ -415,7 +416,8 @@ public abstract class AbstractClient implements IClient {
      * Specify the mediatype to be used in the <tt>Accept</tt> header.
      * @param mediaType 
      *      Accepted mediatype
-     *
+     * @return 
+     *      This AbstractClient object.
      * @see RequestHeaders#ACCEPT
      */
     @Override
@@ -429,6 +431,8 @@ public abstract class AbstractClient implements IClient {
      * an instance of {@link Media }.
      * @param mediaType
      *      Accepted mediatype
+     * @return 
+     *      This AbstractClient object.
      * @see RequestHeaders#ACCEPT
      */
     @Override
@@ -441,6 +445,8 @@ public abstract class AbstractClient implements IClient {
      * Set the URI on which the GET method is applied.
      * @param vri
      *      The URI that will be used by the client to perform the remote connection.
+     * @return 
+     *      This AbstractClient object.
      */
     @Override
     public AbstractClient setUri(VRI vri) {
@@ -449,8 +455,11 @@ public abstract class AbstractClient implements IClient {
     }
 
     /**
-     * Provide the target URI as a String
-     * @param uri The target URI as a String.
+     * Provide the target URI as a String.
+     * @param uri 
+     *  The target URI as a String.
+     * @return 
+     *  This AbstractClient object
      * @throws java.net.URISyntaxException In case the provided URI is syntactically
      * incorrect.
      */
@@ -480,8 +489,8 @@ public abstract class AbstractClient implements IClient {
      * <code>text/uri-list</code>.
      * @return
      *      Set of URIs returned by the remote service.
-     * @throws ToxOtisException
-     *      In case some I/O communication error inhibits the transimittance of
+     * @throws ServiceInvocationException
+     *      In case some I/O communication error inhibits the transmittance of
      *      data between the client and the server or a some stream cannot close.
      */
     @Override
@@ -566,7 +575,7 @@ public abstract class AbstractClient implements IClient {
                 break;
             }
             if (headerName == null) {
-                continue;
+                // Do nothing
             } else {
                 if (headerName.equalsIgnoreCase(header)) {
                     return headerValue;

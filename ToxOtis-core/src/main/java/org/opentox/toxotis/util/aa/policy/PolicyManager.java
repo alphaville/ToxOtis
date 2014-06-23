@@ -101,7 +101,7 @@ public final class PolicyManager {
      * Delete all
      * @param policyService
      * @param token
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      */
     public static void deleteAllMyPolicies(VRI policyService, AuthenticationToken token) throws ServiceInvocationException {
         List<String> policies = listPolicyUris(policyService, token);
@@ -126,14 +126,13 @@ public final class PolicyManager {
      *      The owner/creator of the policy for the provided service URI or <code>
      *      null</code> if this URI is not registered to the policy service and
      *      does not have a policy.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case authentication/authorization against the SSO service fails
-     *      due to invalid token or insufficient priviledges or the service has
-     *      encoutnered some unexpected internal condition (status code <code>500</code>).
+     *      due to invalid token or insufficient privileges or the service has
+     *      encountered some unexpected internal condition (status code <code>500</code>).
      *      The OpenTox REST API specifies that the range of possible status codes
-     *      includes <code>200</code> (OK, Successs), <code>401</code> (Unauthorized)
+     *      includes <code>200</code> (OK, Success), <code>401</code> (Unauthorized)
      *      and <code>500</code> (other unexpected conditions).
-     * @throws InactiveTokenException
      *      If the token the user uses is not active (because it has been invalidated,
      *      expired, or not initialized yet).
      */
@@ -188,20 +187,19 @@ public final class PolicyManager {
      *      If set to <code>null</code> then the standard policy service at
      *      https://opensso.in-silico.ch/pol will be automatically chosen.
      * @param token
-     *      Token URI used to authenticate the client against the opensso service
+     *      Token URI used to authenticate the client against the openSSO service
      *      and acquire permissions to get the list of policies!
      * @return
      *      A list of policy IDs that are hosted in the SSO service by the user
-     *      that is identified by the provided authenticaton token. Note that the IDs of
+     *      that is identified by the provided authentication token. Note that the IDs of
      *      policies are not URIs.
      *
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case authentication/authorization fails, so the client does not have
-     *      acceess privileges to the remote service, or the provided URI of the policyService
+     *      access privileges to the remote service, or the provided URI of the policyService
      *      is not found or the service responds with an error status code or exhibits
      *      some unexpected behavior. According to the OpenTox API, possible status codes
      *      include 200, 401/403 and 500.
-     * @throws InactiveTokenException
      *      If the token the user uses is not active (because it has been invalidated,
      *      expired, or not initialized yet).
      */

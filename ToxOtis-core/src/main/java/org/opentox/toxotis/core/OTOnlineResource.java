@@ -71,6 +71,10 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
+ * 
+ * @param <T>
+ *  Type of online resource (any OTOnlineResource)
+ * 
  */
 public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTComponent<T> implements IOnlineResource {
 
@@ -172,7 +176,7 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      *      Token provided
      * @return
      *      Parsed instance of the component.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      A ToxOtisException is thrown in case the remote resource is unreachable,
      *      the service responds with an unexpected or error status code (500, 503, 400 etc)
      *      or other potent communication error occur during the connection or the
@@ -210,13 +214,14 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @param token
      *      Token used for authenticating the client against the remote compound
      *      service (You can set it to <code>null</code>).
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public void download(OutputStream destination, Media media, AuthenticationToken token) throws ServiceInvocationException {
+    public void download(OutputStream destination, Media media, AuthenticationToken token) 
+            throws ServiceInvocationException {
         OutputStreamWriter writer = new OutputStreamWriter(destination);
         download(writer, media, token);
         try {
@@ -236,13 +241,14 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @param token
      *      Token used for authenticating the client against the remote compound
      *      service (You can set it to <code>null</code>).
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public void download(File destination, Media media, AuthenticationToken token) throws ServiceInvocationException {
+    public void download(File destination, Media media, AuthenticationToken token) 
+            throws ServiceInvocationException {
         FileWriter writer = null;
         try {
             writer = new FileWriter(destination);
@@ -260,13 +266,17 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
     /**
      *
      * @param imageMedia
+     *      Image Media
      * @param token
+     *      Authentication token of the client
      * @return
      *      A depiction downloaded from the remote compound service (as specified
      *      by {@link #getUri() } as a BufferedImage.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
+     *      Service invocation exception.
      */
-    public BufferedImage downloadImage(Media imageMedia, AuthenticationToken token) throws ServiceInvocationException {
+    public BufferedImage downloadImage(Media imageMedia, AuthenticationToken token) 
+            throws ServiceInvocationException {
         if (imageMedia == null) {
             imageMedia = Media.IMAGE_PNG;
         }
@@ -296,13 +306,14 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
      * @param token
      *      Token used for authenticating the client against the remote compound
      *      service (You can set it to <code>null</code>).
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      * @see Media Collection of MIMEs
      */
-    public void download(Writer destination, Media media, AuthenticationToken token) throws ServiceInvocationException {
+    public void download(Writer destination, Media media, AuthenticationToken token) 
+            throws ServiceInvocationException {
         VRI newUri = new VRI(getUri());        
         IGetClient client = ClientFactory.createGetClient(newUri);
         client.setMediaType(media.getMime());

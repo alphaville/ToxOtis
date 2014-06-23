@@ -184,13 +184,13 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
          */
         ERROR,
         /**
-         * Due to large load on the server or issues related to A&A or user quota,
+         * Due to large load on the server or issues related to A&amp;A or user quota,
          * the task was rejected for execution.
          */
         REJECTED,
         /**
          * The task is created and put in an execution queue but is not running yet.
-         * HTTP status codes of queueed tasks is 202.
+         * HTTP status codes of queued tasks is 202.
          */
         QUEUED;
     }
@@ -268,8 +268,12 @@ public class Task extends OTOnlineResource<Task> implements IHTMLSupport {
 
     /**
      * ParameterValue the status of a task.
+     * 
      * @param status
      *      The new value for the status of the task.
+     * 
+     * @return 
+     *      The current modifiable instance of Task.
      */
     public Task setStatus(Status status) {
         this.hasStatus = status;

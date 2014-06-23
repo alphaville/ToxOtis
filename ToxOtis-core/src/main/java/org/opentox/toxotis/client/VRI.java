@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.opentox.toxotis.core.IOTComponent;
 import org.opentox.toxotis.core.component.qprf.QprfReport;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.collection.KnoufBibTex;
@@ -66,7 +67,7 @@ public class VRI implements Serializable { // Well tested!
     /** The standard UTF-8 encoding */
     private static final String URL_ENCODING = "UTF-8";
     private static final long serialVersionUID = 184328712643L;
-    private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
+    private transient final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VRI.class);
     private static final int HASH_OFFSET = 3, HASH_MOD = 37;
     private static final int PORT_HTTP_DEFAULT = 80, PORT_HTTPS_DEFAULT = 443;
     private static final String END_SLASH_OR_NOTHING = "([^/]+/$|[^/]+)$", TRAILING_SLASH = ".+/$",
@@ -130,7 +131,7 @@ public class VRI implements Serializable { // Well tested!
          * The Java class that corresponds to the OpenTox resource
          */
         private final Class<?> clazz;
-        private OntologicalClass ontologicalClass;
+        private final OntologicalClass ontologicalClass;
 
         private OpenToxRegEx(final OntologicalClass ont, final Class<?> claz, final String... regexp) {
             Collections.addAll(this.regexp, regexp);
@@ -219,10 +220,10 @@ public class VRI implements Serializable { // Well tested!
                 String[] queryParts = query.split(Pattern.quote(AMPBESAND));
                 String paramName, paramValue;
                 try {
-                    for (int i = 0; i < queryParts.length; i++) {
+                    for (String queryPart : queryParts) {
                         paramName = null;
                         paramValue = null;
-                        String queryFragment = queryParts[i];
+                        String queryFragment = queryPart;
                         String[] queryFragmentComponents = queryFragment.split(Pattern.quote(EQUALS));
                         if (queryFragmentComponents.length == 1) {
                             paramName = queryFragmentComponents[0];
@@ -265,7 +266,7 @@ public class VRI implements Serializable { // Well tested!
      * @param params
      *      A sequence of parameter names followed by their values. For example
      *      <code>VRI v = new VRI("http://myserver.com","a","2","option","true")</code>.
-     *      This will generate the URI: http://myserver.com?a=2&option=true. Note that
+     *      This will generate the URI: <code>http://myserver.com?a=2&amp;option=true</code>. Note that
      *      the parameter names and values are URL encoded (using the UTF-8 encoding)
      *      as soon as they are provided to the constructor.
      * @throws URISyntaxException
@@ -371,7 +372,7 @@ public class VRI implements Serializable { // Well tested!
     public VRI addUrlParameter(String paramName, double paramValue) {
         try {
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
-                    URLEncoder.encode(new Double(paramValue).toString(), URL_ENCODING)));
+                    URLEncoder.encode(Double.toString(paramValue), URL_ENCODING)));
         } catch (final UnsupportedEncodingException ex) {
             logger.error(UNSUPPORTED_ENC_MSG, ex);
             throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
@@ -394,7 +395,7 @@ public class VRI implements Serializable { // Well tested!
     public VRI addUrlParameter(String paramName, int paramValue) {
         try {
             urlParams.add(new Pair<String, String>(URLEncoder.encode(paramName, URL_ENCODING),
-                    URLEncoder.encode(Integer.valueOf(paramValue).toString(), URL_ENCODING)));
+                    URLEncoder.encode(Integer.toString(paramValue), URL_ENCODING)));
         } catch (final UnsupportedEncodingException ex) {
             logger.error(UNSUPPORTED_ENC_MSG, ex);
             throw new IllegalArgumentException(UNSUPPORTED_ENC_MSG, ex);
@@ -525,7 +526,13 @@ public class VRI implements Serializable { // Well tested!
         }
     }
 
-    /** Delegates the method java.net.URI#getPort()::int */
+    /** 
+     * Delegates the method java.net.URI#getPort()::int
+     * 
+     * @return  
+     * The HTTP port of the URI.
+     *
+     */
     public int getPort() {
         int port = toURI().getPort();
         if (port == -1) {
@@ -591,8 +598,8 @@ public class VRI implements Serializable { // Well tested!
      * System.out.println(cl);
      * </pre>
      * @return
-     *      Corresponding OpenTox class (usually a subclass of {@link OTComponent }).
-     * @see OTComponent
+     *      Corresponding OpenTox class (usually a subclass of {@link IOTComponent }).
+     * @see IOTComponent
      * @see Dataset
      */
     public Class<?> getOpenToxType() {
@@ -617,6 +624,7 @@ public class VRI implements Serializable { // Well tested!
      * the pattern <code>/dataset/{id}</code> or formally <code>.+/(?i)dataset(s||)/([^/]+/$|[^/]+)$</code>
      * or as well <code>.+/(?i)query/(?i)compound/.+/([^/]+/$|[^/]+)$</code>.
      * @return 
+     *  The ontological class of the object represented by this URI.
      */
     public OntologicalClass getOntologicalClass() {
         OpenToxRegEx rex = getMatchingRegEx();

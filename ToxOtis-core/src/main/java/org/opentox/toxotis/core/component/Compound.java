@@ -43,7 +43,6 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -88,7 +87,8 @@ import org.opentox.toxotis.util.spiders.TaskSpider;
  */
 public class Compound extends DescriptorCaclulation<Compound> {
 
-    private transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Compound.class);
+    private transient final org.slf4j.Logger logger = 
+            org.slf4j.LoggerFactory.getLogger(Compound.class);
     private List<String> synonyms;
     private javax.swing.ImageIcon depiction;
     private String iupacName;
@@ -108,7 +108,9 @@ public class Compound extends DescriptorCaclulation<Compound> {
     /**
      * Construct a new compound identified by its URI. You should provide a
      * valid compound URI. Conformer URIs are not acceptable in this constructor.
-     * The pattern matching your URI should be: <br/><br/>
+     * The pattern matching your URI should be:
+     * 
+     * 
      * <code>.+[^query]+/(?i)compound(s||)/([^/]+/$|[^/]+)$</code>
      *
      * @param uri
@@ -162,13 +164,16 @@ public class Compound extends DescriptorCaclulation<Compound> {
      * Performs a HTTP GET request on /compound/{id} to acquire a URI list of
      * all conformers providing also an authentication token (set it to
      * <code>null</code> if you think there's no need for Authentication.
+     * @param token
+     *      An authentication token.
      * @return
      *      List of conformers
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503.
      */
-    public Set<Conformer> listConformers(AuthenticationToken token) throws ServiceInvocationException {
+    public Set<Conformer> listConformers(AuthenticationToken token) 
+            throws ServiceInvocationException {
         VRI newUri = null;
 
 
@@ -234,12 +239,13 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      is needed to access the resource, you may set it to <code>null</code>.
      * @return
      *      Feature value for this compound as a Typed Value
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an authentication error occurs or the remote service responds
      *      with an error code like 500 or 503 or the submitted representation is
      *      syntactically or semantically wrong (status 400).
      */
-    public LiteralValue<?> getProperty(Feature feature, AuthenticationToken token) throws ServiceInvocationException {
+    public LiteralValue<?> getProperty(Feature feature, AuthenticationToken token) 
+            throws ServiceInvocationException {
         /**
          *TODO: Should this request include the uri parameters for the feature?
          */
@@ -325,14 +331,15 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      and parsed into a Compound object.
      * @return
      *      Parsed instance of the component into an instance of Compound.
-     * @throws ToxOtisException
-     *      A ToxOtisException is thrown in case the remote resource is unreachable,
+     * @throws ServiceInvocationException
+     *      A ServiceInvocationException is thrown in case the remote resource is unreachable,
      *      the service responds with an unexpected or error status code (500, 503, 400 etc)
      *      or other potent communication error occur during the connection or the
      *      transaction of data.
      */
     @Override
-    protected Compound loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
+    protected Compound loadFromRemote(VRI uri, AuthenticationToken token) 
+            throws ServiceInvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -386,7 +393,7 @@ public class Compound extends DescriptorCaclulation<Compound> {
      * @return
      *      A set of the URIs of all available features.
      * 
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the remote service responds with an error status code.
      */
     public Set<VRI> listAvailableFeatures() throws ServiceInvocationException {
@@ -414,15 +421,17 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      depiction services
      * @return
      *      Returns the depiction of the chemical compound as an ImageIcon.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the authentication fails or the user is not authorized to perform some
      *      request (e.g. access the compound or depiction service) or the coumpound or
      *      depiction services respond in an unexpected manner (e.g. return an error
      *      status code like 500 or 503).
+     * @deprecated 
      *
      */
     @Deprecated
-    public ImageIcon getDepictionFromRemote(AuthenticationToken token) throws ServiceInvocationException {
+    public ImageIcon getDepictionFromRemote(AuthenticationToken token) 
+            throws ServiceInvocationException {
         return depiction;
     }
 
@@ -441,8 +450,11 @@ public class Compound extends DescriptorCaclulation<Compound> {
      * @throws ToxOtisException
      *      In case the provided URI is not a valid dataset URI (does not comply
      *      with the OpenTox standards).
+     * @throws ServiceInvocationException
+     *      Service invocation exception.
      */
-    public Dataset wrapInDataset(VRI datasetUri) throws ToxOtisException, ServiceInvocationException {
+    public Dataset wrapInDataset(VRI datasetUri) 
+            throws ToxOtisException, ServiceInvocationException {
         Dataset ds = new Dataset(datasetUri);
         ds.getDataEntries().add(new DataEntry(this, new ArrayList<FeatureValue>()));
         return ds;
@@ -462,20 +474,21 @@ public class Compound extends DescriptorCaclulation<Compound> {
      *      compound.
      * @param service
      *      Remote similarity search service to be used for obtaining the list of
-     *      similar compounds as a URI list. The remote invokation is a GET method
-     *      applied on <code>service?search={smiles_string}&threshold={threshold}</code>
+     *      similar compounds as a URI list. The remote invocation is a GET method
+     *      applied on <code>service?search={smiles_string}&amp;threshold={threshold}</code>
      * @param token
      *      Authentication token used to obtain the SMILES string of the token and
      *      acquire access to the similarity service.
      * @return
      *      ParameterValue of URIs that are similar to the compound on which the method is
      *      applied up to a certain threshold.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the remote service responds with a non-success status code
      *      like 400 (bad request/bad smiles string) or 500 (internal error of
      *      the server) or if authentication or authorization fails.
      */
-    public Set<VRI> getSimilar(double similarity, VRI service, AuthenticationToken token) throws ServiceInvocationException {
+    public Set<VRI> getSimilar(double similarity, VRI service, AuthenticationToken token) 
+            throws ServiceInvocationException {
         /** Download the string representation of a */
         StringWriter smilesWriter = new StringWriter();
         download(smilesWriter, Media.CHEMICAL_SMILES, token);
@@ -519,12 +532,13 @@ public class Compound extends DescriptorCaclulation<Compound> {
      * @return
      *      ParameterValue of URIs that are similar to the compound on which the method is
      *      applied up to a certain threshold.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the remote service responds with a non-success status code
      *      like 400 (bad request/bad smiles string) or 500 (internal error of
      *      the server) or if authentication or authorization fails.
      */
-    public Set<VRI> getSimilar(double similarity, AuthenticationToken token) throws ServiceInvocationException {
+    public Set<VRI> getSimilar(double similarity, AuthenticationToken token) 
+            throws ServiceInvocationException {
         return getSimilar(similarity, Services.ideaconsult().augment("query", "similarity"), token);
     }
 
@@ -686,6 +700,9 @@ public class Compound extends DescriptorCaclulation<Compound> {
 
     /**
      * Define the molecular structure or a compound (MOL file, SDF etc).
+     * 
+     * @param molecularStructure
+     *      The molecualar structure as a String.
      */
     public void setMolecularStructure(String molecularStructure) {
         this.molecularStructure = molecularStructure;

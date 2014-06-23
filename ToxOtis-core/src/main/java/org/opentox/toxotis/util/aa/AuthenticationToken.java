@@ -90,7 +90,7 @@ public class AuthenticationToken {
     /**
      * Initialize a new Authentication Token. The constructor also initializes
      * the SSL connection with the openSSO server.
-     * @see Services#_SSO_SERVER Default SSO Server
+     * @see Services#SSO_SERVER Default SSO Server
      */
     public AuthenticationToken() {
         super();
@@ -118,7 +118,7 @@ public class AuthenticationToken {
      * <p align=justify>Create a new Authentication token providing your credentials.
      * These credentials are posted to the {@link org.opentox.toxotis.client.collection.Services.SingleSignOn#ssoAuthenticate() SSO AUTH} server
      * which (if they are valid) returns a token. This is used to construct a new
-     * Authentication Token object. The timestamp of the method invokation is set as
+     * Authentication Token object. The timestamp of the method invocation is set as
      * the timestamp for the object construction. All data transactions take place
      * over secure layers (SSL) and using encryption (TLS).
      * </p>
@@ -126,7 +126,7 @@ public class AuthenticationToken {
      *      The username of an OpenTox user
      * @param password
      *      The password of an OpenTox user
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the credentials are not valid, some exceptional event occurs
      *      during the data transaction or in case the SSO service returns an
      *      error code other than expected (e.g. encounters some internal error
@@ -197,6 +197,7 @@ public class AuthenticationToken {
      *      during the data transaction or in case the SSO service returns an
      *      error code other than expected (e.g. encounters some internal error
      *      and returns a status code 500).
+     * @throws ServiceInvocationException
      */
     public AuthenticationToken(File file) throws IOException, ToxOtisException, ServiceInvocationException {
         this(PasswordFileManager.CRYPTO.authFromFile(file));
@@ -230,7 +231,7 @@ public class AuthenticationToken {
 
         /**
          * The token is still active and can be used in
-         * an A&A session. However it is advisable to use the method {@link AuthenticationToken#validate() }
+         * an A&amp;A session. However it is advisable to use the method {@link AuthenticationToken#validate() }
          * to validate the token against the SSO server prior to its use.
          */
         ACTIVE,
@@ -312,13 +313,13 @@ public class AuthenticationToken {
     /**
      * Ask the remote SSO server whether this token is valid. This method performs
      * a (secure) connection to the validation service on the SSO server and
-     * POSTs the token. The RESTful API concerning A&A can be found online at
-     * http://opentox.org/dev/apis/api-1.1/AA.
+     * POSTs the token. The RESTful API concerning A&amp;A can be found online at
+     * <a href="http://opentox.org/dev/apis/api-1.1/AA">OpenTox API</a>.
      *
      * @return
      *      <code>true</code> if a positive response was returned from the remote
      *      server and <code>false</code> otherwise.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an error status is received from the remote service or there
      *      is some communication problem.
      */
@@ -366,7 +367,7 @@ public class AuthenticationToken {
      * Sends an invalidation request to the remote server. Once the token is
      * invalidated it can no longer be used in any authentication/authorization
      * sessions.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case an error status is received from the remote service or there
      *      is some communication problem.
      */
@@ -550,12 +551,10 @@ public class AuthenticationToken {
      * @return
      *      <code>true</code> if the user is allowed to perform the operation and
      *      <code>false</code> otherwise.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      If a connection problem occurs with the remote or the communication is
-     *      corrupted.
-     * @throws InactiveTokenException
-     *      If the token the user uses is not active (because it has been invalidated,
-     *      expired, or not initialized yet).
+     *      corrupted, or if the token the user uses is not active (because it 
+     *      has been invalidated, expired, or not initialized yet).
      */
     public boolean authorize(String httpMethod, VRI target) throws ServiceInvocationException {
         if (!this.getStatus().equals(TokenStatus.ACTIVE)) {
@@ -605,7 +604,7 @@ public class AuthenticationToken {
      * @return
      *      <code>true</code> if the user is allowed to perform the operation and
      *      <code>false</code> otherwise.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      If a connection problem occurs with the remote or the communication is
      *      corrupted or the provided target is not a valid URI.
      */

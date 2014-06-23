@@ -107,11 +107,11 @@ public interface OTProperty extends OTResource, java.io.Serializable {
     void setSuperProperties(Collection<OTProperty> superProperties);
 
     /**
-     * We quote an excperpt of the documentation about the property <code>rdfs:domain</code>
+     * We quote an excerpt of the documentation about the property <code>rdfs:domain</code>
      * found at <a href="http://www.w3.org/TR/2004/REC-owl-features-20040210/#domain">
      * W3C</a> online reference:
      * 
-     * <blockquote align="justify">
+     * <blockquote>
      * A domain of a property limits the individuals to which the property can be applied.
      * If a property relates an individual to another individual, and the property has a
      * class as one of its domains, then the individual must belong to the class. For example,

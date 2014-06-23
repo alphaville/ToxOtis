@@ -45,6 +45,7 @@ import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.EmailValidator;
 
@@ -116,16 +117,19 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
     }
 
     /**
-     * Checks whethe the provided e-mail address is RDF-2822 compliant and sets
+     * Checks whether the provided e-mail address is RDF-2822 compliant and sets
      * the e-mail address of the user accordingly.
      * @param mail
      *      The e-mail address of the user (Must be RDF-2822 compliant).
+     * @return 
+     *      The current modifiable instance of User.
      * @throws ToxOtisException
      *      In case the provided e-mail address is not compliant to the
      *      specifications of RFC 2822.
      * @see EmailValidator
      */
-    public User setMail(String mail) throws org.opentox.toxotis.exceptions.impl.ToxOtisException {
+    public User setMail(String mail) throws 
+            ToxOtisException {
         if (!EmailValidator.validate(mail)) {
             throw new org.opentox.toxotis.exceptions.impl.ToxOtisException("Bad email address according to RFC 2822 : '" + mail + "'");
         }

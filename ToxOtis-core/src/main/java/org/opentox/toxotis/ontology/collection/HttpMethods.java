@@ -37,7 +37,7 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.ResourceValue;
 
 /**
- * Collection of HTTP methods as ontological individuals, instances of {@link OTRestClasses#HTTPMethod() }
+ * Collection of HTTP methods as ontological individuals, instances of {@link OTRestClasses#httpMethod()  }
  * used to describe the available methods by a web service. These instances are related to the
  * REST interface self-definition of a web service which is available on GET from its
  * RDF representation.

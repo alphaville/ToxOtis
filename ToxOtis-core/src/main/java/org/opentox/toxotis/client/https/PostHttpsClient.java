@@ -52,6 +52,7 @@ import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
+import org.opentox.toxotis.client.http.PostHttpClient;
 import org.opentox.toxotis.core.IStAXWritable;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.InternalServerError;
@@ -101,8 +102,10 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
 
     /**
      * Set an ontological data model which is to be posted to the remote location
-     * as application/rdf+xml. Invokations of this method set automatically the content-type
-     * to application/rdf+xml though it can be overriden afterwards.
+     * as application/rdf+xml. 
+     * 
+     * Invocations of this method set automatically the content-type
+     * to application/rdf+xml though it can be overridden afterwards.
      * @param model
      *      Ontological Model to be posted
      * @return
@@ -255,7 +258,7 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
      * @param staxWritable
      *      A StAX component that implements the interface {@link IStAXWritable }
      *      that will be posted to the remote server via the method {@link IStAXWritable#writeRdf(java.io.OutputStream)
-     *      write(OutputStream)} that writes the component to an outputstream pointing to the remote stream
+     *      write(OutputStream)} that writes the component to an output stream pointing to the remote stream
      * @return
      *      The PostHttpClient with the updated writeable component.
      */
@@ -267,21 +270,23 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
 
     /**
      * Set a file whose contents are to be posted to the remote server specified
-     * in the constructor of this class. If the file is not found under the specified
+     * in the constructor of this class. 
+     * 
+     * If the file is not found under the specified
      * path, an IllegalArgumentException is thrown. Because the type of the file is
-     * in general unknown and it is not considered to be a good practise to deduce the
+     * in general unknown and it is not considered to be a good practice to deduce the
      * file type from the file extension, it is up to the user to specify the content
-     * type of the posted object using the method {@link PostHttpClient#setContentType(java.lang.String)
-     * setContentType}. Since it is not possible to POST entities of different content
-     * types to an HTTP server, any invokation to this method will override any previous
-     * invokation of {@link PostHttpClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
-     * setPostable(OntModel) } and {@link PostHttpClient#setPostable(java.lang.String, boolean)
-     * setPostable(String)}.
+     * type of the posted object using the method {@link #setContentType(java.lang.String) #setContentType}. 
+     * Since it is not possible to POST entities of different content
+     * types to an HTTP server, any invocation to this method will override any previous
+     * invocation of {@link PostHttpsClient#setPostable(com.hp.hpl.jena.ontology.OntModel) #setPostable}
+     * setPostable(OntModel) } and {@link #setPostable(java.lang.String, boolean) setPostable(String)}.
      *
      * @param objectToPost
      *      File whose contents are to be posted.
      * @return
      *      This post client
+     * 
      * @throws IllegalArgumentException
      *      In case the provided file does not exist
      */

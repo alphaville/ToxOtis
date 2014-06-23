@@ -40,6 +40,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
@@ -107,9 +108,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         if (this.restClasses == null) {
             this.restClasses = new HashSet<OntologicalClass>();
         }
-        for (OntologicalClass oc : restClasses) {
-            this.restClasses.add(oc);
-        }
+        this.restClasses.addAll(Arrays.asList(restClasses));
         return this;
     }
 
@@ -166,9 +165,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         if (getHttpParameters() == null) {
             setHttpParameters(new HashSet<HttpParameter>());
         }
-        for (HttpParameter prm : httpParameters) {
-            getHttpParameters().add(prm);
-        }
+        getHttpParameters().addAll(Arrays.asList(httpParameters));
         return this;
     }
 
@@ -188,9 +185,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         if (getMediaTypes() == null) {
             setMediaTypes(new HashSet<HttpMediatype>(mediaTypes.length));
         }
-        for (HttpMediatype media : mediaTypes) {
-            getMediaTypes().add(media);
-        }
+        getMediaTypes().addAll(Arrays.asList(mediaTypes));
         return this;
     }
 
@@ -198,7 +193,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
      * A set of the status codes that might occur when invoking the service, including
      * all redirection, error and success status codes. As ontological classes, status
      * codes are found in the colleciton {@link OTRestClasses }, and subclass {@link
-     * OTRestClasses#HTTPStatus() } such as {@link OTRestClasses#STATUS_200() }.
+     * OTRestClasses#httpStatus()  } such as {@link OTRestClasses#status200()  }.
      *
      * @return
      *      Set of ontological classes that describe the available status codes.
@@ -219,9 +214,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         if (getHttpStatusCodes() == null) {
             setHttpStatusCodes(new HashSet<HttpStatus>());
         }
-        for (HttpStatus status : httpStatusCodes) {
-            getHttpStatusCodes().add(status);
-        }
+        getHttpStatusCodes().addAll(Arrays.asList(httpStatusCodes));
         return this;
     }
 
@@ -318,10 +311,7 @@ public class RestOperation extends OTComponent<RestOperation> implements IRestOp
         if (this.httpStatusCodes != other.httpStatusCodes && (this.httpStatusCodes == null || !this.httpStatusCodes.equals(other.httpStatusCodes))) {
             return false;
         }
-        if (this.mediaTypes != other.mediaTypes && (this.mediaTypes == null || !this.mediaTypes.equals(other.mediaTypes))) {
-            return false;
-        }
-        return true;
+        return this.mediaTypes == other.mediaTypes || (this.mediaTypes != null && this.mediaTypes.equals(other.mediaTypes));
     }
 
     @Override

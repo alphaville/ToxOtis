@@ -57,7 +57,7 @@ public interface OTObjectProperty extends OTProperty {
      *    The range of an object property specifies the types of objects than
      *    can be set as values to this property.
      *
-     * @see http://www.w3.org/TR/owl-ref/#ObjectProperty-def
+     * @see <a href="http://www.w3.org/TR/owl-ref/#ObjectProperty-def">Object property definition</a>
      */
     Collection<OntologicalClass> getRange();
 

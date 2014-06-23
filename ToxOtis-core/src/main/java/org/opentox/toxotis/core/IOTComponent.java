@@ -38,6 +38,7 @@ import java.util.Set;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.impl.SimpleOntModelImpl;
 
 /**
  * Generic interface for all OpenTox components in ToxOtis that can be represented
@@ -62,9 +63,9 @@ public interface IOTComponent<T extends IOTComponent> {
     /**
      * Creates a new Ontological Model (uses an instance of {@link SimpleOntModelImpl })
      * and assigns to it the Individual from the method
-     * {@link OTComponent#asIndividual(com.hp.hpl.jena.ontology.OntModel) asIndividual(OntModel)}.
+     * {@link IOTComponent#asIndividual(com.hp.hpl.jena.ontology.OntModel)  asIndividual(OntModel)}.
      * The ontological model will contain no other information apart from the representation
-     * of the inderlying OpenTox component.
+     * of the underlying OpenTox component.
      * @return
      *      An ontological model for the current OpenTox component.
      */

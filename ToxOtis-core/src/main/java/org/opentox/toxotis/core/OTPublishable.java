@@ -52,6 +52,9 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * 
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
+ * 
+ * @param <T>
+ *      Type of Pubishable.
  */
 public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineResource<T> {
 
@@ -94,16 +97,16 @@ public abstract class OTPublishable<T extends OTPublishable> extends OTOnlineRes
      *      task. In any case, the service's response will be wrapped in a 
      *      {@link org.opentox.toxotis.core.component.Task Task}
      *      object.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case of invalid credentials, if the POSTed resource is not acceptable
      *      by the remote service (returns a status code 400), communication error
      *      occur with the remote server or other connection problems or the access
      *      to the service was denied (401 or 403).
-     * @throws InactiveTokenException
      *      In case the provided token is invalidated (user has logged out), or
      *      has expired.
      */
-    public abstract Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException;
+    public abstract Task publishOnline(VRI vri, AuthenticationToken token) 
+            throws ServiceInvocationException;
 
     public Future<VRI> publish(final VRI vri, final AuthenticationToken token, ExecutorService executor) throws ServiceInvocationException {
         if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {

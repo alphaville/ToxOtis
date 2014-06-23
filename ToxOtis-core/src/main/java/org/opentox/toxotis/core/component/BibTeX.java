@@ -59,7 +59,6 @@ import org.opentox.toxotis.client.HttpStatusCodes;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Media;
-import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
@@ -75,12 +74,13 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.spiders.BibTeXSprider;
 
 /**
- * Bibliographic reference designed according to the BibTeX specifications. OpenTox
- * resource are pointing to bibliographic entries (articles, conferences etc) using the
- * Knouf ontology. Part of the JavaDoc documentation in this class has been 
- * fetched from the manual: <em>BibTeXing The original manual (1988) by the 
- * co-author of BibTeX, Oren Patashnik.</em>. You can find more information about
- * BibTeX at <a href="http://en.wikipedia.org/wiki/BibTeX">en.wikipedia.org/wiki/BibTeX</a>.
+ * Bibliographic reference designed according to the BibTeX specifications.
+ * OpenTox resource are pointing to bibliographic entries (articles, conferences
+ * etc) using the Knouf ontology. Part of the JavaDoc documentation in this
+ * class has been fetched from the manual: <em>BibTeXing The original manual
+ * (1988) by the co-author of BibTeX, Oren Patashnik.</em>. You can find more
+ * information about BibTeX at <a
+ * href="http://en.wikipedia.org/wiki/BibTeX">en.wikipedia.org/wiki/BibTeX</a>.
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
@@ -91,14 +91,14 @@ public class BibTeX extends OTPublishable<BibTeX>
         implements IHTMLSupport {
 
     /**
-     * Enumeration for bibliographic types supported by the
-     * Knouf ontology.
+     * Enumeration for bibliographic types supported by the Knouf ontology.
      */
     public enum BibTYPE {
 
         /**
-         * An article from a journal or magazine. Required fields: author, title,
-         * journal, year. Optional fields: volume, number, pages, month, note.
+         * An article from a journal or magazine. Required fields: author,
+         * title, journal, year. Optional fields: volume, number, pages, month,
+         * note.
          */
         Article,
         /**
@@ -108,20 +108,20 @@ public class BibTeX extends OTPublishable<BibTeX>
          */
         Book,
         /**
-         * An oral presentation or a poster presented in a conference or document 
-         * that was presented in a conference by any means. Symposium, workshops and
-         * other similar presentations are also reported here.
+         * An oral presentation or a poster presented in a conference or
+         * document that was presented in a conference by any means. Symposium,
+         * workshops and other similar presentations are also reported here.
          */
         Conference,
         /**
-         * A PhD dissertation. Required fields: author, title, school, year. 
+         * A PhD dissertation. Required fields: author, title, school, year.
          * Optional fields: type, address, month, note.
          */
         Phdthesis,
         /**
-         * A work that is printed and bound, but without a named
-         * publisher or sponsoring institution. Required field: title. 
-         * Optional fields: author, howpublished, address, month, year, note.
+         * A work that is printed and bound, but without a named publisher or
+         * sponsoring institution. Required field: title. Optional fields:
+         * author, howpublished, address, month, year, note.
          */
         Booklet,
         /**
@@ -158,8 +158,8 @@ public class BibTeX extends OTPublishable<BibTeX>
          */
         Proceedings,
         /**
-         * A report published by a school or other institution,
-         * usually numbered within a series.
+         * A report published by a school or other institution, usually numbered
+         * within a series.
          */
         TechReport,
         /**
@@ -200,13 +200,13 @@ public class BibTeX extends OTPublishable<BibTeX>
     private String mUrl;
     private BibTYPE mBibType;
     private User mCreatedBy;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BibTeX.class);
+    private final org.slf4j.Logger logger;
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     /**
      * The user that created the BibTeX object.
-     * @return 
-     *      Instance of {@link User}
+     *
+     * @return Instance of {@link User}
      */
     public User getCreatedBy() {
         return mCreatedBy;
@@ -214,8 +214,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Sets the user who created the current BibTeX object.
-     * @param createdBy 
-     *      Instance of {@link User}
+     *
+     * @param createdBy Instance of {@link User}
      */
     public void setCreatedBy(User createdBy) {
         this.mCreatedBy = createdBy;
@@ -223,7 +223,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * The abstract of the BibTeX object.
-     * @return 
+     *
+     * @return
      */
     public String getAbstract() {
         return mAbstract;
@@ -231,11 +232,10 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the abstract.
-     * 
-     * @param theAbstract
-     *      The abstract as a String.
-     * @return 
-     *      The current modifiable instance of BibTeX with the updated abstract. 
+     *
+     * @param theAbstract The abstract as a String.
+     * @return The current modifiable instance of BibTeX with the updated
+     * abstract.
      */
     public BibTeX setAbstract(String theAbstract) {
         this.mAbstract = theAbstract;
@@ -244,8 +244,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * The name(s) of the author(s), in the format described in the LaTeX book.
-     * @return 
-     *      Name(s) of authors as String.
+     *
+     * @return Name(s) of authors as String.
      */
     public String getAuthor() {
         return mAuthor;
@@ -253,11 +253,10 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the author(s).
-     * 
-     * @param author 
-     *      The list of authors or the single author as a String.
-     * @return 
-     *      The current modifiable instance of BibTeX with the updated author. 
+     *
+     * @param author The list of authors or the single author as a String.
+     * @return The current modifiable instance of BibTeX with the updated
+     * author.
      * @see #getAuthor() #getAuthor
      */
     public BibTeX setAuthor(String author) {
@@ -267,9 +266,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * The bibliographic type.
-     * @return 
-     *      The bibliographic type of the current BibTeX object 
-     *      as an instance of {@link BIB_TYPE }.
+     *
+     * @return The bibliographic type of the current BibTeX object as an
+     * instance of {@link BibTYPE }.
      */
     public BibTYPE getBibType() {
         return mBibType;
@@ -277,12 +276,11 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter for the bibliographic type.
-     * @param bibType
-     *      The bibliographic type you need to specify.
-     * @return 
-     *      The current modifiable instance of BibTeX with the updated
-     *      value of bibtype. 
-     * @see #getBibType() getBibType() 
+     *
+     * @param bibType The bibliographic type you need to specify.
+     * @return The current modifiable instance of BibTeX with the updated value
+     * of bibtype.
+     * @see #getBibType() getBibType()
      */
     public BibTeX setBibType(BibTYPE bibType) {
         this.mBibType = bibType;
@@ -290,11 +288,11 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * Title of a book, part of which is being cited. See the LaTeX book for
-     * how to type titles. For book entries, use the <code>title</code> field instead.
-     * 
-     * @return 
-     *      The <code>booktitle</code> as String.
+     * Title of a book, part of which is being cited. See the LaTeX book for how
+     * to type titles. For book entries, use the <code>title</code> field
+     * instead.
+     *
+     * @return The <code>booktitle</code> as String.
      */
     public String getBookTitle() {
         return mBookTitle;
@@ -302,11 +300,10 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the bookTitle.
-     * 
-     * @param bookTitle 
-     *      The bookTitle as a String.
-     * @return 
-     *      The current modifiable instance of BibTeX with the updated bookTitle. 
+     *
+     * @param bookTitle The bookTitle as a String.
+     * @return The current modifiable instance of BibTeX with the updated
+     * bookTitle.
      */
     public BibTeX setBookTitle(String bookTitle) {
         this.mBookTitle = bookTitle;
@@ -315,9 +312,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * A chapter (or section or whatever) number.
-     * 
-     * @return 
-     *      The chapter title/number as a String.
+     *
+     * @return The chapter title/number as a String.
      */
     public String getChapter() {
         return mChapter;
@@ -325,12 +321,10 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the chapter of the BibTeX resource.
-     * 
-     * @param chapter  
-     *      The chapter as a String.
-     * @return 
-     *      The current modifiable instance of BibTeX with the updated chapter
-     *      parameter. 
+     *
+     * @param chapter The chapter as a String.
+     * @return The current modifiable instance of BibTeX with the updated
+     * chapter parameter.
      */
     public BibTeX setChapter(String chapter) {
         this.mChapter = chapter;
@@ -343,12 +337,10 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the copyright notice of the BibTeX resource.
-     * 
-     * @param copyright 
-     *      The copyright notice as a String.
-     * @return 
-     *      The current modifiable instance of BibTeX with the updated copyright
-     *      parameter. 
+     *
+     * @param copyright The copyright notice as a String.
+     * @return The current modifiable instance of BibTeX with the updated
+     * copyright parameter.
      */
     public BibTeX setCopyright(String copyright) {
         this.mCopyright = copyright;
@@ -356,11 +348,10 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * The database key of the entry being cross referenced. A URI of 
-     * some other BibTeX resource should be ideal for a cross-reference.
-     * 
-     * @return 
-     *      Cross-reference to some other BibTeX resource or piece of work.
+     * The database key of the entry being cross referenced. A URI of some other
+     * BibTeX resource should be ideal for a cross-reference.
+     *
+     * @return Cross-reference to some other BibTeX resource or piece of work.
      */
     public String getCrossref() {
         return mCrossref;
@@ -369,11 +360,10 @@ public class BibTeX extends OTPublishable<BibTeX>
     /**
      * Setter method for the cross-ref of this BibTeX resource. A URI of some
      * other BibTeX entity should be ideally provided.
-     * 
-     * @param crossref 
-     *      The chapter as a String.
-     * @return 
-     *      The current modifiable instance of BibTeX with the updated cross-ref. 
+     *
+     * @param crossref The chapter as a String.
+     * @return The current modifiable instance of BibTeX with the updated
+     * cross-ref.
      */
     public BibTeX setCrossref(String crossref) {
         this.mCrossref = crossref;
@@ -381,12 +371,11 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * The edition of a book—for example, "Second". This should be an
-     * ordinal, and should have the first letter capitalized, as shown here; the
-     * standard styles convert to lower case when necessary.
-     * 
-     * @return 
-     *      The edition of the BibTeX object.
+     * The edition of a book—for example, "Second". This should be an ordinal,
+     * and should have the first letter capitalized, as shown here; the standard
+     * styles convert to lower case when necessary.
+     *
+     * @return The edition of the BibTeX object.
      */
     public String getEdition() {
         return mEdition;
@@ -394,10 +383,11 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter for the edition.
+     *
      * @param edition
-     * @return 
-     *      The current modifiable BibTeX object updated with the value of edition.
-     * @see #getEdition() 
+     * @return The current modifiable BibTeX object updated with the value of
+     * edition.
+     * @see #getEdition()
      */
     public BibTeX setEdition(String edition) {
         this.mEdition = edition;
@@ -406,11 +396,10 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Name(s) of editor(s), typed as indicated in the LaTeX book. If there is
-     * also an author field, then the editor field gives the editor of the book or
-     * collection in which the reference appears.
-     * 
-     * @return 
-     *      Editor(s) as String.
+     * also an author field, then the editor field gives the editor of the book
+     * or collection in which the reference appears.
+     *
+     * @return Editor(s) as String.
      */
     public String getEditor() {
         return mEditor;
@@ -418,10 +407,13 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter for the editor(s).
-     * @param edition
-     * @return 
-     *      The current modifiable BibTeX object updated with the value of editor(s).
-     * @see #getEditor() 
+     *
+     * @param editor
+     * 
+     * @return The current modifiable BibTeX object updated with the value of
+     * editor(s).
+     * 
+     * @see #getEditor()
      */
     public BibTeX setEditor(String editor) {
         this.mEditor = editor;
@@ -429,16 +421,15 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * The ISBN of the resource. ISBNs now come in two styles, containing 
-     * 10 digits or 13 digits, respectively (corresponding to the above 
-     * "ISBN-10:" and "ISBN-13:" numbers). Please use the 13-digit one if 
-     * available (if nowhere else, it is written under the barcode: the 
-     * hyphenation will be 978-, or in the future 979-, then the same as in 
-     * the 10-digit ISBN, but the last digit is different for ISBN-10 and 
-     * ISBN-13, as they use different checksum algorithms).
-     * 
-     * @return 
-     *      The ISBN of the current BibTeX object as a String.
+     * The ISBN of the resource. ISBNs now come in two styles, containing 10
+     * digits or 13 digits, respectively (corresponding to the above "ISBN-10:"
+     * and "ISBN-13:" numbers). Please use the 13-digit one if available (if
+     * nowhere else, it is written under the barcode: the hyphenation will be
+     * 978-, or in the future 979-, then the same as in the 10-digit ISBN, but
+     * the last digit is different for ISBN-10 and ISBN-13, as they use
+     * different checksum algorithms).
+     *
+     * @return The ISBN of the current BibTeX object as a String.
      */
     public String getIsbn() {
         return mIsbn;
@@ -446,11 +437,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the ISBN.
-     * 
-     * @param isbn
-     *      The ISBN.
-     * @return 
-     *      The current BibTeX instance with updated ISBN.
+     *
+     * @param isbn The ISBN.
+     * @return The current BibTeX instance with updated ISBN.
      * @see #getIsbn() #getIsbn()
      */
     public BibTeX setIsbn(String isbn) {
@@ -459,16 +448,15 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * The ISSN of the resource. An International Standard Serial Number (ISSN) 
+     * The ISSN of the resource. An International Standard Serial Number (ISSN)
      * is a unique eight-digit number used to identify a print or electronic
-     * periodical publication. Periodicals published in both print and electronic 
-     * form may have two ISSNs, a print ISSN (p-ISSN) and an electronic ISSN 
-     * (e-ISSN or eISSN). The ISSN system was first drafted as an ISO international 
-     * standard in 1971 and published as ISO 3297 in 1975. The ISO subcommittee 
-     * TC 46/SC 9 is responsible for the standard.
-     * 
-     * @return 
-     *      The ISSN of the current BibTeX object as a String.
+     * periodical publication. Periodicals published in both print and
+     * electronic form may have two ISSNs, a print ISSN (p-ISSN) and an
+     * electronic ISSN (e-ISSN or eISSN). The ISSN system was first drafted as
+     * an ISO international standard in 1971 and published as ISO 3297 in 1975.
+     * The ISO subcommittee TC 46/SC 9 is responsible for the standard.
+     *
+     * @return The ISSN of the current BibTeX object as a String.
      */
     public String getIssn() {
         return mIssn;
@@ -476,11 +464,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the ISSN.
-     * 
-     * @param issn
-     *      The ISSN.
-     * @return 
-     *      The current BibTeX instance with updated ISSN.
+     *
+     * @param issn The ISSN.
+     * @return The current BibTeX instance with updated ISSN.
      * @see #getIssn() #getIssn()
      */
     public BibTeX setIssn(String issn) {
@@ -489,11 +475,10 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * A journal name. Abbreviations are provided for many journals; see
-     * the Local Guide.
-     * 
-     * @return 
-     *      The journal name as a String.
+     * A journal name. Abbreviations are provided for many journals; see the
+     * Local Guide.
+     *
+     * @return The journal name as a String.
      */
     public String getJournal() {
         return mJournal;
@@ -501,11 +486,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter for the journal name.
-     * 
-     * @param journal
-     *      Name of the journal.
-     * @return 
-     *      The current BibTeX instance with updated <code>journal</code>.
+     *
+     * @param journal Name of the journal.
+     * @return The current BibTeX instance with updated <code>journal</code>.
      * @see #getJournal() getJournal()
      */
     public BibTeX setJournal(String journal) {
@@ -515,11 +498,11 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Used for alphabetizing, cross referencing, and creating a label when the
-     * "author" information (described in Section 4) is missing. This field should
-     * not be confused with the key that appears in the <code>\cite</code> command and at
-     * the beginning of the database entry.
-     * 
-     * @return 
+     * "author" information (described in Section 4) is missing. This field
+     * should not be confused with the key that appears in the
+     * <code>\cite</code> command and at the beginning of the database entry.
+     *
+     * @return
      */
     public String getKey() {
         return mKey;
@@ -527,11 +510,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter for the variable key.
-     * 
-     * @param key
-     *      The key.
-     * @return 
-     *      The current object with updated value of key.
+     *
+     * @param key The key.
+     * @return The current object with updated value of key.
      * @see #getKey() getKey()
      */
     public BibTeX setKey(String key) {
@@ -541,8 +522,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * A list of keywords separated by any custom delimiter.
-     * @return 
-     *      List of keywords as a single string.
+     *
+     * @return List of keywords as a single string.
      */
     public String getKeywords() {
         return mKeywords;
@@ -550,11 +531,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Set a list of keywords separated by any custom delimiter.
-     * 
-     * @param keywords
-     *      Keywords.
-     * @return 
-     *      The current object with updated value of keywords.
+     *
+     * @param keywords Keywords.
+     * @return The current object with updated value of keywords.
      */
     public BibTeX setKeywords(String keywords) {
         this.mKeywords = keywords;
@@ -563,12 +542,12 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * The number of a journal, magazine, technical report, or of a work in a
-     * series. An issue of a journal or magazine is usually identified by its volume
-     * and number; the organization that issues a technical report usually gives
-     * it a number; and sometimes books are given numbers in a named series.
-     * 
-     * @return 
-     *      The number of the current BibTeX object.
+     * series. An issue of a journal or magazine is usually identified by its
+     * volume and number; the organization that issues a technical report
+     * usually gives it a number; and sometimes books are given numbers in a
+     * named series.
+     *
+     * @return The number of the current BibTeX object.
      */
     public Integer getNumber() {
         if (mNumber == null) {
@@ -579,15 +558,13 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the number of the current BibTeX object.
-     * 
-     * @param number
-     *      The <code>number</code> as Integer.
-     * @return 
-     *      The current modifiable BibTeX object updated number.
+     *
+     * @param number The <code>number</code> as Integer.
+     * @return The current modifiable BibTeX object updated number.
      * @see #getNumber() getNumber()
      */
     public BibTeX setNumber(Integer number) {
-        if (number == null || (number != null && number < 0)) {
+        if (number == null || number < 0) {
             this.mNumber = null;
         } else {
             this.mNumber = Integer.toString(number);
@@ -597,14 +574,13 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * One or more page numbers or range of numbers, such as 42--111 or
-     * 7,41,73--97 or 43+ (the ‘+’ in this last example indicates pages following
-     * that don’t form a simple range). To make it easier to maintain Scribe-
-     * compatible databases, the standard styles convert a single dash (as in
-     * 7-33) to the double dash used in TEX to denote number ranges (as in
-     * 7--33).
-     * 
-     * @return 
-     *      Pages as String.
+     * 7,41,73--97 or 43+ (the ‘+’ in this last example indicates pages
+     * following that don’t form a simple range). To make it easier to maintain
+     * Scribe- compatible databases, the standard styles convert a single dash
+     * (as in 7-33) to the double dash used in TEX to denote number ranges (as
+     * in 7--33).
+     *
+     * @return Pages as String.
      */
     public String getPages() {
         return mPages;
@@ -612,10 +588,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the pages of the current BibTeX object.
-     * @param pages
-     *      Pages as String
-     * @return 
-     *      The current modifiable BibTeX object updated pages.
+     *
+     * @param pages Pages as String
+     * @return The current modifiable BibTeX object updated pages.
      * @see #getPages() getPages()
      */
     public BibTeX setPages(String pages) {
@@ -625,9 +600,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * The volume of a journal or multivolume book.
-     * 
-     * @return 
-     *      The volume as Integer.
+     *
+     * @return The volume as Integer.
      */
     public Integer getVolume() {
         if (mVolume == null) {
@@ -638,13 +612,12 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the volume of a journal or multivolume book.
-     * @param volume
-     *      The volume as Integer.
-     * @return 
-     *      The current modifiable BibTeX object updated volume.
+     *
+     * @param volume The volume as Integer.
+     * @return The current modifiable BibTeX object updated volume.
      */
     public BibTeX setVolume(Integer volume) {
-        if (volume == null || (volume != null && volume < 0)) {
+        if (volume == null || volume < 0) {
             this.mVolume = null;
         } else {
             this.mVolume = Integer.toString(volume);
@@ -653,12 +626,11 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * The year of publication or, for an unpublished work, the year it was written. 
-     * Generally it should consist of four numerals, such as <code>1984</code>. This
-     * method returns the year as Integer.
-     * 
-     * @return
-     *      The year of publication/inception as Integer.
+     * The year of publication or, for an unpublished work, the year it was
+     * written. Generally it should consist of four numerals, such as
+     * <code>1984</code>. This method returns the year as Integer.
+     *
+     * @return The year of publication/inception as Integer.
      */
     public Integer getYear() {
         if (mYear == null) {
@@ -668,13 +640,13 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * Set the year of publication. The year is provided as an instance of Integer.
-     * If the supplied value is <code>null</code>, or not-null but non-positive, then
-     * no value is stored in the corresponding field.
-     * @param year
-     *      The year of publication for the BibTeX provided as an Integer object.
-     * @return
-     *      The current updated BibTeX object.
+     * Set the year of publication. The year is provided as an instance of
+     * Integer. If the supplied value is <code>null</code>, or not-null but
+     * non-positive, then no value is stored in the corresponding field.
+     *
+     * @param year The year of publication for the BibTeX provided as an Integer
+     * object.
+     * @return The current updated BibTeX object.
      */
     public BibTeX setYear(Integer year) {
         if (year == null || (year != null && year < 0)) {
@@ -687,27 +659,24 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Usually the address of the publisher or other type of institution. For
-     * major publishing houses, van Leunen recommends omitting the information 
+     * major publishing houses, van Leunen recommends omitting the information
      * entirely. For small publishers, on the other hand, you can help the
      * reader by giving the complete address.
-     * 
-     * @return 
-     *      The address as String.
+     *
+     * @return The address as String.
      */
     public String getAddress() {
         return mAddress;
     }
 
     /**
-     * Setter method for the address of the publisher or other type of institution. For
-     * major publishing houses, it is preferable to omit the information 
-     * entirely. For other smaller publishers, you can help the reader by giving 
-     * the complete address.
-     * 
-     * @param address
-     *      The address as a simple String.     
-     * @return 
-     *      The current modifiable BibTeX object updated address.
+     * Setter method for the address of the publisher or other type of
+     * institution. For major publishing houses, it is preferable to omit the
+     * information entirely. For other smaller publishers, you can help the
+     * reader by giving the complete address.
+     *
+     * @param address The address as a simple String.
+     * @return The current modifiable BibTeX object updated address.
      */
     public BibTeX setAddress(String address) {
         this.mAddress = address;
@@ -717,9 +686,8 @@ public class BibTeX extends OTPublishable<BibTeX>
     /**
      * An annotation. It is not used by the standard bibliography styles, but
      * may be used by others that produce an annotated bibliography.
-     * 
-     * @return 
-     *      Annotation as String.
+     *
+     * @return Annotation as String.
      */
     public String getAnnotation() {
         return mAnnotation;
@@ -727,10 +695,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the annotation.
-     * @param annotation
-     *      The annotation as String.
-     * @return 
-     *      The current modifiable BibTeX object updated annotation.
+     *
+     * @param annotation The annotation as String.
+     * @return The current modifiable BibTeX object updated annotation.
      * @see #getAnnotation() getAnnotation()
      */
     public BibTeX setAnnotation(String annotation) {
@@ -739,12 +706,11 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * The name of a series or set of books. When citing an entire book, the
-     * the title field gives its title and an optional series field gives the name
+     * The name of a series or set of books. When citing an entire book, the the
+     * title field gives its title and an optional series field gives the name
      * of a series or multi-volume set in which the book is published.
-     * 
-     * @return 
-     *      The <code>series</code> as String.
+     *
+     * @return The <code>series</code> as String.
      */
     public String getSeries() {
         return mSeries;
@@ -752,10 +718,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the <code>series</code> of the BibTeX entry.
-     * @param series
-     *      Series as String.
-     * @return 
-     *      The current modifiable BibTeX object updated series.
+     *
+     * @param series Series as String.
+     * @return The current modifiable BibTeX object updated series.
      */
     public BibTeX setSeries(String series) {
         this.mSeries = series;
@@ -764,8 +729,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * The work’s title, typed as explained in the LaTeX book.
-     * @return 
-     *      The title as String.
+     *
+     * @return The title as String.
      */
     public String getTitle() {
         return mTitle;
@@ -773,10 +738,9 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Setter method for the title.
-     * @param title
-     *      The title as String.
-     * @return 
-     *      The current modifiable BibTeX object updated title.
+     *
+     * @param title The title as String.
+     * @return The current modifiable BibTeX object updated title.
      */
     public BibTeX setTitle(String title) {
         this.mTitle = title;
@@ -784,23 +748,20 @@ public class BibTeX extends OTPublishable<BibTeX>
     }
 
     /**
-     * A URL where more information about the work described by this 
-     * BibTeX can be found. Usually, it is the URL where someone may find
-     * the actual resource.
-     * 
-     * @return 
-     *      URL as String.
+     * A URL where more information about the work described by this BibTeX can
+     * be found. Usually, it is the URL where someone may find the actual
+     * resource.
+     *
+     * @return URL as String.
      */
     public String getUrl() {
         return mUrl;
     }
 
     /**
-     * 
-     * @param url
-     *      The URL of the BibTeX actual document.
-     * @return 
-     *      The current modifiable BibTeX object updated annotation.
+     *
+     * @param url The URL of the BibTeX actual document.
+     * @return The current modifiable BibTeX object updated annotation.
      */
     public BibTeX setUrl(String url) {
         this.mUrl = url;
@@ -813,18 +774,19 @@ public class BibTeX extends OTPublishable<BibTeX>
      */
     public BibTeX() {
         super();
+        this.logger = org.slf4j.LoggerFactory.getLogger(BibTeX.class);
         addOntologicalClasses(KnoufBibTex.entry());
     }
 
     /**
      * Create a new BibTeX object with specified URI.
-     * @param uri
-     *      URI of the BibTeX.
-     * @throws ToxOtisException 
-     *      If the provided URI is not a valid BibTeX URI.
+     *
+     * @param uri URI of the BibTeX.
+     * @throws ToxOtisException If the provided URI is not a valid BibTeX URI.
      */
     public BibTeX(VRI uri) throws ToxOtisException {
         super(uri);
+        this.logger = org.slf4j.LoggerFactory.getLogger(BibTeX.class);
         addOntologicalClasses(KnoufBibTex.entry());
         if (uri != null) {
             if (!BibTeX.class.equals(uri.getOpenToxType())) {
@@ -836,8 +798,8 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * The bibtex service.
-     * @return 
-     *      The BibTeX service as a {@link VRI URI}.
+     *
+     * @return The BibTeX service as a {@link VRI URI}.
      */
     public VRI getBibTexService() {
         if (getUri() == null) {
@@ -933,24 +895,24 @@ public class BibTeX extends OTPublishable<BibTeX>
     /**
      * Publishes the BibTeX object to the bibtex service that corresponds to the
      * URI that is returned by the method {@link BibTeX#getUri() getUri()}.
-     * 
-     * @return
-     *      A Task for monitoring the progress of your request. If the service
-     *      returns the URI of the resource right away and does not return a task,
-     *      then the object you will receive from this method will now have an identifier,
-     *      its status will be set to {@link Task.Status#COMPLETED }, its progress
-     *      will be set to <code>100%</code> and the URI of the created resource will
-     *      be available applying the method {@link Task#getResultUri() } on the returned
-     *      task. In any case, the service's response will be wrapped in a {@link Task }
-     *      object.
      *
-     * @throws ToxOtisException
-     *      In case of invalid credentials, if the POSTed resource is not acceptable
-     *      by the remote service (returns a status code 400), communication error
-     *      occur with the remote server or other connection problems or the access
-     *      to the service was denied (401 or 403).
+     * @return A Task for monitoring the progress of your request. If the
+     * service returns the URI of the resource right away and does not return a
+     * task, then the object you will receive from this method will now have an
+     * identifier, its status will be set to {@link Task.Status#COMPLETED }, its
+     * progress will be set to <code>100%</code> and the URI of the created
+     * resource will be available applying the method {@link Task#getResultUri()
+     * } on the returned task. In any case, the service's response will be
+     * wrapped in a {@link Task }
+     * object.
      *
-     * @see BibTeX#publishOnline(org.opentox.toxotis.client.VRI, org.opentox.toxotis.util.aa.AuthenticationToken)  alternative method
+     * @throws ServiceInvocationException In case of invalid credentials, if the
+     * POSTed resource is not acceptable by the remote service (returns a status
+     * code 400), communication error occur with the remote server or other
+     * connection problems or the access to the service was denied (401 or 403).
+     *
+     * @see BibTeX#publishOnline(org.opentox.toxotis.client.VRI,
+     * org.opentox.toxotis.util.aa.AuthenticationToken) alternative method
      */
     @Override
     public Task publishOnline(AuthenticationToken token) throws ServiceInvocationException {
@@ -1063,9 +1025,10 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Retained for backward compatibility with third party systems. Will be
-     * removed in some future distribution. Use {@link BibTeX#toString() } instead.
-     * @return
-     *      Plain text representation of the BibTeX resource.
+     * removed in some future distribution. Use {@link BibTeX#toString() }
+     * instead.
+     *
+     * @return Plain text representation of the BibTeX resource.
      * @deprecated
      */
     @Deprecated
@@ -1223,17 +1186,17 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Create a new BibTeX resource from its String representation. Parses the
-     * String representation of a BibTeX into an instance of BibTeX. Then you can
-     * use the methods defined in {@link BibTeX } to publish the BibTeX in some
-     * BibTeX service or create an RDF representation of it (using the Knouf ontology).
-     * @param string
-     *      String representation of the BibTeX entity. The provided string is not
-     *      expected to be URL encoded. In case it is, you should consider using a
-     *      decoder (e.g. <code>java.net.URLDecoder</code>.
-     * @return
-     *      Updated instance of BibTeX
-     * @throws ToxOtisException
-     *      In case the provided string representation is not valid.
+     * String representation of a BibTeX into an instance of BibTeX. Then you
+     * can use the methods defined in {@link BibTeX } to publish the BibTeX in
+     * some BibTeX service or create an RDF representation of it (using the
+     * Knouf ontology).
+     *
+     * @param string String representation of the BibTeX entity. The provided
+     * string is not expected to be URL encoded. In case it is, you should
+     * consider using a decoder (e.g. <code>java.net.URLDecoder</code>.
+     * @return Updated instance of BibTeX
+     * @throws ToxOtisException In case the provided string representation is
+     * not valid.
      */
     public BibTeX readString(String string) throws ToxOtisException {
         StringReader sr = new StringReader(string);
@@ -1245,18 +1208,18 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Create a new BibTeX resource from its String representation. Parses the
-     * String representation of a BibTeX into an instance of BibTeX. Then you can
-     * use the methods defined in {@link BibTeX } to publish the BibTeX in some
-     * BibTeX service or create an RDF rerpesentation of it (using the Knouf ontology).
-     * @param iStream
-     *      Input stream from which the string is read. Such an input stream might
-     *      be pointing to a file or some remote locate (i.e. to a URL). Be warned
-     *      that this method will not close the provided input stream which has to
-     *      be closed from the outside.
-     * @return
-     *      Updated instance of BibTeX
-     * @throws ToxOtisException
-     *      In case the provided string representation is not valid.
+     * String representation of a BibTeX into an instance of BibTeX. Then you
+     * can use the methods defined in {@link BibTeX } to publish the BibTeX in
+     * some BibTeX service or create an RDF rerpesentation of it (using the
+     * Knouf ontology).
+     *
+     * @param iStream Input stream from which the string is read. Such an input
+     * stream might be pointing to a file or some remote locate (i.e. to a URL).
+     * Be warned that this method will not close the provided input stream which
+     * has to be closed from the outside.
+     * @return Updated instance of BibTeX
+     * @throws ToxOtisException In case the provided string representation is
+     * not valid.
      */
     public BibTeX readString(InputStream iStream) throws ToxOtisException {
         InputStreamReader isr = new InputStreamReader(iStream);
@@ -1271,17 +1234,17 @@ public class BibTeX extends OTPublishable<BibTeX>
 
     /**
      * Create a new BibTeX resource from its String representation. Parses the
-     * String representation of a BibTeX into an instance of BibTeX. Then you can
-     * use the methods defined in {@link BibTeX } to publish the BibTeX in some
-     * BibTeX service or create an RDF representation of it (using the Knouf ontology).
-     * 
-     * @param reader
-     *     Reader used to acquire the String representation of the BibTeX. The method
-     *     will not close the reader so users have to close is when needed.
-     * @return
-     *      Updated instance of BibTeX
-     * @throws ToxOtisException
-     *      In case the provided string representation is not valid.
+     * String representation of a BibTeX into an instance of BibTeX. Then you
+     * can use the methods defined in {@link BibTeX } to publish the BibTeX in
+     * some BibTeX service or create an RDF representation of it (using the
+     * Knouf ontology).
+     *
+     * @param reader Reader used to acquire the String representation of the
+     * BibTeX. The method will not close the reader so users have to close is
+     * when needed.
+     * @return Updated instance of BibTeX
+     * @throws ToxOtisException In case the provided string representation is
+     * not valid.
      */
     public BibTeX readString(Reader reader) throws ToxOtisException {
         //TODO: Would be better if the procedure was based on splitting the string on commas instead of newlines!
@@ -1357,7 +1320,6 @@ public class BibTeX extends OTPublishable<BibTeX>
         } catch (final IOException ex) {
             throw new RuntimeException("Error while reading String! Utterly unexpected!", ex);
         } finally {
-
             if (br != null) {
                 try {
                     br.close();
@@ -1372,16 +1334,14 @@ public class BibTeX extends OTPublishable<BibTeX>
     /**
      * Reads from a file and parses a BibTeX document into an instance of
      * {@link BibTeX}.
-     * @param bibFile
-     *      A file pointing to a <code>.bib</code> file.
-     * @return
-     *      The parsed BibTeX object.
-     * @throws NullPointerException
-     *      If the specified bibfile is <code>null</code>.
-     * @throws ToxOtisException 
-     *      If the file is not found, the exception is wrapped in a ToxOtisException
-     *      and thrown as such. Also any other exceptional event is wrapped in a 
-     *      ToxOtisException.
+     *
+     * @param bibFile A file pointing to a <code>.bib</code> file.
+     * @return The parsed BibTeX object.
+     * @throws NullPointerException If the specified bibfile is
+     * <code>null</code>.
+     * @throws ToxOtisException If the file is not found, the exception is
+     * wrapped in a ToxOtisException and thrown as such. Also any other
+     * exceptional event is wrapped in a ToxOtisException.
      */
     public BibTeX readString(File bibFile) throws ToxOtisException {
         if (bibFile == null) {
@@ -1395,11 +1355,16 @@ public class BibTeX extends OTPublishable<BibTeX>
         } catch (FileNotFoundException ex) {
             throw new ToxOtisException("File not found at " + bibFile.getName(), ex);
         } finally {
-            try {
-                fis.close();
-            } catch (IOException ex) {
-                logger.warn(null, ex);
-                throw new ToxOtisException(ex);
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException ex) {
+                    logger.warn(null, ex);
+                    throw new ToxOtisException(ex);
+                }
+            } else {
+                logger.debug("BibTeX: FIS is null inside the finally statement. It "
+                        + "seems that no FIS could be opened to the specified File.");
             }
         }
     }

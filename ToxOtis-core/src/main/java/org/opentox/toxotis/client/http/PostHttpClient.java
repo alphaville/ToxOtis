@@ -73,8 +73,8 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     /** Type of the posted content*/
     private String contentType = null;
     /** Parameters to be posted as application/x-www-form-urlencoded (if any) */
-    //TODO: Convert into a Map<String, List<String>> postParameters;
-    private Map<String, List<String>> postParameters = new LinkedHashMap<String, List<String>>();
+    private final Map<String, List<String>> postParameters = 
+            new LinkedHashMap<String, List<String>>();
     private OntModel model;
     /** Arbitrary object to be posted to the remote server s*/
     private File fileContentToPost = null;
@@ -88,7 +88,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     remote stream
      */
     private IStAXWritable staxComponent;
-    private WriteLock postLock = new ReentrantReadWriteLock().writeLock();
+    private final WriteLock postLock = new ReentrantReadWriteLock().writeLock();
 
     public PostHttpClient() {
         super();
@@ -150,12 +150,12 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      * Set a file whose contents are to be posted to the remote server specified
      * in the constructor of this class. If the file is not found under the specified
      * path, an IllegalArgumentException is thrown. Because the type of the file is
-     * in general unknown and it is not considered to be a good practise to deduce the
+     * in general unknown and it is not considered to be a good practice to deduce the
      * file type from the file extension, it is up to the user to specify the content
      * type of the posted object using the method {@link PostHttpClient#setContentType(java.lang.String)
      * setContentType}. Since it is not possible to POST entities of different content
-     * types to an HTTP server, any invokation to this method will override any previous
-     * invokation of {@link PostHttpClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
+     * types to an HTTP server, any invocation to this method will override any previous
+     * invocation of {@link PostHttpClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
      * setPostable(OntModel) } and {@link PostHttpClient#setPostable(java.lang.String, boolean) 
      * setPostable(String)}.
      *
@@ -258,7 +258,15 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
         return new String(string);
     }
 
-    /** Initialize a connection to the target URI */
+    /** 
+     * Initialize a connection to the target URI
+     * 
+     * @return 
+     *  The HTTP connection.
+     * 
+     * @throws org.opentox.toxotis.exceptions.impl.InternalServerError 
+     * @throws org.opentox.toxotis.exceptions.impl.ConnectionException 
+     */
     @Override
     protected java.net.HttpURLConnection initializeConnection(final java.net.URI uri) throws InternalServerError, ConnectionException {
         try {
@@ -306,7 +314,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      * initializeConnection(URI)} is invoked and then a DataOutputStream opens to
      * transfer the data to the server.
      *
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      Encapsulates an IOException which might be thrown due to I/O errors
      *      during the data transaction.
      */
@@ -380,6 +388,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
                     if (thr != null) {
                         ConnectionException connExc = new ConnectionException("Stream could not close", thr);
                         connExc.setActor(getUri() != null ? getUri().toString() : "N/A");
+                        //TODO Why is the exception not thrown here?
                     }
                 }
             }

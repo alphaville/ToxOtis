@@ -5,7 +5,7 @@
     <groupId>org.opentox.toxotis</groupId>
     <artifactId>ToxOtis-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.8.8-SNAPSHOT</version>
+    <version>0.8.9-SNAPSHOT</version>
     <name>ToxOtis Core Module</name>
     <description></description>
     <developers>
@@ -124,7 +124,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>2.9</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -133,6 +133,15 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <charset>UTF-8</charset>
+                        <docencoding>UTF-8</docencoding>
+                        <docfilessubdirs>true</docfilessubdirs>
+                        <links>
+                            <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+                        </links>
+                        <show>protected</show>                        
+                    </configuration>
                 </plugin>                
       
                 <plugin>

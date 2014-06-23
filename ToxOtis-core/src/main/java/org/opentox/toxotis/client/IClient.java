@@ -117,7 +117,7 @@ public interface IClient extends Closeable {
      * Get the body of the HTTP response as InputStream.
      * @return
      * InputStream for the remote HTTP response
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      * In case an error status code is received from the remote location.
      */
     InputStream getRemoteStream() throws ServiceInvocationException;
@@ -126,7 +126,7 @@ public interface IClient extends Closeable {
      * Get the HTTP status of the response
      * @return
      * Response status code.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      * In case the connection cannot be established because a {@link ToxOtisException }
      * is thrown while a connection is attempted to the remote service.
      */
@@ -140,7 +140,7 @@ public interface IClient extends Closeable {
      *
      * @return
      * The ontological model from the response body.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      * A ToxOtisException is thrown in case the server did not provide a valid
      * (syntactically correct) ontological model, or in case some communication
      * error will arise.
@@ -157,8 +157,8 @@ public interface IClient extends Closeable {
      * is "RDF/XML". Also available: "TTL", "N-TRIPLE" and "N3".
      * @return
      * The ontological model from the response body.
-     * @throws ToxOtisException
-     * A ToxOtisException is thrown in case the server did not provide a valid
+     * @throws ServiceInvocationException
+     * A ServiceInvocationException is thrown in case the server did not provide a valid
      * (syntactically correct) ontological model, or in case some communication
      * error will arise.
      */
@@ -172,7 +172,7 @@ public interface IClient extends Closeable {
      * String consisting of the response body (in a MediaType which results
      * from content negotiation, taking into account the Accept header of the
      * request)
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      * In case some communication, server or request error occurs.
      */
     String getResponseText() throws ServiceInvocationException;
@@ -188,7 +188,8 @@ public interface IClient extends Closeable {
      * Specify the mediatype to be used in the <tt>Accept</tt> header.
      * @param mediaType
      * Accepted mediatype
-     *
+     * @return 
+     *  The current mutable IClient object.
      * @see RequestHeaders#ACCEPT
      */
     IClient setMediaType(String mediaType);
@@ -199,7 +200,8 @@ public interface IClient extends Closeable {
      * 
      * @param mediaType
      *      Accepted media-type
-     * 
+     * @return 
+     *      The current mutable IClient object.
      * 
      * @see RequestHeaders#ACCEPT
      */
@@ -211,6 +213,12 @@ public interface IClient extends Closeable {
      * @param vri
      *      The URI that will be used by the client to perform the 
      *      remote connection.
+     * 
+     * @return 
+     *      The current mutable IClient object.
+     * 
+     * @throws org.opentox.toxotis.exceptions.impl.ToxOtisException
+     *      A ToxOtisException is thrown if the URI cannot be set.
      */
     IClient setUri(VRI vri) throws ToxOtisException;
 
@@ -219,8 +227,13 @@ public interface IClient extends Closeable {
      * 
      * @param uri 
      *      The target URI as a String.
+     * 
+     * @return 
+     *      The current mutable IClient object.
+     * 
      * @throws java.net.URISyntaxException 
      *      In case the provided URI is syntactically incorrect.
+     * @throws org.opentox.toxotis.exceptions.impl.ToxOtisException
      */
     IClient setUri(String uri) throws URISyntaxException, ToxOtisException;
 
@@ -231,7 +244,7 @@ public interface IClient extends Closeable {
      * 
      * @return
      *      Set of URIs returned by the remote service.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case some I/O communication error inhibits the transmittance of
      *      data between the client and the server or a some stream cannot close.
      */

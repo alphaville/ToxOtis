@@ -87,7 +87,7 @@ public enum Media {
     APPLICATION_YAML("application/x-yaml"),
     /**
      * The MIME <code>application/xml</code>
-     * @see <a href="http://tools.ietf.org/html/rfc3023>RFC 3023</a>
+     * @see <a href="http://tools.ietf.org/html/rfc3023">RFC 3023</a>
      * @see <a href="http://en.wikipedia.org/wiki/XML_and_MIME">Wikipedia article</a>
      */
     APPLICATION_XML("application/xml"),
@@ -124,7 +124,7 @@ public enum Media {
      */
     IMAGE_JPEG("image/jpeg"),
     ;
-    private String mime;
+    private final String mime;
 
     private Media(String mime) {
         this.mime = mime;

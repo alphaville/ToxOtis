@@ -77,7 +77,7 @@ public class Feature extends OTPublishable<Feature> {
 
     private String units;
     private Set<LiteralValue> admissibleValues = new HashSet<LiteralValue>();
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Feature.class);
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Feature.class);
     private static final int HASH_OFFSET = 3, HASH_MOD = 19;
 
     public Feature() {
@@ -100,9 +100,9 @@ public class Feature extends OTPublishable<Feature> {
 
     /**
      * The lower-level ontological classes that are necessary to characterize the
-     * features. For example, if the feature is both an instance of {@link OTClasses#Feature ot:Feature}
-     * and {@link OTClasses#NumericFeature ot:NumericFeature}, then the latter suffices to describe the
-     * ontological properties of the entity - therefore {@link OTClasses#Feature ot:Feature} can 
+     * features. For example, if the feature is both an instance of {@link OTClasses#feature ot:Feature}
+     * and {@link OTClasses#numericFeature ot:NumericFeature}, then the latter suffices to describe the
+     * ontological properties of the entity - therefore {@link OTClasses#feature ot:Feature} can 
      * be omitted as it offers no meaningful information.
      * 
      * @return 

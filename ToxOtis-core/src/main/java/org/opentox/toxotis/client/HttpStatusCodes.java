@@ -124,12 +124,12 @@ public enum HttpStatusCodes {
      * unless it can be confirmed by the user, since this might change the 
      * conditions under which the request was issued.</p>
      * 
-     * <p>
+     * 
      * <pre>
      * Note: When automatically redirecting a POST request after
      * receiving a 301 status code, some existing HTTP/1.0 user agents
      * will erroneously change it into a GET request.</pre>
-     * </p>
+     * 
      */
     MovedPermanently(301, "The requested resource has been assigned a new permanent URI "
     + "and any future references to this resource SHOULD use one of the returned URIs."),

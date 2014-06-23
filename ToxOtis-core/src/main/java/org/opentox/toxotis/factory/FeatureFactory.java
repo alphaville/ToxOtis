@@ -51,8 +51,10 @@ import org.opentox.toxotis.exceptions.impl.Unauthorized;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
 import org.opentox.toxotis.ontology.ResourceValue;
+import org.opentox.toxotis.ontology.collection.OTEchaEndpoints;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.aa.TokenPool;
 
 /**
  * A factory-like class that provides methods for looking up features in remote
@@ -70,11 +72,11 @@ public class FeatureFactory {
     /**
      * Retrieve a collection of Feature URIs that are <code>same as</code> a certain
      * ECHA endpoint as these are formalized using the OpenTox ontology. This ontology
-     * can be downloaded from the <a href="http://www.opentox.org/data/documents/development/
-     * RDF files/Endpoints/">OpenTox repository</a> for RDF files. Within ToxOtis,
+     * can be downloaded from the 
+     * <a href="http://www.opentox.org/data/documents/development/RDF%20files/Endpoints/">OpenTox repository</a> 
+     * for RDF files. Within ToxOtis,
      * you can refer to the various ECHA end-points using the class {@link OTEchaEndpoints }.
-     *
-     *
+     *     
      * @param service
      *       URI of an OpenTox feature service. Feature service URI comply with the pattern
      *      <code>http://someserver.com/feature/id</code> which formally, in terms of
@@ -84,7 +86,7 @@ public class FeatureFactory {
      *      An ECHA enpoint as an Ontological Class. You may obtain a list of some default
      *      endpoint classes from {@link OTEchaEndpoints }.
      * @param token
-     *      Auththentication token provided by the user to authenticate against the service in case
+     *      Authentication token provided by the user to authenticate against the service in case
      *      it has restricted access.
      *
      * @return a Set of Feature URIs that are <code>same as</code> the ECHA endpoint provided.
@@ -121,8 +123,9 @@ public class FeatureFactory {
      * Retrieve a collection of Feature URIs by querying a default Feature Service,
      * that are <code>same as</code> a certain
      * ECHA endpoint as these are formalized using the OpenTox ontology. This ontology
-     * can be downloaded from the <a href="http://www.opentox.org/data/documents/development/
-     * RDF files/Endpoints/">OpenTox repository</a> for RDF files. Within ToxOtis,
+     * can be downloaded from the 
+     * <a href="http://www.opentox.org/data/documents/development/RDF%20files/Endpoints/">OpenTox repository</a>
+     * for RDF files. Within ToxOtis,
      * you can refer to the various ECHA enpoitns using the class {@link OTEchaEndpoints }.
      *
      *
@@ -134,6 +137,8 @@ public class FeatureFactory {
      *      it has restricted access.
      *
      * @return a Set of Feature URIs that are <code>same as</code> the ECHA endpoint provided.
+     * @throws org.opentox.toxotis.exceptions.impl.ServiceInvocationException
+     *      Service invocation exception.
      */
     public static Set<VRI> lookupSameAs(
             OntologicalClass echaEndpoint, AuthenticationToken token) throws ServiceInvocationException {
@@ -159,7 +164,7 @@ public class FeatureFactory {
      *      {@link TokenPool } that manages multiple logged in users.
      * @return
      *      Set of all URIs available from the feature service
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case a non-success HTTP status code is returned by the remote service,
      *      either due to authentication/authorization failure of due to other unexpected
      *      conditions (e.g. error 500 or 503).
@@ -186,12 +191,13 @@ public class FeatureFactory {
      *      {@link TokenPool } that manages multiple logged in users.
      * @return
      *      Set of all URIs available from the feature service
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case a non-success HTTP status code is returned by the remote service,
      *      either due to authentication/authorization failure of due to other unexpected
      *      conditions (e.g. error 500 or 503).
      */
-    public static Set<VRI> listAllFeatures(VRI featureService, int page, int pagesize, AuthenticationToken token) throws ServiceInvocationException {
+    public static Set<VRI> listAllFeatures(VRI featureService, int page, int pagesize, AuthenticationToken token) 
+            throws ServiceInvocationException {
         VRI featureServiceWithToken = new VRI(featureService).removeUrlParameter("page").removeUrlParameter("pagesize");
         if (page > 0) {
             featureServiceWithToken.addUrlParameter("page", page);
@@ -235,12 +241,14 @@ public class FeatureFactory {
      * @return
      *      The created feature with an updated URI. Use the method {@link Feature#getUri() }
      *      to obtain the URI of the newly created feature.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the publication of the feature is not possible, the process
      *      is interrupted while waiting for its completion of other unexpected
      *      exceptional events related to the publication of the feature occur.
      */
-    public static Feature createAndPublishFeature(String title, String units, ResourceValue hasSource, VRI fetureService, AuthenticationToken token) throws ServiceInvocationException {
+    public static Feature createAndPublishFeature(String title, String units, 
+            ResourceValue hasSource, VRI fetureService, AuthenticationToken token) 
+            throws ServiceInvocationException {
         MetaInfo mi = new MetaInfoImpl();
         mi.addTitle(title);
         mi.addHasSource(hasSource);
@@ -263,13 +271,14 @@ public class FeatureFactory {
      * @return
      *      The created feature with an updated URI. Use the method {@link Feature#getUri() }
      *      to obtain the URI of the newly created feature.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case the publication of the feature is not possible, the process
      *      is interrupted while waiting for its completion of other unexpected
      *      exceptional events related to the publication of the feature occur.
      */
     public static Feature createAndPublishFeature(MetaInfo metaInfo,
-            String units, VRI featureService, AuthenticationToken token) throws ServiceInvocationException {
+            String units, VRI featureService, AuthenticationToken token) 
+            throws ServiceInvocationException {
         Feature brandNewFeature = new Feature();
         brandNewFeature.setMeta(metaInfo);
         brandNewFeature.setUnits(units);

@@ -53,7 +53,7 @@ public class TaskRunner implements Callable<Task> {
     private AuthenticationToken token;
 
     private TaskRunner() {
-        throw new AssertionError("Dummy constructor invokation in TaskRunner!");
+        throw new AssertionError("Dummy constructor invocation in TaskRunner!");
     }
 
     public TaskRunner(final Task task) {

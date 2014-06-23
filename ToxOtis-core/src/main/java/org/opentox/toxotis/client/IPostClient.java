@@ -62,7 +62,7 @@ public interface IPostClient extends IClient {
      * initializeConnection(URI)} is invoked and then a DataOutputStream opens to
      * tranfer the data to the server.
      *
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      * Encapsulates an IOException which might be thrown due to I/O errors
      * during the data transaction.
      */
@@ -94,8 +94,8 @@ public interface IPostClient extends IClient {
 
     /**
      * Set an ontological data model which is to be posted to the remote location
-     * as application/rdf+xml. Invokations of this method set automatically the content-type
-     * to application/rdf+xml though it can be overriden afterwards.
+     * as application/rdf+xml. InvoCations of this method set automatically the content-type
+     * to application/rdf+xml though it can be overridden afterwards.
      * @param model
      * Ontological Model to be posted
      * @return
@@ -120,12 +120,12 @@ public interface IPostClient extends IClient {
      * Set a file whose contents are to be posted to the remote server specified
      * in the constructor of this class. If the file is not found under the specified
      * path, an IllegalArgumentException is thrown. Because the type of the file is
-     * in general unknown and it is not considered to be a good practise to deduce the
+     * in general unknown and it is not considered to be a good practice to deduce the
      * file type from the file extension, it is up to the user to specify the content
      * type of the posted object using the method {@link PostHttpClient#setContentType(java.lang.String)
      * setContentType}. Since it is not possible to POST entities of different content
-     * types to an HTTP server, any invokation to this method will override any previous
-     * invokation of {@link PostHttpClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
+     * types to an HTTP server, any invocation to this method will override any previous
+     * invocation of {@link PostHttpClient#setPostable(com.hp.hpl.jena.ontology.OntModel)
      * setPostable(OntModel) } and {@link PostHttpClient#setPostable(java.lang.String, boolean)
      * setPostable(String)}.
      *

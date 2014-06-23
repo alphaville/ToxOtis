@@ -33,9 +33,12 @@
 package org.opentox.toxotis.ontology;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.Blob;
+import java.sql.SQLException;
 import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 /**
  *
@@ -54,7 +57,23 @@ public class MetaInfoBlobber {
         return meta;
     }
 
-    public Blob toBlob() throws Exception {
+    /**
+     * Converts a MetaInfo object to a BLOB.
+     * @return
+     *  The serializable object, instance of MetaInfo, converted into a SQL BLOB
+     *  object.
+     * @throws SerialException
+     *  If an error occurs during serialization
+     *  (thrown by the constructor of SerialBlob).
+     * @throws SQLException
+     *  If the Blob passed to this to this constructor is a <code>null</code>
+     *  (thrown by the constructor of SerialBlob).
+     * @throws IOException 
+     *  If the serializable object cannot be written into bytes because an
+     *  ObjectOutputStream cannot write to a ByteArrayOutputStream, or, because
+     *  the ObjectOutputStream object cannot flush or close properly.
+     */
+    public Blob toBlob() throws SerialException, SQLException, IOException {
         if (meta == null) {
             return null;
         }
@@ -62,7 +81,7 @@ public class MetaInfoBlobber {
 
     }
 
-    private byte[] getBytes() throws java.io.IOException {
+    private byte[] getBytes() throws IOException {
         Object obj = meta;
         if (obj == null) {
             return null;

@@ -61,6 +61,8 @@ public final class OTClasses {
     public static final String NS = "http://www.opentox.org/api/1.1#";
     private static OntologicalClass openToxResource;
     private static OntologicalClass algorithm;
+    private static OntologicalClass substance;
+    private static OntologicalClass image;
     private static OntologicalClass compound;
     private static OntologicalClass conformer;
     private static OntologicalClass dataEntry;
@@ -92,7 +94,7 @@ public final class OTClasses {
     private static OntologicalClass errorReport;
     private static OntologicalClass thing;
     private static Map<String, Method> methodCache;
-    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTClasses.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OTClasses.class);
 
     private synchronized static void initMethodCache() {
         if (methodCache == null) {
@@ -233,13 +235,43 @@ public final class OTClasses {
         return qprfReport;
     }
 
+     /**
+     * A substance.
+     * @return
+     * ot:Substance as an ontological class object.
+     */
+    public static OntologicalClass substance() {
+        if (substance == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("Substance");            
+            clazz.getSuperClasses().add(openToxResource());
+            substance = clazz;
+        }
+        return substance;
+    }
+
+    /**
+     * A microscopic image of a substance.
+     * @return
+     * ot:Image as an ontological class object.
+     */
+    public static OntologicalClass image() {
+        if (image == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("Image");            
+            clazz.getSuperClasses().add(openToxResource());
+            image = clazz;
+        }
+        return image;
+    }
+    
     /**
      * A compound.
+     * @return 
+     *  The class ot:Compound.
      */
     public static OntologicalClass compound() {
         if (compound == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Compound");
-            clazz.getMetaInfo().addComment("API for OpenTox compound webservices");
+            clazz.getMetaInfo().addComment("OpenTox compound ontological class");
             clazz.getSuperClasses().add(openToxResource());
             compound = clazz;
         }
@@ -252,7 +284,7 @@ public final class OTClasses {
     public static OntologicalClass conformer() {
         if (conformer == null) {
             OntologicalClass clazz = new OntologicalClassImpl("Conformer");
-            clazz.getMetaInfo().addComment("API for OpenTox conformer webservices");
+            clazz.getMetaInfo().addComment("OpenTox conformer ontological class");
             clazz.getSuperClasses().add(compound());
             conformer = clazz;
         }

@@ -74,9 +74,9 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
 
     /**
      * Create a new AlgorithmSpider providing the URI of the algorithm to be
-     * <em>spidered</em>, i.e. downloded from the remote location the URI specifies
+     * <em>spidered</em>, i.e. downloaded from the remote location the URI specifies
      * (as an RDF/XML document) and then parsed into an {@link org.opentox.toxotis.core.component.Algorithm Algorithm}
-     * object. Be aware that the invokation of this method assumes that no authentication or
+     * object. Be aware that the invocation of this method assumes that no authentication or
      * authorization mechanism exists on the remote server to control access to the
      * resource and it can be freely accessed.
      *
@@ -87,7 +87,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      *      org.opentox.toxotis.client.collection.Services.NtuaAlgorithms#mlr() NTUA MLR}
      *      from the {@link Services#ntua() NTUA SERVICES} server.
      *
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case some exceptional event occurs during the server-client communication,
      *      the connection is not possible (e.g. the remote server is down), or the
      *      response status is 403 (Authentication Failed), 401 (The user is not authorized),
@@ -133,7 +133,7 @@ public class AlgorithmSpider extends Tarantula<Algorithm> {
      *      NTUA SERVICES} server.
      * @param token
      *      An authentication token that will grant the client access to the resource.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case some exceptional event occurs during the server-client communication,
      *      the connection is not possible (e.g. the remote server is down), or the
      *      response status is 403 (Authentication Failed), 401 (The user is not authorized),

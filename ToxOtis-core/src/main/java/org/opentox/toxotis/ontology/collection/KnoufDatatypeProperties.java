@@ -117,7 +117,7 @@ public final class KnoufDatatypeProperties {
      * BibTeX resources to literals.
      * 
      * <pre>
-     * hasAbstract #Entry -> XMLSchema#string
+     * hasAbstract #Entry to XMLSchema#string
      * </pre>
      * 
      * @see BibTeX#getAbstract() 
@@ -140,7 +140,7 @@ public final class KnoufDatatypeProperties {
      * property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasTitle #Entry -> XMLSchema#string
+     * hasTitle #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasTitle() {
@@ -162,7 +162,7 @@ public final class KnoufDatatypeProperties {
      * property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasURL #Entry -> XMLSchema#string
+     * hasURL #Entry to XMLSchema#string
      * </pre>
      * 
      * @see BibTeX#getUrl() 
@@ -184,7 +184,7 @@ public final class KnoufDatatypeProperties {
      * This is a datatype property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasAuthor #Entry -> XMLSchema#string
+     * hasAuthor #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasAuthor() {
@@ -205,7 +205,7 @@ public final class KnoufDatatypeProperties {
      * This is a datatype property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasBookTitle #Entry -> XMLSchema#string
+     * hasBookTitle #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasBookTitle() {
@@ -224,8 +224,10 @@ public final class KnoufDatatypeProperties {
      * A chapter (or section or whatever) number.
      * 
      * <pre>
-     * hasChapter #Entry -> XMLSchema#nonNegativeInteger
+     * hasChapter #Entry to XMLSchema#nonNegativeInteger
      * </pre>
+     * @return 
+     *  The OTDatatypeProperty hasChapter
      */
     public static OTDatatypeProperty hasChapter() {
         if (hasChapter == null) {
@@ -244,7 +246,7 @@ public final class KnoufDatatypeProperties {
      * resources to literals.
      * 
      * <pre>
-     * hasCopyright #Entry -> XMLSchema#string
+     * hasCopyright #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasCopyright() {
@@ -264,7 +266,7 @@ public final class KnoufDatatypeProperties {
      * property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasCrossref #Entry -> XMLSchema#string
+     * hasCrossref #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasCrossRef() {
@@ -286,7 +288,7 @@ public final class KnoufDatatypeProperties {
      * that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasEdition #Entry -> XMLSchema#string
+     * hasEdition #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasEdition() {
@@ -308,7 +310,7 @@ public final class KnoufDatatypeProperties {
      * that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasEditor #Entry -> XMLSchema#string
+     * hasEditor #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasEditor() {
@@ -328,7 +330,7 @@ public final class KnoufDatatypeProperties {
      * that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasISBN #Entry -> XMLSchema#string
+     * hasISBN #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasISBN() {
@@ -348,7 +350,7 @@ public final class KnoufDatatypeProperties {
      * This is a datatype property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasISSN #Entry -> XMLSchema#string
+     * hasISSN #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasISSN() {
@@ -385,7 +387,7 @@ public final class KnoufDatatypeProperties {
      * This is a datatype property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasOrganization #Entry -> XMLSchema#string
+     * hasOrganization #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasOrganization() {
@@ -408,7 +410,7 @@ public final class KnoufDatatypeProperties {
      * This is a datatype property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasAddress #Entry -> XMLSchema#string
+     * hasAddress #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasAddress() {
@@ -428,7 +430,7 @@ public final class KnoufDatatypeProperties {
      * BibTeX resources to literals.
      * 
      * <pre>
-     * hasAffiliation #Entry -> XMLSchema#string
+     * hasAffiliation #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasAffiliation() {
@@ -449,7 +451,7 @@ public final class KnoufDatatypeProperties {
      * This is a datatype property that maps Knouf BibTeX resources to literals.
      * 
      * <pre>
-     * hasAnnotation #Entry -> XMLSchema#string
+     * hasAnnotation #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasAnnotation() {
@@ -470,7 +472,7 @@ public final class KnoufDatatypeProperties {
      * this property redundant.
      * 
      * <pre>
-     * hasKey #Entry -> XMLSchema#string
+     * hasKey #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasKey() {
@@ -489,7 +491,7 @@ public final class KnoufDatatypeProperties {
      * Key-words used for searching or possibly for annotation.
      * 
      * <pre>
-     * hasKeywords #Entry -> XMLSchema#string
+     * hasKeywords #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasKeywords() {
@@ -510,7 +512,7 @@ public final class KnoufDatatypeProperties {
      * abbreviation, as described in Appendix B.1.3 of the LaTeX book.
      * 
      * <pre>
-     * hasMonth #Entry -> XMLSchema#string
+     * hasMonth #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasMonth() {
@@ -533,7 +535,7 @@ public final class KnoufDatatypeProperties {
      * in a named series.
      * 
      * <pre>
-     * hasNumber #Entry -> XMLSchema#string
+     * hasNumber #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasNumber() {
@@ -552,7 +554,7 @@ public final class KnoufDatatypeProperties {
      * The volume of a journal or multi-volume book.
      * 
      * <pre>
-     * hasVolume #Entry -> XMLSchema#nonNegativeInteger
+     * hasVolume #Entry to XMLSchema#nonNegativeInteger
      * </pre>
      */
     public static OTDatatypeProperty hasVolume() {
@@ -570,7 +572,7 @@ public final class KnoufDatatypeProperties {
     /**
      * The name of the school where a thesis was written.
      * <pre>
-     * hasSchool #Entry -> XMLSchema#string
+     * hasSchool #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasSchool() {
@@ -594,7 +596,7 @@ public final class KnoufDatatypeProperties {
      * number ranges (as in 7-33).
      * 
      * <pre>
-     * hasPages #Entry -> XMLSchema#string
+     * hasPages #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasPages() {
@@ -616,7 +618,7 @@ public final class KnoufDatatypeProperties {
      * is published.
      * 
      * <pre>
-     * hasSeries #Entry -> XMLSchema#string
+     * hasSeries #Entry to XMLSchema#string
      * </pre>
      */
     public static OTDatatypeProperty hasSeries() {
@@ -638,7 +640,7 @@ public final class KnoufDatatypeProperties {
      * nonpunctuation characters are numerals, such as '(about 1984)'.
      * 
      * <pre>
-     * hasYear #Entry -> XMLSchema#nonNegativeInteger
+     * hasYear #Entry to XMLSchema#nonNegativeInteger
      * </pre>
      */
     public static OTDatatypeProperty hasYear() {

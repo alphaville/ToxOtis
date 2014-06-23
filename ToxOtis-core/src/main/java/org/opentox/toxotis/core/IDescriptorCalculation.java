@@ -49,7 +49,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
 public interface IDescriptorCalculation {
 
     /**
-     * Calculates descriptors for this compound empoying a descriptor calculation
+     * Calculates descriptors for this compound employing a descriptor calculation
      * web service at the specified location. The method accepts a set or parameters
      * as a String array (<code>String[]</code>) for fine tuning of the remote
      * service.
@@ -69,12 +69,14 @@ public interface IDescriptorCalculation {
      * @return
      *      The task returned by the remote service that will be used to monitor
      *      the progress of the descriptor calculation process.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case some communication or connection error occurs between the
      *      client and the descriptor calculation service or the stream cannot
      *      open or close.
      */
-    Task calculateDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, String... serviceConfiguration) throws ServiceInvocationException;
+    Task calculateDescriptors(VRI descriptorCalculationAlgorithm, 
+            AuthenticationToken token, String... serviceConfiguration) 
+            throws ServiceInvocationException;
 
     /**
      * Calculates all available descriptors using a remote descriptor calculation
@@ -91,7 +93,7 @@ public interface IDescriptorCalculation {
      * @return
      *      The task returned by the remote service that will be used to monitor
      *      the progress of the descriptor calculation process.
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      *      In case some communication or connection error occurs between the
      *      client and the descriptor calculation service or the stream cannot
      *      open or close.
@@ -112,7 +114,7 @@ public interface IDescriptorCalculation {
      *      Authentication token used for accessing the descriptor calculation
      *      service.
      * @param executor
-     *      An executor used to sumbit the thread in. Be aware that the executor
+     *      An executor used to submit the thread in. Be aware that the executor
      *      is not shutdown in this method so it is up to the user whether it should
      *      be shutdown or not.
      * @param serviceConfiguration
@@ -147,9 +149,11 @@ public interface IDescriptorCalculation {
      *      blah/blah/dataset</code>.
      * @return
      *      A <code>Future</code> result of an asynchronous job initiated
-     * @throws ToxOtisException
+     * @throws ServiceInvocationException
      */
-    Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, AuthenticationToken token, VRI datasetService) throws ServiceInvocationException;
+    Future<VRI> futureDescriptors(VRI descriptorCalculationAlgorithm, 
+            AuthenticationToken token, VRI datasetService) 
+            throws ServiceInvocationException;
 
     Future<VRI> futureJoeLibDescriptors(AuthenticationToken token, VRI datasetService) throws ServiceInvocationException;
 
