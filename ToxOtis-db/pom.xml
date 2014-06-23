@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.opentox.toxotis</groupId>
             <artifactId>ToxOtis-core</artifactId>
-            <version>0.8.8-SNAPSHOT</version>
+            <version>0.8.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -75,24 +75,43 @@
             <id>jbossrepo</id>
             <url> https://repository.jboss.org/nexus/content/groups/public</url>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>false</enabled> 
+                <updatePolicy>never</updatePolicy>             
             </snapshots>
+            <!-- 
+            Comment out to work offline
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases> 
+            -->
         </repository>
         <!-- AMBIT PLOVDIV REPO -->
         <repository>
             <id>ambit-plovdiv</id>
             <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>false</enabled> 
+                <updatePolicy>never</updatePolicy>             
             </snapshots>
+            <!-- 
+            Comment out to work offline
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases> 
+            -->
         </repository>      
-        <!-- <repository>
+        <!-- 
+        The OpenTox repository is currently offline
+        <repository>
             <id>opentox-ntua-gr</id>
             <url>http://opentox.ntua.gr:8081/nexus/content/repositories/releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>      -->
+        </repository>      
+        -->
     </repositories>
 
 
