@@ -66,7 +66,7 @@ public class AddModel extends DbWriter {
     private PreparedStatement writeFeature = null;
     private PreparedStatement writeComponent = null;
     private PreparedStatement writeModel = null;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddModel.class);
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AddModel.class);
     private static final String INSERT_FEATURE =
             "INSERT IGNORE Feature (uri, units) VALUES (?,?)";//write all features (if not already)
     private static final String INSERT_META =

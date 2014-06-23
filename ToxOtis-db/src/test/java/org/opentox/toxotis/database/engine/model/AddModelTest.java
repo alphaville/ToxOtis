@@ -85,7 +85,6 @@ public class AddModelTest {
 
     @Test
     public synchronized void testWriteBruteForce() throws InterruptedException {
-        System.out.println("#testWriteBruteForce");
         int poolSize = 50;
         int folds = 5 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
@@ -115,7 +114,6 @@ public class AddModelTest {
 
     @Test
     public synchronized void testWriteAndFindBruteForce() throws InterruptedException {
-        System.out.println("#testWriteAndFindBruteForce");
         int poolSize = 50;
         int folds = 3 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);
@@ -165,7 +163,6 @@ public class AddModelTest {
 
     @Test
     public synchronized void testAddAndFindModel() throws Exception {
-        System.out.println("#testAddAndFindModel");
         Model m = _ROG_.nextModel();
         AddModel adder = null;
         try {
@@ -259,7 +256,6 @@ public class AddModelTest {
 
     @Test
     public void testAddModelNoFeatures() throws Exception {
-        System.out.println("#testAddModelNoFeatures");
         Model m = _ROG_.nextModel();
         m.setDependentFeatures(null);
         m.setIndependentFeatures(null);
@@ -291,7 +287,6 @@ public class AddModelTest {
 
     @Test
     public void testModelNullMeta() throws Exception {
-        System.out.println("#testModelNullMeta");
         Model m = _ROG_.nextModel();
         m.setMeta(null);
         AddModel adder = null;
@@ -319,7 +314,6 @@ public class AddModelTest {
 
     @Test
     public void testModelNoUser() throws Exception {
-        System.out.println("#testModelNoUser");
         Model m = _ROG_.nextModel();
         m.setMeta(null);
         m.setCreatedBy(null);
@@ -344,19 +338,16 @@ public class AddModelTest {
     @Test
     public void testModelMeta() throws Exception {
         //TODO: Implementation WANTED!
-        System.out.println("#testModelMeta");
         
     }
 
     @Test
     public void testModelCreator() throws Exception {
         //TODO: Implementation WANTED!
-        System.out.println("#testModelCreator");
     }
 
     @Test
     public void testModelFeatureUnits() throws Exception {
         //TODO: Implementation WANTED!
-        System.out.println("#testModelFeatureUnits");
     }
 }

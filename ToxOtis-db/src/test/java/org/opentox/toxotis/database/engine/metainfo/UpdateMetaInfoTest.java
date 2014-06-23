@@ -62,7 +62,7 @@ public class UpdateMetaInfoTest {
     }
 
     @Test 
-    public void testSomeMethod() throws DbException {
+    public void testUpdateMetaData() throws DbException {
         final ROG rog = new ROG();
         
         Task t = rog.nextTask(2);
@@ -76,7 +76,9 @@ public class UpdateMetaInfoTest {
         updater.setUpdateMode(UpdateMetaInfo.UpdateMode.REPLACE);
         updater.setComponentId(t.getUri().getId());
         updater.setMeta(new MetaInfoImpl().addComment(rog.nextString(20)));
-        assertEquals(2, updater.update()); // 2 rows updated: one for the Task and 1 for the Meta.
+        assertEquals(2, updater.update()); // 2 rows updated: one for `Task` and 1 for `MetaInfo`.
         updater.close();
+        
+        //TODO Make sure the metadata object was updated properly!
     }
 }

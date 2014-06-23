@@ -39,7 +39,8 @@ public class ErrorIterator extends DbIterator<ErrorReport> {
     public ErrorReport next() throws DbException {
         ErrorReport nextReport = null;
         try {
-            nextReport = new ErrorReport(new VRI(baseUri).augment("error", rs.getString(1)));
+            VRI uriToSet = new VRI(baseUri).augment("error", rs.getString(1));
+            nextReport = new ErrorReport(new VRI(baseUri).augment("error", rs.getString(1)));           
             nextReport.setHttpStatus(rs.getInt(2));
             nextReport.setActor(rs.getString(3));
             nextReport.setMessage(rs.getString(4));

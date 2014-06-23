@@ -1,13 +1,12 @@
 package org.opentox.toxotis.database;
 
-import java.io.Closeable;
-import java.util.Iterator;
 import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
+ * @param <T>
  */
 public interface IDbIterator<T> {
 
@@ -16,7 +15,7 @@ public interface IDbIterator<T> {
      * with it. If the stream is already closed then invoking this
      * method has no effect.
      *
-     * @throws DbException
+     * @throws org.opentox.toxotis.database.exception.DbException
      */
     public void close() throws DbException;
 
@@ -26,6 +25,7 @@ public interface IDbIterator<T> {
      * rather than throwing an exception.)
      *
      * @return <tt>true</tt> if the iterator has more elements.
+     * @throws org.opentox.toxotis.database.exception.DbException
      */
     boolean hasNext() throws DbException;
 
@@ -33,7 +33,7 @@ public interface IDbIterator<T> {
      * Returns the next element in the iteration.
      *
      * @return the next element in the iteration.
-     * @exception NoSuchElementException iteration has no more elements.
+     * @throws org.opentox.toxotis.database.exception.DbException
      */
     T next() throws DbException;
     /**
@@ -51,6 +51,8 @@ public interface IDbIterator<T> {
      *		  yet been called, or the <tt>remove</tt> method has already
      *		  been called after the last call to the <tt>next</tt>
      *		  method.
+     * 
+     * @throws org.opentox.toxotis.database.exception.DbException
      */
     void remove() throws DbException;
 

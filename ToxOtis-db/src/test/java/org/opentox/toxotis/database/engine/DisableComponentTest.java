@@ -71,7 +71,7 @@ public class DisableComponentTest {
 
     @Test
     public void testALot() throws Exception {
-        System.out.println("#testALot");
+
         for (int i = 0; i < 5; i++) {
             testDisable();
         }
@@ -79,12 +79,11 @@ public class DisableComponentTest {
 
     @Test
     public void testEnableDisable() throws Exception {
-        System.out.println("#testEnableDisable");
+        //TODO Implement this test
     }
 
     @Test
     public void testDisable() throws Exception {
-        System.out.println("#testDisable");
         ListModel list = new ListModel();
         list.setPageSize(1);
         IDbIterator<String> modelIt = list.list();

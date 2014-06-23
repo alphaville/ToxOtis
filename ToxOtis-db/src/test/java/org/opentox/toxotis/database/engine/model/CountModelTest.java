@@ -34,6 +34,7 @@
 
 package org.opentox.toxotis.database.engine.model;
 
+import com.hp.hpl.jena.ontology.OntModel;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -77,7 +78,7 @@ public class CountModelTest {
     }
 
     @Test
-    public void testSomeMethod() throws DbException {        
+    public void testCountSomeModels() throws DbException {        
         CountModel cm = new CountModel();
         cm.setIncludeDisabled(true);
         cm.setWhere("Model.id LIKE '%f%'");
@@ -89,7 +90,8 @@ public class CountModelTest {
     @Test
     public void testRNDModel() throws DbException {
         ROG rog = new ROG();
-        rog.nextModel().asOntModel().write(System.out);
+        OntModel model_ont = rog.nextModel().asOntModel();
+        assertNotNull(model_ont);
     }
 
 }

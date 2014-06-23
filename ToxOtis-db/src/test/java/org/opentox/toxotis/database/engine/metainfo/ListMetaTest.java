@@ -65,7 +65,6 @@ public class ListMetaTest {
         ResultSet rs = statement.executeQuery(listMetaInfo);
         while (rs.next()) {
             String id = rs.getString(1);
-            System.out.println(id);
             MetaInfoDeblobber mid = new MetaInfoDeblobber(rs.getBlob(2));
             MetaInfo mi = mid.toMetaInfo();
             java.util.Set<LiteralValue> setOfTitles = mi.getTitles();
@@ -85,7 +84,7 @@ public class ListMetaTest {
             }
             String updateCommand = String.format(setTitle, title, id);
             java.sql.PreparedStatement updateStatement = connection.prepareStatement(updateCommand);
-            System.out.println(updateStatement.executeUpdate());
+            updateStatement.executeUpdate(); //TODO Add assertion
             updateStatement.close();
         }
         rs.close();

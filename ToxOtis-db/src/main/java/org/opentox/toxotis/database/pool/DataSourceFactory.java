@@ -143,8 +143,7 @@ public class DataSourceFactory {
 
     /**
      * Pings the database server
-     * @param li
-     *      Login information
+     * 
      * @param nTimes
      *      How many times the ping should be repeated
      * @return

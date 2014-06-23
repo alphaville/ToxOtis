@@ -42,6 +42,7 @@ import org.opentox.toxotis.core.component.Parameter;
 import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.ontology.LiteralValue;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.database.exception.DbException;
 
 /**
  *
@@ -62,11 +63,11 @@ public class AddParameterTest {
 
     @Test
     public void testAddParameter() {
-        System.out.println("#testAddParameter");
         ROG rog = new ROG();
         Parameter p = new Parameter(Services.anonymous().augment("parameter",rog.nextLong()), 
                 "gamma", new LiteralValue<Double>(10.4d, XSDDatatype.XSDdouble));
         p.setScope(Parameter.ParameterScope.OPTIONAL);
-        AddParameter adder = new AddParameter(p, null);
+        AddParameter adder = new AddParameter(p, null);     
+        //TODO Complete the test
     }
 }

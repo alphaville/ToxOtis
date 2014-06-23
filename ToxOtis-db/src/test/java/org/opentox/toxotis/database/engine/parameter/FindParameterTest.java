@@ -85,7 +85,6 @@ public class FindParameterTest {
 
     @Test
     public void testAddParameter() throws Exception {
-        System.out.println("#testAddParameter");
         ListModel modelLister = new ListModel();
         IDbIterator<String> it = modelLister.list();
         String modelUri = null;
@@ -122,7 +121,6 @@ public class FindParameterTest {
 
     @Test
     public void testAddParameterNullMeta() throws Exception {
-        System.out.println("#testAddParameterNullMeta");
         for (int i = 0; i < 10; i++) {
             ListModel lister = new ListModel();
             lister.setPageSize(1);
@@ -166,11 +164,9 @@ public class FindParameterTest {
 
     @Test
     public void testParameterRetrieval() throws Exception {
-        System.out.println("#testParameterRetrieval");
         ROG rog = new ROG();
         String prmValue = rog.nextString(3);
         String prmId = String.valueOf(rog.nextLong());
-        System.out.println(prmId);
         Model model = rog.nextModel();
         Parameter rndPrm = new Parameter(Services.anonymous().augment("parameter", prmId));
         rndPrm.setName("xyz").
@@ -186,15 +182,14 @@ public class FindParameterTest {
         IDbIterator<Parameter> paramIterator = finder.list();
         assertTrue(paramIterator.hasNext());
         Parameter found = paramIterator.next();
-        System.out.println(found.getName());//Name is retri
-        System.out.println(found.getMeta().getTitles());
+        assertNotNull(found.getName());//Name is retri
+        assertNotNull(found.getMeta().getTitles());
         paramIterator.close();
         finder.close();
     }
 
     @Test
     public void testAddFindParameter() throws Exception {
-        System.out.println("#testAddFindParameter");
         ListModel modelLister = new ListModel();
         IDbIterator<String> it = modelLister.list();
         String modelUri = null;

@@ -73,12 +73,10 @@ class BatchAddFoaf extends DbWriter {
             setTable("Foaf");
             setTableColumns("id");
             SQL = getSql();
-            System.out.println(SQL);
         }
         try {
             ps = getConnection().prepareStatement(SQL);
             for (VRI vri : foaf) {
-                System.out.println("Adding " + vri);
                 ps.setString(1, vri.toString());
                 ps.addBatch();
             }

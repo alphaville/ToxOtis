@@ -92,7 +92,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateMeta() throws DbException {
-        System.out.println("#testUpdateMeta");
         Task t = new Task(Services.anonymous().augment("task", taskInDb));
         String randomComment = __ROG.nextString(10);
         t.getMeta().addComment(randomComment);
@@ -121,7 +120,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateHttpStatus() throws DbException {
-        System.out.println("#testUpdateHttpStatus");
         Task t = new Task(Services.anonymous().augment("task", taskInDb));
         t.setHttpStatus(__ROG.nextFloat());
         UpdateTask ut = new UpdateTask(t);
@@ -142,7 +140,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateResultUri() throws DbException {
-        System.out.println("#testUpdateResultUri");
         Task t = new Task(Services.anonymous().augment("task", taskInDb));
         t.setResultUri(__ROG.nextVri());
         UpdateTask ut = new UpdateTask(t);
@@ -163,7 +160,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateStatus() throws DbException {
-        System.out.println("#testUpdateStatus");
         Task t = new Task(Services.anonymous().augment("task", taskInDb));
         t.setStatus(__ROG.nextTaskStatus());
         UpdateTask ut = new UpdateTask(t);
@@ -184,7 +180,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateVarious() throws DbException {
-        System.out.println("#testUpdateVarious");
         Task t = new Task(Services.anonymous().augment("task", taskInDb));
         t.setStatus(__ROG.nextTaskStatus());
         t.setErrorReport(__ROG.nextErrorReport(3));
@@ -222,7 +217,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateError() throws DbException {
-        System.out.println("#testUpdateError");
         Task t = new Task(Services.anonymous().augment("task", taskInDb));
         t.setErrorReport(__ROG.nextErrorReport(5));
         UpdateTask ut = new UpdateTask(t);
@@ -249,7 +243,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateDuration() throws DbException {
-        System.out.println("#testUpdateDuration");
         Task t = new Task(Services.anonymous().augment("task", taskInDb));
         t.setDuration(__ROG.nextLong());
         UpdateTask ut = new UpdateTask(t);
@@ -270,7 +263,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testUpdateSql() throws DbException {
-        System.out.println("#testUpdateSql");
         Task t = __ROG.nextTask(2);
         AddTask adder = new AddTask(t);
         adder.write();
@@ -307,7 +299,6 @@ public class UpdateTaskTest {
 
     @Test
     public void testCrash() throws DbException, InterruptedException {
-        System.out.println("#testCrash");
         int poolSize = 50;
         int folds = 4 * poolSize + 100;// just to make sure!!! (brutal?!)
         final ExecutorService es = Executors.newFixedThreadPool(poolSize);

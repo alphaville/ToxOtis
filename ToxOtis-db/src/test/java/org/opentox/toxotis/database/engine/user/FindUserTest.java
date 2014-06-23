@@ -73,29 +73,33 @@ public class FindUserTest {
 
     @Test
     public void testFindUser() throws DbException {
-
         ListUsers list = new ListUsers();
         list.setMode(ListUsers.ListUsersMode.BY_NAME);
         try {
             IDbIterator<String> userNames = list.list();
-            String nextName = null;
+            boolean guestFound = false;
             while (userNames.hasNext()) {
-                nextName = userNames.next();
+                guestFound |= userNames.next().equals("Guest");
             }
-        } catch (DbException ex) {
+            assertTrue(guestFound);
+        } catch (final DbException ex) {
+            throw new DbException(ex);
         } finally {
             list.close();
         }
 
         FindUser fu = new FindUser();
-        fu.setWhere("name LIKE 'Pan%'");
+        fu.setWhere("name LIKE 'Gue%'");
         IDbIterator<User> users = fu.list();
+        boolean userFound = false;
         while (users.hasNext()) {
-//            assertEquals(User.GUEST, users.next());
-//            assertEquals(User.GUEST.getMail(), users.next().getMail());
-//            assertEquals(User.GUEST.getName(), users.next().getName());
-//            System.out.println(users.next().getMail());
+            userFound = true;
+            assertEquals(User.GUEST, users.next());
+            assertEquals(User.GUEST.getMail(), users.next().getMail());
+            assertEquals(User.GUEST.getName(), users.next().getName());
+            System.out.println(users.next().getMail());
         }
+        assertTrue(userFound);
         users.close();
         fu.close();
     }
@@ -110,7 +114,6 @@ public class FindUserTest {
         AddUser adder = new AddUser(random);
         adder.write();
         adder.close();
-
 
         FindUser fu = new FindUser();
         fu.setWhere("name='" + random.getName() + "'");
