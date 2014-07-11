@@ -123,6 +123,7 @@ public enum Media {
      * @see <a href="http://www.ietf.org/rfc/rfc2387.txt">RFC 2387</a>
      */
     IMAGE_JPEG("image/jpeg"),
+    MEDIA_MULTIPART_FORM_DATA("multipart/form-data"),
     ;
     private final String mime;
 

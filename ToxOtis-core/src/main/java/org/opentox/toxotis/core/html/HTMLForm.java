@@ -41,7 +41,9 @@ public interface HTMLForm extends HTMLExpandableComponent {
 
     HTMLForm setActionUrl(String actionUrl);
     HTMLForm setMethod(String method);
+    HTMLForm setMediaType(String mediaType);
     String getMethod();
+    String getMediaType();
     String getActionUrl();
 
 }

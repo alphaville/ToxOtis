@@ -105,6 +105,16 @@ public class HTMLDivBuilder {
         div.addComponent(form);
         return form;
     }
+    
+    
+    public HTMLForm addForm(String actionUri, String method, String mediaType) {
+        HTMLForm form = new HTMLFormImpl();
+        form.setActionUrl(actionUri);
+        form.setMethod(method);
+        form.setMediaType(mediaType);
+        div.addComponent(form);
+        return form;
+    }
 
     public HTMLForm addForm(String actionUri, String method) {
         HTMLForm form = new HTMLFormImpl();

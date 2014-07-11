@@ -16,7 +16,8 @@ public interface HTMLInput extends HTMLComponent {
         CHECKBOX("checkbox"),
         PASSWORD("password"),
         RADIO("radio"),
-        RESET("reset");
+        RESET("reset"),
+        FILE("file");
         private String typeName;
 
         private HTMLInputType(String typeName) {

@@ -299,7 +299,7 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         builder.addSubSubHeading("Train a model");
         builder.addParagraph("Specify the dataset that will be used for the training and the prediction feature URI from this dataset."
                 + "Provide your preferred feature service (it is suggested to use the default one). ", Alignment.justify);
-        HTMLForm form = builder.addForm("/iface/generic", "POST");
+        HTMLForm form = builder.addForm("/iface/generic", "POST","multipart/form-data");
         form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).
                 setName("comingFrom").setValue("webInterface"));
         form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).
@@ -333,6 +333,9 @@ public class Algorithm extends OTOnlineResource<Algorithm>
             interfacetable.setAtCursor(new HTMLTextImpl("Parameters").formatBold(true)).
                     setAtCursor(new HTMLInputImpl().setName("params").
                     setType(HTMLInput.HTMLInputType.TEXT).setValue(paramsBuilder.toString()).setSize(TEXTBOX_SIZE));
+            interfacetable.setAtCursor(new HTMLTextImpl("Upload").formatBold(true)).
+                    setAtCursor(new HTMLInputImpl().setName("upload").
+                    setType(HTMLInput.HTMLInputType.FILE).setValue("none").setSize(TEXTBOX_SIZE));
         }
 
         interfacetable.setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Train")).setTextAtCursor("");

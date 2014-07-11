@@ -17,9 +17,18 @@ import org.opentox.toxotis.core.html.HTMLForm;
 public class HTMLFormImpl implements HTMLForm {
 
     private String actionUrl;
+    private String mediaType;
     private String method;
     private List<HTMLComponent> content = new ArrayList<HTMLComponent>();
 
+    
+    @Override
+    public HTMLForm setMediaType(String m_type) {
+        this.mediaType = m_type;
+        return this;
+    }
+
+    
     @Override
     public HTMLForm setActionUrl(String actionUrl) {
         this.actionUrl = actionUrl;
@@ -48,6 +57,11 @@ public class HTMLFormImpl implements HTMLForm {
     }
 
     @Override
+    public String getMediaType() {
+        return mediaType;
+    }
+    
+    @Override
     public void addComponent(HTMLComponent component) {
         this.content.add(component);
     }
@@ -55,7 +69,7 @@ public class HTMLFormImpl implements HTMLForm {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(String.format("<form method=\"%s\" action=\"%s\" >", method != null ? method : "POST", actionUrl != null ? actionUrl : "."));
+        builder.append(String.format("<form method=\"%s\" action=\"%s\" enctype=\"%s\">", method != null ? method : "POST", actionUrl != null ? actionUrl : ".",mediaType != null ? mediaType : ""));
         for (HTMLComponent component : content) {
             builder.append(component.toString());
         }

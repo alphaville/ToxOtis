@@ -43,7 +43,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -79,6 +83,8 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     /** Arbitrary object to be posted to the remote server s*/
     private File fileContentToPost = null;
     private InputStream inputStream = null;
+    private String fileUploadFieldName = "upload";
+    private String fileUploadFilename = "uploadedFile";
     /** A simple string to be posted to the remote service */
     private String stringToPost;
     private String bytesToPost;
@@ -89,6 +95,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      */
     private IStAXWritable staxComponent;
     private final WriteLock postLock = new ReentrantReadWriteLock().writeLock();
+    
 
     public PostHttpClient() {
         super();
@@ -320,87 +327,175 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
      */
     @Override
     public void post() throws ServiceInvocationException {
-        connect(getUri().toURI());
-        DataOutputStream wr;
+        String query = getParametersAsQuery();
+        if ((fileContentToPost != null || inputStream != null) && 
+            query != null && !query.isEmpty()) {
+            postMultiPart();
+        } else {
+            connect(getUri().toURI());
+            DataOutputStream wr;
+            try {
+                getPostLock().lock(); // LOCK
+                wr = new DataOutputStream(getConnection().getOutputStream());
+
+                if (query != null && !query.isEmpty()) {
+                    wr.writeBytes(getParametersAsQuery());// POST the parameters
+                } else if (model != null) {
+                    model.write(wr);
+                } else if (staxComponent != null) {
+                    staxComponent.writeRdf(wr);
+                } else if (stringToPost != null) {
+                    wr.writeChars(stringToPost);
+                } else if (bytesToPost != null) {
+                    wr.writeBytes(bytesToPost);
+                } else if (fileContentToPost != null || inputStream != null) {
+                    // Post from file (binary data) or from other input stream
+                    InputStream is = null;
+                    InputStreamReader isr = null;
+                    BufferedReader br = null;
+                    boolean doCloseInputStream = false;
+                    // choose input stream (used-defined or from file)
+                    if (fileContentToPost != null) {
+                        is = new FileInputStream(fileContentToPost);
+                        doCloseInputStream = true;
+                    } else {
+                        is = inputStream;
+                    }
+                    try {
+                        isr = new InputStreamReader(is);
+                        br = new BufferedReader(isr);
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            wr.writeBytes(line);
+                            wr.writeChars("\n");
+                        }
+                    } catch (IOException ex) {
+                        throw new ConnectionException(
+                                "Unable to post data to the remote service at '"
+                                + getUri() + "' - The connection dropped "
+                                + "unexpectidly while POSTing.", ex);
+                    } finally {
+                        Throwable thr = null;
+                        if (br != null) {
+                            try {
+                                br.close();
+                            } catch (final IOException ex) {
+                                thr = ex;
+                            }
+                        }
+                        if (isr != null) {
+                            try {
+                                isr.close();
+                            } catch (final IOException ex) {
+                                thr = ex;
+                            }
+                        }
+                        if (doCloseInputStream) {
+                            try {
+                                is.close();
+                            } catch (final IOException ex) {
+                                thr = ex;
+                            }
+                        }
+                        if (thr != null) {
+                            ConnectionException connExc = new ConnectionException("Stream could not close", thr);
+                            connExc.setActor(getUri() != null ? getUri().toString() : "N/A");
+                            //TODO Why is the exception not thrown here?
+                        }
+                    }
+                }
+                wr.flush();
+                wr.close();
+            } catch (final IOException ex) {
+                ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the "
+                        + "remote web service located at '" + getUri() + "'", ex);
+                postException.setActor(getUri() != null ? getUri().toString() : "N/A");
+                throw postException;
+            } finally {
+                getPostLock().unlock(); // UNLOCK
+            }
+        }
+    }
+    
+    private void postMultiPart() throws ServiceInvocationException {
+        String charset="UTF-8";
+        String LINE_FEED = "\r\n";
+        InputStream is;
+        
         try {
             getPostLock().lock(); // LOCK
-            wr = new DataOutputStream(getConnection().getOutputStream());
-            String query = getParametersAsQuery();
-            if (query != null && !query.isEmpty()) {
-                wr.writeBytes(getParametersAsQuery());// POST the parameters
-            } else if (model != null) {
-                model.write(wr);
-            } else if (staxComponent != null) {
-                staxComponent.writeRdf(wr);
-            } else if (stringToPost != null) {
-                wr.writeChars(stringToPost);
-            } else if (bytesToPost != null) {
-                wr.writeBytes(bytesToPost);
-            } else if (fileContentToPost != null || inputStream != null) {
-                // Post from file (binary data) or from other input stream
-                InputStream is = null;
-                InputStreamReader isr = null;
-                BufferedReader br = null;
-                boolean doCloseInputStream = false;
-                // choose input stream (used-defined or from file)
-                if (fileContentToPost != null) {
-                    is = new FileInputStream(fileContentToPost);
-                    doCloseInputStream = true;
-                } else {
-                    is = inputStream;
-                }
-                try {
-                    isr = new InputStreamReader(is);
-                    br = new BufferedReader(isr);
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        wr.writeBytes(line);
-                        wr.writeChars("\n");
-                    }
-                } catch (IOException ex) {
-                    throw new ConnectionException(
-                            "Unable to post data to the remote service at '"
-                            + getUri() + "' - The connection dropped "
-                            + "unexpectidly while POSTing.", ex);
-                } finally {
-                    Throwable thr = null;
-                    if (br != null) {
-                        try {
-                            br.close();
-                        } catch (final IOException ex) {
-                            thr = ex;
-                        }
-                    }
-                    if (isr != null) {
-                        try {
-                            isr.close();
-                        } catch (final IOException ex) {
-                            thr = ex;
-                        }
-                    }
-                    if (doCloseInputStream) {
-                        try {
-                            is.close();
-                        } catch (final IOException ex) {
-                            thr = ex;
-                        }
-                    }
-                    if (thr != null) {
-                        ConnectionException connExc = new ConnectionException("Stream could not close", thr);
-                        connExc.setActor(getUri() != null ? getUri().toString() : "N/A");
-                        //TODO Why is the exception not thrown here?
+            if (fileContentToPost != null) {
+                is = new FileInputStream(fileContentToPost);
+            } else {
+                is = inputStream;
+            }
+            
+            // creates a unique boundary based on time stamp
+            long boundaryTs = System.currentTimeMillis();
+            String boundary = "===" + boundaryTs + "===";
+
+            HttpURLConnection httpConn = connect(getUri().toURI());
+            httpConn.setUseCaches(false);
+            httpConn.setDoOutput(true); // indicates POST method
+            httpConn.setDoInput(true);
+            httpConn.setRequestProperty("Content-Type","multipart/form-data; boundary=\"" + boundary+"\"");
+            httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
+            httpConn.setRequestProperty("Test", "Bonjour");
+            
+            OutputStream outputStream = httpConn.getOutputStream();
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),true);
+            
+            final int nParams = postParameters.size();
+
+            if (nParams > 0) {
+                for (Map.Entry<String, List<String>> e : postParameters.entrySet()) {
+                    List<String> values = e.getValue();
+                    for (String value : values) {
+                        
+                        writer.append("--" + boundary).append(LINE_FEED);
+                        writer.append("Content-Disposition: form-data; name=\"" + e.getKey() + "\"")
+                                .append(LINE_FEED);
+                        writer.append("Content-Type: text/plain; charset=" + charset).append(
+                                LINE_FEED);
+                        writer.append(LINE_FEED);
+                        writer.append(value).append(LINE_FEED);
+                        writer.flush();
                     }
                 }
             }
-            wr.flush();
-            wr.close();
+            
+            writer.append("--" + boundary).append(LINE_FEED);
+            writer.append("Content-Disposition: form-data; name=\"" + fileUploadFieldName
+                            + "\"; filename=\"" + fileUploadFilename + "\"").append(LINE_FEED);
+            writer.append(
+                    "Content-Type: "
+                            + java.net.URLConnection.guessContentTypeFromName(fileUploadFilename))
+                    .append(LINE_FEED);
+            writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+            writer.append(LINE_FEED);
+            writer.flush();
+
+            byte[] buffer = new byte[4096];
+            int bytesRead = -1;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.flush();
+            is.close();
+
+            writer.append(LINE_FEED);
+            writer.flush();  
+                    
+            writer.append(LINE_FEED).flush();
+            writer.append("--" + boundary + "--").append(LINE_FEED);
+            writer.close();
         } catch (final IOException ex) {
-            ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the "
-                    + "remote web service located at '" + getUri() + "'", ex);
-            postException.setActor(getUri() != null ? getUri().toString() : "N/A");
-            throw postException;
+                ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the "
+                        + "remote web service located at '" + getUri() + "'", ex);
+                postException.setActor(getUri() != null ? getUri().toString() : "N/A");
+                throw postException;
         } finally {
-            getPostLock().unlock(); // UNLOCK
+                getPostLock().unlock(); // UNLOCK
         }
     }
 
@@ -413,5 +508,10 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     public IPostClient setPostable(InputStream inputStream) {
         this.inputStream = inputStream;
         return this;
+    }
+    
+    public void setPostableFilename(String fieldName,String filename) {
+        this.fileUploadFilename = filename;
+        this.fileUploadFieldName = fieldName;
     }
 }
