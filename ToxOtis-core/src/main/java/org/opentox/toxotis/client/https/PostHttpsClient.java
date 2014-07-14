@@ -36,18 +36,24 @@ import com.hp.hpl.jena.ontology.OntModel;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import org.apache.commons.lang.StringUtils;
 import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
@@ -80,6 +86,8 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     private IStAXWritable staxComponent;
     /** Arbitrary object to be posted to the remote server s*/
     private File fileContentToPost = null;
+    private String fileUploadFieldName = "upload";
+    private String fileUploadFilename = "uploadedFile";
     private WriteLock postLock = new ReentrantReadWriteLock().writeLock();
 
     public PostHttpsClient() {
@@ -183,70 +191,153 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
 
     @Override
     public void post() throws ServiceInvocationException {
-        connect(getUri().toURI());
-        DataOutputStream wr;
-        try {
-            getPostLock().lock(); // LOCK
-            wr = new DataOutputStream(getConnection().getOutputStream());
-            String query = getParametersAsQuery();
-            if (query != null && !query.isEmpty()) {
-                wr.writeBytes(getParametersAsQuery());// POST the parameters
-            } else if (model != null) {
-                model.write(wr);
-            } else if (staxComponent != null) {
-                staxComponent.writeRdf(wr);
-            } else if (postableString != null) {
-                wr.writeChars(postableString);
-            } else if (postableBytes != null) {
-                wr.writeBytes(postableBytes);
-            } else if (fileContentToPost != null) {
-                FileReader fr = null;
-                BufferedReader br = null;
-                try {
-                    fr = new FileReader(fileContentToPost);
-                    br = new BufferedReader(fr);
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        wr.writeBytes(line);
-                        wr.writeChars("\n");
-                    }
-                } catch (IOException ex) {
-                    throw new ConnectionException("Unable to post data to the remote service at '" + getUri() + "' - The connection dropped "
-                            + "unexpectidly while POSTing.", ex);
-                } finally {
-                    Throwable thr = null;
-                    if (br != null) {
-                        try {
-                            br.close();
-                        } catch (final IOException ex) {
-                            thr = ex;
+        String query = getParametersAsQuery();
+        if (fileContentToPost != null && 
+            query != null && !query.isEmpty()) {
+            postMultiPart();
+        } else {
+
+            connect(getUri().toURI());
+            DataOutputStream wr;
+            try {
+                getPostLock().lock(); // LOCK
+                wr = new DataOutputStream(getConnection().getOutputStream());
+                
+                if (query != null && !query.isEmpty()) {
+                    wr.writeBytes(getParametersAsQuery());// POST the parameters
+                } else if (model != null) {
+                    model.write(wr);
+                } else if (staxComponent != null) {
+                    staxComponent.writeRdf(wr);
+                } else if (postableString != null) {
+                    wr.writeChars(postableString);
+                } else if (postableBytes != null) {
+                    wr.writeBytes(postableBytes);
+                } else if (fileContentToPost != null) {
+                    FileReader fr = null;
+                    BufferedReader br = null;
+                    try {
+                        fr = new FileReader(fileContentToPost);
+                        br = new BufferedReader(fr);
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            wr.writeBytes(line);
+                            wr.writeChars("\n");
                         }
-                    }
-                    if (fr != null) {
-                        try {
-                            fr.close();
-                        } catch (final IOException ex) {
-                            thr = ex;
+                    } catch (IOException ex) {
+                        throw new ConnectionException("Unable to post data to the remote service at '" + getUri() + "' - The connection dropped "
+                                + "unexpectidly while POSTing.", ex);
+                    } finally {
+                        Throwable thr = null;
+                        if (br != null) {
+                            try {
+                                br.close();
+                            } catch (final IOException ex) {
+                                thr = ex;
+                            }
                         }
-                    }
-                    if (thr != null) {
-                        ConnectionException connExc = new ConnectionException("Stream could not close", thr);
-                        connExc.setActor(getUri() != null ? getUri().toString() : "N/A");
+                        if (fr != null) {
+                            try {
+                                fr.close();
+                            } catch (final IOException ex) {
+                                thr = ex;
+                            }
+                        }
+                        if (thr != null) {
+                            ConnectionException connExc = new ConnectionException("Stream could not close", thr);
+                            connExc.setActor(getUri() != null ? getUri().toString() : "N/A");
+                        }
                     }
                 }
+                wr.flush();
+                wr.close();
+            } catch (final IOException ex) {
+                ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the " +
+                        "remote web service located at '"+getUri()+"'", ex);
+                postException.setActor(getUri() != null ? getUri().toString() : "N/A");
+                throw postException;
+            } finally {
+                getPostLock().unlock(); // UNLOCK
             }
-            wr.flush();
-            wr.close();
-        } catch (final IOException ex) {
-            ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the " +
-                    "remote web service located at '"+getUri()+"'", ex);
-            postException.setActor(getUri() != null ? getUri().toString() : "N/A");
-            throw postException;
-        } finally {
-            getPostLock().unlock(); // UNLOCK
         }
     }
 
+    private void postMultiPart() throws ServiceInvocationException {
+        String charset="UTF-8";
+        String LINE_FEED = "\r\n";
+        InputStream is;
+        
+        try {
+            getPostLock().lock(); // LOCK
+            
+            is = new FileInputStream(fileContentToPost);
+            
+            // creates a unique boundary based on time stamp
+            long boundaryTs = System.currentTimeMillis();
+            String boundary = "===" + boundaryTs + "===";
+
+            HttpURLConnection httpConn = connect(getUri().toURI());
+            httpConn.setUseCaches(false);
+            httpConn.setDoOutput(true); // indicates POST method
+            httpConn.setDoInput(true);
+            httpConn.setRequestProperty("Content-Type","multipart/form-data; boundary=\"" + boundary+"\"");
+            httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
+            httpConn.setRequestProperty("Test", "Bonjour");
+            
+            OutputStream outputStream = httpConn.getOutputStream();
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),true);
+            
+            final int nParams = postParameters.size();
+
+            if (nParams > 0) {
+                
+                 for (Map.Entry<String, String> e : postParameters.entrySet()) {
+                     writer.append("--" + boundary).append(LINE_FEED);
+                    writer.append("Content-Disposition: form-data; name=\"" + e.getKey() + "\"")
+                            .append(LINE_FEED);
+                    writer.append("Content-Type: text/plain; charset=" + charset).append(
+                            LINE_FEED);
+                    writer.append(LINE_FEED);
+                    writer.append( e.getValue()).append(LINE_FEED);
+                    writer.flush();
+                }
+            }
+            
+            writer.append("--" + boundary).append(LINE_FEED);
+            writer.append("Content-Disposition: form-data; name=\"" + fileUploadFieldName
+                            + "\"; filename=\"" + fileUploadFilename + "\"").append(LINE_FEED);
+            writer.append(
+                    "Content-Type: "
+                            + java.net.URLConnection.guessContentTypeFromName(fileUploadFilename))
+                    .append(LINE_FEED);
+            writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+            writer.append(LINE_FEED);
+            writer.flush();
+
+            byte[] buffer = new byte[4096];
+            int bytesRead = -1;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.flush();
+            is.close();
+
+            writer.append(LINE_FEED);
+            writer.flush();  
+                    
+            writer.append(LINE_FEED).flush();
+            writer.append("--" + boundary + "--").append(LINE_FEED);
+            writer.close();
+        } catch (final IOException ex) {
+                ConnectionException postException = new ConnectionException("Exception caught while posting the parameters to the "
+                        + "remote web service located at '" + getUri() + "'", ex);
+                postException.setActor(getUri() != null ? getUri().toString() : "N/A");
+                throw postException;
+        } finally {
+                getPostLock().unlock(); // UNLOCK
+        }
+    }
+    
     @Override
     public PostHttpsClient setContentType(Media media) {
         this.contentType = media.getMime();
@@ -328,5 +419,10 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
     @Override
     public IPostClient setPostable(InputStream model) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public void setPostableFilename(String fieldName,String filename) {
+        this.fileUploadFilename = (StringUtils.isEmpty(filename) ) ? this.fileUploadFilename :  filename;
+        this.fileUploadFieldName = (StringUtils.isEmpty(fieldName) ) ? this.fileUploadFieldName :  fieldName;
     }
 }

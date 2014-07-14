@@ -107,7 +107,7 @@ public class Model extends OTOnlineResource<Model>
     private Set<Parameter> parameters;
     private List<MultiParameter> multiParameters;
     private String localCode;
-    private Serializable actualModel;
+    private IActualModel actualModel;
     private byte[] modelBytes;
     private User createdBy;
     private static final long serialVersionUID = 184328712643L;
@@ -129,7 +129,7 @@ public class Model extends OTOnlineResource<Model>
             FEAT_DIM = new int[]{150, 650},
             PARAM_DIM = new int[]{400, 150, 240},
             META_DIM = new int[]{150, 650};
-
+    
     /**
      * Create a new empty Model with a given URI.
      *
@@ -156,7 +156,7 @@ public class Model extends OTOnlineResource<Model>
      *
      * @return Model object with which predictions can be done.
      */
-    public Serializable getActualModel() {
+    public IActualModel getActualModel() {
         return actualModel;
     }
 
@@ -177,7 +177,7 @@ public class Model extends OTOnlineResource<Model>
      * possible
      *
      */
-    public Model setActualModel(Serializable actualModel) throws NotSerializableException {
+    public Model setActualModel(IActualModel actualModel) throws NotSerializableException {
         try {
             this.actualModel = actualModel;
             this.modelBytes = getBytes(actualModel);
@@ -543,7 +543,7 @@ public class Model extends OTOnlineResource<Model>
 
     public void setBlob(Blob modelBlob) {
         this.modelBytes = toByteArray(modelBlob);
-        this.actualModel = (Serializable) toObject(modelBytes);
+        this.actualModel = (IActualModel) toObject(modelBytes);
     }
 
     public Object toObject(byte[] bytes) {

@@ -54,6 +54,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.apache.commons.lang.StringUtils;
 import org.opentox.toxotis.client.AbstractClient;
 import org.opentox.toxotis.client.RequestHeaders;
 import org.opentox.toxotis.client.VRI;
@@ -511,7 +512,7 @@ public class PostHttpClient extends AbstractHttpClient implements IPostClient {
     }
     
     public void setPostableFilename(String fieldName,String filename) {
-        this.fileUploadFilename = filename;
-        this.fileUploadFieldName = fieldName;
+        this.fileUploadFilename = (StringUtils.isEmpty(filename) ) ? this.fileUploadFilename :  filename;
+        this.fileUploadFieldName = (StringUtils.isEmpty(fieldName) ) ? this.fileUploadFieldName :  fieldName;
     }
 }

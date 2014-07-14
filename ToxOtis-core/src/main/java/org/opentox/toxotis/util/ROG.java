@@ -44,6 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
+import org.opentox.toxotis.core.component.ActualModel;
 import org.opentox.toxotis.core.component.Algorithm;
 import org.opentox.toxotis.core.component.BibTeX;
 import org.opentox.toxotis.core.component.ErrorReport;
@@ -393,7 +394,7 @@ public class ROG {
             m.getDependentFeatures().add(new Feature(f2));
             m.getDependentFeatures().add(new Feature(f3));
             m.setCreatedBy(User.GUEST);
-            m.setActualModel(new MetaInfoImpl());// just for the sake to write something in there!
+            m.setActualModel(new RandomModel());// just for the sake to write something in there!
             m.setLocalCode(UUID.randomUUID().toString());
             m.setAlgorithm(new Algorithm("http://algorithm.server.co.uk:9000/algorithm/mlr"));
             m.setMeta(nextMeta());
@@ -523,5 +524,9 @@ public class ROG {
             sb.append(str.charAt(te));
         }
         return sb.toString();
+    }
+    
+    private class RandomModel extends ActualModel {
+        
     }
 }
