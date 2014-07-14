@@ -57,8 +57,8 @@ import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.RDFValidator;
 import org.opentox.toxotis.ontology.ResourceValue;
-import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.ontology.collection.OTAlgorithmTypes;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
@@ -113,8 +113,10 @@ public class AlgorithmTest {
         } catch (ServiceInvocationException ex) {
             assertTrue(ex instanceof INotFound);
             assertTrue(ex instanceof IClientException);
-            boolean isOWLDLvalid = new WonderWebValidator(ex.asErrorReport().asOntModel()).validate(WonderWebValidator.OWL_SPECIFICATION.DL);
-            assertTrue("Not OWL-DL-valid error report", isOWLDLvalid);
+            OntModel ontModel = ex.asErrorReport().asOntModel();
+            RDFValidator rdfValidator = new RDFValidator(ontModel);
+            rdfValidator.validateDL();
+            assertTrue("Not OWL-DL-valid error report", rdfValidator.isValid());
         }
     }
 
@@ -130,7 +132,7 @@ public class AlgorithmTest {
     /*
      * WARNING: This test takes around 3 minutes to complete!!!
      */
-    //@Test
+    @Test
     public void testDownload_badRDF() throws ToxOtisException, ServiceInvocationException, URISyntaxException {
         System.out.println("Testing loading algorithm from remote location that does not "
                 + "provide RDF!");

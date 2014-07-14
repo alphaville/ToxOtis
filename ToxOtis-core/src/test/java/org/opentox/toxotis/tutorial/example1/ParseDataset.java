@@ -1,12 +1,14 @@
 package org.opentox.toxotis.tutorial.example1;
 
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Dataset;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
-import org.opentox.toxotis.ontology.WonderWebValidator;
+import org.opentox.toxotis.ontology.RDFValidator;
 import weka.core.Instances;
 
 /**
@@ -27,7 +29,9 @@ public class ParseDataset {
         /*
          * Convert to weka.core.Instances
          */
+        System.out.println("Parsing into instances...");
         Instances weka = ds.getInstances();
+        System.out.println("Instances...");
         System.out.println(weka);
 
         /*
@@ -35,13 +39,14 @@ public class ParseDataset {
          */
         System.out.println("\nValidating...");
         OntModel ontModel = ds.asOntModel();
-        WonderWebValidator validator = new WonderWebValidator(ontModel);
-        boolean isOwnDl = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
-        System.out.println("The reconstructed RDF document is " + (isOwnDl ? "" : "**NOT**") + "OWL-DL valid");       
-
-        org.opentox.toxotis.core.component.Model m = new org.opentox.toxotis.core.component.Model();
-        m.setUri(Services.ntua().augment("model",1));
-        m.asOntModel().write(System.out);
+        
+        RDFValidator validator = new RDFValidator(ontModel);
+        validator.validate(OntModelSpec.OWL_DL_MEM_TRANS_INF);
+        validator.printIssues(System.out);   
+        boolean isValid = validator.isValid();
+        assertTrue("This is not an OWL-DL document!", isValid);
+        System.out.println("The reconstructed RDF document is " + 
+                (isValid ? "" : "**NOT**") + "OWL-DL valid");       
 
     }
 }

@@ -51,17 +51,19 @@ import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 /**
  * <p align=justify>
  * Validate an ontological model against the online OWL validator at
- * <code>http://www.mygrid.org.uk/OWL/Validator</code>. 
- * 
- * A method returns either
- * <code>true</code> or <code>false</code> depending on whether the submitted OntModel object is OWL-*
- * compliant or not. Users can configure the validator to use a certain specification such
- * as <code>OWL-DL</code>, <code>OWL-Full</code> or <code>OWL-Lite</code>.
+ * <code>http://www.mygrid.org.uk/OWL/Validator</code>.
+ *
+ * A method returns either <code>true</code> or <code>false</code> depending on
+ * whether the submitted OntModel object is OWL-* compliant or not. Users can
+ * configure the validator to use a certain specification such as
+ * <code>OWL-DL</code>, <code>OWL-Full</code> or <code>OWL-Lite</code>.
  * </p>
  *
  * @author Pantelis Sopasakis
  * @author Charalampos Chomenides
+ * @deprecated 
  */
+@Deprecated
 public class WonderWebValidator {
 
     private static final String m_WONDERWEB_URL = "http://www.mygrid.org.uk/OWL/Validator";
@@ -71,7 +73,7 @@ public class WonderWebValidator {
     public static final VRI WONDERWEB_VLD;
     private static final String responseTemplate = "<p><strong>%s</strong>: <span class=\"yes\">YES</span>";
     private IStAXWritable stax;
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(WonderWebValidator.class);
+    private final org.slf4j.Logger logger;
 
     /**
      * An enumeration of supported OWL specifications.
@@ -90,27 +92,30 @@ public class WonderWebValidator {
             throw new IllegalArgumentException(ex);
         }
     }
-
     ;
+    
     private OntModel model;
 
     /**
      * Dummy constructor for an WonderWebValidator object.
      */
     public WonderWebValidator() {
+        this.logger = org.slf4j.LoggerFactory.getLogger(WonderWebValidator.class);
     }
 
     /**
-     * Construct a WonderWebValidator object providing an OntModel which is
-     * to be checked for compliance against some OWL specification.
-     * @param model
-     *      Ontological Data Model.
+     * Construct a WonderWebValidator object providing an OntModel which is to
+     * be checked for compliance against some OWL specification.
+     *
+     * @param model Ontological Data Model.
      */
     public WonderWebValidator(OntModel model) {
+        this.logger = org.slf4j.LoggerFactory.getLogger(WonderWebValidator.class);
         this.model = model;
     }
 
     public WonderWebValidator(IStAXWritable stax) {
+        this.logger = org.slf4j.LoggerFactory.getLogger(WonderWebValidator.class);
         this.stax = stax;
     }
 

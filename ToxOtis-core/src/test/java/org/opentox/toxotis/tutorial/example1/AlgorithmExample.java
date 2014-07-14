@@ -34,6 +34,8 @@ package org.opentox.toxotis.tutorial.example1;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import java.util.HashSet;
 import org.junit.Test;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.component.Algorithm;
@@ -42,10 +44,13 @@ import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.LiteralValue;
 import org.opentox.toxotis.ontology.MetaInfo;
-import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.ontology.impl.MetaInfoImpl;
 import static org.opentox.toxotis.ontology.collection.OTAlgorithmTypes.*;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.ontology.OntologicalClass;
+import org.opentox.toxotis.ontology.RDFValidator;
+import org.opentox.toxotis.ontology.collection.OTClasses;
 
 /**
  *
@@ -85,6 +90,8 @@ public class AlgorithmExample {
         p.setName("k");
         p.setScope(Parameter.ParameterScope.OPTIONAL);
         p.setTypedValue(new LiteralValue(1.054, XSDDatatype.XSDfloat));
+        p.setUri(Services.anonymous().augment("parameter", 12388));        
+        p.getOntologicalClasses().add(OTClasses.parameter());        
         algorithm.getParameters().add(p);
 
         /*
@@ -93,10 +100,10 @@ public class AlgorithmExample {
         OntModel ontModel = algorithm.asOntModel();
         ontModel.write(System.out);
 
-
-        WonderWebValidator validator = new WonderWebValidator(ontModel);
-        boolean isValid = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
-        assertTrue("This is not an OWL-DL document!",isValid);
+        RDFValidator validator = new RDFValidator(ontModel);
+        validator.validate(OntModelSpec.OWL_DL_MEM_TRANS_INF);
+        validator.printIssues(System.out);   
+        assertTrue("This is not an OWL-DL document!", validator.isValid());
 
     }
 }

@@ -83,7 +83,7 @@ public class Dataset extends OTPublishable<Dataset> {
     private long timeDownload = -1;
     private long timeParse = -1;
     private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
-    private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
     private static final int HASH_OFFSET = 7, HASH_MOD = 29, PERCENTAGE_WHEN_COMPLETE = 100;
     private static final String INACTIVE_TOKEN_MSG = "The Provided token is inactive";
 

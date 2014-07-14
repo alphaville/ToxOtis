@@ -466,8 +466,8 @@ public class ROG {
             random.setChapter(nextString(STD_LN));
             random.setCopyright(nextString(STD_LN));
             random.setCreatedBy(User.GUEST);
-            random.setCrossref(nextString(STD_LN));
-            random.setCrossref(nextString(STD_LN));
+            random.setCrossref("http://someserver.org/bibtex/123#"+nextString(10));
+            random.setCrossref("http://otherserver.org/bibtex/578#"+nextString(20));
             random.setEdition(nextString(STD_LN));
             random.setEditor(nextString(STD_LN));
             random.setEnabled(true);

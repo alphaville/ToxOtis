@@ -46,13 +46,13 @@ import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.LiteralValue;
-import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.TaskRunner;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.TokenPool;
 import weka.core.Instances;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.ontology.RDFValidator;
 
 /**
  *
@@ -67,7 +67,7 @@ public class DatasetTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/.my.key");
+        File passwordFile = new File(System.getProperty("user.home") + "/toxotisKeys/guest.key");
         TokenPool.getInstance().login(passwordFile);
 
     }
@@ -103,9 +103,10 @@ public class DatasetTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ds.writeRdf(baos);
         assertNotNull("No RDF produced", baos.toString());
-        WonderWebValidator validator = new WonderWebValidator(ds.asOntModel());
-        boolean isValidDL = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
-        assertTrue("Dataset is not DL-valid", isValidDL);
+        RDFValidator validator = new RDFValidator(ds.asOntModel());
+        validator.validateDL();
+        validator.printIssues(System.out);       
+        assertTrue("Dataset is not DL-valid", validator.isValid());
         AuthenticationToken at = TokenPool.getInstance().getToken("hampos");
         Task uploadTask = ds.publishOnline(at);
         assertNotNull("No Task Created", uploadTask.getUri());

@@ -41,14 +41,14 @@ import org.opentox.toxotis.client.VRI;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.LiteralValue;
-import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.ROG;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.ontology.RDFValidator;
 
 /**
  *
- * @author chung
+ * @author Pantelis Sopasakis
  */
 public class FeatureValueTest {
 
@@ -84,8 +84,9 @@ public class FeatureValueTest {
         fv.getOntologicalClasses().add(OTClasses.featureValueNumeric());
         fv.setValue(new LiteralValue(ROG.nextDouble(), XSDDatatype.XSDdouble));
         OntModel om = fv.asOntModel();
-        WonderWebValidator validator = new WonderWebValidator(om);
-        boolean isFVValid = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
-        assertTrue(isFVValid);
+        RDFValidator validator = new RDFValidator(om);
+        validator.validateDL();
+        validator.printIssues(System.out);   
+        assertTrue(validator.isValid());
     }
 }

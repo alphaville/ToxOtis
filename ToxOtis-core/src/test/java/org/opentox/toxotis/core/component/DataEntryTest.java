@@ -45,6 +45,7 @@ import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.ontology.LiteralValue;
+import org.opentox.toxotis.ontology.RDFValidator;
 import org.opentox.toxotis.ontology.ResourceValue;
 import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.ontology.collection.OTClasses;
@@ -52,7 +53,7 @@ import org.opentox.toxotis.util.ROG;
 
 /**
  *
- * @author chung
+ * @author Pantelis Sopasakis
  */
 public class DataEntryTest {
     
@@ -97,8 +98,10 @@ public class DataEntryTest {
         de.addOntologicalClasses(OTClasses.dataEntry());
         OntModel om = de.asOntModel();
         assertNotNull(om);
-        WonderWebValidator validator = new WonderWebValidator(om);        
-        assertTrue(validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL));
+        RDFValidator validator = new RDFValidator(om);
+        validator.validateDL();
+        validator.printIssues(System.out);
+        assertTrue(validator.isValid());        
         
     }
 }

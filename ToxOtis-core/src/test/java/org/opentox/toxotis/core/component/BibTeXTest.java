@@ -43,8 +43,8 @@ import org.opentox.toxotis.client.collection.Services;
 import static org.junit.Assert.*;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
+import org.opentox.toxotis.ontology.RDFValidator;
 import org.opentox.toxotis.ontology.ResourceValue;
-import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.util.ROG;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
 import org.opentox.toxotis.util.aa.policy.PolicyManager;
@@ -101,20 +101,24 @@ public class BibTeXTest {
         if (bibtexPolicyOwner == null) {
             PolicyManager.defaultSignleUserPolicy("allow_bibtex", Services.ntua().augment("bibtex"), at).
                     publish(null, at);
-        }
-        
-        BibTeX bib = ROG.nextBibTeX();        
+        }        
+        BibTeX bib = ROG.nextBibTeX();  
+        RDFValidator validator = new RDFValidator(bib.asOntModel());
+        validator.validateDL();
+        validator.printIssues(System.out);
+        assertTrue(validator.isValid());
     }
     
-    // !!!Wonderweb Validator is DOWN!!!
     @Test
     public void testRdf() throws ServiceInvocationException{
         BibTeX bt = ROG.nextBibTeX();
         bt.setMeta(ROG.nextMeta());
-        bt.getMeta().setSeeAlso(new HashSet<ResourceValue>());//The Wonderweb Validator has a problem with see also...
+        bt.getMeta().setSeeAlso(new HashSet<ResourceValue>());
         OntModel om =bt.asOntModel();
         om.write(System.out);
-        WonderWebValidator validator = new WonderWebValidator(om);
-        assertTrue(validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL));
+        RDFValidator validator = new RDFValidator(om);
+        validator.validateDL();
+        validator.printIssues(System.out);
+        assertTrue(validator.isValid());
     }
 }

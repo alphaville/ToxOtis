@@ -41,11 +41,10 @@ import org.opentox.toxotis.core.component.DummyComponent;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.ontology.MetaInfo;
 import org.opentox.toxotis.ontology.ResourceValue;
-import org.opentox.toxotis.ontology.WonderWebValidator;
 import org.opentox.toxotis.ontology.collection.OTClasses;
 import org.opentox.toxotis.util.ROG;
-import org.opentox.toxotis.util.spiders.MetaInfoSpider;
 import static org.junit.Assert.*;
+import org.opentox.toxotis.ontology.RDFValidator;
 
 /**
  *
@@ -80,9 +79,10 @@ public class MetaInfoImplTest {
         DummyComponent dummy = new DummyComponent();
         dummy.setMeta(meta);
         OntModel om = dummy.asOntModel();
-        WonderWebValidator validator = new WonderWebValidator(om);
-        boolean isOntModelDLValid = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
-        assertTrue(isOntModelDLValid);        
+        RDFValidator validator = new RDFValidator(om);
+        validator.validateDL();
+        validator.printIssues(System.out);   
+        assertTrue(validator.isValid());
     }
     @Test
     public void testMetaInfoRDF2() throws ServiceInvocationException {       
@@ -90,8 +90,9 @@ public class MetaInfoImplTest {
         dummy.setMeta(new ROG().nextMeta());
         dummy.addOntologicalClasses(OTClasses.openToxResource());
         OntModel om = dummy.asOntModel();
-        WonderWebValidator validator = new WonderWebValidator(om);
-        boolean isOntModelDLValid = validator.validate(WonderWebValidator.OWL_SPECIFICATION.DL);
-        assertTrue(isOntModelDLValid);        
+        RDFValidator validator = new RDFValidator(om);
+        validator.validateDL();
+        validator.printIssues(System.out);   
+        assertTrue(validator.isValid());
     }
 }

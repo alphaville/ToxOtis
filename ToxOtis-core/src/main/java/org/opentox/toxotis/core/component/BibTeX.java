@@ -1080,7 +1080,7 @@ public class BibTeX extends OTPublishable<BibTeX>
         }
         if (mCrossref != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasCrossRef().asDatatypeProperty(model),
-                    model.createTypedLiteral(mCrossref, XSDDatatype.XSDstring));
+                    model.createTypedLiteral(mCrossref, XSDDatatype.XSDanyURI));
         }
         if (mEdition != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasEdition().asDatatypeProperty(model),
@@ -1108,7 +1108,7 @@ public class BibTeX extends OTPublishable<BibTeX>
         }
         if (mNumber != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasNumber().asDatatypeProperty(model),
-                    model.createTypedLiteral(mNumber, XSDDatatype.XSDint));
+                    model.createTypedLiteral(mNumber, XSDDatatype.XSDstring));
         }
         if (mIsbn != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasISBN().asDatatypeProperty(model),
@@ -1144,7 +1144,7 @@ public class BibTeX extends OTPublishable<BibTeX>
         }
         if (mUrl != null) {
             indiv.addLiteral(KnoufDatatypeProperties.hasURL().asDatatypeProperty(model),
-                    model.createTypedLiteral(mUrl, XSDDatatype.XSDanyURI));
+                    model.createTypedLiteral(mUrl, XSDDatatype.XSDstring));
         }
         return indiv;
     }

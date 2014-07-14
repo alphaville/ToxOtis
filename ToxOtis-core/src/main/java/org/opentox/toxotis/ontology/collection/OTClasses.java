@@ -582,7 +582,7 @@ public final class OTClasses {
     public static OntologicalClass variableValue() {
         if (variableValue == null) {
             OntologicalClass clazz = new OntologicalClassImpl("VariableValue");
-            clazz.getSuperClasses().add(multiParameter());
+            clazz.getSuperClasses().add(openToxResource());
             variableValue = clazz;
         }
         return variableValue;
