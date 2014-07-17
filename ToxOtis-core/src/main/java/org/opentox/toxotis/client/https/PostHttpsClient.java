@@ -63,6 +63,7 @@ import org.opentox.toxotis.core.IStAXWritable;
 import org.opentox.toxotis.exceptions.impl.ConnectionException;
 import org.opentox.toxotis.exceptions.impl.InternalServerError;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
+import sun.net.www.ParseUtil;
 
 /**
  *
@@ -303,29 +304,32 @@ public class PostHttpsClient extends AbstractHttpsClient implements IPostClient 
                 }
             }
             
-            writer.append("--" + boundary).append(LINE_FEED);
-            writer.append("Content-Disposition: form-data; name=\"" + fileUploadFieldName
-                            + "\"; filename=\"" + fileUploadFilename + "\"").append(LINE_FEED);
-            writer.append(
-                    "Content-Type: "
-                            + java.net.URLConnection.guessContentTypeFromName(fileUploadFilename))
-                    .append(LINE_FEED);
-            writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
-            writer.append(LINE_FEED);
-            writer.flush();
+            if(is.read() >0) {
+                is.reset();
+                writer.append("--" + boundary).append(LINE_FEED);
+                writer.append("Content-Disposition: form-data; name=\"" + fileUploadFieldName
+                                + "\"; filename=\"" + fileUploadFilename + "\"").append(LINE_FEED);
+                writer.append(
+                        "Content-Type: "
+                                + java.net.URLConnection.guessContentTypeFromName(fileUploadFilename))
+                        .append(LINE_FEED);
+                writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+                writer.append(LINE_FEED);
+                writer.flush();
 
-            byte[] buffer = new byte[4096];
-            int bytesRead = -1;
-            while ((bytesRead = is.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
+                byte[] buffer = new byte[4096];
+                int bytesRead = -1;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.flush();
+                is.close();
+
+                writer.append(LINE_FEED);
+                writer.flush();  
+                writer.append(LINE_FEED).flush();
             }
-            outputStream.flush();
-            is.close();
-
-            writer.append(LINE_FEED);
-            writer.flush();  
                     
-            writer.append(LINE_FEED).flush();
             writer.append("--" + boundary + "--").append(LINE_FEED);
             writer.close();
         } catch (final IOException ex) {
