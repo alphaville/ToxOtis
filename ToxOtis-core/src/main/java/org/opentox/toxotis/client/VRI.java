@@ -83,6 +83,7 @@ public class VRI implements Serializable { // Well tested!
 
         Dataset("dataset"),
         Compound("compound"),
+        Substance("substance"),
         Feature("feature"),
         Algorithm("algorithm"),
         Task("task"),
@@ -111,6 +112,7 @@ public class VRI implements Serializable { // Well tested!
     private enum OpenToxRegEx {
 
         COMPOUND(OTClasses.compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_OR_NOTHING),
+        SUBSTANCE(OTClasses.substance(), Substance.class, ".+[^query]+/(?i)enanomapper/substance(s||)/" + END_SLASH_OR_NOTHING),
         CONFORMER(OTClasses.conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_OR_NOTHING),
         FEATURE(OTClasses.feature(), Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_OR_NOTHING),
         DATASET(OTClasses.dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_OR_NOTHING,
@@ -607,7 +609,7 @@ public class VRI implements Serializable { // Well tested!
         if (rex == null) {
             return null;
         }
-        if (rex == OpenToxRegEx.COMPOUND || rex == OpenToxRegEx.CONFORMER) {
+        if (rex == OpenToxRegEx.COMPOUND || rex == OpenToxRegEx.CONFORMER || rex == OpenToxRegEx.SUBSTANCE) {
             String queryString = getQueryAsString();
             if (queryString == null || (queryString != null && queryString.isEmpty())) {
                 return rex.getClazz();

@@ -122,7 +122,8 @@ public class Compound extends DescriptorCaclulation<Compound> {
     public Compound(VRI uri) throws ToxOtisException {
         super(uri);
         if (uri != null
-                && !Compound.class.equals(uri.getOpenToxType()) && !Conformer.class.equals(uri.getOpenToxType())) {
+                && !Compound.class.equals(uri.getOpenToxType()) && !Conformer.class.equals(uri.getOpenToxType())
+                && !Substance.class.equals(uri.getOpenToxType())) {
             throw new ToxOtisException("The provided URI : '" + uri.getStringNoQuery()
                     + "' is not a valid Compound uri according to the OpenTox specifications.");
         }
