@@ -51,6 +51,7 @@ public class Services {
     private static final String NTUA_SERVICES = "http://opentox.ntua.gr:8080/%s";
     private static final String AMBIT_PLOVDIV = "https://ambit.uni-plovdiv.bg:8443/ambit2/%s";
     private static final String IDEACONSULT = "http://apps.ideaconsult.net:8080/ambit2/%s";
+    private static final String IDEACONSULTENANOMAPPER = "http://apps.ideaconsult.net:8080/enanomapper/%s";
     private static final String TUM_DEV = "http://opentox.informatik.tu-muenchen.de:8080/OpenTox-dev/%s";
     public static final String SSO_HOST = "opensso.in-silico.ch";
     private static final String SSO_SERVER = "https://" + SSO_HOST;
@@ -108,6 +109,19 @@ public class Services {
     public static VRI ideaconsult() {
         try {
             return new VRI(String.format(IDEACONSULT, ""));
+        } catch (URISyntaxException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+    }
+    
+    /**
+     * URI of services by IDEAconsult ltd.
+     * @return 
+     *      IDEAconsult URI.
+     */
+    public static VRI ideaconsultenanomapper() {
+        try {
+            return new VRI(String.format(IDEACONSULTENANOMAPPER, ""));
         } catch (URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }

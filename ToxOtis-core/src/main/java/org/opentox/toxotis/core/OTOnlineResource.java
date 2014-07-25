@@ -409,6 +409,8 @@ public abstract class OTOnlineResource<T extends OTOnlineResource> extends OTCom
         
         HTMLTag small = new HTMLTagImpl("small");        
         small.addComponent(new HTMLTextImpl("Other formats:"));
+        small.addComponent(new HTMLLink(getUri() + "?accept=application/xml", "XML"));
+        small.addComponent(new HTMLTextImpl(COMMA));
         small.addComponent(new HTMLLink(getUri() + "?accept=application/rdf%2Bxml", "RDF/XML"));
         small.addComponent(new HTMLTextImpl(COMMA));
         small.addComponent(new HTMLLink(getUri() + "?accept=application/x-turtle", "Turtle"));

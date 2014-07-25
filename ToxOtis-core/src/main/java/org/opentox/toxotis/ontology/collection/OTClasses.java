@@ -74,6 +74,7 @@ public final class OTClasses {
     private static OntologicalClass numericFeature;
     private static OntologicalClass stringFeature;
     private static OntologicalClass dataset;
+    private static OntologicalClass substanceDataset;
     private static OntologicalClass feature;
     private static OntologicalClass featureValue;
     private static OntologicalClass featureValueNumeric;
@@ -344,6 +345,25 @@ public final class OTClasses {
             dataset = clazz;
         }
         return dataset;
+    }
+    
+    /**
+     * A Dataset Provides access to chemical compounds
+     * and their features (e.g. structural, physical-chemical,
+     * biological, toxicological properties)
+     * @return
+     *      Ontological class for Datasets
+     */
+    public static OntologicalClass substanceDataset() {
+        if (substanceDataset == null) {
+            OntologicalClass clazz = new OntologicalClassImpl("SubstanceDataset");
+            clazz.getMetaInfo().addComment("Provides access to chemical compounds "
+                    + "and their features (e.g. structural, physical-chemical, "
+                    + "biological, toxicological properties)");
+            clazz.getSuperClasses().add(openToxResource());
+            substanceDataset = clazz;
+        }
+        return substanceDataset;
     }
 
     /**
