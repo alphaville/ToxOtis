@@ -48,6 +48,7 @@ public enum Media {
     APPLICATION_FORM_URL_ENCODED("application/x-www-form-urlencoded"),
     APPLICATION_RDF_XML("application/rdf+xml"),
     APPLICATION_RDF_TURTLE("application/x-turtle"),
+    APPLICATION_JSON("application/json"),
     APPLICATION_RDF_XML_ABBREV("application/rdf+xml-abbrev"),
     /**
      * @see <a href="http://www.ch.ic.ac.uk/chemime/">Chemical MIMEs</a>

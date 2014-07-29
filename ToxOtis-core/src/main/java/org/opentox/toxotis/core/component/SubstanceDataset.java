@@ -36,13 +36,22 @@ package org.opentox.toxotis.core.component;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.util.FileUtils;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.opentox.toxotis.client.ClientFactory;
+import org.opentox.toxotis.client.HttpStatusCodes;
+import org.opentox.toxotis.client.IPostClient;
 import org.opentox.toxotis.client.VRI;
+import org.opentox.toxotis.client.collection.Media;
 import org.opentox.toxotis.client.collection.Services;
 import org.opentox.toxotis.core.OTPublishable;
 import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
@@ -56,7 +65,7 @@ import org.opentox.toxotis.util.aa.AuthenticationToken;
  * @author Charalampos Chomenides
  * @author Nikolaos Lampovas
  */
-public class SubstanceDataset extends OTPublishable<Dataset>{
+public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
     
     private long timeInstancesConversion = -1;
     private long timeDownload = -1;
@@ -65,7 +74,7 @@ public class SubstanceDataset extends OTPublishable<Dataset>{
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
     private static final int HASH_OFFSET = 7, HASH_MOD = 29, PERCENTAGE_WHEN_COMPLETE = 100;
     private static final String INACTIVE_TOKEN_MSG = "The Provided token is inactive";
-    
+    private String csv;
 /**
      * Constructor for a Dataset object providing its URI.
      * @param uri
@@ -112,7 +121,43 @@ public class SubstanceDataset extends OTPublishable<Dataset>{
 
     @Override
     public Task publishOnline(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+        int status;
+        
+        String remoteResult;
+
+        InputStream is = (InputStream) new ByteArrayInputStream(csv.getBytes());
+        IPostClient client = null;
+        try {
+            client = ClientFactory.createPostClient(vri);
+        } catch (Exception ex) {
+        }
+
+        client.setContentType(Media.MEDIA_MULTIPART_FORM_DATA);
+        client.setMediaType(Media.TEXT_URI_LIST);
+        client.addPostParameter("da_uri", "new");
+        client.setPostable(is);
+        client.setPostableFilename("files[]", "testCSV.csv");
+        client.post();
+
+        status = client.getResponseCode();
+        remoteResult = client.getResponseText();
+        Task dsUpload = new Task();
+        
+        logger.debug("Publishing >> Response : " + remoteResult);
+        logger.debug("Publishing >> STATUS   : " + status);
+        if (status == HttpStatusCodes.Success.getStatus()) {
+            dsUpload.setPercentageCompleted(PERCENTAGE_WHEN_COMPLETE);
+            dsUpload.setStatus(Task.Status.COMPLETED);
+            try {
+                dsUpload.setUri(new VRI(remoteResult));
+                dsUpload.setResultUri(vri);
+            } catch (URISyntaxException ex) {
+                throw new IllegalArgumentException(ex);
+            }
+        }
+        return dsUpload;
+    
     }
 
     @Override
@@ -124,8 +169,8 @@ public class SubstanceDataset extends OTPublishable<Dataset>{
     }
 
     @Override
-    protected Dataset loadFromRemote(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected SubstanceDataset loadFromRemote(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
+        return this;
     }
 
     @Override
@@ -137,5 +182,8 @@ public class SubstanceDataset extends OTPublishable<Dataset>{
     public void writeRdf(XMLStreamWriter writer) throws XMLStreamException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    public void setCsv(String csv) {
+        this.csv = csv;
+    }
 }

@@ -46,7 +46,7 @@ public class PostHttpClientTest {
         
         String remoteResult;
         try {
-            String targetFileStr = FileUtils.readWholeFileAsUTF8("C:\\Users\\philip\\Downloads\\testCSV.csv");
+            String targetFileStr = FileUtils.readWholeFileAsUTF8("C:\\Users\\philip\\Downloads\\testCSVFinal.csv");
            
             VRI vr = new VRI("http://localhost:8084/ambit2-www/substance");
               InputStream is = (InputStream) new ByteArrayInputStream(targetFileStr.getBytes());

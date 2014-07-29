@@ -117,6 +117,7 @@ public class VRI implements Serializable { // Well tested!
         FEATURE(OTClasses.feature(), Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_OR_NOTHING),
         DATASET(OTClasses.dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_OR_NOTHING,
         ".+/(?i)query/(?i)compound/.+/" + END_SLASH_OR_NOTHING),
+        SUBSTANCE_DATASET(OTClasses.substanceDataset(), SubstanceDataset.class, ".+/(?i)enanomapper/substanceowner/[a-zA-Z0-9-]*/dataset"),
         ALGORITHM(OTClasses.algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_OR_NOTHING),
         BIBTEX(KnoufBibTex.entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_OR_NOTHING),
         MODEL(OTClasses.model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_OR_NOTHING),
