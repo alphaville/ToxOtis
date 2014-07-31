@@ -40,6 +40,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentox.toxotis.client.ClientFactory;
@@ -69,13 +70,14 @@ public class DatasetJsonDownloader {
         this.datasetUri = datasetUri;
     }
     
-    
-    public JSONObject getJSON() {
+    /*
+        Get the json Object of a dataset
+    */
+    public JSONObject getJSON(AuthenticationToken token) {
         IGetClient client = ClientFactory.createGetClient(datasetUri);
         client.setMediaType(Media.APPLICATION_JSON);
         
         try {
-            AuthenticationToken token = new AuthenticationToken("AQIC5wM2LY4Sfcxx-5zU69ErY43e5JHXDDgQhSc4WzsYcAE.*AAJTSQACMDE.*");
             client.authorize(token);
             InputStream is = client.getRemoteStream();
             StringWriter writer = new StringWriter();
@@ -99,40 +101,51 @@ public class DatasetJsonDownloader {
         }
         return null;
     }
-    
+    /*
+        Traverse the json object of a dataset
+    */
     public String traverse(List<String> keys,JSONObject val) {
         String res="",out ="";
         JSONArray temp;
         JSONObject temp2;
         int i=0;
         for (;i<keys.size();++i) {
-            if(val.get(keys.get(i)) instanceof JSONObject) {
-                val = (JSONObject) val.get(keys.get(i));
-                
-            } else if ( val.get(keys.get(i)) instanceof String) {
-                out = (String) val.get(keys.get(i));
-            } else if ( val.get(keys.get(i)) instanceof JSONArray) {
-                temp = (JSONArray) val.get(keys.get(i));
-                for(int j=0;j<temp.length();++j) {
-                    temp2 = (JSONObject) temp.get(j);
-                    if(temp2.get(keys.get(i+1))!= null) {
-                        val = (JSONObject) temp2;
-                        break;
+            try {
+                if(val.get(keys.get(i)) instanceof JSONObject) {
+                    val = (JSONObject) val.get(keys.get(i));
+
+                } else if ( val.get(keys.get(i)) instanceof String) {
+                    out = (String) val.get(keys.get(i));
+                } else if ( val.get(keys.get(i)) instanceof JSONArray) {
+                    temp = (JSONArray) val.get(keys.get(i));
+                    for(int j=0;j<temp.length();++j) {
+                        temp2 = (JSONObject) temp.get(j);
+                        if(temp2.get(keys.get(i+1))!= null) {
+                            val = (JSONObject) temp2;
+                            break;
+                        }
                     }
+                } else {
+                    break;
                 }
-            } else {
-                break;
-            }
+           } catch(JSONException ex) {
+           }
         }
         if(i==keys.size())
            res = out;     
         return res;
     }
+    
     public String traverse(List<String> keys) {
         return traverse(keys,jsonDataset);
     }
     
-    //TODO these shouldnt be customURIS
+    //TODO custom enanomapper
+    //TODO assure that the structure of the json being parsed is like the following
+    
+    /*
+        Binds the Substance URIs with their names from the dataset.
+    */
     public Map<String,String> bindUUIDsToNames(JSONObject val,String prefix) {
         Map<String,String> res = new HashMap<String, String>();
         JSONArray temp2;
@@ -147,11 +160,11 @@ public class DatasetJsonDownloader {
                 temp3 = (JSONObject) temp3.get("values");
                 if(temp3!=null) {
                     try {
-                        if(StringUtils.isNotEmpty((String) temp3.get(prefix+"identifier/uuid")) &&
-                            StringUtils.isNotEmpty((String) temp3.get(prefix+"identifier/name")) ) {
-                            tempUUID = (String) temp3.get(prefix+"identifier/uuid");
-                            tempName = (String) temp3.get(prefix+"identifier/name");
-                            res.put(prefix+"substance/"+tempUUID, tempName);
+                        if(StringUtils.isNotEmpty((String) temp3.get(prefix+"/identifier/uuid")) &&
+                            StringUtils.isNotEmpty((String) temp3.get(prefix+"/identifier/name")) ) {
+                            tempUUID = (String) temp3.get(prefix+"/identifier/uuid");
+                            tempName = (String) temp3.get(prefix+"/identifier/name");
+                            res.put(prefix+"/substance/"+tempUUID, tempName);
 
                         }
                     } catch(JSONException ex) {
@@ -160,6 +173,29 @@ public class DatasetJsonDownloader {
                 }
             }
            
+        }
+        return res;
+    }
+    
+    
+    //TODO custom enanomapper
+    //TODO assure that the structure of the json being parsed is like the following
+    
+    /*
+        Gets the URI of the first property of a dataset.
+    */
+    public String getFirstProperty(JSONObject val,String prefix) {
+        String res = "";
+        JSONObject temp2;
+        temp2 = (JSONObject) val.get("feature");
+        
+        Set<String> keys = temp2.keySet();
+        String[] keysStrArr =  keys.toArray(new String[keys.size()]);
+        
+        for(int i=0;i<keysStrArr.length;++i) {
+            if(keysStrArr[i].contains(prefix+"/property/")) {
+                return keysStrArr[i];
+            }
         }
         return res;
     }

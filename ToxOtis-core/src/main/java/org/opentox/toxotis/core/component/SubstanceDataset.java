@@ -58,6 +58,7 @@ import org.opentox.toxotis.exceptions.impl.ForbiddenRequest;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
 import org.opentox.toxotis.util.aa.AuthenticationToken;
+import org.opentox.toxotis.util.spiders.DatasetSpider;
 
 /**
  *
@@ -74,7 +75,8 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Dataset.class);
     private static final int HASH_OFFSET = 7, HASH_MOD = 29, PERCENTAGE_WHEN_COMPLETE = 100;
     private static final String INACTIVE_TOKEN_MSG = "The Provided token is inactive";
-    private String csv;
+    private String csv="";
+    private String ownerName="";
 /**
      * Constructor for a Dataset object providing its URI.
      * @param uri
@@ -92,6 +94,14 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
             }
         }
         setMeta(null);
+    }
+    
+    public static String getHostFromVRI(String vri) {
+        return vri.replaceFirst("/(?i)substanceowner/[a-zA-Z0-9-]*/dataset", "");
+    }
+    
+    public static String getDatasetFromUUIDOwner(String ownerUUID,String host) {
+        return host+"/substanceowner/"+ownerUUID+"/dataset";
     }
     
     /**
@@ -125,20 +135,7 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
         int status;
         
         String remoteResult;
-
-        InputStream is = (InputStream) new ByteArrayInputStream(csv.getBytes());
-        IPostClient client = null;
-        try {
-            client = ClientFactory.createPostClient(vri);
-        } catch (Exception ex) {
-        }
-
-        client.setContentType(Media.MEDIA_MULTIPART_FORM_DATA);
-        client.setMediaType(Media.TEXT_URI_LIST);
-        client.addPostParameter("da_uri", "new");
-        client.setPostable(is);
-        client.setPostableFilename("files[]", "testCSV.csv");
-        client.post();
+        IPostClient client = this.postData(vri, token);
 
         status = client.getResponseCode();
         remoteResult = client.getResponseText();
@@ -146,7 +143,14 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
         
         logger.debug("Publishing >> Response : " + remoteResult);
         logger.debug("Publishing >> STATUS   : " + status);
-        if (status == HttpStatusCodes.Success.getStatus()) {
+        if (status == HttpStatusCodes.Accepted.getStatus()) {
+            try {
+                dsUpload.setUri(new VRI(remoteResult));
+            } catch (URISyntaxException ex) {
+                throw new IllegalArgumentException(ex);
+            }
+            dsUpload.loadFromRemote();
+        } else if (status == HttpStatusCodes.Success.getStatus()) {
             dsUpload.setPercentageCompleted(PERCENTAGE_WHEN_COMPLETE);
             dsUpload.setStatus(Task.Status.COMPLETED);
             try {
@@ -169,7 +173,17 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
     }
 
     @Override
-    protected SubstanceDataset loadFromRemote(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
+    protected SubstanceDataset loadFromRemote(VRI uri, AuthenticationToken token) throws ServiceInvocationException {
+        if (token != null && !AuthenticationToken.TokenStatus.ACTIVE.equals(token.getStatus())) {
+            throw new ForbiddenRequest(INACTIVE_TOKEN_MSG);
+        }
+        DatasetSpider spider = new DatasetSpider(uri, token);
+        Dataset ds = spider.parse();
+        setUri(ds.getUri());
+        setMeta(ds.getMeta());
+        spider.close();
+        timeParse = spider.getParseTime();
+        timeDownload = spider.getReadRemoteTime();
         return this;
     }
 
@@ -185,5 +199,29 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
 
     public void setCsv(String csv) {
         this.csv = csv;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+    
+    public IPostClient postData(VRI vri, AuthenticationToken token) throws ServiceInvocationException {
+        
+        InputStream is = (InputStream) new ByteArrayInputStream(csv.getBytes());
+        IPostClient client = null;
+        try {
+            client = ClientFactory.createPostClient(vri);
+        } catch (Exception ex) {
+        }
+
+        client.setContentType(Media.MEDIA_MULTIPART_FORM_DATA);
+        client.setMediaType(Media.TEXT_URI_LIST);
+        client.addPostParameter("da_uri", "new");
+        client.setPostable(is);
+        //TODO change the upload fieldname not to be custom for enanomapper
+        //TODO custom enanomapper
+        client.setPostableFilename("files[]", ownerName);
+        client.post();
+        return client;
     }
 }

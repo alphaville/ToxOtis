@@ -112,12 +112,12 @@ public class VRI implements Serializable { // Well tested!
     private enum OpenToxRegEx {
 
         COMPOUND(OTClasses.compound(), Compound.class, ".+[^query]+/(?i)compound(s||)/" + END_SLASH_OR_NOTHING),
-        SUBSTANCE(OTClasses.substance(), Substance.class, ".+[^query]+/(?i)enanomapper/substance(s||)/" + END_SLASH_OR_NOTHING),
+        SUBSTANCE(OTClasses.substance(), Substance.class, ".+[^query]+/(?i)substance(s||)/" + END_SLASH_OR_NOTHING),
         CONFORMER(OTClasses.conformer(), Conformer.class, ".+[^query]+/(?i)compound(s||)/.+/(?i)conformer(s||)/" + END_SLASH_OR_NOTHING),
         FEATURE(OTClasses.feature(), Feature.class, ".+/(?i)feature(s||)/" + END_SLASH_OR_NOTHING),
         DATASET(OTClasses.dataset(), Dataset.class, ".+/(?i)dataset(s||)/" + END_SLASH_OR_NOTHING,
         ".+/(?i)query/(?i)compound/.+/" + END_SLASH_OR_NOTHING),
-        SUBSTANCE_DATASET(OTClasses.substanceDataset(), SubstanceDataset.class, ".+/(?i)enanomapper/substanceowner/[a-zA-Z0-9-]*/dataset"),
+        SUBSTANCE_DATASET(OTClasses.substanceDataset(), SubstanceDataset.class, ".+/(?i)substanceowner/[a-zA-Z0-9-]*/dataset"),
         ALGORITHM(OTClasses.algorithm(), Algorithm.class, ".+/(?i)algorithm(s||)/" + END_SLASH_OR_NOTHING),
         BIBTEX(KnoufBibTex.entry(), BibTeX.class, ".+/(?i)bibtex(s||)/" + END_SLASH_OR_NOTHING),
         MODEL(OTClasses.model(), Model.class, ".+/(?i)model(s||)/" + END_SLASH_OR_NOTHING),
