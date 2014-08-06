@@ -129,7 +129,6 @@ public class Model extends OTOnlineResource<Model>
             FEAT_DIM = new int[]{150, 650},
             PARAM_DIM = new int[]{400, 150, 240},
             META_DIM = new int[]{150, 650};
-    private Object statistics;
     /**
      * Create a new empty Model with a given URI.
      *
@@ -201,22 +200,6 @@ public class Model extends OTOnlineResource<Model>
         bos.close();
         byte[] data = bos.toByteArray();
         return data;
-    }
-
-    /**
-     * Gets statistics from weka for the model
-     */
-    public Object getStatistics() {
-        return statistics;
-    }
-
-    
-    /**
-     * Sets statistics from weka for the model
-     * @param statistics The object which can be used to store statistics.
-     */
-    public void setStatistics(Object statistics) {
-        this.statistics = statistics;
     }
 
     /**

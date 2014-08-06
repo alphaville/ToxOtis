@@ -77,6 +77,7 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
     private static final String INACTIVE_TOKEN_MSG = "The Provided token is inactive";
     private String csv="";
     private String ownerName="";
+    private Boolean clearData = true;
 /**
      * Constructor for a Dataset object providing its URI.
      * @param uri
@@ -216,7 +217,12 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
 
         client.setContentType(Media.MEDIA_MULTIPART_FORM_DATA);
         client.setMediaType(Media.TEXT_URI_LIST);
-        client.addPostParameter("da_uri", "new");
+        if(!clearData) {
+            client.addPostParameter("dummy", "");
+        } else {
+            client.addPostParameter("clearMeasurements", "on");
+            client.addPostParameter("clearComposition", "on");
+        }
         client.setPostable(is);
         //TODO change the upload fieldname not to be custom for enanomapper
         //TODO custom enanomapper
@@ -224,4 +230,9 @@ public class SubstanceDataset extends OTPublishable<SubstanceDataset>{
         client.post();
         return client;
     }
+
+    public void setClearData(Boolean clearData) {
+        this.clearData = clearData;
+    }
+    
 }
