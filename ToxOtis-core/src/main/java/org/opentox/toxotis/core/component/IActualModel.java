@@ -26,18 +26,25 @@ public interface IActualModel extends Serializable {
     
     public void setSerializableActualModel(Serializable serializableActualModel);
     
-    public void setScalingMinVals(HashMap<VRI, Double> scalingMinVals);
-    public void setScalingMaxVals(HashMap<VRI, Double> scalingMaxVals);
-    
-    public void setScalingMin(double scalingMin);
-    public void setScalingMax(double scalingMax);
-    
     public void setHasScaling(Boolean hasScaling);
     public Boolean hasScaling();
     
-    public Map<String, Double> getMinVals2();
-    public Map<String, Double> getMaxVals2();
+    public void setScalingMinVals(HashMap<VRI, Double> scalingMinVals);
+    public void setScalingMaxVals(HashMap<VRI, Double> scalingMaxVals);
+    public Map<String, Double> getScalingMinVals2();
+    public Map<String, Double> getScalingMaxVals2();
     
+    public void setScalingMin(double scalingMin);
+    public void setScalingMax(double scalingMax);
     public double getScalingMin(); 
     public double getScalingMax();
+    
+    public void setHasNormalization(Boolean hasScaling);
+    public Boolean hasNormalization();
+    
+    public void setNormalizationMinVals(HashMap<VRI, Double> normalizationMinVals);
+    public Map<String, Double> getNormedVals2();
+    public Map<String, Double> getNormalizationMinVals2();
+    public void setNormedVals(HashMap<VRI, Double> normedVals);
+    
 }

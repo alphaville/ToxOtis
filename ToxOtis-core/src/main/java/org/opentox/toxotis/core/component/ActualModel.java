@@ -22,12 +22,19 @@ public class ActualModel implements IActualModel{
     private byte[] pmml;
     private Serializable serializableActualModel;
     private static final long serialUUID = 124129765424125712L;
-    private Object statistics;
+    private Object statistics;   //variable for statistics in pmml
+    
+    //variables for scaling
+    private Boolean hasScaling=false;
     private HashMap<VRI, Double> scalingMinVals = new HashMap<VRI, Double>();
     private HashMap<VRI, Double> scalingMaxVals = new HashMap<VRI, Double>();
     private double scalingMin = 0;
     private double scalingMax = 1;
-    private Boolean hasScaling=false;
+    
+    //variables for normalization
+    private Boolean hasNormalization=false;
+    private HashMap<VRI, Double> normalizationMinVals = new HashMap<VRI, Double>();
+    private HashMap<VRI, Double> normedVals = new HashMap<VRI, Double>();
 
     public ActualModel(Serializable serializableActualModel) {
         this.serializableActualModel = serializableActualModel;
@@ -107,29 +114,22 @@ public class ActualModel implements IActualModel{
     }
 
     @Override
-    public Map<String, Double> getMaxVals2() {
-        if (scalingMaxVals == null) {
-            return null;
-        }
-        Map<String, Double> simpleMap = new HashMap<String, Double>();
-        if (!scalingMaxVals.isEmpty()) {
-            Iterator<Map.Entry<VRI, Double>> iterator = scalingMaxVals.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<VRI, Double> entry = iterator.next();
-                simpleMap.put(entry.getKey().toString(), entry.getValue());
-            }
-        }
-        return simpleMap;
+    public Map<String, Double> getScalingMaxVals2() {
+        return getVRIkeyMapToDoublekeyMap(scalingMaxVals);
     }
 
     @Override
-    public Map<String, Double> getMinVals2() {
-        if (scalingMinVals == null) {
+    public Map<String, Double> getScalingMinVals2() {
+        return getVRIkeyMapToDoublekeyMap(scalingMinVals);
+    }
+
+    private static Map<String, Double> getVRIkeyMapToDoublekeyMap(Map<VRI, Double> scalingVals) {
+        if (scalingVals == null) {
             return null;
         }
         Map<String, Double> simpleMap = new HashMap<String, Double>();
-        if (!scalingMinVals.isEmpty()) {
-            Iterator<Map.Entry<VRI, Double>> iterator = scalingMinVals.entrySet().iterator();
+        if (!scalingVals.isEmpty()) {
+            Iterator<Map.Entry<VRI, Double>> iterator = scalingVals.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<VRI, Double> entry = iterator.next();
                 simpleMap.put(entry.getKey().toString(), entry.getValue());
@@ -157,5 +157,38 @@ public class ActualModel implements IActualModel{
     public Boolean hasScaling() {
         return hasScaling;
     }
+
+    @Override
+    public Boolean hasNormalization() {
+        return hasNormalization;
+    }
+
+    @Override
+    public void setHasNormalization(Boolean hasNormalization) {
+        this.hasNormalization = hasNormalization;
+    }
     
+    @Override
+    public void setNormalizationMinVals(HashMap<VRI, Double> normalizationMinVals) {
+        this.normalizationMinVals = normalizationMinVals;
+    }
+
+    @Override
+    public void setNormedVals(HashMap<VRI, Double> normedVals) {
+        this.normedVals = normedVals;
+    }
+    
+    public HashMap<VRI, Double> getNormedVals() {
+        return normedVals;
+    }
+    
+    @Override
+    public Map<String, Double> getNormedVals2() {
+        return getVRIkeyMapToDoublekeyMap(normedVals);
+    }
+    
+    @Override
+    public Map<String, Double> getNormalizationMinVals2() {
+        return getVRIkeyMapToDoublekeyMap(normalizationMinVals);
+    }
 }
