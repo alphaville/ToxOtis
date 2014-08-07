@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.opentox.toxotis.client.VRI;
+import Jama.Matrix;
 
 /**
  *
@@ -35,6 +36,10 @@ public class ActualModel implements IActualModel{
     private Boolean hasNormalization=false;
     private HashMap<VRI, Double> normalizationMinVals = new HashMap<VRI, Double>();
     private HashMap<VRI, Double> normedVals = new HashMap<VRI, Double>();
+    
+    //variables for leverage DoA
+    private Matrix dataMatrix = null;
+    private double gamma = 0;//3k/n
 
     public ActualModel(Serializable serializableActualModel) {
         this.serializableActualModel = serializableActualModel;
@@ -190,5 +195,30 @@ public class ActualModel implements IActualModel{
     @Override
     public Map<String, Double> getNormalizationMinVals2() {
         return getVRIkeyMapToDoublekeyMap(normalizationMinVals);
+    }
+
+    @Override
+    public Matrix getDataMatrix() {
+        return dataMatrix;
+    }
+
+    @Override
+    public void setDataMatrix(Matrix dataMatrix) {
+        this.dataMatrix = dataMatrix;
+    }
+
+    @Override
+    public double getGamma() {
+        return gamma;
+    }
+
+    @Override
+    public void setGamma(double gamma) {
+        this.gamma = gamma;
+    }
+
+    @Override    
+    public void setGamma(int k, int n) {
+        this.gamma = 3.0 * k / n;
     }
 }
