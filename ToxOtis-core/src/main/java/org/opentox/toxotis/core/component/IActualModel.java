@@ -56,4 +56,7 @@ public interface IActualModel extends Serializable {
         public double getGamma();
         public void setGamma(double gamma);
         public void setGamma(int k, int n);
+        
+    //statistics
+        public Object getStatistics();
 }

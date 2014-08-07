@@ -76,6 +76,7 @@ public class ActualModel implements IActualModel{
     /**
      * Gets statistics from weka for the model
      */
+    @Override
     public Object getStatistics() {
         return statistics;
     }
