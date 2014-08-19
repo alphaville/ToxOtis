@@ -674,6 +674,10 @@ public class VRI implements Serializable { // Well tested!
                         if (noQuery.contains("/query/compound")) {
                             return new VRI(noQuery.split("/query/compound")[0]);
                         }
+                    } else if (noQuery.contains("/substanceowner")) {
+                        String res = noQuery.split("/substanceowner")[0];
+                        return new VRI(res);
+                        //TODO: API EXT custom enanomapper
                     }
                     return new VRI(noQuery.split(SLASH + fragment)[0]);
                 } catch (URISyntaxException ex) {
@@ -684,6 +688,34 @@ public class VRI implements Serializable { // Well tested!
         return this;
     }
 
+    /**
+     * Returns the URI of the service.
+     * @return
+     *      The base URI of the service.
+     */
+    public VRI getServiceUri() {
+        String noQuery = getStringNoQuery();
+        String fragment;
+        for (UriKeywords key : UriKeywords.values()) {
+            fragment = key.getKeyword();
+            if (noQuery.contains(fragment)) {
+                try {
+                    if (fragment.equals(UriKeywords.Compound.getKeyword())) {
+                        return getServiceBaseUri().augment("dataset");
+                    } else if (noQuery.contains("/substanceowner")) {
+                        return getServiceBaseUri().augment("substance");
+                        //TODO: API EXT custom enanomapper
+                    }
+                    return new VRI(noQuery.split(SLASH + fragment)[0]);
+                } catch (URISyntaxException ex) {
+                    throw new IllegalArgumentException(ex);
+                }
+            }
+        }
+        return this;
+    }
+
+    
     /**
      * Returns the URI without the query part.
      * @return
