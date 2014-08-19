@@ -19,6 +19,7 @@ public class HTMLFormImpl implements HTMLForm {
     private String actionUrl;
     private String mediaType;
     private String method;
+    private String style="";
     private List<HTMLComponent> content = new ArrayList<HTMLComponent>();
 
     
@@ -65,11 +66,19 @@ public class HTMLFormImpl implements HTMLForm {
     public void addComponent(HTMLComponent component) {
         this.content.add(component);
     }
+    
+    
+    @Override
+    public HTMLForm setStyle(String varStyle) {
+        this.style = varStyle;
+        return this;
+    }
+
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(String.format("<form method=\"%s\" action=\"%s\" enctype=\"%s\">", method != null ? method : "POST", actionUrl != null ? actionUrl : ".",mediaType != null ? mediaType : ""));
+        builder.append(String.format("<form method=\"%s\" style=\"%s\" action=\"%s\" enctype=\"%s\">", method != null ? method : "POST",style, actionUrl != null ? actionUrl : ".",mediaType != null ? mediaType : ""));
         for (HTMLComponent component : content) {
             builder.append(component.toString());
         }

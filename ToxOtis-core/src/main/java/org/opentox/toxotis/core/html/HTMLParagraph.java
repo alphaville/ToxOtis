@@ -48,4 +48,6 @@ public interface HTMLParagraph extends HTMLExpandableComponent {
     HTMLParagraph setAlignment(Alignment align);
 
     Alignment getAlignment();
+    
+    HTMLParagraph setStyle(String style);
 }

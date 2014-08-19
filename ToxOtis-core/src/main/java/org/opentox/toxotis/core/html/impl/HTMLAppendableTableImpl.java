@@ -34,6 +34,7 @@ package org.opentox.toxotis.core.html.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.opentox.toxotis.core.html.HTMLComponent;
 import org.opentox.toxotis.core.html.HTMLTable;
 import org.opentox.toxotis.core.html.HTMLTableRow;
@@ -55,6 +56,7 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
     private List<HTMLTableRow> data;
     private final int[] colWidths;
     private int cursor = 0;
+    private String style="";
 
     public HTMLAppendableTableImpl(int nCols) {
         this.nCols = nCols;
@@ -111,6 +113,9 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
         if (summary != null) {
             tableMetaData.append(" summary=\"").append(summary).append("\"");
         }
+        if (StringUtils.isNotEmpty(style)) {
+            tableMetaData.append(" style=\"").append(style).append("\"");
+        }
         builder.append("<table");
         builder.append(tableMetaData);
         builder.append(">\n");
@@ -162,6 +167,11 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
         return this;
     }
 
+    @Override
+    public HTMLTable setStyle(String varStyle) {
+        this.style = varStyle;
+        return this;
+    }
     /**
      * Return the current row defined by the cursor on the HTML table.
      * @return

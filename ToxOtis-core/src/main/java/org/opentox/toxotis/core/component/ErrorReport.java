@@ -296,7 +296,7 @@ public class ErrorReport extends OTComponent<ErrorReport>
                 breakLine().horizontalSeparator();
         builder.getDiv().setAlignment(Alignment.justify).setId(getUri().toString());
         builder.addSubSubSubHeading("Information about the Exceptional Event");
-        HTMLTable table = builder.addTable(2);
+        HTMLTable table = builder.addTable(2).setStyle("margin-left:20px;");
 
         table.setTextAtCursor("Report URI").setTextAtCursor(HTMLUtils.linkUrlsInText(getUri().toString())).
                 setTextAtCursor("Error Code").setTextAtCursor(getErrorCode()).

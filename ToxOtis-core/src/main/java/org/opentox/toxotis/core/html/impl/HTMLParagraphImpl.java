@@ -32,6 +32,7 @@
  */
 package org.opentox.toxotis.core.html.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLComponent;
 import org.opentox.toxotis.core.html.HTMLParagraph;
@@ -45,6 +46,7 @@ import org.opentox.toxotis.core.html.HTMLText;
 public class HTMLParagraphImpl extends HTMLExpandableComponentImpl implements HTMLParagraph {
 
     private Alignment align;
+    private String style;
 
     public HTMLParagraphImpl() {
     }
@@ -70,6 +72,9 @@ public class HTMLParagraphImpl extends HTMLExpandableComponentImpl implements HT
         if (align != null) {
             alignment = " align=\"" + align + "\"";
         }
+        if (StringUtils.isNotEmpty(style)) {
+            alignment = " style=\"" + style + "\"";
+        }
         builder.append("<p").append(alignment).append(">");
         for (HTMLComponent component : getComponents()) {
             builder.append(component.toString());
@@ -81,6 +86,12 @@ public class HTMLParagraphImpl extends HTMLExpandableComponentImpl implements HT
     @Override
     public HTMLParagraph setAlignment(Alignment align) {
         this.align = align;
+        return this;
+    }
+    
+    @Override
+    public HTMLParagraph setStyle(String varStyle) {
+        this.style = varStyle;
         return this;
     }
 

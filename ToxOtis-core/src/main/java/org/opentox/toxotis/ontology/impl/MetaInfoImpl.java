@@ -80,6 +80,7 @@ public class MetaInfoImpl implements MetaInfo {
     private Set<ResourceValue> sameAs;
     private Set<ResourceValue> seeAlso;
     private Set<ResourceValue> hasSources;
+    private String style="";
     private static final long serialVersionUID = 258712452874812L;
 
     @Override
@@ -818,7 +819,7 @@ public class MetaInfoImpl implements MetaInfo {
     @Override
     public HTMLContainer inHtml() {
         HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
-        HTMLTable table = builder.addTable(2);
+        HTMLTable table = builder.addTable(2).setStyle(style);
         if (identifiers != null && !identifiers.isEmpty()) {
             table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "identifier") + "\">Identifier" + (identifiers.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(identifiers));
@@ -1002,4 +1003,12 @@ public class MetaInfoImpl implements MetaInfo {
         }
         return this;
     }
+    
+    @Override
+    public MetaInfo setStyle(String varStyle) {
+        this.style = varStyle;
+        return this;
+    }
+    
+    
 }

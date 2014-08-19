@@ -35,6 +35,7 @@ package org.opentox.toxotis.core.html;
 import org.opentox.toxotis.core.html.impl.HTMLAppendableTableImpl;
 import org.opentox.toxotis.core.html.impl.HTMLContainerImpl;
 import org.opentox.toxotis.core.html.impl.HTMLFormImpl;
+import org.opentox.toxotis.core.html.impl.HTMLJSImpl;
 import org.opentox.toxotis.core.html.impl.HTMLParagraphImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTagImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
@@ -69,9 +70,14 @@ public class HTMLDivBuilder {
         div.addComponent(new HTMLParagraphImpl(text.toString()).setAlignment(align));
         return getDiv();
     }
-
+    
     public HTMLContainer addParagraph(String text, Alignment align) {
         div.addComponent(new HTMLParagraphImpl(text).setAlignment(align));
+        return getDiv();
+    }
+    
+    public HTMLContainer addParagraph(String text, Alignment align,String style) {
+        div.addComponent(new HTMLParagraphImpl(text).setAlignment(align).setStyle(style));
         return getDiv();
     }
 
@@ -92,6 +98,14 @@ public class HTMLDivBuilder {
 
     public HTMLContainer addSubSubHeading(String text) {
         div.addComponent(new HTMLTagImpl("h3", text));
+        return div;
+    }
+    
+    
+    public HTMLContainer addSubSubHeading(String text,String style) {
+        HTMLTagImpl tg = new HTMLTagImpl("h3", text);
+        tg.addTagAttribute("style", style);
+        div.addComponent(tg);
         return div;
     }
 
@@ -146,4 +160,11 @@ public class HTMLDivBuilder {
         div.addComponent(linkTag);
         return linkTag;
     }
+    
+    
+    public HTMLContainer addJS(String text) {
+        div.addComponent(new HTMLJSImpl(text));
+        return div;
+    }
+
 }

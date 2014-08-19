@@ -159,4 +159,13 @@ public interface HTMLTable extends HTMLExpandableComponent {
      *      Updated table.
      */
     HTMLTable setColWidth(int col, int width);
+    
+    /**
+     * Set the style for the table
+     * @param style
+     *      the css for the style tag
+     * @return 
+     *      Updated table.
+     */
+    HTMLTable setStyle(String style);
 }

@@ -451,6 +451,13 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      * @return
      */
     MetaInfo addContributor(String... contributor);
+    
+    /**
+     *
+     * @param varStyle
+     * @return
+     */
+    MetaInfo setStyle(String varStyle) ;
 
     /**
      *
