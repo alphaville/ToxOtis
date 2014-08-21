@@ -38,6 +38,7 @@ public class ActualModel implements IActualModel{
     private HashMap<VRI, Double> normedVals = new HashMap<VRI, Double>();
     
     //variables for leverage DoA
+    private Boolean hasDoA=false;
     private Matrix dataMatrix = null;
     private double gamma = 0;//3k/n
 
@@ -198,6 +199,16 @@ public class ActualModel implements IActualModel{
         return getVRIkeyMapToDoublekeyMap(normalizationMinVals);
     }
 
+    @Override
+    public Boolean hasDoA() {
+        return hasDoA;
+    }
+
+    @Override
+    public void setHasDoA(Boolean hasDoA) {
+        this.hasDoA = hasDoA;
+    }
+    
     @Override
     public Matrix getDataMatrix() {
         return dataMatrix;

@@ -51,6 +51,9 @@ public interface IActualModel extends Serializable {
         public void setNormedVals(HashMap<VRI, Double> normedVals);
 
     //leverage DoA
+        public void setHasDoA(Boolean doA);
+        public Boolean hasDoA();
+        
         public Matrix getDataMatrix();
         public void setDataMatrix(Matrix dataMatrix);
         public double getGamma();
