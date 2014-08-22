@@ -6,13 +6,14 @@
 
 package org.opentox.toxotis.core.component;
 
-import org.opentox.toxotis.core.component.IActualModel;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.opentox.toxotis.client.VRI;
 import Jama.Matrix;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -41,6 +42,7 @@ public class ActualModel implements IActualModel{
     private Boolean hasDoA=false;
     private Matrix dataMatrix = null;
     private double gamma = 0;//3k/n
+    private List<VRI> excludeFeatures = new ArrayList();
 
     public ActualModel(Serializable serializableActualModel) {
         this.serializableActualModel = serializableActualModel;
@@ -233,4 +235,16 @@ public class ActualModel implements IActualModel{
     public void setGamma(int k, int n) {
         this.gamma = 3.0 * k / n;
     }
+
+    @Override
+    public List<VRI> getExcludeFeatures() {
+        return excludeFeatures;
+    }
+
+    @Override
+    public void setExcludeFeatures(List<VRI> excludeFeatures) {
+        this.excludeFeatures = excludeFeatures;
+    }
+    
+    
 }

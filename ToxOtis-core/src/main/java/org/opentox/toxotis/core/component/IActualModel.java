@@ -9,9 +9,9 @@ package org.opentox.toxotis.core.component;
 import Jama.Matrix;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.opentox.toxotis.client.VRI;
-import weka.core.Instances;
 
 /**
  *
@@ -59,6 +59,10 @@ public interface IActualModel extends Serializable {
         public double getGamma();
         public void setGamma(double gamma);
         public void setGamma(int k, int n);
+        
+        public List<VRI> getExcludeFeatures();
+        public void setExcludeFeatures(List<VRI> excludeFeatures);
+    
         
     //statistics
         public Object getStatistics();
