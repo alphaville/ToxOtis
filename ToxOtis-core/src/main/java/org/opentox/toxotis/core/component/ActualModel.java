@@ -42,7 +42,7 @@ public class ActualModel implements IActualModel{
     private Boolean hasDoA=false;
     private Matrix dataMatrix = null;
     private double gamma = 0;//3k/n
-    private List<VRI> excludeFeatures = new ArrayList();
+    private List<String> excludeAttributesDoA = new ArrayList();
 
     public ActualModel(Serializable serializableActualModel) {
         this.serializableActualModel = serializableActualModel;
@@ -237,13 +237,13 @@ public class ActualModel implements IActualModel{
     }
 
     @Override
-    public List<VRI> getExcludeFeatures() {
-        return excludeFeatures;
+    public List<String> getExcludeAttributesDoA() {
+        return excludeAttributesDoA;
     }
 
     @Override
-    public void setExcludeFeatures(List<VRI> excludeFeatures) {
-        this.excludeFeatures = excludeFeatures;
+    public void setExcludeAttributesDoA(List<String> excludeFeatures) {
+        this.excludeAttributesDoA = excludeFeatures;
     }
     
     

@@ -60,8 +60,8 @@ public interface IActualModel extends Serializable {
         public void setGamma(double gamma);
         public void setGamma(int k, int n);
         
-        public List<VRI> getExcludeFeatures();
-        public void setExcludeFeatures(List<VRI> excludeFeatures);
+        public List<String> getExcludeAttributesDoA();
+        public void setExcludeAttributesDoA(List<String> excludeFeatures);
     
         
     //statistics
