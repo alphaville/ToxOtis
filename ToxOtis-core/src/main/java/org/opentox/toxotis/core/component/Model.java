@@ -622,6 +622,9 @@ public class Model extends OTOnlineResource<Model>
                         setType(HTMLInput.HTMLInputType.TEXT).
                         setValue(dataset != null ? dataset.getServiceUri().toString() : "").
                         setSize(HTML_TEXTBOX_SIZE)).
+                setAtCursor(new HTMLTextImpl("Parameters").formatBold(true)).
+                setAtCursor(new HTMLInputImpl().setName("params").setType(HTMLInput.HTMLInputType.TEXT).
+                        setValue("mvh=0").setSize(HTML_TEXTBOX_SIZE)).
                 setAtCursor(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).
                         setValue("Predict")).
                 setTextAtCursor("");

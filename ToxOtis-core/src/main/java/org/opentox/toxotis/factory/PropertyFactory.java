@@ -83,7 +83,7 @@ public class PropertyFactory {
             }
             // Publishing a property is not available. Thus we post to /substance, which returns a substance
             // From that substance we get the substanceOwner and then get the dataset (created only for publishing properties)
-            // From the 
+         
             VRI resultUri = predictedFeatureUri.get();
             
             String host = SubstanceDataset.getHostFromVRI(ds.getUri().toString());
