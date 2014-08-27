@@ -54,14 +54,14 @@ public class testSubstanceIdent {
     public void test() {
         try {
             
-            VRI input = new VRI("http://apps.ideaconsult.net:8080/enanomapper/substanceowner/PRCR-A6103ACB-F2C6-3190-98D2-FF3404F1E36C/dataset");
+            /*VRI input = new VRI("http://apps.ideaconsult.net:8080/enanomapper/substanceowner/PRCR-A6103ACB-F2C6-3190-98D2-FF3404F1E36C/dataset");
             DatasetJsonDownloader jsn = new DatasetJsonDownloader(input);
-            JSONObject obj = jsn.getJSON();
+            //JSONObject obj = jsn.getJSON();
             Boolean eof;
             
             jsn.bindUUIDsToNames(obj,"http://apps.ideaconsult.net:8080/enanomapper/");
             
-            eof=true;
+            eof=true;*/
         } catch (Exception ex) {
             Boolean eofa;
             eofa=true;

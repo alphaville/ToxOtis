@@ -55,9 +55,9 @@ public class testSubstance {
     public void test() {
         try {
             
-            VRI input = new VRI("http://apps.ideaconsult.net:8080/enanomapper/substanceowner/PRCR-A6103ACB-F2C6-3190-98D2-FF3404F1E36C/dataset");
+            /*VRI input = new VRI("http://apps.ideaconsult.net:8080/enanomapper/substanceowner/PRCR-A6103ACB-F2C6-3190-98D2-FF3404F1E36C/dataset");
             DatasetJsonDownloader jsn = new DatasetJsonDownloader(input);
-            JSONObject obj = jsn.getJSON();
+            / obj = jsn.getJSON();
             List<String> keys = new ArrayList<String>();
             keys.add("feature");
             keys.add("http://apps.ideaconsult.net:8080/enanomapper/property/AD2880DCCB16852FB869B7E10223708801EB1B02");
@@ -79,7 +79,7 @@ public class testSubstance {
             String title = jsn.traverse(keys,obj);
             
             Boolean eof;
-            eof=true;
+            eof=true;*/
         } catch (Exception ex) {
             Boolean eofa;
             eofa=true;
