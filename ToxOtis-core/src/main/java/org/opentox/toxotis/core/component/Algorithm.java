@@ -85,6 +85,9 @@ public class Algorithm extends OTOnlineResource<Algorithm>
 
     /** ParameterValue of parameters of the algorithm. Specify the way the algorithm is parametrized */
     private Set<Parameter> parameters = new HashSet<Parameter>();
+    
+    /** ParameterValue of global parameters of the algorithm. Specify the way the algorithm is parametrized */
+    private Set<Parameter> globalParameters = new HashSet<Parameter>();
     /** ParameterValue of ontological classes that characterize the algorithm*/
     private Set<OntologicalClass> ontologies;
     /** List of multi-parameters */
@@ -182,6 +185,30 @@ public class Algorithm extends OTOnlineResource<Algorithm>
         return this;
     }
 
+    /**
+     * Retrieve the set of global parameters for this algorithm.
+     * @return
+     *      ParameterValue of parameters.
+     */
+    public Set<Parameter> getGlobalParameters() {
+        return globalParameters;
+    }
+
+    
+    /**
+     * ParameterValue the global parameters of the algorithm.
+     * @param globalParameters
+     *      ParameterValue of parameters.
+     * @return 
+     *      The current modifiable instance of Algorithm.
+     */
+    public Algorithm setGlobalParameters(Set<Parameter> globalParameters) {
+        this.globalParameters = globalParameters;
+        return this;
+    }
+
+    
+    
     public Set<MultiParameter> getMultiParameters() {
         return multiParameters;
     }
@@ -365,6 +392,12 @@ public class Algorithm extends OTOnlineResource<Algorithm>
                     setAtCursor(new HTMLTextImpl("Default Value").formatBold(true)).
                     setAtCursor(new HTMLTextImpl("Meta information").formatBold(true));
             for (Parameter p : getParameters()) {
+                parametersTable.setTextAtCursor(p.getName().getValueAsString()).
+                        setTextAtCursor(p.getScope().name()).
+                        setTextAtCursor(p.getTypedValue() != null ? p.getTypedValue().getValueAsString() : "-").
+                        setAtCursor(((HTMLTable) p.getMeta().inHtml().getComponents().get(0)).setTableBorder(0));
+            }
+            for (Parameter p : getGlobalParameters()) {
                 parametersTable.setTextAtCursor(p.getName().getValueAsString()).
                         setTextAtCursor(p.getScope().name()).
                         setTextAtCursor(p.getTypedValue() != null ? p.getTypedValue().getValueAsString() : "-").
