@@ -231,6 +231,8 @@ public class ActualModel implements IActualModel{
         this.gamma = gamma;
     }
 
+    // where k is the number of attributes 
+    // and n is the number of instances
     @Override    
     public void setGamma(int k, int n) {
         this.gamma = 3.0 * k / n;
