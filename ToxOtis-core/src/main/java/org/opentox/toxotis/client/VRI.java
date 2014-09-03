@@ -705,6 +705,8 @@ public class VRI implements Serializable { // Well tested!
                     } else if (noQuery.contains("/substanceowner")) {
                         return getServiceBaseUri().augment("substance");
                         //TODO: API EXT custom enanomapper
+                    } else if (fragment.equals(UriKeywords.Dataset.getKeyword())) {
+                        return getServiceBaseUri().augment("dataset");
                     }
                     return new VRI(noQuery.split(SLASH + fragment)[0]);
                 } catch (URISyntaxException ex) {
