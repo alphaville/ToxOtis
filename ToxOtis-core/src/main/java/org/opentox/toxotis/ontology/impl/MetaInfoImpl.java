@@ -46,6 +46,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
+import org.apache.commons.lang.StringUtils;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
 import org.opentox.toxotis.core.html.HTMLTable;
@@ -62,6 +63,7 @@ public class MetaInfoImpl implements MetaInfo {
     private static final int[] DIMENSIONS = new int[]{150, 600};
     private static final String A_TAG_OPEN = "<a href=\"",
             A_TAG_CLOSE = "</a>";
+    private String cssClass;
 
     public MetaInfoImpl() {
     }
@@ -820,6 +822,9 @@ public class MetaInfoImpl implements MetaInfo {
     public HTMLContainer inHtml() {
         HTMLDivBuilder builder = new HTMLDivBuilder("metainfo");
         HTMLTable table = builder.addTable(2).setStyle(style);
+        if(StringUtils.isNotEmpty(cssClass)) {
+            table.setCssClass(cssClass);
+        }
         if (identifiers != null && !identifiers.isEmpty()) {
             table.setTextAtCursor(A_TAG_OPEN + String.format(DUBLIN_CORE_DOC, "identifier") + "\">Identifier" + (identifiers.size() > 1 ? "s" : "") + A_TAG_CLOSE).
                     setTextAtCursor(createHtmlList(identifiers));
@@ -1010,5 +1015,9 @@ public class MetaInfoImpl implements MetaInfo {
         return this;
     }
     
-    
+    @Override
+    public MetaInfo setCssClass(String cssClass) {
+        this.cssClass = cssClass;
+        return this;
+}
 }

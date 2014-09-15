@@ -39,5 +39,9 @@ package org.opentox.toxotis.core.html;
  */
 public interface HTMLBody extends HTMLExpandableComponent {
     
+    void addBodyComponent(String hd);
 
+    void setFooter(String footer);
+    
+    void setHeader(String header);
 }

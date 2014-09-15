@@ -114,4 +114,9 @@ public interface HTMLHead {
      *      The author(s) of this HTML document, as specified in the header.
      */
     String getAuthor();
+    
+    /**
+     * Setter method for adding in head of a document
+     */
+    void addHeadComponent(String hd);
 }

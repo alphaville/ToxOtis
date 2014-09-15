@@ -32,6 +32,8 @@
  */
 package org.opentox.toxotis.core.html.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opentox.toxotis.core.html.HTMLBody;
 import org.opentox.toxotis.core.html.HTMLComponent;
 
@@ -42,15 +44,41 @@ import org.opentox.toxotis.core.html.HTMLComponent;
  */
 public class HTMLBodyImpl  extends HTMLExpandableComponentImpl implements HTMLBody{
 
+    private List<String> bodyComps = new ArrayList<String>();
+    private String footer="";
+    private String header="";
+    
+    @Override
+    public void addBodyComponent(String hd) {
+        bodyComps.add(hd);
+    }
+        
+    @Override
+    public void setFooter(String footer) {
+        this.footer = footer;
+    }
+    
+    @Override
+    public void setHeader(String header) {
+        this.header = header;
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("<body>\n");
+        builder.append(header);
+        builder.append("<div class=\"panel\">\n");
+        
+        for (String temp : bodyComps){
+            builder.append(temp);
+            builder.append("\n");
+        }
         for (HTMLComponent component : getComponents()){
             builder.append(component.toString());
             builder.append("\n");
         }
-        builder.append("</body>\n");
+        builder.append("</div></body>\n");
         return builder.toString();
     }
 

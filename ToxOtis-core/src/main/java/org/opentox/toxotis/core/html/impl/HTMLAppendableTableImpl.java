@@ -53,6 +53,7 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
     private int cellSpacing;
     private int cellPadding;
     private int tableBorder;
+    private String cssClass;
     private List<HTMLTableRow> data;
     private final int[] colWidths;
     private int cursor = 0;
@@ -112,6 +113,9 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
         }
         if (summary != null) {
             tableMetaData.append(" summary=\"").append(summary).append("\"");
+        }
+        if (cssClass != null) {
+            tableMetaData.append(" class=\"").append(cssClass).append("\"");
         }
         if (StringUtils.isNotEmpty(style)) {
             tableMetaData.append(" style=\"").append(style).append("\"");
@@ -220,6 +224,12 @@ public class HTMLAppendableTableImpl extends HTMLExpandableComponentImpl impleme
         return setAtCursor(new HTMLTextImpl(entry));
     }
 
+    @Override
+    public HTMLTable setCssClass(String cssClass) {
+        this.cssClass = cssClass;
+        return this;
+    }
+ 
  
 }
 

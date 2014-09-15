@@ -86,9 +86,6 @@ public class HTMLPageImpl extends HTMLExpandableComponentImpl implements HTMLPag
         builder.append(xhtmlStrict);
         builder.append("\n");
         String namespaceDeclaration = " xmlns=\""+XML_NS+"\"";
-        builder.append("<head>");
-        builder.append(GoogleAnalytics.getGAjs());
-        builder.append("</head>");
         builder.append("<html");
         builder.append(namespaceDeclaration);
         builder.append(">\n");

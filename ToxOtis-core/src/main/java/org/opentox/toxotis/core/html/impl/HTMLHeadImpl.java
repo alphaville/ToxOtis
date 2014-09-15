@@ -33,6 +33,9 @@
 package org.opentox.toxotis.core.html.impl;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import org.opentox.toxotis.core.html.GoogleAnalytics;
 import org.opentox.toxotis.core.html.HTMLHead;
 
 /**
@@ -48,6 +51,7 @@ public class HTMLHeadImpl implements HTMLHead {
     private int refreshSecondsDelay = 1;
     private String title;
     private String author;
+    private List<String> headComps = new ArrayList<String>();
 
     public HTMLHeadImpl() {
     }
@@ -88,6 +92,11 @@ public class HTMLHeadImpl implements HTMLHead {
     }
 
     @Override
+    public void addHeadComponent(String hd) {
+        headComps.add(hd);
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("<head>\n");
@@ -98,6 +107,10 @@ public class HTMLHeadImpl implements HTMLHead {
         }
         if (author != null) {
             builder.append("<meta name=\"AUTHOR\" content=\"").append(author).append("\" />\n");
+        }
+        
+        for(String temp : headComps) {
+            builder.append(temp);
         }
         builder.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n");
         builder.append("</head>\n");

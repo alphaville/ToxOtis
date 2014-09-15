@@ -42,7 +42,10 @@ import org.opentox.toxotis.core.OTOnlineResource;
 import org.opentox.toxotis.core.html.Alignment;
 import org.opentox.toxotis.core.html.HTMLContainer;
 import org.opentox.toxotis.core.html.HTMLDivBuilder;
+import org.opentox.toxotis.core.html.HTMLForm;
+import org.opentox.toxotis.core.html.HTMLInput;
 import org.opentox.toxotis.core.html.HTMLTable;
+import org.opentox.toxotis.core.html.impl.HTMLInputImpl;
 import org.opentox.toxotis.core.html.impl.HTMLTextImpl;
 import org.opentox.toxotis.exceptions.impl.ServiceInvocationException;
 import org.opentox.toxotis.exceptions.impl.ToxOtisException;
@@ -63,6 +66,7 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
     private int maxParallelTasks = 0;
     private int maxModels = 0;
     private int maxBibTeX = 0;
+    private String tokenLogout;
     public static final User GUEST = new User("guest@opensso.in-silico.ch", "Guest", "anonymous@anonymous.org", "{SSHA}ficDnnD49QMLnwStKABXzDvFIgrd/c4H");
 
     public int getMaxBibTeX() {
@@ -213,6 +217,14 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
                 setColWidth(2, 400);
         builder.getDiv().breakLine();
 
+        builder.addParagraph("<p style=\"display:inline;\">If you are already logged in and you need to logout click :",Alignment.left);
+        HTMLForm form = builder.addForm("/login", "POST","").setStyle("margin-left:20px;display:inline;");
+        form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).
+                setName("logout").setValue("logout"));
+        form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.HIDDEN).
+                setName("token").setValue(tokenLogout));
+        form.addComponent(new HTMLInputImpl().setType(HTMLInput.HTMLInputType.SUBMIT).setValue("Logout"));
+        
         builder.addParagraph("Check out user's quota <a href=\"" + getUri().augment("quota") + "\">here</a>",
                 Alignment.left);
 
@@ -220,4 +232,10 @@ public class User extends OTOnlineResource<User> implements IHTMLSupport {
         
         return builder.getDiv();
     }
+
+    public void setTokenLogout(String tokenLogout) {
+        this.tokenLogout = tokenLogout;
+    }
+    
+    
 }

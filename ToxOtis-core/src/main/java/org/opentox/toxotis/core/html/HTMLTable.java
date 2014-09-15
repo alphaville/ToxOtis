@@ -168,4 +168,6 @@ public interface HTMLTable extends HTMLExpandableComponent {
      *      Updated table.
      */
     HTMLTable setStyle(String style);
+
+	HTMLTable setCssClass(String cssClass);
 }

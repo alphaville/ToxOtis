@@ -584,4 +584,6 @@ public interface MetaInfo extends java.io.Serializable, IHTMLSupport {
      *      otherwise.
      */
     boolean isEmpty();
+    
+    MetaInfo setCssClass(String cssClass);
 }
