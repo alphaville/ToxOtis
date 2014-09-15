@@ -8,6 +8,12 @@
     <version>0.8.9-SNAPSHOT</version>
     <name>ToxOtis Core Module</name>
     <description></description>
+    <distributionManagement>
+        <snapshotRepository>
+          <id>snapshots</id>
+          <url>http://enanomapper.ntua.gr:8083/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
     <developers>
         <developer>
             <name>Sopasakis Pantelis</name>
